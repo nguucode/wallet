@@ -197,7 +197,7 @@ export function Keypad({ value, onChange }: { value: number; onChange: (n: numbe
         {KEYS.map((k) => (
           <button
             key={k} type="button" onClick={() => press(k)}
-            aria-label={k === 'del' ? 'Xóa một chữ số' : k === '000' ? 'Ba số không' : k}
+            aria-label={k === 'del' ? 'Xóa một chữ số' : undefined}
             className="flex h-14 items-center justify-center rounded-[14px] bg-[#efeaff] text-ink shadow-[0_1px_0_rgb(28_24_64/0.18)] active:bg-white"
           >
             {k === 'del' ? <Delete size={24} strokeWidth={1.75} aria-hidden /> : <span className="text-[24px] leading-7 font-medium tnum">{k}</span>}

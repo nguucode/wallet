@@ -1,0 +1,579 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-17T11:49:28+00:00",
+  "title": "Design System: Violet Sky",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Wallet Violet",
+        "canonical": "#5b2be0",
+        "tonalRamp": [
+          "#0a0918",
+          "#241859",
+          "#4222a4",
+          "#6237ea",
+          "#8164ff",
+          "#a49dff",
+          "#c9c9ff",
+          "#ebecff"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Deep Violet",
+        "canonical": "#4a1fc4",
+        "tonalRamp": [
+          "#090917",
+          "#221a56",
+          "#3f2a9e",
+          "#5d41e1",
+          "#7d6bff",
+          "#a19fff",
+          "#c8caff",
+          "#ebecff"
+        ]
+      },
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Lavender Wash",
+        "canonical": "#ece6ff",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#27252d",
+          "#464252",
+          "#686278",
+          "#8b859c",
+          "#afabbb",
+          "#d1cfd9",
+          "#efeef1"
+        ]
+      },
+      "primary-ink": {
+        "role": "primary",
+        "displayName": "Violet Ink",
+        "canonical": "#3d1a9e",
+        "tonalRamp": [
+          "#0a0a16",
+          "#231d4e",
+          "#40328f",
+          "#5f4bcd",
+          "#7f72f5",
+          "#a5a2fc",
+          "#cbcbff",
+          "#ecedff"
+        ]
+      },
+      "sky-from": {
+        "role": "primary",
+        "displayName": "Sky Top",
+        "canonical": "#4a1fc4",
+        "tonalRamp": [
+          "#090917",
+          "#221a56",
+          "#3f2a9e",
+          "#5d41e1",
+          "#7d6bff",
+          "#a19fff",
+          "#c8caff",
+          "#ebecff"
+        ]
+      },
+      "sky-to": {
+        "role": "primary",
+        "displayName": "Sky Bottom",
+        "canonical": "#7655f2",
+        "tonalRamp": [
+          "#0a0917",
+          "#251a54",
+          "#44289a",
+          "#653fdc",
+          "#8569ff",
+          "#a89eff",
+          "#ccc9ff",
+          "#ececff"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Night Navy",
+        "canonical": "#1c1840",
+        "tonalRamp": [
+          "#0b0b0f",
+          "#242436",
+          "#414163",
+          "#61608f",
+          "#8384b4",
+          "#a9aacd",
+          "#cecfe3",
+          "#edeef5"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Dusk Grey",
+        "canonical": "#625d7d",
+        "tonalRamp": [
+          "#0b0b0e",
+          "#262531",
+          "#454159",
+          "#666181",
+          "#8984a6",
+          "#aeabc2",
+          "#d1cfdd",
+          "#eeeef3"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#262626",
+          "#454545",
+          "#666666",
+          "#898989",
+          "#aeaeae",
+          "#d1d1d1",
+          "#eeeeee"
+        ]
+      },
+      "surface-2": {
+        "role": "neutral",
+        "displayName": "Mist",
+        "canonical": "#f1eefc",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#27262a",
+          "#45444c",
+          "#676470",
+          "#8a8793",
+          "#aeacb5",
+          "#d1d0d5",
+          "#eeeef0"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Lavender Ground",
+        "canonical": "#f6f4fd",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#272629",
+          "#45444a",
+          "#66656c",
+          "#8a8890",
+          "#aeadb3",
+          "#d1d0d4",
+          "#eeeeef"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Heather Line",
+        "canonical": "#dfdaf0",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#27252d",
+          "#464350",
+          "#676376",
+          "#8a869a",
+          "#afacba",
+          "#d1d0d8",
+          "#eeeef1"
+        ]
+      },
+      "line-soft": {
+        "role": "neutral",
+        "displayName": "Faint Line",
+        "canonical": "#edeaf7",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#27262a",
+          "#46444c",
+          "#67646f",
+          "#8a8793",
+          "#aeacb5",
+          "#d1d0d5",
+          "#eeeef0"
+        ]
+      },
+      "success": {
+        "role": "status",
+        "displayName": "Success",
+        "canonical": "#0b7a47",
+        "tonalRamp": [
+          "#060d08",
+          "#0a2e1b",
+          "#03532e",
+          "#0a7a47",
+          "#419e69",
+          "#84be98",
+          "#badac5",
+          "#e6f2ea"
+        ]
+      },
+      "success-soft": {
+        "role": "status",
+        "displayName": "Success Tint",
+        "canonical": "#e3f5ea",
+        "tonalRamp": [
+          "#0a0c0b",
+          "#222824",
+          "#3d4841",
+          "#5b6a61",
+          "#7e8e84",
+          "#a6b1aa",
+          "#ccd3cf",
+          "#edefee"
+        ]
+      },
+      "pending": {
+        "role": "status",
+        "displayName": "Pending",
+        "canonical": "#8a5200",
+        "tonalRamp": [
+          "#0f0a05",
+          "#372108",
+          "#633a03",
+          "#90570b",
+          "#b57b3b",
+          "#cea57d",
+          "#e4ccb5",
+          "#f6ede4"
+        ]
+      },
+      "pending-soft": {
+        "role": "status",
+        "displayName": "Pending Tint",
+        "canonical": "#fff0da",
+        "tonalRamp": [
+          "#0c0b09",
+          "#2b261e",
+          "#4d4336",
+          "#716451",
+          "#948773",
+          "#b6ac9f",
+          "#d6d0c8",
+          "#f0eeeb"
+        ]
+      },
+      "danger": {
+        "role": "status",
+        "displayName": "Danger",
+        "canonical": "#b3261e",
+        "tonalRamp": [
+          "#140706",
+          "#46120d",
+          "#7f1913",
+          "#b62921",
+          "#df5547",
+          "#f09082",
+          "#fac1b8",
+          "#fee9e5"
+        ]
+      },
+      "danger-soft": {
+        "role": "status",
+        "displayName": "Danger Tint",
+        "canonical": "#fdeceb",
+        "tonalRamp": [
+          "#0c0b0b",
+          "#2a2525",
+          "#4d4242",
+          "#706261",
+          "#948584",
+          "#b6abaa",
+          "#d5cfcf",
+          "#f0eeee"
+        ]
+      },
+      "chart-up": {
+        "role": "status",
+        "displayName": "Chart Green",
+        "canonical": "#1f9d55",
+        "tonalRamp": [
+          "#050e07",
+          "#022f15",
+          "#005623",
+          "#007d37",
+          "#2aa25b",
+          "#7cc18f",
+          "#b6dcbf",
+          "#e5f3e8"
+        ]
+      },
+      "chart-warn": {
+        "role": "status",
+        "displayName": "Chart Amber",
+        "canonical": "#e8891c",
+        "tonalRamp": [
+          "#120904",
+          "#3e1c00",
+          "#713000",
+          "#a34900",
+          "#ca6f00",
+          "#de9e66",
+          "#eec9aa",
+          "#f9ece1"
+        ]
+      },
+      "chart-over": {
+        "role": "status",
+        "displayName": "Chart Red",
+        "canonical": "#d93a2b",
+        "tonalRamp": [
+          "#150705",
+          "#490e08",
+          "#840a04",
+          "#bd170c",
+          "#e74b3a",
+          "#f68c7c",
+          "#febfb5",
+          "#ffe8e4"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "balance": {
+        "displayName": "Balance",
+        "purpose": "Hero balance on web."
+      },
+      "balance-app": {
+        "displayName": "Balance (app)",
+        "purpose": "Hero balance on app; steps to Amount past 11 characters."
+      },
+      "amount-display": {
+        "displayName": "Amount",
+        "purpose": "Amount input and result amount."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "White page titles on the sky (web)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card and sheet titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default text."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Sublines, hints, field labels."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase muted section labels."
+      },
+      "chip": {
+        "displayName": "Chip",
+        "purpose": "Uppercase status pills and badges."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 1px 2px rgb(28 24 64 / 0.04), 0 14px 36px -14px rgb(74 31 196 / 0.22)",
+        "purpose": "Cards, neutral callouts, inactive segments, active sidebar item."
+      },
+      {
+        "name": "float",
+        "value": "0 12px 32px -10px rgb(28 24 64 / 0.28)",
+        "purpose": "Sheets, dialogs, menus, toasts, raised Scan disc."
+      },
+      {
+        "name": "bar",
+        "value": "0 -8px 24px -12px rgb(28 24 64 / 0.18)",
+        "purpose": "Tab bar and sticky flow footers."
+      },
+      {
+        "name": "keycap",
+        "value": "0 1px 0 rgb(28 24 64 / 0.18)",
+        "purpose": "Keypad keys only."
+      }
+    ],
+    "gradients": [
+      {
+        "name": "sky",
+        "value": "linear-gradient(180deg, #4a1fc4 0%, #7655f2 58%, color-mix(in oklab, #7655f2 18%, #f6f4fd) 86%, #f6f4fd 100%)",
+        "purpose": "Top band on every screen (300px web, 276px app, 240px flows), Scan disc, logo tile."
+      },
+      {
+        "name": "keypad-panel",
+        "value": "linear-gradient(180deg, #4a1fc4, #7655f2)",
+        "purpose": "Keypad panel."
+      }
+    ],
+    "motion": [
+      {
+        "name": "color",
+        "value": "150ms",
+        "purpose": "Button, chip and segment colour changes."
+      },
+      {
+        "name": "header-solid",
+        "value": "200ms",
+        "purpose": "App header turning solid on scroll."
+      },
+      {
+        "name": "sheet-up",
+        "value": "240ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Bottom sheet entry on app."
+      },
+      {
+        "name": "fade-in",
+        "value": "150ms ease-out",
+        "purpose": "Overlays, web dialogs, result status mark (200ms)."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "All animation and transition under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "web",
+        "value": "1024px",
+        "purpose": "Sidebar web shell at and above; app shell with tab bar below."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action on a screen or sheet.",
+      "html": "<button class=\"ds-btn-primary\">Tiếp tục</button>",
+      "css": ".ds-btn-primary{font-family:var(--font-sans,'Be Vietnam Pro',system-ui,sans-serif);display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border:0;border-radius:9999px;font-size:15px;font-weight:600;transition:background-color 150ms;cursor:pointer;background:var(--color-primary);color:#fff;}.ds-btn-primary:hover{background:var(--color-primary-hover);}.ds-btn-primary:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;}.ds-btn-primary:disabled{background:var(--color-line);color:var(--color-muted);cursor:not-allowed;}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Second action, cancel, close.",
+      "html": "<button class=\"ds-btn-secondary\">Hủy</button>",
+      "css": ".ds-btn-secondary{font-family:var(--font-sans,'Be Vietnam Pro',system-ui,sans-serif);display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border:0;border-radius:9999px;font-size:15px;font-weight:600;transition:background-color 150ms;cursor:pointer;background:var(--color-primary-soft);color:var(--color-primary-ink);}.ds-btn-secondary:hover{background:color-mix(in oklab,var(--color-primary-soft) 80%,var(--color-primary));}.ds-btn-secondary:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;}"
+    },
+    {
+      "name": "Ink Button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Confirms destructive actions so red stays a status.",
+      "html": "<button class=\"ds-btn-ink\">Đăng xuất</button>",
+      "css": ".ds-btn-ink{font-family:var(--font-sans,'Be Vietnam Pro',system-ui,sans-serif);display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border:0;border-radius:9999px;font-size:15px;font-weight:600;transition:background-color 150ms;cursor:pointer;background:var(--color-ink);color:#fff;}.ds-btn-ink:hover{background:color-mix(in oklab,var(--color-ink) 85%,transparent);}.ds-btn-ink:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "text-input",
+      "description": "Labelled field with hint.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Số điện thoại</span><input class=\"ds-input\" placeholder=\"0912 345 678\"><span class=\"ds-field-hint\">Dùng để đăng nhập</span></label>",
+      "css": ".ds-field{font-family:var(--font-sans,'Be Vietnam Pro',system-ui,sans-serif);display:block;max-width:320px;color:var(--color-ink);}.ds-field-label{display:block;margin-bottom:6px;font-size:13px;line-height:18px;font-weight:500;}.ds-input{font-family:var(--font-sans,'Be Vietnam Pro',system-ui,sans-serif);box-sizing:border-box;width:100%;height:48px;padding:0 16px;border:1px solid var(--color-line);border-radius:14px;background:#fff;font-size:15px;color:var(--color-ink);}.ds-input:focus-visible{outline:2px solid var(--color-primary);outline-offset:0;}.ds-field-hint{display:block;margin-top:6px;font-size:13px;line-height:18px;color:var(--color-muted);}"
+    },
+    {
+      "name": "Status Pills",
+      "kind": "chip",
+      "refersTo": "status-pill-pending",
+      "description": "Transaction state, uppercase on its own tint.",
+      "html": "<span class=\"ds-pill ds-pill-pending\">Đang xử lý</span> <span class=\"ds-pill ds-pill-success\">Thành công</span> <span class=\"ds-pill ds-pill-failed\">Không thành công</span>",
+      "css": ".ds-pill{font-family:var(--font-sans,'Be Vietnam Pro',system-ui,sans-serif);display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:9999px;font-size:11px;line-height:16px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}.ds-pill-pending{background:var(--color-pending-soft);color:var(--color-pending);}.ds-pill-success{background:var(--color-success-soft);color:var(--color-success);}.ds-pill-failed{background:var(--color-danger-soft);color:var(--color-danger);}"
+    },
+    {
+      "name": "Segmented Tabs",
+      "kind": "nav",
+      "refersTo": "segment-selected",
+      "description": "History filters; selected is the one violet.",
+      "html": "<div class=\"ds-seg\" role=\"tablist\"><button class=\"ds-seg-btn\" aria-selected=\"true\">Tất cả</button><button class=\"ds-seg-btn\" aria-selected=\"false\">Đang xử lý</button><button class=\"ds-seg-btn\" aria-selected=\"false\">Hoàn tiền</button></div>",
+      "css": ".ds-seg{display:flex;gap:8px;}.ds-seg-btn{font-family:var(--font-sans,'Be Vietnam Pro',system-ui,sans-serif);height:36px;padding:0 16px;border:0;border-radius:9999px;font-size:14px;font-weight:600;cursor:pointer;background:#fff;color:var(--color-muted);box-shadow:var(--shadow-card,0 1px 2px rgb(28 24 64/.04),0 14px 36px -14px rgb(74 31 196/.22));transition:color 150ms;}.ds-seg-btn:hover{color:var(--color-ink);}.ds-seg-btn[aria-selected=true]{background:var(--color-primary);color:#fff;box-shadow:none;}.ds-seg-btn:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;}"
+    },
+    {
+      "name": "Balance Card over Sky",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The signature: a lifted white card overlapping the violet sky, balance with raised đồng and pending chip.",
+      "html": "<div class=\"ds-sky\"><div class=\"ds-card\"><p class=\"ds-card-label\">Số dư khả dụng</p><p class=\"ds-balance\">4.870.000<span class=\"ds-dong\">₫</span></p><span class=\"ds-held\">Đang xử lý 2.112.000 ₫</span></div></div>",
+      "css": ".ds-sky{font-family:var(--font-sans,'Be Vietnam Pro',system-ui,sans-serif);padding:48px 20px 24px;background:linear-gradient(180deg,var(--color-sky-from) 0%,var(--color-sky-to) 58%,color-mix(in oklab,var(--color-sky-to) 18%,var(--color-ground)) 86%,var(--color-ground) 100%);}.ds-card{background:#fff;border-radius:24px;padding:20px;text-align:center;box-shadow:0 1px 2px rgb(28 24 64/.04),0 14px 36px -14px rgb(74 31 196/.22);color:var(--color-ink);}.ds-card-label{margin:0;font-size:15px;line-height:22px;font-weight:600;color:var(--color-muted);}.ds-balance{margin:4px 0 0;font-size:40px;line-height:50px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}.ds-dong{margin-left:.12em;vertical-align:.42em;font-size:.55em;font-weight:600;}.ds-held{display:inline-flex;align-items:center;min-height:36px;margin-top:8px;padding:0 12px;border-radius:9999px;background:var(--color-pending-soft);color:var(--color-pending);font-size:13px;font-weight:600;}"
+    },
+    {
+      "name": "Keypad",
+      "kind": "custom",
+      "refersTo": "keypad-key",
+      "description": "Amount entry: lavender keys on a violet panel, with 000.",
+      "html": "<div class=\"ds-keypad\" role=\"group\" aria-label=\"Bàn phím số\"><button class=\"ds-key\">1</button><button class=\"ds-key\">2</button><button class=\"ds-key\">3</button><button class=\"ds-key\">4</button><button class=\"ds-key\">5</button><button class=\"ds-key\">6</button><button class=\"ds-key\">7</button><button class=\"ds-key\">8</button><button class=\"ds-key\">9</button><button class=\"ds-key\">000</button><button class=\"ds-key\">0</button><button class=\"ds-key\">⌫</button></div>",
+      "css": ".ds-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:340px;padding:12px;border-radius:28px;background:linear-gradient(180deg,var(--color-sky-from),var(--color-sky-to));box-shadow:0 1px 2px rgb(28 24 64/.04),0 14px 36px -14px rgb(74 31 196/.22);}.ds-key{font-family:var(--font-sans,'Be Vietnam Pro',system-ui,sans-serif);height:56px;border:0;border-radius:14px;background:var(--color-primary-soft);color:var(--color-ink);font-size:24px;line-height:28px;font-weight:500;font-variant-numeric:tabular-nums;box-shadow:0 1px 0 rgb(28 24 64/.18);cursor:pointer;}.ds-key:active{background:#fff;}.ds-key:focus-visible{outline:2px solid #fff;outline-offset:2px;}"
+    },
+    {
+      "name": "Truth Line Rows",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Result confirm rows; the first row states where the money is.",
+      "html": "<dl class=\"ds-rows\"><div><dt>Trạng thái</dt><dd>Đang xử lý · dự kiến xong trước 14:30</dd></div><div><dt>Phí</dt><dd>Miễn phí</dd></div><div><dt>Mã giao dịch</dt><dd>TX240117</dd></div></dl>",
+      "css": ".ds-rows{font-family:var(--font-sans,'Be Vietnam Pro',system-ui,sans-serif);margin:0;max-width:420px;padding:0 16px;border-radius:20px;background:color-mix(in oklab,var(--color-surface-2) 60%,transparent);color:var(--color-ink);font-size:15px;line-height:22px;}.ds-rows div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--color-line-soft);}.ds-rows div:first-child{border-top:0;}.ds-rows dt{color:var(--color-muted);}.ds-rows dd{margin:0;text-align:right;font-weight:500;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Money on a card, under a violet sky",
+    "overview": "**Creative North Star: \"Money on a card, under a violet sky\"**\n\nEvery screen is built from two layers. Above, a violet gradient band (the sky) carries the header, the page title and white chrome. Below, calm lavender ground. Between them, white cards with soft violet-tinted lift hold the money: the balance, the confirm rows, the result. The card overlaps the band, so the eye lands on it first. The grammar is the Copilot money app's (dashboard, sheet, keypad), rebuilt in Wallet's own purple; it replaced the black-and-white \"Clear Ledger\" world.\n\nThe mood is calm and soft, never loud. Density is moderate: one card per idea, generous section gaps, 64px list rows, 48px controls. Colour is rationed. Violet means you can act, it is selected, or it is the sky; green, amber and red appear only to state where money is.\n\nThe layout has two shapes from one system. On the web (1024px and up) a lavender sidebar sits beside a content column whose top carries the sky band. On the app (below 1024px) a transparent header floats over the sky with a centred title, and a white tab bar sits at the bottom with a raised violet Scan disc.",
+    "keyCharacteristics": [
+      "Lifted white cards over a violet sky band that fades into lavender ground.",
+      "One violet: action, selection, focus, the sky, and the balance line.",
+      "Status colour only for transaction states, rings and bars.",
+      "The đồng sign set small and raised beside the numerals.",
+      "Uppercase muted section labels with a quiet \"Xem tất cả ›\".",
+      "A violet keypad panel with lavender keys for every amount entry.",
+      "Every transaction outcome reads as one plain truth line."
+    ],
+    "rules": [
+      {
+        "name": "The One Violet Rule",
+        "body": "Violet is action, selection, focus, the sky, or the balance line. It never fills a status, a chart of limits, or a decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Status Is Truth Rule",
+        "body": "Green, amber and red appear only to state where money or a limit is: transaction states, rings, bars, errors. Never as brand colour, never as category colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Money Rule",
+        "body": "Every money figure uses tabular numerals; columns of amounts never jitter.",
+        "section": "typography"
+      },
+      {
+        "name": "The Raised Dong Rule",
+        "body": "The đồng sign sits beside the figure at 55% size, raised 0.42em, weight 600, aria-hidden with \"đồng\" read to screen readers. In the amount input it is a smaller muted sign top-aligned to the digits.",
+        "section": "typography"
+      },
+      {
+        "name": "The Card Over Sky Rule",
+        "body": "The first card on a screen overlaps the sky band; the band never holds content of its own beyond titles, short white descriptions and header chrome.",
+        "section": "layout"
+      },
+      {
+        "name": "The Tinted Lift Rule",
+        "body": "Shadows are tinted navy or violet, never neutral black, and never a hard offset outside the keycap edge.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do put money on a white card overlapping the sky band, with the Card shadow and 24px corners.",
+      "Do set every amount in tabular numerals with the raised đồng sign.",
+      "Do state every transaction outcome as a truth line, and colour it only with its status pair.",
+      "Do label sections with the uppercase Label style and a muted \"Xem tất cả ›\" action.",
+      "Do use pills for every button, chip and segment.",
+      "Do take amounts through the violet keypad panel on the app."
+    ],
+    "donts": [
+      "Don't use violet for status, categories or decoration; it is action, selection, focus, the sky and the balance line only.",
+      "Don't use green, amber or red outside transaction states, rings, bars and errors.",
+      "Don't confirm a destructive action with a red button; use the ink button.",
+      "Don't add hex values outside the tokens; tints come from the soft tokens.",
+      "Don't return to black-and-white ledger surfaces or a super-app icon grid."
+    ]
+  }
+}
