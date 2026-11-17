@@ -165,7 +165,7 @@ function BillsDue({ loaded, guard }: { loaded: boolean; guard: Guard }) {
                         <span className="block text-[13px] leading-[18px] text-muted">{bill.customerCode} · {dueLine}</span>
                       </span>
                       <span className="tnum font-semibold">{formatVnd(bill.amount)}</span>
-                      <Button size="sm" aria-label={`Thanh toán ${biller}`} onClick={() => guard(`/bills/${bill.id}`)} className="min-h-11">Thanh toán</Button>
+                      <Button size="sm" onClick={() => guard(`/bills/${bill.id}`)} className="min-h-11">Thanh toán</Button>
                     </div>
                   )}
                 </li>
@@ -202,7 +202,7 @@ function RecentRecipients({ loaded, guard }: { loaded: boolean; guard: Guard }) 
               }
               return (
                 <li key={r.key} className="w-[72px] shrink-0">
-                  <Link to={to} onClick={guardedClick(guard, to)} title={label} aria-label={label} className="flex flex-col items-center gap-1 rounded-xl py-1 text-center text-ink no-underline">
+                  <Link to={to} onClick={guardedClick(guard, to)} title={label} className="flex flex-col items-center gap-1 rounded-xl py-1 text-center text-ink no-underline">
                     <Avatar name={r.name} size={56} />
                     <span className="block w-full truncate text-[12px] leading-4 font-medium">{shortName(r.name)}</span>
                     {sub ? <span className="block w-full truncate text-[11px] leading-[14px] text-muted">{sub}</span> : null}

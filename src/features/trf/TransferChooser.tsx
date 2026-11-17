@@ -60,7 +60,7 @@ export default function TransferChooser() {
     <ul className="-mx-5 flex gap-3 overflow-x-auto px-5 pb-1">
       {recent.map((r) => (
         <li key={r.key} className="w-[76px] shrink-0">
-          <Link to={recentLink(r, w.bankRecipients)} aria-label={name(r)} title={name(r)} className="flex flex-col items-center gap-1.5 rounded-xl py-1 text-center text-ink no-underline hover:bg-surface-2">
+          <Link to={recentLink(r, w.bankRecipients)} title={name(r)} className="flex flex-col items-center gap-1.5 rounded-xl py-1 text-center text-ink no-underline hover:bg-surface-2">
             {r.kind === 'wallet' ? <Avatar name={r.name} size={48} /> : <BankMark short={bankById(r.bankId).short} size={48} />}
             <span className="line-clamp-2 text-[12px] leading-4">{name(r)}</span>
           </Link>

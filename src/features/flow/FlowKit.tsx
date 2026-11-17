@@ -143,7 +143,7 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
         <input
           id="amount" autoFocus={autoFocus} inputMode="numeric" autoComplete="off" placeholder="0"
           value={value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''}
-          onChange={(e) => onChange(Math.min(parseVndInput(e.target.value), 9_999_999_999))}
+          onChange={(e) => { const n = parseVndInput(e.target.value); if (n <= 9_999_999_999) onChange(n) }}
           aria-invalid={!!error || undefined}
           aria-describedby="amount-msg"
           className="amount-display w-full min-w-0 bg-transparent outline-none placeholder:text-line"

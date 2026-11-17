@@ -57,8 +57,9 @@ function AccountMenu() {
     <>
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
-          <button aria-label="Tài khoản" className="inline-flex size-10 items-center justify-center rounded-full bg-primary text-[13px] font-semibold text-white">
-            {w.customer.name.split(' ').slice(-2).map((p) => p[0]).join('')}
+          <button className="inline-flex size-10 items-center justify-center rounded-full bg-primary text-[13px] font-semibold text-white">
+            <span aria-hidden>{w.customer.name.split(' ').slice(-2).map((p) => p[0]).join('')}</span>
+            <span className="sr-only">Tài khoản</span>
           </button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
@@ -144,9 +145,9 @@ function TabBar() {
             )
           return (
             <li key={t.id}>
-              <Link to={t.route!} aria-current={active ? 'page' : undefined} aria-label={t.badge && unread ? `${t.label}, ${unread} chưa đọc` : undefined} className={cx('relative flex h-full flex-col items-center justify-center gap-1 no-underline', active ? 'text-primary' : 'text-muted')}>
+              <Link to={t.route!} aria-current={active ? 'page' : undefined} className={cx('relative flex h-full flex-col items-center justify-center gap-1 no-underline', active ? 'text-primary' : 'text-muted')}>
                 <Icon size={22} strokeWidth={active ? 2.25 : 1.75} aria-hidden />
-                <span className={cx('text-[11px] leading-3', active ? 'font-semibold' : 'font-medium')}>{t.label}</span>
+                <span className={cx('text-[11px] leading-3', active ? 'font-semibold' : 'font-medium')}>{t.label}{t.badge && unread ? <span className="sr-only">, {unread} chưa đọc</span> : null}</span>
                 {t.badge && unread ? <span className="absolute top-2 left-1/2 ml-1.5 min-w-[18px] rounded-full bg-danger px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum" aria-hidden>{unread > 9 ? '9+' : unread}</span> : null}
               </Link>
             </li>

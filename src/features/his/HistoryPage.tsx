@@ -167,7 +167,6 @@ function AppList({ groups, w, onOpen }: { groups: Group[]; w: World; onOpen: (id
                 <li key={t.id}>
                   <Link
                     to={`/history/${t.id}`} onClick={(e) => { e.preventDefault(); onOpen(t.id) }}
-                    aria-label={`${name}, ${typeLabel(t.type)}, ${formatVnd(rowAmount(t), { sign: t.direction })}, ${t.status === 'success' ? STATUS_LABEL.success : truthLine(t)}`}
                     className="flex min-h-16 items-center gap-3 py-2 text-ink no-underline"
                   >
                     <TxIcon type={t.type} />

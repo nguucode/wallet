@@ -77,7 +77,7 @@ export default function BillsPage() {
                 const name = billerName(b.billerId)
                 return (
                   <li key={b.id} className={cx('flex gap-3 px-4 py-3', layout === 'app' ? 'flex-col' : 'items-center')}>
-                    <Link to={`/bills/${b.id}`} aria-label={`${name}, ${b.holder}, ${periodLabel(b.period)}, ${formatVnd(b.amount)}, ${CHIP[s].label}`}
+                    <Link to={`/bills/${b.id}`}
                       className="-mx-2 -my-1 flex min-w-0 flex-1 items-start gap-3 rounded-xl px-2 py-1 text-ink no-underline hover:bg-surface-2">
                       <span className="min-w-0 flex-1">
                         <span className="block font-semibold">{name}</span>
