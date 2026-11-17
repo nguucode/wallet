@@ -32,7 +32,7 @@ const drafts = new Map<string, Record<string, unknown>>()
  * Flow step in `?step=`, draft kept in memory. A step opened by URL without its draft restarts at the first step;
  * `result` without its transaction redirects to the transaction (or history).
  */
-export function useFlow<D extends Record<string, unknown>>(flowId: string, steps: readonly string[], initial: D) {
+export function useFlow<D extends Record<string, unknown>>(flowId: string, steps: readonly string[], initial: D, opts: { resultFallback?: string } = {}) {
   const [params, setParams] = useSearchParams()
   const nav = useNavigate()
   const step = params.get('step') ?? steps[0]
@@ -42,7 +42,7 @@ export function useFlow<D extends Record<string, unknown>>(flowId: string, steps
     if (step === 'result' && !hasDraft) {
       let txId: string | null = null
       try { txId = sessionStorage.getItem('flow.result.' + flowId) } catch { /* ignore */ }
-      nav(txId ? `/history/${txId}` : '/history', { replace: true })
+      nav(opts.resultFallback ?? (txId ? `/history/${txId}` : '/history'), { replace: true })
     } else if (step !== steps[0] && !hasDraft) {
       const next = new URLSearchParams(params)
       next.set('step', steps[0])
