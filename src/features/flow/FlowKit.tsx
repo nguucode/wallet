@@ -1,5 +1,6 @@
 import { ArrowLeft, Check, Clock, Delete, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { requiredAuth } from '@/domain/auth'
 import { config } from '@/domain/config'
@@ -69,6 +70,13 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
   title: string; onBack?: () => void; onClose?: () => void; footer?: ReactNode; children: ReactNode; description?: ReactNode
 }) {
   const layout = useLayout()
+  const [solid, setSolid] = useState(false)
+  useEffect(() => {
+    const on = () => setSolid(window.scrollY > 8)
+    on()
+    window.addEventListener('scroll', on, { passive: true })
+    return () => window.removeEventListener('scroll', on)
+  }, [])
   if (layout === 'web')
     return (
       <div>
@@ -85,14 +93,16 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
   return (
     <div className="relative flex min-h-dvh flex-col">
       <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[240px]" />
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-1 bg-sky-from/95 px-2 text-white backdrop-blur-sm">
+      <header className={cx('sticky top-0 z-30 flex h-14 items-center gap-1 px-2 text-white transition-colors duration-200', solid ? 'bg-sky-from' : 'bg-transparent')}>
         {onBack ? <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={onBack}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton> : <span className="w-11" />}
         <h1 tabIndex={-1} data-page-title className="flex-1 truncate text-center text-[17px] font-bold outline-none">{title}</h1>
         {onClose ? <IconButton label="Đóng" className="text-white hover:bg-white/15" onClick={onClose}><X size={22} strokeWidth={1.75} /></IconButton> : <span className="w-11" />}
       </header>
       <main id="main" className="relative mx-auto w-full max-w-[560px] flex-1 px-4 pt-2 pb-6">
         {description ? <p className="mb-4 px-1 text-white/90">{description}</p> : null}
-        <div className="card overflow-hidden p-5">{children}</div>
+        <div className="card p-5">{children}</div>
+        {/* The app keypad portals here so the violet panel stands on its own below the card. */}
+        <div id="flow-keypad-slot" />
       </main>
       {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 rounded-t-[24px] bg-surface px-5 shadow-[0_-8px_24px_-12px_rgb(28_24_64/0.18)] pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</div> : null}
     </div>
@@ -161,9 +171,16 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
           ))}
         </div>
       ) : null}
-      {layout === 'app' ? <Keypad value={value} onChange={set} /> : null}
+      {layout === 'app' ? <KeypadPortal value={value} onChange={set} /> : null}
     </div>
   )
+}
+
+function KeypadPortal(props: { value: number; onChange: (n: number) => void }) {
+  const [slot, setSlot] = useState<HTMLElement | null>(null)
+  useEffect(() => setSlot(document.getElementById('flow-keypad-slot')), [])
+  const pad = <Keypad {...props} />
+  return slot ? createPortal(pad, slot) : pad
 }
 
 /** Wallet keypad (app layout): lavender keys on a violet panel, with 000 for đồng amounts. */
@@ -175,7 +192,7 @@ export function Keypad({ value, onChange }: { value: number; onChange: (n: numbe
   }
   const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '000', '0', 'del']
   return (
-    <div className="-mx-5 mt-6 rounded-[28px] bg-gradient-to-b from-sky-from to-sky-to px-3 pt-3 pb-3">
+    <div className="mt-4 rounded-[28px] bg-gradient-to-b from-sky-from to-sky-to px-3 pt-3 pb-3 shadow-[var(--shadow-card)]">
       <div className="grid grid-cols-3 gap-2" role="group" aria-label="Bàn phím số">
         {KEYS.map((k) => (
           <button
