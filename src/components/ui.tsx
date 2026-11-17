@@ -68,7 +68,7 @@ export function Section({ title, action, children, className }: { title: string;
     <section className={cx('mt-8 lg:mt-12', className)} aria-label={title}>
       <div className="mb-3 flex items-baseline justify-between gap-4 px-1">
         <h2 className="label-caps">{title}</h2>
-        <span className="text-[14px] font-medium text-muted [&_a]:text-muted [&_a]:no-underline [&_a:hover]:text-primary [&_button]:text-muted">{action}</span>
+        <span className="text-[14px] font-medium text-muted [&_a]:text-muted [&_a]:no-underline [&_a:hover]:text-primary [&_a]:after:content-['_›'] [&_button]:text-muted">{action}</span>
       </div>
       {children}
     </section>

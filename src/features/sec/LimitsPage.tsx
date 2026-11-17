@@ -80,7 +80,6 @@ function RingStat({ title, counter }: { title: string; counter: Counter }) {
 }
 
 function Meter({ title, counter, note, reset }: { title: string; counter: Counter; note: string; reset: string }) {
-  const pct = Math.min(100, Math.round((counter.used / counter.limit) * 100))
   // Design choice (not a rule): warning tone when 10% or less is left.
   const warn = counter.remaining <= counter.limit * 0.1
   return (
@@ -90,12 +89,6 @@ function Meter({ title, counter, note, reset }: { title: string; counter: Counte
         {warn ? <Badge tone="pending">Sắp hết hạn mức</Badge> : null}
       </div>
       <p className="mt-3 tnum">Đã dùng {formatVnd(counter.used)} /<wbr /> {formatVnd(counter.limit)}</p>
-      <div
-        role="meter" aria-label={title} aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-valuetext={`Đã dùng ${pct} phần trăm`}
-        className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2"
-      >
-        <div className={cx('h-full rounded-full', warn ? 'bg-chart-warn' : 'bg-chart-up')} style={{ width: `${pct}%` }} />
-      </div>
       <p className={cx('mt-2 font-semibold tnum', warn && 'text-pending')}>Còn lại {formatVnd(counter.remaining)}</p>
       {counter.pending ? <p className="mt-1 text-[14px] leading-5 text-muted">Gồm {formatVnd(counter.pending)} đang xử lý</p> : null}
       <p className="mt-3 text-[14px] leading-5 text-muted">{note}</p>

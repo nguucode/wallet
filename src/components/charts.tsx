@@ -37,7 +37,8 @@ const RING: Record<RingTone, string> = { ok: 'var(--color-chart-up)', warn: 'var
 /** Progress ring for a limit pool: used share drawn, tone by how close to the limit. */
 export function Ring({ used, size = 96, tone, children }: { used: number; size?: number; tone: RingTone; children?: React.ReactNode }) {
   const r = 42, c = 2 * Math.PI * r
-  const f = Math.max(0, Math.min(1, used))
+  // A sliver of use still reads as an arc, not a dot.
+  const f = used > 0 ? Math.max(0.04, Math.min(1, used)) : 0
   return (
     <span className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
       <svg viewBox="0 0 100 100" className="absolute inset-0" aria-hidden>

@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Clock, X } from 'lucide-react'
+import { ArrowLeft, Check, Clock, Delete, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { requiredAuth } from '@/domain/auth'
@@ -132,19 +132,25 @@ export function checkAmount(type: TxType, amount: number, opts: { essential?: bo
 export function AmountInput({ value, onChange, error, label = 'Số tiền', quick = [100_000, 200_000, 500_000, 1_000_000], autoFocus = true, hint }: {
   value: number; onChange: (n: number) => void; error?: ReactNode; label?: string; quick?: number[]; autoFocus?: boolean; hint?: ReactNode
 }) {
+  const layout = useLayout()
+  const shown = value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''
+  const set = (n: number) => { if (n <= 9_999_999_999) onChange(n) }
   return (
     <div>
       <label htmlFor="amount" className="label-caps mb-2 block text-center">{label}</label>
-      <div className={cx('flex items-baseline justify-center gap-1 border-b-2 pb-2', error ? 'border-danger' : 'border-line')}>
+      <div className={cx('flex items-start justify-center border-b-2 pb-2', error ? 'border-danger' : 'border-line')}>
         <input
-          id="amount" autoFocus={autoFocus} inputMode="numeric" autoComplete="off" placeholder="0"
-          value={value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''}
-          onChange={(e) => { const n = parseVndInput(e.target.value); if (n <= 9_999_999_999) onChange(n) }}
+          id="amount" autoFocus={autoFocus && layout === 'web'} autoComplete="off" placeholder="0"
+          // App: the wallet keypad below types; the system keyboard stays down. Web: the physical keyboard.
+          inputMode={layout === 'app' ? 'none' : 'numeric'}
+          value={shown}
+          onChange={(e) => set(parseVndInput(e.target.value))}
           aria-invalid={!!error || undefined}
           aria-describedby="amount-msg"
-          className="amount-display w-full min-w-0 bg-transparent text-center outline-none placeholder:text-line"
+          style={{ width: `${Math.max(1, shown.length || 1) * 0.62 + 0.2}em` }}
+          className="amount-display max-w-full min-w-0 bg-transparent text-center outline-none placeholder:text-muted"
         />
-        <span className="text-[18px] font-semibold text-muted" aria-hidden>₫</span>
+        <span className="mt-1 ml-0.5 text-[18px] leading-6 font-semibold text-muted" aria-hidden>₫</span>
       </div>
       <p id="amount-msg" role={error ? 'alert' : undefined} className={cx('mt-2 min-h-5 text-center text-[13px] leading-5', error ? 'text-danger' : 'text-muted')}>{error ?? hint}</p>
       {quick.length ? (
@@ -154,6 +160,33 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
           ))}
         </div>
       ) : null}
+      {layout === 'app' ? <Keypad value={value} onChange={set} /> : null}
+    </div>
+  )
+}
+
+/** Wallet keypad (app layout): lavender keys on a violet panel, with 000 for đồng amounts. */
+export function Keypad({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const press = (k: string) => {
+    if (k === 'del') return onChange(Math.floor(value / 10))
+    const next = Number(String(value || '') + k)
+    onChange(Number.isFinite(next) ? next : value)
+  }
+  const KEYS: [string, string][] = [['1', ''], ['2', 'ABC'], ['3', 'DEF'], ['4', 'GHI'], ['5', 'JKL'], ['6', 'MNO'], ['7', 'PQRS'], ['8', 'TUV'], ['9', 'WXYZ'], ['000', ''], ['0', ''], ['del', '']]
+  return (
+    <div className="-mx-5 mt-6 rounded-[28px] bg-gradient-to-b from-sky-from to-sky-to px-3 pt-3 pb-3">
+      <div className="grid grid-cols-3 gap-2" role="group" aria-label="Bàn phím số">
+        {KEYS.map(([k, sub]) => (
+          <button
+            key={k} type="button" onClick={() => press(k)}
+            aria-label={k === 'del' ? 'Xóa một chữ số' : k === '000' ? 'Ba số không' : k}
+            className="flex h-14 flex-col items-center justify-center rounded-[14px] bg-[#efeaff] text-ink shadow-[0_1px_0_rgb(28_24_64/0.18)] active:bg-white"
+          >
+            {k === 'del' ? <Delete size={24} strokeWidth={1.75} aria-hidden /> : <span className="text-[24px] leading-7 font-medium tnum">{k}</span>}
+            {sub ? <span aria-hidden className="text-[10px] leading-3 font-semibold tracking-[0.18em]">{sub}</span> : null}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

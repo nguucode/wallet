@@ -28,7 +28,7 @@ export function SourcePicker({ label, value, onChange }: { label: string; value?
   return (
     <div className="mb-6">
       <p id="source-label" className="mb-1.5 text-[13px] font-medium">{label}</p>
-      <button type="button" aria-describedby="source-label" onClick={() => setOpen(true)} className="flex min-h-[64px] w-full items-center gap-3 card px-4 py-2 hover:bg-surface-2">
+      <button type="button" aria-describedby="source-label" onClick={() => setOpen(true)} className="flex min-h-[64px] w-full items-center gap-3 rounded-[16px] bg-surface-2 px-4 py-2 hover:bg-primary-soft">
         <span id="source-current" className="contents"><SourceLine s={current} /></span>
         <ChevronDown size={20} strokeWidth={1.75} aria-hidden className="text-muted" />
       </button>

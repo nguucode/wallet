@@ -41,7 +41,7 @@ function SideLink({ item }: { item: NavItem }) {
     <NavLink
       to={item.route!}
       aria-current={active ? 'page' : undefined}
-      className={cx('flex h-11 items-center gap-3 rounded-full px-4 text-[15px] no-underline', active ? 'bg-primary-soft font-semibold text-primary-ink' : 'text-ink hover:bg-surface-2')}
+      className={cx('flex h-11 items-center gap-3 rounded-full px-4 text-[15px] no-underline', active ? 'bg-surface font-semibold text-primary-ink shadow-[var(--shadow-card)]' : 'text-ink hover:bg-surface/70')}
     >
       <Icon size={20} strokeWidth={1.75} aria-hidden />
       {item.label}
@@ -87,7 +87,7 @@ function WebShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-dvh">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white">Bỏ qua điều hướng</a>
-      <aside className="sticky top-0 z-40 flex h-dvh w-[240px] shrink-0 flex-col bg-surface px-3 py-5 shadow-[1px_0_0_var(--color-line-soft)]">
+      <aside className="sticky top-0 z-40 flex h-dvh w-[240px] shrink-0 flex-col bg-surface-2 px-3 py-5">
         <Link to="/home" className="mb-6 flex items-center gap-2 px-4 text-[20px] font-extrabold tracking-tight text-ink no-underline" aria-label="Wallet, về Trang chủ">
           <span aria-hidden className="sky inline-flex size-8 items-center justify-center rounded-[10px] text-white"><Wallet size={18} strokeWidth={2} /></span>
           Wallet
@@ -117,7 +117,7 @@ function WebShell({ children }: { children: ReactNode }) {
           <span aria-hidden className="mx-2 h-6 w-px bg-white/30" />
           <AccountMenu />
         </header>
-        <main id="main" className="relative w-full max-w-[768px] flex-1 px-12 pt-4 pb-24">{children}</main>
+        <main id="main" className="relative mx-auto w-full max-w-[768px] flex-1 px-12 pt-4 pb-24">{children}</main>
       </div>
     </div>
   )
@@ -161,12 +161,20 @@ function TabBar() {
 
 export function AppHeader({ title, back, right, centered }: { title: string; back?: boolean | string; right?: ReactNode; centered?: boolean }) {
   const nav = useNavigate()
+  // Transparent over the sky so band and header read as one; solid once content scrolls under it.
+  const [solid, setSolid] = useState(false)
+  useEffect(() => {
+    const on = () => setSolid(window.scrollY > 8)
+    on()
+    window.addEventListener('scroll', on, { passive: true })
+    return () => window.removeEventListener('scroll', on)
+  }, [])
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-1 bg-sky-from px-2 text-white">
+    <header className={cx('sticky top-0 z-30 flex h-14 items-center gap-1 px-2 text-white transition-colors duration-200', solid ? 'bg-sky-from' : 'bg-transparent')}>
       {back ? (
         <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={() => (typeof back === 'string' ? nav(back) : nav(-1))}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton>
       ) : <span className="w-3" />}
-      {centered ? <p className="pointer-events-none absolute inset-x-0 text-center text-[22px] font-bold tracking-tight">{title}</p> : null}
+      {centered ? <p className={cx('pointer-events-none absolute inset-x-14 truncate text-center font-bold tracking-tight', title === 'Wallet' ? 'text-[22px]' : 'text-[17px]')}>{title}</p> : null}
       <p className={cx('flex-1 truncate text-[17px] font-bold', centered && 'invisible')} aria-hidden={centered || undefined}>{centered ? '' : title}</p>
       {right}
     </header>
@@ -183,7 +191,7 @@ function AppShell({ children }: { children: ReactNode }) {
       <AppHeader
         title={root && pathname === '/home' ? 'Wallet' : s?.title ?? 'Wallet'}
         back={!root}
-        centered={pathname === '/home'}
+        centered
         right={<div className="flex items-center gap-1 pr-1"><SampleBadge onSky /><DemoControlsButton compact onSky /></div>}
       />
       <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[276px]" />

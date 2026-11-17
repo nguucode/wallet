@@ -160,9 +160,9 @@ function AppList({ groups, w, onOpen }: { groups: Group[]; w: World; onOpen: (id
   return (
     <div>
       {groups.map((g) => (
-        <section key={g.key} aria-label={g.label} className="mt-5 first:mt-2">
-          <h2 className="label-caps mb-2 px-1">{g.label}</h2>
-          <ul className="card divide-y divide-line-soft px-4">
+        <section key={g.key} aria-label={g.label} className="card mt-4 px-4 pt-4 first:mt-2">
+          <h2 className="label-caps">{g.label}</h2>
+          <ul className="divide-y divide-line-soft">
             {g.rows.map((t) => {
               const name = counterpartyName(t.counterparty, w)
               return (

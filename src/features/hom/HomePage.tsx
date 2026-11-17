@@ -90,7 +90,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
           <LineChart
             values={series}
             label={`Số dư 30 ngày qua, từ ${formatVnd(series[0])} đến ${formatVnd(series[series.length - 1])}`}
-            endTag={delta ? `${delta > 0 ? '+' : '−'}${formatVnd(Math.abs(delta)).replace(' ₫', '')} ₫` : undefined}
+            endTag={delta ? `${delta > 0 ? '+' : '−'}${(Math.abs(delta) / 1_000_000).toLocaleString('vi-VN', { maximumFractionDigits: 2 })}tr · 30 ngày` : undefined}
             className="px-1 pt-6"
             wide={layout === 'web'}
           />
@@ -129,7 +129,7 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
               <span className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-primary-ink group-hover:bg-primary-soft group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-primary">
                 <s.icon size={24} strokeWidth={1.75} aria-hidden />
               </span>
-              <span className="px-0.5 text-[11px] leading-[14px] font-semibold lg:text-[12px] lg:leading-4">{s.label}</span>
+              <span className="px-0.5 text-[11px] leading-[14px] font-semibold lg:text-[12px] lg:leading-4 lg:whitespace-nowrap">{s.label}</span>
             </Link>
           </li>
         ))}

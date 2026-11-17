@@ -159,11 +159,11 @@ function Action({ label, icon, onClick, to }: { label: string; icon: ReactNode; 
   if (layout === 'web') return to ? <ButtonLink to={to} variant="secondary">{icon}{label}</ButtonLink> : <Button variant="secondary" onClick={onClick}>{icon}{label}</Button>
   const inner = (
     <>
-      <span aria-hidden className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2">{icon}</span>
-      <span className="text-[13px] leading-[18px] font-medium">{label}</span>
+      <span aria-hidden className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-primary-ink">{icon}</span>
+      <span className="text-[12px] leading-4 font-semibold whitespace-nowrap">{label}</span>
     </>
   )
-  const cls = 'flex w-20 flex-col items-center gap-1.5 text-ink no-underline'
+  const cls = 'flex min-w-20 flex-col items-center gap-1.5 text-ink no-underline'
   return to ? <Link to={to} className={cls}>{inner}</Link> : <button type="button" onClick={onClick} className={cls}>{inner}</button>
 }
 
@@ -200,7 +200,7 @@ export default function TransactionPage() {
   const ic = { size: 20, strokeWidth: 1.75, 'aria-hidden': true } as const
 
   const actions = (
-    <div className={cx('flex gap-2', layout === 'web' ? 'flex-wrap' : 'justify-start gap-4')}>
+    <div className={cx('flex gap-2', layout === 'web' ? 'flex-wrap' : 'card justify-around px-2 py-4')}>
       {t.status !== 'failed' ? <Action label="Biên lai" icon={<FileText {...ic} />} to={`/history/${t.id}?view=receipt`} /> : null}
       {!request ? <Action label="Liên hệ hỗ trợ" icon={<LifeBuoy {...ic} />} to={supportTo} /> : null}
       {resendTo ? <Action label="Chuyển lại" icon={<Repeat {...ic} />} onClick={() => guard(resendTo)} /> : null}
@@ -231,11 +231,11 @@ export default function TransactionPage() {
           <Money amount={rowAmount(t)} sign={t.direction} />
         </p>
         <StatusPill status={t.status} />
-        <span className="text-[14px] text-muted">{truthLine(t)}</span>
+        <span className="text-[14px] text-muted">{t.status === 'success' ? fmtDateTime(t.updatedAt) : truthLine(t)}</span>
       </header>
 
       <div className="mt-6 flex flex-col gap-4">
-        <Timeline steps={timelineSteps(t, refundTx)} />
+        {timelineSteps(t, refundTx).length > 1 ? <Timeline steps={timelineSteps(t, refundTx)} /> : null}
 
         {refundTx ? (
           <Link to={`/history/${refundTx.id}`} className="flex min-h-12 items-center justify-between gap-3 card px-4 py-3 text-ink no-underline hover:bg-surface-2">
@@ -256,7 +256,7 @@ export default function TransactionPage() {
           ['Mã giao dịch', (
             <span className="inline-flex items-center gap-1">
               <span className="tnum">{t.id}</span>
-              <button type="button" onClick={copyId} className="-my-2 inline-flex h-11 items-center gap-1 rounded-full px-2 text-[13px] font-semibold text-primary hover:bg-primary-soft"><Copy size={14} strokeWidth={1.75} aria-hidden />Sao chép</button>
+              <button type="button" onClick={copyId} className="-my-2 inline-flex h-11 items-center gap-1 rounded-full px-2 text-[13px] font-semibold whitespace-nowrap text-primary hover:bg-primary-soft"><Copy size={14} strokeWidth={1.75} aria-hidden />Sao chép</button>
             </span>
           )],
           ...detailRows(t, w),

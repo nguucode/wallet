@@ -62,9 +62,9 @@ export default function NotificationsPage() {
           <EmptyState icon={<BellOff size={22} strokeWidth={1.75} />} title={view.empty} />
         ) : (
           groups.map((g) => (
-            <section key={g.label} aria-label={g.label} className="mt-5 first:mt-2">
-              <h2 className="label-caps mb-2 px-1">{g.label}</h2>
-              <ul className="card divide-y divide-line-soft px-4">
+            <section key={g.label} aria-label={g.label} className="card mt-4 px-4 pt-4 first:mt-2">
+              <h2 className="label-caps">{g.label}</h2>
+              <ul className="divide-y divide-line-soft">
                 {g.items.map((n) => {
                   const Icon = ICON[n.kind]
                   return (
