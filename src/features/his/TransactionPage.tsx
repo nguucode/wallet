@@ -256,7 +256,7 @@ export default function TransactionPage() {
           ['Mã giao dịch', (
             <span className="inline-flex items-center gap-1">
               <span className="tnum">{t.id}</span>
-              <button type="button" onClick={copyId} className="-my-2 inline-flex h-11 items-center gap-1 rounded-full px-2 text-[13px] font-semibold whitespace-nowrap text-primary hover:bg-primary-soft"><Copy size={14} strokeWidth={1.75} aria-hidden />Sao chép</button>
+              <button type="button" onClick={copyId} aria-label="Sao chép mã giao dịch" title="Sao chép" className="-my-2 -mr-2 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-primary hover:bg-primary-soft"><Copy size={18} strokeWidth={1.75} aria-hidden /></button>
             </span>
           )],
           ...detailRows(t, w),

@@ -83,15 +83,16 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
       </div>
     )
   return (
-    <div className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-1 bg-sky-from px-2 text-white">
-        {onBack ? <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={onBack}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton> : <span className="w-3" />}
-        <h1 tabIndex={-1} data-page-title className="flex-1 truncate text-[17px] font-bold outline-none">{title}</h1>
-        {onClose ? <IconButton label="Đóng" className="text-white hover:bg-white/15" onClick={onClose}><X size={22} strokeWidth={1.75} /></IconButton> : null}
+    <div className="relative flex min-h-dvh flex-col">
+      <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[240px]" />
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-1 bg-sky-from/95 px-2 text-white backdrop-blur-sm">
+        {onBack ? <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={onBack}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton> : <span className="w-11" />}
+        <h1 tabIndex={-1} data-page-title className="flex-1 truncate text-center text-[17px] font-bold outline-none">{title}</h1>
+        {onClose ? <IconButton label="Đóng" className="text-white hover:bg-white/15" onClick={onClose}><X size={22} strokeWidth={1.75} /></IconButton> : <span className="w-11" />}
       </header>
-      <main id="main" className="mx-auto w-full max-w-[560px] flex-1 px-5 pt-2 pb-6">
-        {description ? <p className="mb-5 text-muted">{description}</p> : null}
-        {children}
+      <main id="main" className="relative mx-auto w-full max-w-[560px] flex-1 px-4 pt-2 pb-6">
+        {description ? <p className="mb-4 px-1 text-white/90">{description}</p> : null}
+        <div className="card overflow-hidden p-5">{children}</div>
       </main>
       {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 rounded-t-[24px] bg-surface px-5 shadow-[0_-8px_24px_-12px_rgb(28_24_64/0.18)] pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</div> : null}
     </div>
@@ -172,18 +173,17 @@ export function Keypad({ value, onChange }: { value: number; onChange: (n: numbe
     const next = Number(String(value || '') + k)
     onChange(Number.isFinite(next) ? next : value)
   }
-  const KEYS: [string, string][] = [['1', ''], ['2', 'ABC'], ['3', 'DEF'], ['4', 'GHI'], ['5', 'JKL'], ['6', 'MNO'], ['7', 'PQRS'], ['8', 'TUV'], ['9', 'WXYZ'], ['000', ''], ['0', ''], ['del', '']]
+  const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '000', '0', 'del']
   return (
     <div className="-mx-5 mt-6 rounded-[28px] bg-gradient-to-b from-sky-from to-sky-to px-3 pt-3 pb-3">
       <div className="grid grid-cols-3 gap-2" role="group" aria-label="Bàn phím số">
-        {KEYS.map(([k, sub]) => (
+        {KEYS.map((k) => (
           <button
             key={k} type="button" onClick={() => press(k)}
             aria-label={k === 'del' ? 'Xóa một chữ số' : k === '000' ? 'Ba số không' : k}
-            className="flex h-14 flex-col items-center justify-center rounded-[14px] bg-[#efeaff] text-ink shadow-[0_1px_0_rgb(28_24_64/0.18)] active:bg-white"
+            className="flex h-14 items-center justify-center rounded-[14px] bg-[#efeaff] text-ink shadow-[0_1px_0_rgb(28_24_64/0.18)] active:bg-white"
           >
             {k === 'del' ? <Delete size={24} strokeWidth={1.75} aria-hidden /> : <span className="text-[24px] leading-7 font-medium tnum">{k}</span>}
-            {sub ? <span aria-hidden className="text-[10px] leading-3 font-semibold tracking-[0.18em]">{sub}</span> : null}
           </button>
         ))}
       </div>

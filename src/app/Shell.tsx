@@ -13,8 +13,12 @@ const ICONS: Record<string, typeof Home> = {
   bills: FileText, sources: Landmark, limits: Gauge, security: ShieldCheck, profile: User, support: HelpCircle, device: Smartphone,
 }
 
-export function SampleBadge({ className, onSky }: { className?: string; onSky?: boolean }) {
-  return <span className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[11px] font-bold tracking-[0.04em] uppercase', onSky ? 'bg-white/15 text-white' : 'bg-surface-2 text-primary-ink', className)}>Dữ liệu mẫu</span>
+export function SampleBadge({ className, onSky, compact }: { className?: string; onSky?: boolean; compact?: boolean }) {
+  return (
+    <span title="Dữ liệu mẫu" className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[11px] font-bold tracking-[0.04em] whitespace-nowrap uppercase', onSky ? 'bg-white/15 text-white' : 'bg-surface-2 text-primary-ink', className)}>
+      {compact ? <><span aria-hidden>Mẫu</span><span className="sr-only">Dữ liệu mẫu</span></> : 'Dữ liệu mẫu'}
+    </span>
+  )
 }
 
 /** Moves focus to the page h1 and updates the document title on route change (a11y). */
@@ -174,7 +178,7 @@ export function AppHeader({ title, back, right, centered }: { title: string; bac
       {back ? (
         <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={() => (typeof back === 'string' ? nav(back) : nav(-1))}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton>
       ) : <span className="w-3" />}
-      {centered ? <p className={cx('pointer-events-none absolute inset-x-14 truncate text-center font-bold tracking-tight', title === 'Wallet' ? 'text-[22px]' : 'text-[17px]')}>{title}</p> : null}
+      {centered ? <p className={cx('pointer-events-none absolute inset-x-[100px] truncate text-center font-bold tracking-tight', title === 'Wallet' ? 'text-[22px]' : 'text-[17px]')}>{title}</p> : null}
       <p className={cx('flex-1 truncate text-[17px] font-bold', centered && 'invisible')} aria-hidden={centered || undefined}>{centered ? '' : title}</p>
       {right}
     </header>
@@ -192,7 +196,7 @@ function AppShell({ children }: { children: ReactNode }) {
         title={root && pathname === '/home' ? 'Wallet' : s?.title ?? 'Wallet'}
         back={!root}
         centered
-        right={<div className="flex items-center gap-1 pr-1"><SampleBadge onSky /><DemoControlsButton compact onSky /></div>}
+        right={<div className="flex items-center gap-0.5"><SampleBadge onSky compact /><DemoControlsButton compact onSky /></div>}
       />
       <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[276px]" />
       <main id="main" className="relative mx-auto w-full max-w-[560px] px-5 pt-3 pb-28">{children}</main>
