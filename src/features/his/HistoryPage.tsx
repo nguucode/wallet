@@ -64,24 +64,24 @@ function RowStatus({ t, web }: { t: Transaction; web?: boolean }) {
 }
 
 function Filters({ f, set, months }: { f: HistoryFilter; set: (k: keyof HistoryFilter, v?: string) => void; months: string[] }) {
-  const sel = 'h-11 rounded-[12px] border border-line bg-surface px-3 text-[14px]'
+  const sel = 'text-ink h-11 rounded-[12px] border border-line bg-surface px-3 text-[14px]'
   return (
     <>
-      <label className="flex flex-col gap-1 text-[13px] font-medium">
+      <label className="flex flex-col gap-1 text-[13px] font-semibold lg:text-white">
         Tháng
         <select className={sel} value={f.month ?? ''} onChange={(e) => set('month', e.target.value)}>
           <option value="">Tất cả các tháng</option>
           {months.map((m) => <option key={m} value={m}>{monthLabel(m)}</option>)}
         </select>
       </label>
-      <label className="flex flex-col gap-1 text-[13px] font-medium">
+      <label className="flex flex-col gap-1 text-[13px] font-semibold lg:text-white">
         Loại giao dịch
         <select className={sel} value={f.type ?? ''} onChange={(e) => set('type', e.target.value)}>
           <option value="">Tất cả loại</option>
           {TYPES.map((t) => <option key={t} value={t}>{typeLabel(t)}</option>)}
         </select>
       </label>
-      <label className="flex flex-col gap-1 text-[13px] font-medium">
+      <label className="flex flex-col gap-1 text-[13px] font-semibold lg:text-white">
         Trạng thái
         <select className={sel} value={f.status ?? ''} onChange={(e) => set('status', e.target.value)}>
           <option value="">Tất cả trạng thái</option>
@@ -106,10 +106,11 @@ function take(groups: Group[], count: number) {
 
 function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w: World; onOpen: (id: string) => void }) {
   return (
+    <div className="card overflow-hidden px-2 pb-2">
     <table className="w-full border-collapse text-left">
       <caption className="sr-only">Lịch sử giao dịch, mới nhất trước, nhóm theo tháng</caption>
       <thead>
-        <tr className="border-b border-line text-[13px] text-muted">
+        <tr className="border-b border-line-soft text-[12px] tracking-[0.05em] text-muted uppercase">
           <th scope="col" className="w-[120px] py-2 pr-4 font-medium">Ngày</th>
           <th scope="col" className="py-2 pr-4 font-medium">Giao dịch</th>
           <th scope="col" className="w-[170px] py-2 pr-4 font-medium">Trạng thái</th>
@@ -121,14 +122,14 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
         return (
           <tbody key={g.key}>
             <tr>
-              <th scope="colgroup" colSpan={4} className="sticky top-16 z-10 bg-surface-2 px-3 py-2 text-[13px] font-semibold">
+              <th scope="colgroup" colSpan={4} className="bg-surface px-3 pt-5 pb-2 text-[12px] font-bold tracking-[0.05em] text-muted uppercase">
                 {g.label} · Vào <span className="tnum text-success">{formatVnd(tot.in, { sign: 'in' })}</span> · Ra <span className="tnum">{formatVnd(tot.out, { sign: 'out' })}</span>
               </th>
             </tr>
             {g.rows.map((t) => {
               const name = counterpartyName(t.counterparty, w)
               return (
-                <tr key={t.id} onClick={() => onOpen(t.id)} className="cursor-pointer border-b border-line-soft hover:bg-surface-2">
+                <tr key={t.id} onClick={() => onOpen(t.id)} className="cursor-pointer border-b border-line-soft last:border-0 hover:bg-surface-2/70">
                   <td className="py-3 pr-4 align-middle text-[13px] tnum">
                     <span className="block">{fmtDate(t.createdAt)}</span>
                     <span className="block text-muted">{fmtTime(t.createdAt)}</span>
@@ -151,6 +152,7 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
         )
       })}
     </table>
+    </div>
   )
 }
 
@@ -158,9 +160,9 @@ function AppList({ groups, w, onOpen }: { groups: Group[]; w: World; onOpen: (id
   return (
     <div>
       {groups.map((g) => (
-        <section key={g.key} aria-label={g.label}>
-          <h2 className="sticky top-14 z-10 -mx-5 bg-surface-2 px-5 py-1.5 text-[13px] font-semibold">{g.label}</h2>
-          <ul className="divide-y divide-line-soft">
+        <section key={g.key} aria-label={g.label} className="mt-5 first:mt-2">
+          <h2 className="label-caps mb-2 px-1">{g.label}</h2>
+          <ul className="card divide-y divide-line-soft px-4">
             {g.rows.map((t) => {
               const name = counterpartyName(t.counterparty, w)
               return (
@@ -239,7 +241,7 @@ export default function HistoryPage() {
         {layout === 'web' ? (
           <div className="grid grid-cols-3 gap-3"><Filters f={f} set={set} months={months} /></div>
         ) : (
-          <button type="button" onClick={() => setSheet(true)} className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-line px-3 text-[13px] font-medium">
+          <button type="button" onClick={() => setSheet(true)} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-surface px-3 text-[13px] font-semibold text-primary-ink shadow-[var(--shadow-card)]">
             <SlidersHorizontal size={16} strokeWidth={1.75} aria-hidden />Bộ lọc
             {active.length ? <span className="min-w-5 rounded-full bg-primary px-1.5 text-[12px] leading-5 text-white tnum" aria-label={`${active.length} bộ lọc đang bật`}>{active.length}</span> : null}
           </button>

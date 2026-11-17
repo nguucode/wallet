@@ -124,7 +124,7 @@ export default function SupportNewFlow() {
       {lockedNote}
       <fieldset disabled={locked}>
         <legend className="mb-3 font-semibold">Bạn gặp vấn đề gì?</legend>
-        <div className="divide-y divide-line-soft rounded-[16px] border border-line">
+        <div className="divide-y divide-line-soft card">
           {reasons.map((r) => (
             <label key={r} className="flex min-h-12 cursor-pointer items-center gap-3 px-4 py-3 has-disabled:cursor-not-allowed">
               <input type="radio" name="reason" value={r} checked={draft.reason === r} onChange={() => flow.setDraft({ ...draft, reason: r })} className="size-5 accent-primary" />

@@ -38,17 +38,17 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
       />
       <button type="button" onClick={() => inputRef.current?.focus()} aria-hidden tabIndex={-1} className={cx('mx-auto flex gap-4 py-3', shake && 'animate-[pulse_300ms]')}>
         {Array.from({ length }, (_, i) => (
-          <span key={i} className={cx('size-3.5 rounded-full border-2', i < pin.length ? 'border-ink bg-ink' : 'border-line')} />
+          <span key={i} className={cx('size-3.5 rounded-full border-2 transition-colors', i < pin.length ? 'border-primary bg-primary' : 'border-line')} />
         ))}
       </button>
       <p id="pin-error" role="alert" className="min-h-5 text-center text-[13px] leading-5 text-danger">{error}</p>
-      <div className="mx-auto mt-2 grid max-w-[300px] grid-cols-3 gap-2" aria-hidden>
+      <div className="mx-auto mt-2 grid max-w-[320px] grid-cols-3 gap-2 rounded-[24px] bg-primary-soft/60 p-2" aria-hidden>
         {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'].map((k) =>
           k === '' ? <span key="blank" /> : (
             <button
               key={k} type="button" tabIndex={-1} disabled={disabled}
               onClick={() => (k === 'del' ? setPin((p) => p.slice(0, -1)) : push(k))}
-              className="flex h-14 items-center justify-center rounded-full text-[22px] font-semibold hover:bg-surface-2 active:bg-line-soft disabled:opacity-40"
+              className="flex h-14 items-center justify-center rounded-[16px] bg-surface-2 text-[24px] font-semibold text-ink hover:bg-primary-soft active:bg-[#ddd3ff] disabled:opacity-40"
             >
               {k === 'del' ? <Delete size={22} strokeWidth={1.75} /> : k}
             </button>

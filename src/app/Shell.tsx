@@ -13,8 +13,8 @@ const ICONS: Record<string, typeof Home> = {
   bills: FileText, sources: Landmark, limits: Gauge, security: ShieldCheck, profile: User, support: HelpCircle, device: Smartphone,
 }
 
-export function SampleBadge({ className }: { className?: string }) {
-  return <span className={cx('inline-flex h-6 items-center rounded-full border border-line bg-surface px-2.5 text-[12px] font-medium text-muted', className)}>Dữ liệu mẫu</span>
+export function SampleBadge({ className, onSky }: { className?: string; onSky?: boolean }) {
+  return <span className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[11px] font-bold tracking-[0.04em] uppercase', onSky ? 'bg-white/15 text-white' : 'bg-surface-2 text-primary-ink', className)}>Dữ liệu mẫu</span>
 }
 
 /** Moves focus to the page h1 and updates the document title on route change (a11y). */
@@ -41,7 +41,7 @@ function SideLink({ item }: { item: NavItem }) {
     <NavLink
       to={item.route!}
       aria-current={active ? 'page' : undefined}
-      className={cx('flex h-11 items-center gap-3 rounded-full px-4 text-[15px] no-underline', active ? 'bg-primary-soft font-semibold text-primary-ink' : 'text-ink hover:bg-line-soft')}
+      className={cx('flex h-11 items-center gap-3 rounded-full px-4 text-[15px] no-underline', active ? 'bg-primary-soft font-semibold text-primary-ink' : 'text-ink hover:bg-surface-2')}
     >
       <Icon size={20} strokeWidth={1.75} aria-hidden />
       {item.label}
@@ -57,13 +57,13 @@ function AccountMenu() {
     <>
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
-          <button className="inline-flex size-10 items-center justify-center rounded-full bg-primary text-[13px] font-semibold text-white">
+          <button className="inline-flex size-10 items-center justify-center rounded-full bg-white text-[13px] font-bold text-primary-ink">
             <span aria-hidden>{w.customer.name.split(' ').slice(-2).map((p) => p[0]).join('')}</span>
             <span className="sr-only">Tài khoản</span>
           </button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
-          <DropdownMenu.Content align="end" sideOffset={8} className="z-50 min-w-[220px] rounded-[16px] border border-line bg-surface p-2 shadow-[var(--shadow-float)]">
+          <DropdownMenu.Content align="end" sideOffset={8} className="z-50 min-w-[220px] card p-2 shadow-[var(--shadow-float)]">
             <div className="px-3 py-2">
               <p className="font-semibold">{w.customer.name}</p>
               <p className="text-[13px] text-muted">Số ví {w.customer.walletNumber}</p>
@@ -87,16 +87,16 @@ function WebShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-dvh">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white">Bỏ qua điều hướng</a>
-      <aside className="sticky top-0 flex h-dvh w-[232px] shrink-0 flex-col bg-surface-2 px-3 py-5">
+      <aside className="sticky top-0 z-40 flex h-dvh w-[240px] shrink-0 flex-col bg-surface px-3 py-5 shadow-[1px_0_0_var(--color-line-soft)]">
         <Link to="/home" className="mb-6 flex items-center gap-2 px-4 text-[20px] font-extrabold tracking-tight text-ink no-underline" aria-label="Wallet, về Trang chủ">
-          <span aria-hidden className="inline-flex size-8 items-center justify-center rounded-[10px] bg-ink text-white"><Wallet size={18} strokeWidth={2} /></span>
+          <span aria-hidden className="sky inline-flex size-8 items-center justify-center rounded-[10px] text-white"><Wallet size={18} strokeWidth={2} /></span>
           Wallet
         </Link>
         <nav aria-label="Điều hướng chính" className="flex flex-1 flex-col gap-1 overflow-y-auto">
           {sidebar.map((x) =>
             'group' in x ? (
               <div key={x.group} className="mt-4">
-                <p className="mb-1 px-4 text-[12px] font-semibold text-muted">{x.group}</p>
+                <p className="mb-1 px-4 text-[11px] font-bold tracking-[0.06em] text-muted uppercase">{x.group}</p>
                 {x.items.map((i) => <SideLink key={i.id} item={i} />)}
               </div>
             ) : (
@@ -106,17 +106,18 @@ function WebShell({ children }: { children: ReactNode }) {
         </nav>
         <SampleBadge className="mx-4 mt-4 self-start" />
       </aside>
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-end gap-2 border-b border-line-soft bg-surface/95 px-8 backdrop-blur-sm">
-          <Link to="/notifications" aria-label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} className="relative inline-flex size-11 items-center justify-center rounded-full text-ink hover:bg-surface-2">
+      <div className="relative flex min-w-0 flex-1 flex-col">
+        <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[300px]" />
+        <header className="relative z-30 flex h-16 items-center justify-end gap-2 px-8 text-white">
+          <Link to="/notifications" aria-label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} className="relative inline-flex size-11 items-center justify-center rounded-full text-white hover:bg-white/15">
             <Bell size={20} strokeWidth={1.75} aria-hidden />
-            {unread ? <span className="absolute top-1.5 right-1 min-w-[18px] rounded-full bg-ink px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum">{unread > 9 ? '9+' : unread}</span> : null}
+            {unread ? <span className="absolute top-1.5 right-1 min-w-[18px] rounded-full bg-white px-1 text-center text-[11px] leading-[18px] font-bold text-primary-ink tnum">{unread > 9 ? '9+' : unread}</span> : null}
           </Link>
           <DemoControlsButton />
-          <span aria-hidden className="mx-2 h-6 w-px bg-line" />
+          <span aria-hidden className="mx-2 h-6 w-px bg-white/30" />
           <AccountMenu />
         </header>
-        <main id="main" className="w-full max-w-[768px] flex-1 px-12 pt-10 pb-24">{children}</main>
+        <main id="main" className="relative w-full max-w-[768px] flex-1 px-12 pt-4 pb-24">{children}</main>
       </div>
     </div>
   )
@@ -129,7 +130,7 @@ function TabBar() {
   const w = useWorld()
   const unread = unreadCount(w)
   return (
-    <nav aria-label="Điều hướng chính" className="fixed inset-x-0 bottom-0 z-30 border-t border-line-soft bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-sm">
+    <nav aria-label="Điều hướng chính" className="fixed inset-x-0 bottom-0 z-30 bg-surface pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-12px_rgb(28_24_64/0.18)]">
       <ul className="mx-auto grid h-16 max-w-[560px] grid-cols-5">
         {tabBar.map((t) => {
           const Icon = ICONS[t.id] ?? Wallet
@@ -138,7 +139,7 @@ function TabBar() {
             return (
               <li key={t.id} className="flex justify-center">
                 <Link to={t.route!} aria-label={t.label} aria-current={active ? 'page' : undefined} className="-mt-5 flex flex-col items-center gap-1 no-underline">
-                  <span className="inline-flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-[var(--shadow-float)]"><Icon size={26} strokeWidth={2} aria-hidden /></span>
+                  <span className="sky inline-flex size-14 items-center justify-center rounded-full text-white shadow-[var(--shadow-float)] ring-4 ring-surface"><Icon size={26} strokeWidth={2} aria-hidden /></span>
                   <span className="text-[11px] leading-3 font-semibold text-ink">{t.label}</span>
                 </Link>
               </li>
@@ -158,14 +159,15 @@ function TabBar() {
   )
 }
 
-export function AppHeader({ title, back, right }: { title: string; back?: boolean | string; right?: ReactNode }) {
+export function AppHeader({ title, back, right, centered }: { title: string; back?: boolean | string; right?: ReactNode; centered?: boolean }) {
   const nav = useNavigate()
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-1 bg-surface/95 px-2 backdrop-blur-sm">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-1 bg-sky-from px-2 text-white">
       {back ? (
-        <IconButton label="Quay lại" onClick={() => (typeof back === 'string' ? nav(back) : nav(-1))}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton>
+        <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={() => (typeof back === 'string' ? nav(back) : nav(-1))}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton>
       ) : <span className="w-3" />}
-      <p className="flex-1 truncate text-[17px] font-bold">{title}</p>
+      {centered ? <p className="pointer-events-none absolute inset-x-0 text-center text-[22px] font-bold tracking-tight">{title}</p> : null}
+      <p className={cx('flex-1 truncate text-[17px] font-bold', centered && 'invisible')} aria-hidden={centered || undefined}>{centered ? '' : title}</p>
       {right}
     </header>
   )
@@ -176,14 +178,16 @@ function AppShell({ children }: { children: ReactNode }) {
   const s = screenFor(pathname)
   const root = isTabRoot(pathname)
   return (
-    <div className="min-h-dvh">
+    <div className="relative min-h-dvh">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white">Bỏ qua điều hướng</a>
       <AppHeader
         title={root && pathname === '/home' ? 'Wallet' : s?.title ?? 'Wallet'}
         back={!root}
-        right={<div className="flex items-center gap-1 pr-1"><SampleBadge /><DemoControlsButton compact /></div>}
+        centered={pathname === '/home'}
+        right={<div className="flex items-center gap-1 pr-1"><SampleBadge onSky /><DemoControlsButton compact onSky /></div>}
       />
-      <main id="main" className="mx-auto w-full max-w-[560px] px-5 pt-2 pb-28">{children}</main>
+      <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[276px]" />
+      <main id="main" className="relative mx-auto w-full max-w-[560px] px-5 pt-3 pb-28">{children}</main>
       <TabBar />
     </div>
   )

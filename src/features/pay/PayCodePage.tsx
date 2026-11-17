@@ -131,7 +131,7 @@ function PayCode() {
   const urgent = remaining <= 10
 
   const banner = blocked ? (
-    <div role="alert" className="mb-4 rounded-[16px] border border-line p-4">
+    <div role="alert" className="mb-4 card p-4">
       <p className="font-semibold">
         {blocked.kind === 'balance' && `Chưa thanh toán: số dư khả dụng không đủ cho ${formatVnd(blocked.amount)}. Chọn nguồn tiền khác hoặc nạp tiền.`}
         {blocked.kind === 'limit' && `Chưa thanh toán: ${formatVnd(blocked.amount)} vượt hạn mức tháng.`}
@@ -189,7 +189,7 @@ function PayCode() {
           <p className="mt-4 text-[13px] text-muted">Thu ngân quét mã này để trừ tiền. Không chia sẻ mã với người khác. <Link to="/pay/scan" className="font-medium text-primary">Quét mã thay vì đưa mã</Link></p>
         </>
       ) : (
-        <p className="py-10 text-center text-muted">Xác thực để hiện mã thanh toán.</p>
+        <p className="card py-10 text-center text-muted">Xác thực để hiện mã thanh toán.</p>
       )}
 
       <AuthSheet

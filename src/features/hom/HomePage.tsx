@@ -9,12 +9,13 @@ import {
 } from '@/app/store'
 import { formatVnd } from '@/domain/money'
 import type { Transaction } from '@/mock/seed'
-import { Avatar, Button, Card, cx, Disc, IconButton, Section, Skeleton } from '@/components/ui'
+import { Avatar, Button, Card, cx, Disc, Dong, IconButton, Section, Skeleton } from '@/components/ui'
+import { LineChart } from '@/components/charts'
 import { fmtDate, fmtTime, maskAccount, maskPhone } from '@/features/flow/FlowKit'
 import { GateCallout, useGuard } from '@/features/sec/Gate'
 import { useLoaded } from '@/features/sec/kit'
 import { useReminders } from '@/features/ntf/useReminders'
-import { fmtYmd, selectBillsDue, selectRecentRecipients, shortName, vndWords } from './selectors'
+import { balanceSeries, fmtYmd, selectBillsDue, selectRecentRecipients, shortName, vndWords } from './selectors'
 
 type Guard = ReturnType<typeof useGuard>['guard']
 /** Link semantics, but a gated tap opens the gate sheet instead of navigating (US-SEC-004). */
@@ -33,12 +34,7 @@ export default function HomePage() {
   return (
     <div className="lg:max-w-[610px]">
       <h1 tabIndex={-1} data-page-title className="sr-only">Trang chủ</h1>
-      {layout === 'app' ? (
-        <Link to="/me" className="mb-4 flex items-center gap-3 text-ink no-underline">
-          <Avatar name={w.customer.name} size={40} />
-          <span className="font-semibold">{w.customer.name}</span>
-        </Link>
-      ) : null}
+      {layout === 'web' ? <p className="mb-5 text-[28px] leading-[36px] font-bold tracking-tight text-white" aria-hidden>Chào {shortName(w.customer.name)}</p> : null}
       <BalanceSection loaded={loaded} />
       <ShortcutsRow guard={guard} />
       {gate ? <section aria-label="Trạng thái ví" className="mt-8 lg:mt-12"><GateCallout gate={gate} /></section> : null}
@@ -61,31 +57,45 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
   const text = formatVnd(amount)
   // US-HOM-001 overflow: 12-character balances step down one token on the app layout.
   const size = layout === 'web' ? 'balance' : text.length > 11 ? 'amount-display' : 'balance-app'
+  const series = loaded ? balanceSeries(w, now()) : []
+  const delta = series.length ? series[series.length - 1] - series[0] : 0
   return (
-    <section aria-label="Số dư">
-      <div className="flex items-center gap-1">
-        <h2 className="text-[15px] leading-[22px] font-medium text-muted">Số dư khả dụng</h2>
-        <IconButton label={hidden ? 'Hiện số dư' : 'Ẩn số dư'} aria-pressed={hidden} className="size-12" onClick={() => setBalanceHidden(!hidden)}>
-          {hidden ? <EyeOff size={20} strokeWidth={1.75} aria-hidden /> : <Eye size={20} strokeWidth={1.75} aria-hidden />}
+    <section aria-label="Số dư" className="card px-5 pt-5 pb-4 text-center lg:px-8 lg:pt-7">
+      <div className="flex items-center justify-center gap-0.5">
+        <h2 className="text-[15px] leading-[22px] font-semibold text-muted">Số dư khả dụng</h2>
+        <IconButton label={hidden ? 'Hiện số dư' : 'Ẩn số dư'} aria-pressed={hidden} className="size-11 text-muted" onClick={() => setBalanceHidden(!hidden)}>
+          {hidden ? <EyeOff size={18} strokeWidth={1.75} aria-hidden /> : <Eye size={18} strokeWidth={1.75} aria-hidden />}
         </IconButton>
       </div>
       {!loaded ? (
-        <Skeleton className={cx('mt-1 w-[300px] max-w-full', layout === 'web' ? 'h-[60px]' : 'h-12')} />
+        <Skeleton className={cx('mx-auto mt-1 w-[260px] max-w-full', layout === 'web' ? 'h-[58px]' : 'h-12')} />
       ) : (
-        <p className={cx(size, 'mt-1 whitespace-nowrap')}>
+        <p className={cx(size, 'whitespace-nowrap')}>
           {hidden ? (
-            <><span aria-hidden>••••••• ₫</span><span className="sr-only">Số dư đang ẩn</span></>
+            <><span aria-hidden>•••••••<Dong /></span><span className="sr-only">Số dư đang ẩn</span></>
           ) : (
-            <><span aria-hidden>{text}</span><span className="sr-only">{vndWords(amount)}</span></>
+            <><span aria-hidden>{text.replace(' ₫', '')}<Dong /></span><span className="sr-only">{vndWords(amount)}</span></>
           )}
         </p>
       )}
       {loaded && held > 0 ? (
-        <Link to="/history?tab=dang-xu-ly" className="mt-2 inline-flex min-h-11 items-center gap-1.5 text-[14px] font-medium text-pending">
-          <Clock size={16} strokeWidth={2} aria-hidden />
-          Đang xử lý:{' '}
-          {hidden ? <><span aria-hidden>••••••• ₫</span><span className="sr-only">số tiền đang ẩn</span></> : <span className="tnum">{formatVnd(held)}</span>}
+        <Link to="/history?tab=dang-xu-ly" className="mt-2 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-pending-soft px-3 text-[13px] font-semibold text-pending no-underline">
+          <Clock size={15} strokeWidth={2.25} aria-hidden />
+          Đang xử lý{' '}
+          {hidden ? <><span aria-hidden>••••••</span><span className="sr-only">số tiền đang ẩn</span></> : <span className="tnum">{formatVnd(held)}</span>}
         </Link>
+      ) : null}
+      {loaded && !hidden && series.length > 1 ? (
+        <div className="mt-4">
+          <LineChart
+            values={series}
+            label={`Số dư 30 ngày qua, từ ${formatVnd(series[0])} đến ${formatVnd(series[series.length - 1])}`}
+            endTag={delta ? `${delta > 0 ? '+' : '−'}${formatVnd(Math.abs(delta)).replace(' ₫', '')} ₫` : undefined}
+            className="px-1 pt-6"
+            wide={layout === 'web'}
+          />
+          <p className="mt-1 flex justify-between text-[12px] text-muted" aria-hidden><span>30 ngày trước</span><span>Hôm nay</span></p>
+        </div>
       ) : null}
     </section>
   )
@@ -107,19 +117,19 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
   const layout = useLayout()
   const items = SHORTCUTS.filter((s) => layout === 'app' || !s.app)
   return (
-    <nav aria-label="Lối tắt" className="mt-6">
-      <ul className={cx('flex', layout === 'app' ? '-mx-5 gap-1 overflow-x-auto px-3 pb-1' : 'gap-4')}>
+    <nav aria-label="Lối tắt" className="mt-4 card px-2 py-4">
+      <ul className={cx(layout === 'app' ? 'grid grid-cols-6' : 'flex justify-around gap-2')}>
         {items.map((s) => (
-          <li key={s.to} className="shrink-0">
+          <li key={s.to} className="min-w-0">
             <Link
               to={s.to}
               onClick={s.ungated ? undefined : guardedClick(guard, s.to)}
-              className="group flex w-[72px] flex-col items-center gap-2 rounded-xl py-1 text-center text-ink no-underline focus-visible:outline-none"
+              className="group flex flex-col items-center gap-2 rounded-xl py-1 text-center text-ink no-underline focus-visible:outline-none lg:w-[84px]"
             >
-              <span className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 group-hover:bg-line-soft group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-primary">
+              <span className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-primary-ink group-hover:bg-primary-soft group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-primary">
                 <s.icon size={24} strokeWidth={1.75} aria-hidden />
               </span>
-              <span className="text-[12px] leading-4 font-medium">{s.label}</span>
+              <span className="px-0.5 text-[11px] leading-[14px] font-semibold lg:text-[12px] lg:leading-4">{s.label}</span>
             </Link>
           </li>
         ))}

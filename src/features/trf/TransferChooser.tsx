@@ -80,8 +80,8 @@ export default function TransferChooser() {
           </>
         ) : (
           <>
-            <Section title="Gần đây" className="mt-2">{recentApp}</Section>
-            <div className="mt-8">{options}</div>
+            <div className="mt-2">{options}</div>
+            <Section title="Gần đây">{recentApp}</Section>
           </>
         )}
       </GatedRoute>

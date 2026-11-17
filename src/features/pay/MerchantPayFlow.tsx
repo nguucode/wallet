@@ -14,7 +14,7 @@ const STEPS = ['amount', 'confirm', 'result'] as const
 
 export function MerchantHeader({ name, category }: { name: string; category?: string }) {
   return (
-    <div className="mb-6 flex items-center gap-3 rounded-[16px] border border-line p-3">
+    <div className="mb-6 flex items-center gap-3 card p-3">
       <Disc><span className="text-[16px] font-bold">{(category ?? name).charAt(0)}</span></Disc>
       <div className="min-w-0">
         <p className="text-[16px] font-bold break-words">{name}</p>

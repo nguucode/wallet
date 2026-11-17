@@ -47,3 +47,13 @@ describe('selectRecentRecipients', () => {
     expect(shortName('TRAN VAN HAI')).toBe('Hai')
   })
 })
+
+describe('balanceSeries', () => {
+  it('walks the balance back through each day, skipping failed transactions', async () => {
+    const { balanceSeries } = await import('./selectors')
+    const now = Date.parse('2026-11-17T10:00:00Z')
+    const tx = (h: number, direction: 'in' | 'out', amount: number, status = 'success') => ({ createdAt: new Date(now - h * 3600_000).toISOString(), direction, amount, fee: 0, status }) as never
+    const s = balanceSeries({ balance: 1_000_000, transactions: [tx(2, 'out', 200_000), tx(30, 'in', 500_000), tx(31, 'out', 9_000_000, 'failed')] }, now, 3)
+    expect(s).toEqual([700_000, 1_200_000, 1_000_000])
+  })
+})

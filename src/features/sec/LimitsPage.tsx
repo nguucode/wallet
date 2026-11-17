@@ -1,9 +1,10 @@
 import { now, dayCounter, useWorld } from '@/app/store'
 import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
-import { Badge, Card, cx, Skeleton } from '@/components/ui'
+import { Badge, Card, cx, Dong, Skeleton } from '@/components/ui'
+import { BarsWithLimit, Ring, ringTone } from '@/components/charts'
 import { ScreenTitle, useLoaded } from './kit'
-import { limitCounters, nextReset, type Counter } from './limitsView'
+import { limitCounters, monthlyGeneral, nextReset, type Counter } from './limitsView'
 
 /** US-SEC-005. */
 export default function LimitsPage() {
@@ -25,13 +26,31 @@ export default function LimitsPage() {
         </div>
       ) : (
         <div className="space-y-4">
+          <Card as="section" className="px-5 py-6 lg:px-8">
+            <h2 className="sr-only">Tổng quan hạn mức tháng này</h2>
+            <div className="grid grid-cols-2 gap-4 text-center">
+              <RingStat title="Chung" counter={c.general} />
+              <RingStat title="Thiết yếu" counter={c.essential} />
+            </div>
+            <p className="mt-4 text-center text-[13px] text-muted tnum">{reset}</p>
+          </Card>
+          <Card as="section" className="px-5 pt-5 pb-4 lg:px-8">
+            <h2 className="label-caps mb-1 text-center">Hạn mức chung theo tháng</h2>
+            <p className="mb-5 text-center text-[14px] text-muted">Cột đỏ là tháng vượt mức {formatVnd(config.limits.generalMonth)}</p>
+            <BarsWithLimit
+              bars={monthlyGeneral(w.transactions, at)}
+              limit={config.limits.generalMonth}
+              limitLabel={`${config.limits.generalMonth / 1_000_000}tr`}
+              label={`Hạn mức chung 12 tháng gần nhất; tháng này đã dùng ${formatVnd(c.general.used)}`}
+            />
+          </Card>
           <Meter
             title="Hạn mức chung trong tháng" counter={c.general} reset={reset}
             note="Tính trên chuyển tiền, thanh toán QR và hóa đơn không thiết yếu. Không tính nạp tiền, rút tiền và tiền nhận vào."
           />
           <Meter title="Hạn mức thiết yếu trong tháng" counter={c.essential} reset={reset} note="Dành cho hóa đơn điện. Không trừ vào hạn mức chung." />
           <Card as="section" className="p-5">
-            <h2 className="text-[18px] leading-[26px] font-bold">Xác thực giao dịch</h2>
+            <h2 className="text-[17px] leading-[24px] font-bold">Xác thực giao dịch</h2>
             <p className="mt-2">Hôm nay đã giao dịch <span className="tnum font-semibold">{formatVnd(dayCounter(w))}</span> bằng mã PIN</p>
             <ul className="mt-4 space-y-2 border-t border-line-soft pt-4 text-[14px] leading-5">
               <li>Nạp, rút, chuyển tiền đến {formatVnd(s.perTransaction)} mỗi giao dịch và tổng {formatVnd(s.perDay)} mỗi ngày: mã PIN</li>
@@ -46,6 +65,20 @@ export default function LimitsPage() {
   )
 }
 
+function RingStat({ title, counter }: { title: string; counter: Counter }) {
+  const share = counter.used / counter.limit
+  return (
+    <div className="flex flex-col items-center">
+      <Ring used={share} tone={ringTone(share)} size={112}>
+        <span className="block text-[22px] leading-7 font-bold tnum">{Math.round(share * 100)}%</span>
+        <span className="block text-[12px] text-muted">đã dùng</span>
+      </Ring>
+      <p className="mt-3 text-[18px] leading-6 font-bold tnum">{formatVnd(counter.remaining).replace(' ₫', '')}<Dong /></p>
+      <p className="text-[14px] text-muted">còn lại · {title}</p>
+    </div>
+  )
+}
+
 function Meter({ title, counter, note, reset }: { title: string; counter: Counter; note: string; reset: string }) {
   const pct = Math.min(100, Math.round((counter.used / counter.limit) * 100))
   // Design choice (not a rule): warning tone when 10% or less is left.
@@ -53,7 +86,7 @@ function Meter({ title, counter, note, reset }: { title: string; counter: Counte
   return (
     <Card as="section" className="p-5">
       <div className="flex items-start justify-between gap-3">
-        <h2 className="text-[18px] leading-[26px] font-bold">{title}</h2>
+        <h2 className="text-[17px] leading-[24px] font-bold">{title}</h2>
         {warn ? <Badge tone="pending">Sắp hết hạn mức</Badge> : null}
       </div>
       <p className="mt-3 tnum">Đã dùng {formatVnd(counter.used)} /<wbr /> {formatVnd(counter.limit)}</p>
@@ -61,7 +94,7 @@ function Meter({ title, counter, note, reset }: { title: string; counter: Counte
         role="meter" aria-label={title} aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-valuetext={`Đã dùng ${pct} phần trăm`}
         className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2"
       >
-        <div className={cx('h-full rounded-full', warn ? 'bg-pending' : 'bg-ink')} style={{ width: `${pct}%` }} />
+        <div className={cx('h-full rounded-full', warn ? 'bg-chart-warn' : 'bg-chart-up')} style={{ width: `${pct}%` }} />
       </div>
       <p className={cx('mt-2 font-semibold tnum', warn && 'text-pending')}>Còn lại {formatVnd(counter.remaining)}</p>
       {counter.pending ? <p className="mt-1 text-[14px] leading-5 text-muted">Gồm {formatVnd(counter.pending)} đang xử lý</p> : null}

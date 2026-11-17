@@ -49,8 +49,8 @@ export default function MeHub() {
         )}
       </Card>
 
-      <nav aria-label="Tài khoản" className="mt-6">
-        <ul className="divide-y divide-line-soft">
+      <nav aria-label="Tài khoản" className="mt-4">
+        <ul className="card divide-y divide-line-soft px-4">
           {links.map((l) => (
             <li key={l.to}>
               <Link to={l.to} className="-mx-2 flex min-h-14 items-center gap-3 rounded-xl px-2 py-2 text-ink no-underline hover:bg-surface-2">

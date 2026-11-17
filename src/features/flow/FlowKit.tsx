@@ -73,27 +73,27 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
     return (
       <div>
         <div className="mb-6 flex items-center gap-2">
-          {onBack ? <IconButton label="Quay lại" className="-ml-3" onClick={onBack}><ArrowLeft size={20} strokeWidth={1.75} /></IconButton> : null}
-          <h1 tabIndex={-1} data-page-title className="flex-1 text-[24px] leading-[32px] font-bold outline-none">{title}</h1>
-          {onClose ? <IconButton label="Đóng" onClick={onClose}><X size={20} strokeWidth={1.75} /></IconButton> : null}
+          {onBack ? <IconButton label="Quay lại" className="-ml-3 text-white hover:bg-white/15" onClick={onBack}><ArrowLeft size={20} strokeWidth={1.75} /></IconButton> : null}
+          <h1 tabIndex={-1} data-page-title className="flex-1 text-[28px] leading-[36px] font-bold tracking-tight text-white outline-none">{title}</h1>
+          {onClose ? <IconButton label="Đóng" className="text-white hover:bg-white/15" onClick={onClose}><X size={20} strokeWidth={1.75} /></IconButton> : null}
         </div>
-        {description ? <p className="-mt-4 mb-6 text-muted">{description}</p> : null}
-        {children}
+        {description ? <p className="-mt-4 mb-6 text-white/85">{description}</p> : null}
+        <div className="card p-6">{children}</div>
         {footer ? <div className="mt-8 flex flex-col gap-2">{footer}</div> : null}
       </div>
     )
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-1 bg-surface/95 px-2 backdrop-blur-sm">
-        {onBack ? <IconButton label="Quay lại" onClick={onBack}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton> : <span className="w-3" />}
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-1 bg-sky-from px-2 text-white">
+        {onBack ? <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={onBack}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton> : <span className="w-3" />}
         <h1 tabIndex={-1} data-page-title className="flex-1 truncate text-[17px] font-bold outline-none">{title}</h1>
-        {onClose ? <IconButton label="Đóng" onClick={onClose}><X size={22} strokeWidth={1.75} /></IconButton> : null}
+        {onClose ? <IconButton label="Đóng" className="text-white hover:bg-white/15" onClick={onClose}><X size={22} strokeWidth={1.75} /></IconButton> : null}
       </header>
       <main id="main" className="mx-auto w-full max-w-[560px] flex-1 px-5 pt-2 pb-6">
         {description ? <p className="mb-5 text-muted">{description}</p> : null}
         {children}
       </main>
-      {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 border-t border-line-soft bg-surface px-5 pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</div> : null}
+      {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 rounded-t-[24px] bg-surface px-5 shadow-[0_-8px_24px_-12px_rgb(28_24_64/0.18)] pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</div> : null}
     </div>
   )
 }
@@ -134,23 +134,23 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
 }) {
   return (
     <div>
-      <label htmlFor="amount" className="mb-2 block text-[13px] font-medium">{label}</label>
-      <div className={cx('flex items-baseline gap-2 border-b-2 pb-2', error ? 'border-danger' : 'border-ink')}>
+      <label htmlFor="amount" className="label-caps mb-2 block text-center">{label}</label>
+      <div className={cx('flex items-baseline justify-center gap-1 border-b-2 pb-2', error ? 'border-danger' : 'border-line')}>
         <input
           id="amount" autoFocus={autoFocus} inputMode="numeric" autoComplete="off" placeholder="0"
           value={value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''}
           onChange={(e) => { const n = parseVndInput(e.target.value); if (n <= 9_999_999_999) onChange(n) }}
           aria-invalid={!!error || undefined}
           aria-describedby="amount-msg"
-          className="amount-display w-full min-w-0 bg-transparent outline-none placeholder:text-line"
+          className="amount-display w-full min-w-0 bg-transparent text-center outline-none placeholder:text-line"
         />
-        <span className="amount-display text-muted" aria-hidden>₫</span>
+        <span className="text-[18px] font-semibold text-muted" aria-hidden>₫</span>
       </div>
-      <p id="amount-msg" role={error ? 'alert' : undefined} className={cx('mt-2 min-h-5 text-[13px] leading-5', error ? 'text-danger' : 'text-muted')}>{error ?? hint}</p>
+      <p id="amount-msg" role={error ? 'alert' : undefined} className={cx('mt-2 min-h-5 text-center text-[13px] leading-5', error ? 'text-danger' : 'text-muted')}>{error ?? hint}</p>
       {quick.length ? (
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap justify-center gap-2">
           {quick.map((q) => (
-            <button key={q} type="button" onClick={() => onChange(q)} className="h-9 rounded-full border border-line px-3 text-[13px] tnum hover:bg-surface-2">{formatVnd(q).replace(' ₫', '')}</button>
+            <button key={q} type="button" onClick={() => onChange(q)} className="h-9 rounded-full bg-surface-2 px-3.5 text-[13px] font-semibold text-primary-ink tnum hover:bg-primary-soft">{formatVnd(q).replace(' ₫', '')}</button>
           ))}
         </div>
       ) : null}
@@ -162,7 +162,7 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
 
 export function ConfirmRows({ rows }: { rows: [string, ReactNode][] }) {
   return (
-    <dl className="divide-y divide-line-soft rounded-[16px] border border-line px-4">
+    <dl className="divide-y divide-line-soft rounded-[20px] bg-surface-2/60 px-4">
       {rows.map(([k, v]) => (
         <div key={k} className="flex items-start justify-between gap-4 py-3">
           <dt className="shrink-0 text-muted">{k}</dt>

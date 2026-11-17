@@ -53,7 +53,7 @@ function SampleGrid({ onPick, cols }: { onPick: (payload: string) => void; cols:
     <ul className={cx('grid gap-3', cols)}>
       {sampleQrs(w).map((q) => (
         <li key={q.id}>
-          <button type="button" onClick={() => onPick(q.payload)} className="flex h-full w-full flex-col items-center gap-2 rounded-[16px] border border-line bg-surface p-3 text-center text-ink hover:bg-surface-2">
+          <button type="button" onClick={() => onPick(q.payload)} className="flex h-full w-full flex-col items-center gap-2 card p-3 text-center text-ink hover:bg-surface-2">
             <QrImage payload={q.payload} size={88} label="" />
             <span className="line-clamp-2 text-[13px] leading-[18px] font-medium" title={q.label}>{q.label}</span>
             <span className="text-[12px] leading-4 text-muted">{q.hint}</span>

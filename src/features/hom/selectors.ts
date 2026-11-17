@@ -1,4 +1,4 @@
-import type { SavedBill, Transaction } from '@/mock/seed'
+import type { SavedBill, Transaction, World } from '@/mock/seed'
 
 const DAY = 86_400_000
 /** Calendar date in Asia/Ho_Chi_Minh (UTC+7, no DST). */
@@ -68,4 +68,23 @@ export function vndWords(amount: number): string {
     if (UNIT[i]) words.push(UNIT[i])
   }
   return words.join(' ') + ' đồng'
+}
+
+/** Daily closing balance for the last `days` days (oldest first), walked back from the current balance. */
+export function balanceSeries(w: Pick<World, 'balance' | 'transactions'>, nowMs: number, days = 30): number[] {
+  const DAY = 86_400_000
+  const out: number[] = []
+  let bal = w.balance
+  const txs = w.transactions.filter((t) => t.status !== 'failed')
+  let i = 0
+  for (let d = 0; d < days; d++) {
+    const dayStart = nowMs - d * DAY
+    // undo every transaction newer than this day's close
+    while (i < txs.length && new Date(txs[i].createdAt).getTime() > dayStart) {
+      const t = txs[i++]
+      bal -= t.direction === 'in' ? t.amount : -(t.amount + t.fee)
+    }
+    out.push(bal)
+  }
+  return out.reverse()
 }

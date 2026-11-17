@@ -24,6 +24,6 @@ it('Home shows the balance and the reminder hook does not duplicate the seed bil
   const before = getState().world.notifications.length
   render(<MemoryRouter><HomePage /></MemoryRouter>)
   expect(await screen.findByText('Số dư khả dụng')).toBeTruthy()
-  expect(await screen.findByText(/Đang xử lý:/)).toBeTruthy()
+  expect((await screen.findAllByText(/Đang xử lý/)).length).toBeGreaterThan(0)
   expect(getState().world.notifications.length).toBe(before)
 })

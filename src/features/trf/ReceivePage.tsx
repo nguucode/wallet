@@ -99,7 +99,7 @@ function Receive() {
       <Card className="flex flex-col items-center px-5 py-6 text-center">
         <Segmented label="Loại mã" value={kind} onChange={setKind} options={[{ value: 'wallet', label: 'Mã ví' }, { value: 'vietqr', label: 'VietQR' }]} />
         <h2 className="mt-5 text-[13px] font-medium text-muted">Mã nhận tiền</h2>
-        <div className="mt-3 rounded-[16px] border border-line bg-white p-2">
+        <div className="mt-3 card p-2">
           <QrImage payload={payload} size={size} label={`Mã nhận tiền của ${w.customer.name}${amount ? `, số tiền ${formatVnd(amount)}` : ''}`} />
         </div>
         {kind === 'vietqr' ? <p className="mt-3 text-[13px] text-muted">Quét bằng app ngân hàng bất kỳ</p> : null}

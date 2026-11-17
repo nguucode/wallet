@@ -8,3 +8,4 @@ dist
 .impeccable/config.local.json
 *.local
 *.tsbuildinfo
+.impeccable/review/

@@ -65,7 +65,7 @@ export default function SourcesPage() {
         />
       ) : (
         <>
-          <p className="mb-4 text-muted">{NOTE}</p>
+          <p className="mb-4 text-white/90">{NOTE}</p>
           <ul className="flex flex-col gap-3">
             {sources.map((s) => (
               <li key={s.id}>
@@ -80,7 +80,7 @@ export default function SourcesPage() {
                         </button>
                       </DropdownMenu.Trigger>
                       <DropdownMenu.Portal>
-                        <DropdownMenu.Content align="end" sideOffset={4} className="z-50 w-[280px] rounded-[16px] border border-line bg-surface p-2 shadow-[var(--shadow-float)]">
+                        <DropdownMenu.Content align="end" sideOffset={4} className="z-50 w-[280px] card p-2 shadow-[var(--shadow-float)]">
                           {!s.isDefault ? <DropdownMenu.Item onSelect={() => makeDefault(s)} className={itemCls}>Đặt làm mặc định</DropdownMenu.Item> : null}
                           <DropdownMenu.Item disabled={!unlinkable} onSelect={() => askUnlink(s)} className={cx(itemCls, unlinkable ? 'text-danger' : 'text-muted')}>
                             Hủy liên kết

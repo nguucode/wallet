@@ -40,7 +40,7 @@ export default function ProfilePage() {
   return (
     <div>
       <ScreenTitle>Hồ sơ và xác thực</ScreenTitle>
-      <div className="flex items-start gap-4">
+      <div className="card flex items-center gap-4 p-5">
         <Avatar name={c.name} size={64} />
         <div className="min-w-0 flex-1 pt-1">
           <p className="text-[18px] leading-[26px] font-bold break-words">{c.name}</p>

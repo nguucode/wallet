@@ -10,7 +10,7 @@ import type { Transaction, World } from '@/mock/seed'
 import { NotFound } from '@/features/demo/NotFound'
 import { ConfirmRows, FAILURE_COPY, fmtDateTime, fmtTime, maskAccount, maskPhone, truthLine } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
-import { Button, ButtonLink, cx, STATUS_LABEL, StatusPill } from '@/components/ui'
+import { Button, ButtonLink, cx, Money, STATUS_LABEL, StatusPill } from '@/components/ui'
 import { maskCode } from '@/features/bil/bills'
 import { isWithinSupportWindow, receiptShareText, rowAmount, SUPPORT_STATUS_LABEL } from './history'
 import { TxIcon, useToast } from './parts'
@@ -68,7 +68,7 @@ export function timelineSteps(t: Transaction, refundTx?: Transaction): Step[] {
 function Timeline({ steps }: { steps: Step[] }) {
   const dot = { done: 'bg-ink', current: 'bg-pending', failed: 'bg-danger', upcoming: 'border-2 border-line bg-surface' }
   return (
-    <ol className="rounded-[16px] border border-line p-4" aria-label="Trạng thái giao dịch">
+    <ol className="card p-4" aria-label="Trạng thái giao dịch">
       {steps.map((s, i) => (
         <li key={i} className="relative flex gap-3 pb-4 last:pb-0">
           {i < steps.length - 1 ? <span aria-hidden className="absolute top-4 left-[5px] h-full w-0.5 bg-line" /> : null}
@@ -111,7 +111,7 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
         <h1 tabIndex={-1} data-page-title className="text-[24px] leading-[32px] font-bold outline-none">Biên lai</h1>
         {layout === 'app' ? <button type="button" onClick={close} aria-label="Đóng" className="inline-flex size-11 items-center justify-center rounded-full hover:bg-surface-2"><X size={22} strokeWidth={1.75} aria-hidden /></button> : null}
       </div>
-      <article id="receipt" aria-label="Biên lai giao dịch" className="mx-auto max-w-[420px] rounded-[16px] border border-line p-5">
+      <article id="receipt" aria-label="Biên lai giao dịch" className="mx-auto max-w-[420px] card p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-[18px] font-bold">Biên lai giao dịch</p>
@@ -221,36 +221,30 @@ export default function TransactionPage() {
 
   return (
     <div className="max-w-[560px]">
-      {layout === 'web' ? <Link to="/history" className="mb-4 inline-flex h-11 items-center gap-1 font-medium text-primary no-underline"><ArrowLeft size={18} strokeWidth={1.75} aria-hidden />Lịch sử</Link> : null}
+      {layout === 'web' ? <Link to="/history" className="mb-4 inline-flex h-11 items-center gap-1 font-semibold text-white no-underline"><ArrowLeft size={18} strokeWidth={1.75} aria-hidden />Lịch sử</Link> : null}
 
-      <header className="flex flex-col items-start gap-2">
-        <div className="flex items-center gap-3">
-          <TxIcon type={t.type} size={48} />
-          <div className="min-w-0">
-            <h1 tabIndex={-1} data-page-title className="line-clamp-2 text-[18px] leading-[26px] font-bold break-words outline-none">{name}</h1>
-            <p className="text-[13px] text-muted">{typeLabel(t.type)}</p>
-          </div>
-        </div>
-        <p className={cx('amount-display mt-2 break-all', t.status === 'failed' ? 'text-muted line-through' : t.direction === 'in' && 'text-success')}>
-          {formatVnd(rowAmount(t), { sign: t.direction })}
+      <header className="card flex flex-col items-center gap-2 px-5 pt-6 pb-5 text-center">
+        <TxIcon type={t.type} size={56} />
+        <h1 tabIndex={-1} data-page-title className="mt-1 line-clamp-2 text-[17px] leading-[24px] font-bold break-words outline-none">{name}</h1>
+        <p className="-mt-1 text-[13px] text-muted">{typeLabel(t.type)}</p>
+        <p className={cx('amount-display mt-1 break-all', t.status === 'failed' ? 'text-muted line-through' : t.direction === 'in' && 'text-success')}>
+          <Money amount={rowAmount(t)} sign={t.direction} />
         </p>
-        <div className="flex flex-wrap items-center gap-2">
-          <StatusPill status={t.status} />
-          <span className="text-[14px] text-muted">{truthLine(t)}</span>
-        </div>
+        <StatusPill status={t.status} />
+        <span className="text-[14px] text-muted">{truthLine(t)}</span>
       </header>
 
       <div className="mt-6 flex flex-col gap-4">
         <Timeline steps={timelineSteps(t, refundTx)} />
 
         {refundTx ? (
-          <Link to={`/history/${refundTx.id}`} className="flex min-h-12 items-center justify-between gap-3 rounded-[16px] border border-line px-4 py-3 text-ink no-underline hover:bg-surface-2">
+          <Link to={`/history/${refundTx.id}`} className="flex min-h-12 items-center justify-between gap-3 card px-4 py-3 text-ink no-underline hover:bg-surface-2">
             <span>Hoàn tiền · <span className="tnum text-success">{formatVnd(refundTx.amount, { sign: 'in' })}</span> · {fmtDateTime(refundTx.createdAt).split(' · ')[1]}</span>
             <span aria-hidden className="text-muted">›</span>
           </Link>
         ) : null}
         {original ? (
-          <Link to={`/history/${original.id}`} className="flex min-h-12 items-center justify-between gap-3 rounded-[16px] border border-line px-4 py-3 text-ink no-underline hover:bg-surface-2">
+          <Link to={`/history/${original.id}`} className="flex min-h-12 items-center justify-between gap-3 card px-4 py-3 text-ink no-underline hover:bg-surface-2">
             <span>Hoàn tiền cho giao dịch <span className="tnum">{original.id}</span></span>
             <span aria-hidden className="text-muted">›</span>
           </Link>

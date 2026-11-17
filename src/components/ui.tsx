@@ -14,9 +14,9 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'ink'
 const VARIANT: Record<Variant, string> = {
   primary: 'bg-primary text-white hover:bg-primary-hover disabled:bg-line disabled:text-muted',
   ink: 'bg-ink text-white hover:bg-ink/85 disabled:bg-line disabled:text-muted',
-  secondary: 'bg-surface text-ink border border-line hover:bg-surface-2 disabled:text-muted',
+  secondary: 'bg-primary-soft text-primary-ink hover:bg-[#e0d7ff] disabled:text-muted disabled:bg-surface-2',
   ghost: 'text-primary hover:bg-primary-soft disabled:text-muted',
-  danger: 'bg-surface text-danger border border-line hover:bg-danger-soft',
+  danger: 'bg-danger-soft text-danger hover:bg-[#fbdcd9]',
 }
 export const Button = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; size?: 'md' | 'sm'; block?: boolean; loading?: boolean }>(
   function Button({ variant = 'primary', size = 'md', block, loading, className, children, disabled, ...rest }, ref) {
@@ -60,15 +60,15 @@ export function IconButton({ label, children, className, ...rest }: ButtonHTMLAt
 /* ── Layout pieces ────────────────────────────────────────────────── */
 
 export function Card({ className, children, as: As = 'div' }: { className?: string; children: ReactNode; as?: 'div' | 'section' | 'article' }) {
-  return <As className={cx('rounded-[16px] border border-line bg-surface', className)}>{children}</As>
+  return <As className={cx('card', className)}>{children}</As>
 }
 
 export function Section({ title, action, children, className }: { title: string; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
     <section className={cx('mt-8 lg:mt-12', className)} aria-label={title}>
-      <div className="mb-3 flex items-baseline justify-between gap-4">
-        <h2 className="text-[18px] leading-[26px] font-bold">{title}</h2>
-        {action}
+      <div className="mb-3 flex items-baseline justify-between gap-4 px-1">
+        <h2 className="label-caps">{title}</h2>
+        <span className="text-[14px] font-medium text-muted [&_a]:text-muted [&_a]:no-underline [&_a:hover]:text-primary [&_button]:text-muted">{action}</span>
       </div>
       {children}
     </section>
@@ -78,8 +78,8 @@ export function Section({ title, action, children, className }: { title: string;
 export function PageTitle({ children, description }: { children: ReactNode; description?: ReactNode }) {
   return (
     <div className="mb-6">
-      <h1 tabIndex={-1} data-page-title className="text-[24px] leading-[32px] font-bold outline-none">{children}</h1>
-      {description ? <p className="mt-1 text-muted">{description}</p> : null}
+      <h1 tabIndex={-1} data-page-title className="text-[28px] leading-[36px] font-bold tracking-tight text-white outline-none">{children}</h1>
+      {description ? <p className="mt-1 text-white/85">{description}</p> : null}
     </div>
   )
 }
@@ -109,7 +109,7 @@ export function Row({ left, title, subtitle, right, rightSub, to, onClick, class
 }
 
 export function Disc({ children, tone = 'neutral', size = 48 }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'success' | 'pending' | 'danger'; size?: number }) {
-  const t = { neutral: 'bg-surface-2 text-ink', primary: 'bg-primary-soft text-primary-ink', success: 'bg-success-soft text-success', pending: 'bg-pending-soft text-pending', danger: 'bg-danger-soft text-danger' }[tone]
+  const t = { neutral: 'bg-surface-2 text-primary-ink', primary: 'bg-primary-soft text-primary-ink', success: 'bg-success-soft text-success', pending: 'bg-pending-soft text-pending', danger: 'bg-danger-soft text-danger' }[tone]
   return <span aria-hidden className={cx('inline-flex shrink-0 items-center justify-center rounded-full', t)} style={{ width: size, height: size }}>{children}</span>
 }
 
@@ -121,25 +121,31 @@ export function Avatar({ name, size = 44 }: { name: string; size?: number }) {
 
 /** Neutral bank monogram: real bank names as text, never logos (mock-data.md). */
 export function BankMark({ short, size = 44 }: { short: string; size?: number }) {
-  return <span aria-hidden className="inline-flex shrink-0 items-center justify-center rounded-full border border-line bg-surface text-[11px] font-bold tracking-tight" style={{ width: size, height: size }}>{short}</span>
+  return <span aria-hidden className="inline-flex shrink-0 items-center justify-center rounded-full bg-surface-2 text-[11px] font-bold tracking-tight text-primary-ink" style={{ width: size, height: size }}>{short}</span>
 }
 
 /* ── Status & money ───────────────────────────────────────────────── */
 
 export const STATUS_LABEL: Record<TxStatus, string> = { pending: 'Đang xử lý', success: 'Thành công', failed: 'Không thành công', refunded: 'Đã hoàn tiền' }
 export function StatusPill({ status, className }: { status: TxStatus; className?: string }) {
-  const tone = { pending: 'bg-pending-soft text-pending', success: 'bg-success-soft text-success', failed: 'bg-danger-soft text-danger', refunded: 'bg-surface-2 text-ink' }[status]
-  return <span className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[12px] leading-4 font-medium whitespace-nowrap', tone, className)}>{STATUS_LABEL[status]}</span>
+  const tone = { pending: 'bg-pending-soft text-pending', success: 'bg-success-soft text-success', failed: 'bg-danger-soft text-danger', refunded: 'bg-surface-2 text-primary-ink' }[status]
+  return <span className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[11px] leading-4 font-bold tracking-[0.04em] uppercase whitespace-nowrap', tone, className)}>{STATUS_LABEL[status]}</span>
 }
 
 export function Money({ amount, sign, hidden, className, tone }: { amount: number; sign?: 'in' | 'out'; hidden?: boolean; className?: string; tone?: boolean }) {
-  if (hidden) return <span className={cx('tnum', className)} aria-label="Số dư đang ẩn">•••••• ₫</span>
-  return <span className={cx('tnum whitespace-nowrap', tone && sign === 'in' && 'text-success', className)}>{formatVnd(amount, { sign })}</span>
+  if (hidden) return <span className={cx('tnum', className)} role="img" aria-label="Số dư đang ẩn">••••••<Dong /></span>
+  const text = formatVnd(amount, { sign })
+  return <span className={cx('tnum whitespace-nowrap', tone && sign === 'in' && 'text-success', className)}>{text.replace(' ₫', '')}<Dong /></span>
+}
+
+/** ₫ set small and raised beside the numerals (DESIGN.md signature); screen readers hear "đồng". */
+export function Dong() {
+  return <span className="ml-[0.12em] align-[0.42em] text-[0.55em] font-semibold"><span aria-hidden>₫</span><span className="sr-only"> đồng</span></span>
 }
 
 export function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'success' | 'pending' | 'danger' }) {
-  const t = { neutral: 'bg-surface-2 text-muted', primary: 'bg-primary-soft text-primary-ink', success: 'bg-success-soft text-success', pending: 'bg-pending-soft text-pending', danger: 'bg-danger-soft text-danger' }[tone]
-  return <span className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[12px] leading-4 font-medium whitespace-nowrap', t)}>{children}</span>
+  const t = { neutral: 'bg-surface-2 text-primary-ink', primary: 'bg-primary-soft text-primary-ink', success: 'bg-success-soft text-success', pending: 'bg-pending-soft text-pending', danger: 'bg-danger-soft text-danger' }[tone]
+  return <span className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[11px] leading-4 font-bold tracking-[0.04em] uppercase whitespace-nowrap', t)}>{children}</span>
 }
 
 export function Skeleton({ className }: { className?: string }) {
@@ -158,9 +164,9 @@ export function EmptyState({ icon, title, body, action }: { icon: ReactNode; tit
 }
 
 export function Callout({ tone = 'neutral', title, children, action }: { tone?: 'neutral' | 'pending' | 'danger' | 'primary'; title: ReactNode; children?: ReactNode; action?: ReactNode }) {
-  const t = { neutral: 'bg-surface-2', pending: 'bg-pending-soft', danger: 'bg-danger-soft', primary: 'bg-primary-soft' }[tone]
+  const t = { neutral: 'bg-surface shadow-[var(--shadow-card)]', pending: 'bg-pending-soft', danger: 'bg-danger-soft', primary: 'bg-primary-soft' }[tone]
   return (
-    <div role={tone === 'danger' ? 'alert' : 'status'} className={cx('rounded-[16px] p-4', t)}>
+    <div role={tone === 'danger' ? 'alert' : 'status'} className={cx('rounded-[20px] p-5', t)}>
       <p className="font-semibold">{title}</p>
       {children ? <div className="mt-1 text-[14px] leading-[20px]">{children}</div> : null}
       {action ? <div className="mt-3">{action}</div> : null}
@@ -185,7 +191,7 @@ export const TextInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLIn
     <input
       ref={ref}
       aria-invalid={invalid || undefined}
-      className={cx('h-12 w-full rounded-[12px] border bg-surface px-4 text-[15px] placeholder:text-muted/80 focus:outline-none focus-visible:outline-2 focus-visible:outline-primary', invalid ? 'border-danger' : 'border-line', className)}
+      className={cx('h-12 w-full rounded-[14px] border bg-surface px-4 text-[15px] placeholder:text-muted/80 focus:outline-none focus-visible:outline-2 focus-visible:outline-primary', invalid ? 'border-danger' : 'border-line', className)}
       {...rest}
     />
   )
@@ -200,7 +206,7 @@ export function Segmented<T extends string>({ value, options, onChange, label }:
           role="tab"
           aria-selected={o.value === value}
           onClick={() => onChange(o.value)}
-          className={cx('h-9 shrink-0 rounded-full border px-4 text-[13px] font-medium whitespace-nowrap', o.value === value ? 'border-primary bg-primary-soft text-primary-ink' : 'border-line hover:bg-surface-2')}
+          className={cx('h-9 shrink-0 rounded-full px-4 text-[14px] font-semibold whitespace-nowrap transition-colors', o.value === value ? 'bg-primary text-white' : 'bg-surface text-muted shadow-[var(--shadow-card)] hover:text-ink')}
         >
           {o.label}
           {o.count !== undefined ? <span className="ml-1.5 tnum text-muted">{o.count}</span> : null}
@@ -228,8 +234,8 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
           className={cx(
             'fixed z-50 bg-surface shadow-[var(--shadow-float)] focus:outline-none',
             layout === 'app'
-              ? 'inset-x-0 bottom-0 max-h-[92dvh] overflow-y-auto rounded-t-[20px] px-5 pt-3 pb-[max(20px,env(safe-area-inset-bottom))] animate-[sheet-up_240ms_cubic-bezier(0.16,1,0.3,1)]'
-              : 'top-1/2 left-1/2 max-h-[88vh] w-[440px] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[20px] p-6 animate-[fade-in_150ms_ease-out]',
+              ? 'inset-x-0 bottom-0 max-h-[92dvh] overflow-y-auto rounded-t-[28px] px-5 pt-3 pb-[max(20px,env(safe-area-inset-bottom))] animate-[sheet-up_240ms_cubic-bezier(0.16,1,0.3,1)]'
+              : 'top-1/2 left-1/2 max-h-[88vh] w-[440px] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[28px] p-6 animate-[fade-in_150ms_ease-out]',
           )}
         >
           {layout === 'app' ? <div aria-hidden className="mx-auto mb-3 h-1 w-10 rounded-full bg-line" /> : null}
@@ -269,8 +275,8 @@ export function ScreenTitle({ children, description }: { children: ReactNode; de
   const layout = useLayout()
   return (
     <div className={layout === 'web' ? 'mb-6' : 'mb-2'}>
-      <h1 tabIndex={-1} data-page-title className={cx('text-[24px] leading-[32px] font-bold outline-none', layout === 'app' && 'sr-only')}>{children}</h1>
-      {description ? <p className="mt-1 text-muted">{description}</p> : null}
+      <h1 tabIndex={-1} data-page-title className={cx('text-[28px] leading-[36px] font-bold tracking-tight text-white outline-none', layout === 'app' && 'sr-only')}>{children}</h1>
+      {description ? <p className={cx('mt-1', layout === 'web' ? 'text-white/85' : 'text-white/90')}>{description}</p> : null}
     </div>
   )
 }

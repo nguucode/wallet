@@ -45,7 +45,7 @@ function Flow() {
     return (
       <FlowFrame title="Chọn nhà cung cấp" onClose={close}>
         <p className="mb-3 text-[13px] font-medium text-muted">Điện</p>
-        <ul className="divide-y divide-line-soft rounded-[16px] border border-line">
+        <ul className="divide-y divide-line-soft card">
           {billers.map((b) => (
             <li key={b.id}>
               <button type="button" onClick={() => { setDraft({ billerId: b.id, found: undefined, noDebt: false }); setError(undefined); go('customer-code') }}
@@ -76,7 +76,7 @@ function Flow() {
             <Button block variant="secondary" onClick={() => finish(false)}>Chỉ lưu</Button>
           </>
         ) : <Button block onClick={() => finish(false)}>Lưu hóa đơn</Button>}>
-        <div className="rounded-[16px] border border-line p-4">
+        <div className="card p-4">
           <p className="font-semibold">{biller.name}</p>
           <p className="text-[13px] text-muted tnum">{draft.code}</p>
           {draft.found ? (

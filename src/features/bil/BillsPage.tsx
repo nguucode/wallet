@@ -63,7 +63,7 @@ export default function BillsPage() {
     <div>
       <ScreenTitle description={payable.length ? <span className="tnum">{payable.length} hóa đơn cần thanh toán · {formatVnd(total)}</span> : undefined}>Hóa đơn</ScreenTitle>
 
-      <Section title="Hóa đơn của tôi" className="mt-0!" action={<Button size="sm" variant="ink" onClick={() => guard('/bills/new')}>Thêm hóa đơn</Button>}>
+      <Section title="Hóa đơn của tôi" className="mt-6!" action={<button type="button" onClick={() => guard('/bills/new')} className="min-h-11 font-semibold text-primary">+ Thêm hóa đơn</button>}>
         {!bills.length ? (
           <Card>
             <EmptyState icon={<FileText size={22} strokeWidth={1.75} />} title="Chưa có hóa đơn nào được lưu"

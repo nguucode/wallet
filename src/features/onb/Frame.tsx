@@ -23,8 +23,8 @@ function Stages({ step }: { step: Step }) {
       <ol aria-hidden className="grid grid-cols-3 gap-2">
         {STAGES.map((s, i) => (
           <li key={s} className="min-w-0">
-            <span className={cx('block h-1 rounded-full', i <= cur ? 'bg-primary' : 'bg-line')} />
-            <span className={cx('mt-1.5 block text-[12px] leading-4', i === cur ? 'font-semibold text-ink' : 'text-muted')}>{s}</span>
+            <span className={cx('block h-1 rounded-full', i <= cur ? 'bg-white' : 'bg-white/30')} />
+            <span className={cx('mt-1.5 block text-[12px] leading-4 text-white', i === cur ? 'font-semibold' : 'opacity-75')}>{s}</span>
           </li>
         ))}
       </ol>
@@ -47,22 +47,23 @@ export function StepShell({ title, children, footer, description }: { title: str
     h1.current?.focus({ preventScroll: true })
     window.scrollTo(0, 0)
   }, [title])
-  const skip = canSkip ? <button type="button" onClick={() => { clear(); nav('/home') }} className="h-11 rounded-full px-3 text-[14px] font-semibold text-primary hover:bg-primary-soft">Để sau</button> : null
+  const skip = canSkip ? <button type="button" onClick={() => { clear(); nav('/home') }} className="h-11 rounded-full px-3 text-[14px] font-semibold text-white hover:bg-white/15">Để sau</button> : null
   const heading = <h1 ref={h1} tabIndex={-1} className={cx('font-bold outline-none', layout === 'web' ? 'text-[24px] leading-[32px]' : 'text-[22px] leading-[30px]')}>{title}</h1>
 
   if (layout === 'web')
     return (
-      <div className="min-h-dvh bg-surface-2">
-        <header className="mx-auto flex h-16 max-w-[960px] items-center justify-between gap-4 px-8">
+      <div className="relative min-h-dvh bg-ground">
+        <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[360px]" />
+        <header className="relative mx-auto flex h-16 max-w-[960px] items-center justify-between gap-4 px-8 text-white">
           <span className="flex items-center gap-2 text-[20px] font-extrabold tracking-tight">
-            <span aria-hidden className="inline-flex size-8 items-center justify-center rounded-[10px] bg-ink text-white"><Wallet size={18} strokeWidth={2} /></span>
+            <span aria-hidden className="inline-flex size-8 items-center justify-center rounded-[10px] bg-white text-primary"><Wallet size={18} strokeWidth={2} /></span>
             Wallet
           </span>
-          <span className="flex items-center gap-2"><DemoControlsButton /><SampleBadge />{skip}</span>
+          <span className="flex items-center gap-2"><DemoControlsButton /><SampleBadge onSky />{skip}</span>
         </header>
-        <main id="main" className="mx-auto max-w-[560px] px-4 pt-6 pb-16">
+        <main id="main" className="relative mx-auto max-w-[560px] px-4 pt-6 pb-16">
           <div className="mb-4"><Stages step={step} /></div>
-          <div className="rounded-[16px] border border-line bg-surface p-8">
+          <div className="card p-8">
             {back ? (
               <button type="button" onClick={() => go(back)} className="-ml-2 mb-3 inline-flex h-11 items-center gap-1.5 rounded-full px-2 text-[14px] font-medium hover:bg-surface-2">
                 <ArrowLeft size={18} strokeWidth={1.75} aria-hidden />Quay lại
@@ -79,10 +80,10 @@ export function StepShell({ title, children, footer, description }: { title: str
 
   return (
     <div className="flex min-h-dvh flex-col bg-surface">
-      <header className="sticky top-0 z-30 bg-surface/95 px-2 pb-2 backdrop-blur-sm">
+      <header className="sticky top-0 z-30 bg-sky-from px-2 pb-3 text-white">
         <div className="flex h-14 items-center gap-1">
-          {back ? <IconButton label="Quay lại" onClick={() => go(back)}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton> : <span className="w-3" />}
-          <span className="flex flex-1 items-center gap-1"><SampleBadge /></span>
+          {back ? <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={() => go(back)}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton> : <span className="w-3" />}
+          <span className="flex flex-1 items-center gap-1"><SampleBadge onSky /></span>
           <DemoControlsButton compact />
           {skip}
         </div>
@@ -93,7 +94,7 @@ export function StepShell({ title, children, footer, description }: { title: str
         {description ? <p className="mt-2 text-muted">{description}</p> : null}
         <div className="mt-5">{children}</div>
       </main>
-      {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 border-t border-line-soft bg-surface px-5 pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</div> : null}
+      {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 bg-surface px-5 pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</div> : null}
     </div>
   )
 }

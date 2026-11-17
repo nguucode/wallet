@@ -22,7 +22,7 @@ function Group({ title, note, children }: { title: string; note?: string; childr
 function Chip<T extends string>({ value, current, onPick, children }: { value: T; current: T; onPick: (v: T) => void; children: ReactNode }) {
   const on = value === current
   return (
-    <button type="button" aria-pressed={on} onClick={() => onPick(value)} className={cx('h-8 rounded-full border px-3 text-[13px]', on ? 'border-primary bg-primary-soft font-medium text-primary-ink' : 'border-line hover:bg-surface-2')}>
+    <button type="button" aria-pressed={on} onClick={() => onPick(value)} className={cx('h-8 rounded-full px-3 text-[13px] font-medium', on ? 'bg-primary text-white' : 'bg-surface-2 text-primary-ink hover:bg-primary-soft')}>
       {children}
     </button>
   )
@@ -31,7 +31,7 @@ function Chip<T extends string>({ value, current, onPick, children }: { value: T
 function Act({ onClick, children, disabled }: { onClick: () => void; children: ReactNode; disabled?: string }) {
   return (
     <span className="inline-flex flex-col">
-      <button type="button" onClick={onClick} disabled={!!disabled} className="h-8 rounded-full border border-line px-3 text-[13px] hover:bg-surface-2 disabled:text-muted disabled:hover:bg-transparent">{children}</button>
+      <button type="button" onClick={onClick} disabled={!!disabled} className="h-8 rounded-full bg-surface-2 px-3 text-[13px] font-medium text-primary-ink hover:bg-primary-soft disabled:bg-transparent disabled:text-muted disabled:ring-1 disabled:ring-line">{children}</button>
       {disabled ? <span className="mt-0.5 px-1 text-[12px] leading-4 text-muted">{disabled}</span> : null}
     </span>
   )
@@ -99,7 +99,7 @@ export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => vo
   )
 }
 
-export function DemoControlsButton({ compact }: { compact?: boolean }) {
+export function DemoControlsButton({ compact, onSky = true }: { compact?: boolean; onSky?: boolean }) {
   const [open, setOpen] = useState(false)
   const [msg, setMsg] = useState('')
   const { pathname } = useLocation()
@@ -107,9 +107,9 @@ export function DemoControlsButton({ compact }: { compact?: boolean }) {
   return (
     <>
       {compact ? (
-        <IconButton label="Demo controls" onClick={() => setOpen(true)}><FlaskConical size={20} strokeWidth={1.75} /></IconButton>
+        <IconButton label="Demo controls" className={onSky ? 'text-white hover:bg-white/15' : undefined} onClick={() => setOpen(true)}><FlaskConical size={20} strokeWidth={1.75} /></IconButton>
       ) : (
-        <Button variant="secondary" size="sm" onClick={() => setOpen(true)}><FlaskConical size={16} strokeWidth={1.75} aria-hidden />Demo controls</Button>
+        <Button variant="secondary" size="sm" className={onSky ? 'bg-white/15 text-white hover:bg-white/25' : undefined} onClick={() => setOpen(true)}><FlaskConical size={16} strokeWidth={1.75} aria-hidden />Demo controls</Button>
       )}
       <Sheet open={open} onOpenChange={setOpen} title="Demo controls">
         <DemoControlsPanel onAction={setMsg} />

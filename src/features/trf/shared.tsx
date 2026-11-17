@@ -87,7 +87,7 @@ export function useWakeLock(on: boolean) {
 
 export function RecipientChip({ name, sub, note, onChange }: { name: string; sub: ReactNode; note?: string; onChange?: () => void }) {
   return (
-    <div className="mb-6 flex items-center gap-3 rounded-[16px] border border-line p-3">
+    <div className="mb-6 flex items-center gap-3 card p-3">
       <Avatar name={name} />
       <div className="min-w-0 flex-1">
         <p className="font-semibold break-words">{name}</p>

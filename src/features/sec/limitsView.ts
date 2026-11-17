@@ -17,3 +17,15 @@ export function nextReset(now: Date) {
   const [y, m] = vnMonth(now).split('-').map(Number)
   return `01/${String((m % 12) + 1).padStart(2, '0')}/${m === 12 ? y + 1 : y}`
 }
+
+/** General-pool usage for the last `n` calendar months (oldest first), for the monthly bars. */
+export function monthlyGeneral(txs: Transaction[], now: Date, n = 12): { key: string; short: string; value: number; current: boolean }[] {
+  const [y, m] = vnMonth(now).split('-').map(Number)
+  return Array.from({ length: n }, (_, i) => {
+    const k = n - 1 - i
+    const mm = ((m - 1 - k) % 12 + 12) % 12 + 1
+    const yy = y + Math.floor((m - 1 - k) / 12)
+    const at = new Date(Date.UTC(yy, mm - 1, 15))
+    return { key: `${yy}-${mm}`, short: `T${mm}`, value: limitUsage(txs, at).general, current: k === 0 }
+  })
+}
