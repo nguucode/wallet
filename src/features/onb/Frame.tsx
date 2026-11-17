@@ -55,7 +55,7 @@ export function StepShell({ title, children, footer, description }: { title: str
       <div className="min-h-dvh bg-surface-2">
         <header className="mx-auto flex h-16 max-w-[960px] items-center justify-between gap-4 px-8">
           <span className="flex items-center gap-2 text-[20px] font-extrabold tracking-tight">
-            <span aria-hidden className="inline-flex size-8 items-center justify-center rounded-[10px] bg-primary text-white"><Wallet size={18} strokeWidth={2} /></span>
+            <span aria-hidden className="inline-flex size-8 items-center justify-center rounded-[10px] bg-ink text-white"><Wallet size={18} strokeWidth={2} /></span>
             Wallet
           </span>
           <span className="flex items-center gap-2"><DemoControlsButton /><SampleBadge />{skip}</span>

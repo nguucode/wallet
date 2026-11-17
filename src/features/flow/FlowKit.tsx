@@ -17,12 +17,8 @@ import { AuthSheet } from '@/features/sec/AuthSheet'
 import { GATE_COPY } from '@/features/sec/Gate'
 import { Button, ButtonLink, Confirm, cx, IconButton, Money } from '@/components/ui'
 
-export const fmtTime = (iso: string | Date) => new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' })
-export const fmtDate = (iso: string | Date) => new Date(iso).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Asia/Ho_Chi_Minh' })
-export const fmtDateTime = (iso: string | Date) => `${fmtTime(iso)} · ${fmtDate(iso)}`
-export const maskPhone = (p: string) => p.replace(/\D/g, '').replace(/^(\d{4})(\d{3})(\d+)$/, (_, a, _b, c) => `${a} ••• ${c.slice(-3)}`)
-export const formatPhone = (p: string) => p.replace(/\D/g, '').replace(/^(\d{4})(\d{3})(\d+)$/, '$1 $2 $3')
-export const maskAccount = (a: string) => `•••• ${a.slice(-4)}`
+export { fmtTime, fmtDate, fmtDateTime, maskPhone, formatPhone, maskAccount } from '@/app/format'
+import { fmtTime, fmtDateTime } from '@/app/format'
 
 /* ── Step state (rules.md#spec-conventions) ───────────────────────── */
 
@@ -120,7 +116,7 @@ export type AmountCheck = { ok: true } | { ok: false; message: ReactNode }
 /** Balance, limit, min and per-type max checks. Run at the amount step and again on confirm. */
 export function checkAmount(type: TxType, amount: number, opts: { essential?: boolean; fromSource?: boolean } = {}): AmountCheck {
   const w = getState().world
-  const min = type === 'topup' || type === 'withdraw' ? 10_000 : 1_000
+  const min = type === 'topup' || type === 'withdraw' ? config.minAmount.topupWithdraw : config.minAmount.default
   if (amount <= 0) return { ok: false, message: 'Nhập số tiền' }
   if (amount < min) return { ok: false, message: `Số tiền tối thiểu là ${formatVnd(min)}` }
   if (type === 'bank_transfer' && amount > config.bankTransferMax) return { ok: false, message: `Mỗi lần chuyển đến ngân hàng tối đa ${formatVnd(config.bankTransferMax)}` }
@@ -242,6 +238,7 @@ export const FAILURE_COPY: Record<FailureReason, string> = {
   timeout_reversed: 'Ngân hàng nhận không phản hồi kịp nên giao dịch đã được hủy.',
   biller_unavailable: 'Nhà cung cấp đang gián đoạn, chưa ghi nhận thanh toán.',
   merchant_cancelled: 'Cửa hàng đã hủy giao dịch.',
+  system_busy: 'Hệ thống đang bận nên giao dịch chưa được thực hiện.',
 }
 
 /** The truth line (DESIGN.md signature): one plain statement of where a transaction is. */

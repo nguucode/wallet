@@ -89,7 +89,7 @@ function WebShell({ children }: { children: ReactNode }) {
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white">Bỏ qua điều hướng</a>
       <aside className="sticky top-0 flex h-dvh w-[232px] shrink-0 flex-col bg-surface-2 px-3 py-5">
         <Link to="/home" className="mb-6 flex items-center gap-2 px-4 text-[20px] font-extrabold tracking-tight text-ink no-underline" aria-label="Wallet, về Trang chủ">
-          <span aria-hidden className="inline-flex size-8 items-center justify-center rounded-[10px] bg-primary text-white"><Wallet size={18} strokeWidth={2} /></span>
+          <span aria-hidden className="inline-flex size-8 items-center justify-center rounded-[10px] bg-ink text-white"><Wallet size={18} strokeWidth={2} /></span>
           Wallet
         </Link>
         <nav aria-label="Điều hướng chính" className="flex flex-1 flex-col gap-1 overflow-y-auto">
@@ -110,7 +110,7 @@ function WebShell({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-30 flex h-16 items-center justify-end gap-2 border-b border-line-soft bg-surface/95 px-8 backdrop-blur-sm">
           <Link to="/notifications" aria-label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} className="relative inline-flex size-11 items-center justify-center rounded-full text-ink hover:bg-surface-2">
             <Bell size={20} strokeWidth={1.75} aria-hidden />
-            {unread ? <span className="absolute top-1.5 right-1 min-w-[18px] rounded-full bg-danger px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum">{unread > 9 ? '9+' : unread}</span> : null}
+            {unread ? <span className="absolute top-1.5 right-1 min-w-[18px] rounded-full bg-ink px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum">{unread > 9 ? '9+' : unread}</span> : null}
           </Link>
           <DemoControlsButton />
           <span aria-hidden className="mx-2 h-6 w-px bg-line" />
@@ -148,7 +148,7 @@ function TabBar() {
               <Link to={t.route!} aria-current={active ? 'page' : undefined} className={cx('relative flex h-full flex-col items-center justify-center gap-1 no-underline', active ? 'text-primary' : 'text-muted')}>
                 <Icon size={22} strokeWidth={active ? 2.25 : 1.75} aria-hidden />
                 <span className={cx('text-[11px] leading-3', active ? 'font-semibold' : 'font-medium')}>{t.label}{t.badge && unread ? <span className="sr-only">, {unread} chưa đọc</span> : null}</span>
-                {t.badge && unread ? <span className="absolute top-2 left-1/2 ml-1.5 min-w-[18px] rounded-full bg-danger px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum" aria-hidden>{unread > 9 ? '9+' : unread}</span> : null}
+                {t.badge && unread ? <span className="absolute top-2 left-1/2 ml-1.5 min-w-[18px] rounded-full bg-ink px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum" aria-hidden>{unread > 9 ? '9+' : unread}</span> : null}
               </Link>
             </li>
           )

@@ -1,4 +1,5 @@
 import QRCode from 'qrcode'
+import { mmss } from '@/app/format'
 import { useEffect, useState } from 'react'
 import { useLayout } from '@/app/layout'
 import { now } from '@/app/store'
@@ -57,7 +58,7 @@ export function VneidStep() {
             <>
               {qr ? <img src={qr} alt="Mã QR để quét bằng ứng dụng VNeID" width={200} height={200} className="size-[200px]" /> : <span className="size-[200px] rounded-[12px] bg-surface-2" />}
               <p className="mt-3 font-medium">Quét mã bằng ứng dụng VNeID trên điện thoại</p>
-              <p className="text-[14px] text-muted">Mã hết hạn sau <span className="tnum">{String(Math.floor(left / 60)).padStart(2, '0')}:{String(left % 60).padStart(2, '0')}</span></p>
+              <p className="text-[14px] text-muted">Mã hết hạn sau <span className="tnum">{mmss(left)}</span></p>
             </>
           ) : (
             <div role="status" className="py-6">

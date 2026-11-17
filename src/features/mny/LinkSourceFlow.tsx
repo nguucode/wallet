@@ -1,3 +1,5 @@
+import { isValidAccountNumber } from '@/features/trf/logic'
+import { config } from '@/domain/config'
 import { Check, Search } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
@@ -74,7 +76,7 @@ export default function LinkSourceFlow() {
 
   if (step === 'account' && bank) {
     const isCard = draft.kind === 'debit_card'
-    const valid = draft.number.length >= 6 && draft.number.length <= 19
+    const valid = isValidAccountNumber(draft.number)
     const submit = async () => {
       setError(undefined)
       if (w.sources.some((s) => s.bankId === bank.id && s.kind === draft.kind && s.last4 === draft.number.slice(-4)))
@@ -94,11 +96,11 @@ export default function LinkSourceFlow() {
             <Segmented label="Loại nguồn tiền" value={draft.kind} onChange={(k) => { setError(undefined); setDraft({ kind: k }) }}
               options={[{ value: 'account', label: 'Tài khoản' }, { value: 'debit_card', label: 'Thẻ ghi nợ' }]} />
           </div>
-          <Field label={isCard ? 'Số thẻ' : 'Số tài khoản'} htmlFor="src-number" error={error} hint="Từ 6 đến 19 chữ số">
+          <Field label={isCard ? 'Số thẻ' : 'Số tài khoản'} htmlFor="src-number" error={error} hint={`Từ ${config.accountDigits.min} đến ${config.accountDigits.max} chữ số`}>
             <TextInput
               id="src-number" inputMode="numeric" autoComplete="off" invalid={!!error}
               value={groupDigits(draft.number)}
-              onChange={(e) => { setError(undefined); setDraft({ number: e.target.value.replace(/\D/g, '').slice(0, 19) }) }}
+              onChange={(e) => { setError(undefined); setDraft({ number: e.target.value.replace(/\D/g, '').slice(0, config.accountDigits.max) }) }}
               onKeyDown={(e) => e.key === 'Enter' && valid && !checking && submit()}
               className="tnum"
             />
@@ -117,7 +119,7 @@ export default function LinkSourceFlow() {
           <p className="mb-4 text-muted">{bank.name} · {draft.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản'} <span className="tnum">{mask4(draft.number.slice(-4))}</span></p>
           <ul className="flex flex-col gap-3">
             {['Nạp tiền vào ví từ tài khoản này', 'Rút tiền từ ví về tài khoản này'].map((l) => (
-              <li key={l} className="flex items-start gap-3"><Check size={20} strokeWidth={2} aria-hidden className="mt-0.5 shrink-0 text-primary" />{l}</li>
+              <li key={l} className="flex items-start gap-3"><Check size={20} strokeWidth={2} aria-hidden className="mt-0.5 shrink-0 text-success" />{l}</li>
             ))}
           </ul>
         </Card>

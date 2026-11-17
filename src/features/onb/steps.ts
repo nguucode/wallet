@@ -1,3 +1,4 @@
+import { config } from '@/domain/config'
 import type { Settings } from '@/app/store'
 import type { KycStatus } from '@/domain/gate'
 
@@ -55,7 +56,7 @@ export const canContinue = (s: { reachedEnd: boolean; ticked: boolean }) => s.re
 
 /* ── Phone and OTP (US-ONB-002) ───────────────────────────────────── */
 
-export const OTP = { code: '123456', attempts: 5, resendSeconds: 60, ttlSeconds: 300 } as const
+export const OTP = config.otp
 
 export const isValidVnMobile = (digits: string) => /^0[35789]\d{8}$/.test(digits)
 
@@ -68,4 +69,4 @@ export function checkOtp(s: { attemptsLeft: number; sentAt: number }, code: stri
 }
 
 /** CCCD keeps its 12-digit length: 001*******45 (rules.md decisions). */
-export const maskIdNumber = (id: string) => id.slice(0, 3) + '*'.repeat(Math.max(0, id.length - 5)) + id.slice(-2)
+export { maskId as maskIdNumber } from '@/app/format'

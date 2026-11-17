@@ -6,7 +6,7 @@ import type { AuthMethod } from '@/domain/types'
 import { getState, verifyPin } from '@/app/store'
 import { Button, cx, Sheet } from '@/components/ui'
 
-const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' })
+import { fmtTime } from '@/app/format'
 
 /** 6-digit PIN pad. Used by the auth sheet, onboarding and change-PIN. */
 export function PinPad({ length = config.pin.length, onComplete, error, disabled, label }: {

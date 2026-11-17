@@ -1,9 +1,10 @@
+import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
 import type { Notification, World } from '@/mock/seed'
 import { daysUntil, fmtYmd } from '@/features/hom/selectors'
 
 /** rules.md#notifications lead times. */
-export const REMINDER_DAYS = { bill: 3, id: 30 }
+export const REMINDER_DAYS = { bill: config.reminders.billDays, id: config.reminders.idDays }
 
 /**
  * US-NTF-004: reminders that should exist at `now` but do not yet. Keyed `bill_due:<billId>:<period>` and

@@ -1,3 +1,4 @@
+import { config } from '@/domain/config'
 import type { Contact, Counterparty, Transaction, World } from '@/mock/seed'
 
 export type Recent =
@@ -37,7 +38,7 @@ export function filterContacts<T extends Pick<Contact, 'name' | 'phone'>>(contac
   return contacts.filter((c) => fold(c.name).includes(f))
 }
 
-export const isValidAccountNumber = (s: string) => /^\d{6,19}$/.test(s)
+export const isValidAccountNumber = (s: string) => /^\d+$/.test(s) && s.length >= config.accountDigits.min && s.length <= config.accountDigits.max
 export const isFullPhone = (s: string) => /^0\d{9}$/.test(s)
 
 export type PhoneLookup =

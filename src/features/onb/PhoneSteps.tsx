@@ -36,7 +36,7 @@ export function PhoneStep() {
   )
 }
 
-const mmss = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
+import { mmss } from '@/app/format'
 
 /** US-ONB-002: OTP, checked on the sixth digit; attempts, resend cooldown and expiry from OTP config. */
 export function OtpStep() {

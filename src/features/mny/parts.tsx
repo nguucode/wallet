@@ -1,29 +1,10 @@
 import { Check, ChevronDown, Clock, X } from 'lucide-react'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { useLayout } from '@/app/layout'
+import { useState, type ReactNode } from 'react'
 import { bankById, useWorld } from '@/app/store'
 import { BankMark, Badge, cx, Sheet } from '@/components/ui'
 import type { FundingSource } from '@/mock/seed'
 import { kindLabel, mask4, sortSources } from './logic'
 
-/** Feature-local toast (ui.tsx has none): a polite live region, bottom-left on web, above the safe area on app. */
-export function useToast() {
-  const [msg, setMsg] = useState('')
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const layout = useLayout()
-  useEffect(() => () => clearTimeout(timer.current), [])
-  const show = (m: string) => {
-    setMsg(m)
-    clearTimeout(timer.current)
-    timer.current = setTimeout(() => setMsg(''), 5000)
-  }
-  const node = (
-    <div role="status" aria-live="polite" className={cx('pointer-events-none fixed z-40', layout === 'web' ? 'bottom-24 left-[280px] max-w-[440px]' : 'inset-x-5 bottom-[calc(96px+env(safe-area-inset-bottom))]')}>
-      {msg ? <p className="rounded-[16px] bg-ink px-4 py-3 text-[14px] leading-5 text-white shadow-[var(--shadow-float)]">{msg}</p> : null}
-    </div>
-  )
-  return { show, node }
-}
 
 export function SourceLine({ s, sub }: { s: FundingSource; sub?: ReactNode }) {
   const bank = bankById(s.bankId)
@@ -91,3 +72,5 @@ export function ResultBlock({ tone, heading, amount, children, actions }: {
     </div>
   )
 }
+
+export { useToast } from '@/components/ui'

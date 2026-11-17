@@ -1,4 +1,4 @@
-import { executeMoney, getState, pendingOut, resolvePending, setScenario, setSetting, refundLatestMerchant, gateOf, verifyPin } from './store'
+import { dayCounter, executeMoney, getState, pendingOut, resolvePending, setScenario, setSetting, refundLatestMerchant, gateOf, verifyPin } from './store'
 
 const contact = () => {
   const c = getState().world.contacts[5]
@@ -82,5 +82,27 @@ describe('balance notifications (US-NTF-003)', () => {
     resolvePending('failed')
     expect(getState().world.notifications.length).toBeGreaterThan(count)
     expect(getState().world.notifications[0].body).toMatch(/^Hoàn tiền giao dịch không thành công WL/)
+  })
+})
+
+describe('review fixes', () => {
+  it('a bank transfer created as failed shows a debit and a reversal notice, net balance unchanged, and the armed outcome resets', async () => {
+    setSetting('nextOutcome', 'failed')
+    const before = getState().world.balance
+    const n = getState().world.notifications.length
+    const t = await executeMoney({ type: 'bank_transfer', amount: 700_000, counterparty: bank, authMethod: 'pin' })
+    expect(t.status).toBe('failed')
+    expect(getState().world.balance).toBe(before)
+    expect(getState().world.notifications.length).toBe(n + 2)
+    expect(getState().settings.nextOutcome).toBe('success')
+  })
+
+  it('a failed pending transfer drops out of the day counter', async () => {
+    const start = dayCounter(getState().world)
+    setSetting('nextOutcome', 'pending')
+    await executeMoney({ type: 'bank_transfer', amount: 8_000_000, counterparty: bank, authMethod: 'pin' })
+    expect(dayCounter(getState().world)).toBe(start + 8_000_000)
+    resolvePending('failed')
+    expect(dayCounter(getState().world)).toBe(0)
   })
 })

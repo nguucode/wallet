@@ -2,7 +2,7 @@ import { ChevronRight, RefreshCw } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
-import { bankById, executeMoney, getState, now, useSettings, useWorld } from '@/app/store'
+import { executeMoney, getState, now, setPaymentCodeOpen, sourceLabel, useSettings, useWorld } from '@/app/store'
 import { formatVnd } from '@/domain/money'
 import type { AuthMethod } from '@/domain/types'
 import type { FundingSource, Transaction } from '@/mock/seed'
@@ -16,7 +16,7 @@ import { PayTabs } from './PayTabs'
 import { code128c, fmtCountdown, newPayCode, PAY_CODE_TTL_S } from './scan'
 
 const WALLET = 'wallet'
-const srcLabel = (s: FundingSource) => `${bankById(s.bankId).name}${s.kind === 'debit_card' ? ' thẻ ghi nợ' : ''} •••• ${s.last4}`
+const srcLabel = (s: FundingSource) => sourceLabel(getState().world, s.id)
 
 /** Commits a cashier capture; the store leaves the wallet alone when a linked bank pays (US-PAY-006). */
 function payByCode(req: { merchantId: string; name: string; amount: number; sourceId?: string; authMethod: AuthMethod }): Promise<Transaction> {
@@ -125,6 +125,8 @@ function PayCode() {
 
   const sources = w.sources
   const label = sourceId === WALLET ? 'Ví' : srcLabel(sources.find((s) => s.id === sourceId) ?? sources[0])
+  // Demo controls enable "Thu ngân quét Mã thanh toán" only while a code is showing.
+  useEffect(() => { setPaymentCodeOpen(phase === 'code' && !!code); return () => setPaymentCodeOpen(false) }, [phase, code])
   const revealed = revealUntil > tick
   const urgent = remaining <= 10
 
@@ -153,7 +155,7 @@ function PayCode() {
           <Card className="relative flex flex-col items-center px-4 py-6 text-center">
             {app ? null : <h2 className="mb-4 text-[18px] leading-[26px] font-bold">Mã thanh toán</h2>}
             <div className="rounded-[12px] bg-white p-2">
-              <QrImage payload={code.value} size={240} label="Mã QR thanh toán, đưa thu ngân quét" />
+              <QrImage payload={code.value} size={240} label="Mã thanh toán, đưa thu ngân quét" />
             </div>
             <div className="mt-4 w-full max-w-[360px] bg-white px-2"><Barcode value={code.value} /></div>
             <p className="mt-3 flex items-center gap-3 text-[15px]">
@@ -171,7 +173,7 @@ function PayCode() {
             {app ? <p className="mt-2 text-[13px] text-muted">Tăng độ sáng màn hình để thu ngân quét dễ hơn</p> : null}
             {phase === 'paying' ? (
               <div role="status" aria-live="polite" className="absolute inset-0 flex flex-col items-center justify-center rounded-[16px] bg-surface/90">
-                <span className="size-8 animate-spin rounded-full border-2 border-primary border-r-transparent" aria-hidden />
+                <span className="size-8 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden />
                 <p className="mt-3 font-semibold">Đang thanh toán…</p>
               </div>
             ) : null}

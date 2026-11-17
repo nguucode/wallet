@@ -20,7 +20,7 @@ export type Counterparty =
   | { kind: 'merchant'; id: string; name: string }
   | { kind: 'biller'; id: string; name: string; billId: string }
   | { kind: 'source'; id: string }
-export type FailureReason = 'bank_declined' | 'recipient_bank_rejected' | 'timeout_reversed' | 'biller_unavailable' | 'merchant_cancelled'
+export type FailureReason = 'bank_declined' | 'recipient_bank_rejected' | 'timeout_reversed' | 'biller_unavailable' | 'merchant_cancelled' | 'system_busy'
 export type PendingReason = 'bank_processing' | 'biller_settling'
 export type Transaction = {
   id: string; type: TxType; status: TxStatus; amount: number; fee: number; direction: 'in' | 'out'

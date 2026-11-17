@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import { forwardRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode } from 'react'
+import { forwardRef, useEffect, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { formatVnd } from '@/domain/money'
@@ -262,4 +262,31 @@ export function Confirm({ open, onOpenChange, title, body, confirmLabel, cancelL
       </div>
     </Sheet>
   )
+}
+
+/** Page h1: visible on web; on app the shell header already shows the title, so the h1 is sr-only but still takes route focus. */
+export function ScreenTitle({ children, description }: { children: ReactNode; description?: ReactNode }) {
+  const layout = useLayout()
+  return (
+    <div className={layout === 'web' ? 'mb-6' : 'mb-2'}>
+      <h1 tabIndex={-1} data-page-title className={cx('text-[24px] leading-[32px] font-bold outline-none', layout === 'app' && 'sr-only')}>{children}</h1>
+      {description ? <p className="mt-1 text-muted">{description}</p> : null}
+    </div>
+  )
+}
+
+/** One transient confirmation at a time, in a polite live region. */
+export function useToast(ms = 3000) {
+  const [msg, setMsg] = useState<string | null>(null)
+  useEffect(() => {
+    if (!msg) return
+    const t = setTimeout(() => setMsg(null), ms)
+    return () => clearTimeout(t)
+  }, [msg, ms])
+  const node = (
+    <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-24 z-50 flex justify-center px-4 lg:bottom-8 print:hidden">
+      {msg ? <span className="max-w-[440px] rounded-full bg-ink px-5 py-3 text-center text-[14px] font-semibold text-white shadow-[var(--shadow-float)]">{msg}</span> : null}
+    </div>
+  )
+  return { show: (m: string) => setMsg(m), node }
 }

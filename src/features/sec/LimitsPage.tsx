@@ -61,7 +61,7 @@ function Meter({ title, counter, note, reset }: { title: string; counter: Counte
         role="meter" aria-label={title} aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-valuetext={`Đã dùng ${pct} phần trăm`}
         className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2"
       >
-        <div className={cx('h-full rounded-full', warn ? 'bg-pending' : 'bg-primary')} style={{ width: `${pct}%` }} />
+        <div className={cx('h-full rounded-full', warn ? 'bg-pending' : 'bg-ink')} style={{ width: `${pct}%` }} />
       </div>
       <p className={cx('mt-2 font-semibold tnum', warn && 'text-pending')}>Còn lại {formatVnd(counter.remaining)}</p>
       {counter.pending ? <p className="mt-1 text-[14px] leading-5 text-muted">Gồm {formatVnd(counter.pending)} đang xử lý</p> : null}

@@ -72,7 +72,7 @@ Contact ─0..1 hasWallet                contacts without a wallet cannot receiv
 | Wallet.status | `active \| suspended \| locked \| closed` (exact four from TT 40 appendix). `suspended` when id_expired. `locked` by the user or by risk (P1). `closed` is never reached in the demo. |
 | Transaction.type | `topup, withdraw, p2p_out, p2p_in, bank_transfer, qr_merchant, bill, refund` |
 | Transaction.status | see state machine below |
-| failureReason | `bank_declined, recipient_bank_rejected, timeout_reversed, biller_unavailable, merchant_cancelled` |
+| failureReason | `bank_declined, recipient_bank_rejected, timeout_reversed, biller_unavailable, merchant_cancelled, system_busy` (wallet-to-wallet) |
 | pendingReason | `bank_processing, biller_settling` |
 | AuthChallenge.method | `pin \| device_biometric \| face_match` |
 | Bill.status | `due \| overdue \| paid \| settling` |

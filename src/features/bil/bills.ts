@@ -30,7 +30,7 @@ export function billsDueSoon(bills: SavedBill[], now: number, days = BILL_REMIND
 
 /** Customer code: 2 letters + 11 digits (BIL-002 mock data). */
 export const isValidCustomerCode = (code: string) => /^[A-Z]{2}\d{11}$/.test(code)
-export const maskCode = (code: string) => '•••• ' + code.slice(-4)
+export { maskAccount as maskCode } from '@/app/format'
 export const periodLabel = (ym: string) => `Kỳ ${ym.slice(5)}/${ym.slice(0, 4)}`
 
 export type PayCheck = { ok: true } | { ok: false; reason: 'not_payable' } | { ok: false; reason: 'insufficient_balance'; short: number } | { ok: false; reason: 'essential_limit'; remaining: number }

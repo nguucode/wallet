@@ -1,3 +1,4 @@
+import { config } from '@/domain/config'
 import type { QrPayload } from '@/domain/qr'
 
 export type ScanRoute = { ok: true; to: string } | { ok: false; title: string; body: string }
@@ -19,7 +20,7 @@ export function routeForQr(parsed: QrPayload, raw: string): ScanRoute {
 
 /* ── Payment Code (US-PAY-005) ────────────────────────────────────── */
 
-export const PAY_CODE_TTL_S = 60 // shortcut: not in domain/config yet; move to config.paymentCodeTtlSeconds when FND adds it
+export const PAY_CODE_TTL_S = config.paymentCodeTtlSeconds
 
 /** 18-digit one-time code (demo only, not a CPM token). */
 export const newPayCode = (rand: () => number = Math.random) => Array.from({ length: 18 }, (_, i) => (i === 0 ? 1 + Math.floor(rand() * 9) : Math.floor(rand() * 10))).join('')

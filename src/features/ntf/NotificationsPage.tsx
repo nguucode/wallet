@@ -79,7 +79,7 @@ export default function NotificationsPage() {
                           {n.body ? <span className="mt-0.5 line-clamp-2 block text-[14px] leading-5 text-muted">{n.body}</span> : null}
                         </span>
                         {n.read ? <span className="w-2 shrink-0" /> : (
-                          <span className="mt-2 size-2 shrink-0 rounded-full bg-primary"><span className="sr-only">Chưa đọc</span></span>
+                          <span className="mt-2 size-2 shrink-0 rounded-full bg-ink"><span className="sr-only">Chưa đọc</span></span>
                         )}
                       </button>
                     </li>

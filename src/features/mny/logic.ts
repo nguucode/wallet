@@ -15,7 +15,8 @@ export const canUnlink = (sources: FundingSource[]) => sources.length > 1
 export const sortSources = (sources: FundingSource[]) => [...sources].sort((a, b) => Number(b.isDefault) - Number(a.isDefault))
 
 export const kindLabel = (k: FundingSource['kind']) => (k === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản')
-export const mask4 = (last4: string) => `•••• ${last4}`
+import { maskAccount as mask4 } from '@/app/format'
+export { mask4 }
 export const sourceName = (s: FundingSource) => `${bankById(s.bankId).name} ${mask4(s.last4)}`
 
 /** Cards (and long numbers) group in fours for display. */

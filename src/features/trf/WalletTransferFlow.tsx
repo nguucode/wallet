@@ -213,7 +213,7 @@ function ConfirmStep({ draft, defaultMessage, toAmount, onDone }: { draft: Draft
   if (commit.busy)
     return (
       <div role="status" aria-live="polite" className="flex flex-col items-center py-16 text-center">
-        <span className="size-8 animate-spin rounded-full border-2 border-primary border-r-transparent" aria-hidden />
+        <span className="size-8 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden />
         <p className="mt-4 font-semibold">Đang chuyển tiền…</p>
         <p className="mt-1"><Money amount={draft.amount} className="amount-display" /></p>
       </div>

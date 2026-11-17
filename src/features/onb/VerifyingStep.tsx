@@ -39,7 +39,7 @@ export function VerifyingStep() {
     return (
       <StepShell title="Đang đối chiếu thông tin…">
         <div role="status" className="flex flex-col items-center py-8 text-center">
-          <span aria-hidden className="size-12 animate-spin rounded-full border-4 border-primary border-r-transparent" />
+          <span aria-hidden className="size-12 animate-spin rounded-full border-4 border-current border-r-transparent" />
           <p className="mt-4 text-muted">Thường mất vài giây.</p>
         </div>
       </StepShell>

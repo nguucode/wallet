@@ -1,3 +1,4 @@
+import { config } from '@/domain/config'
 /** Legal copy for onboarding (US-ONB-009/010); kept out of components. Fictional demo terms. */
 export const WARNING_ITEMS = [
   'Không cho thuê, cho mượn, mua bán ví hoặc thông tin mở ví.',
@@ -21,6 +22,6 @@ export const TERMS_FULL: [string, string][] = [
   ['4. Xác thực giao dịch', 'Giao dịch được xác thực bằng mã PIN hoặc xác thực khuôn mặt theo ngưỡng quy định. Không chia sẻ mã PIN với bất kỳ ai.'],
   ['5. Phí và hạn mức', 'Biểu phí và hạn mức được công bố trong ứng dụng và có thể thay đổi khi có thông báo trước.'],
   ['6. Giao dịch đang xử lý và không thành công', 'Giao dịch không thành công được hoàn tiền và phí về ví. Giao dịch đang xử lý luôn hiển thị thời gian dự kiến.'],
-  ['7. Hỗ trợ', 'Bạn có thể gửi yêu cầu hỗ trợ trong vòng 60 ngày kể từ ngày giao dịch. Thời gian xử lý tối đa 30 ngày làm việc.'],
+  ['7. Hỗ trợ', `Bạn có thể gửi yêu cầu hỗ trợ trong vòng ${config.supportWindowDays} ngày kể từ ngày giao dịch. Thời gian xử lý tối đa ${config.supportResolveWorkingDays} ngày làm việc.`],
   ['8. Tạm khóa ví', 'Ví có thể bị tạm khóa khi có dấu hiệu vi phạm điều khoản hoặc khi giấy tờ tùy thân hết hạn.'],
 ]

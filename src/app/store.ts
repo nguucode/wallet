@@ -1,6 +1,5 @@
 import { useSyncExternalStore } from 'react'
 import { config } from '@/domain/config'
-import { nextDayCounter } from '@/domain/auth'
 import { activeGate } from '@/domain/gate'
 import { fee } from '@/domain/fees'
 import { limitUsage, vnMonth } from '@/domain/limits'
@@ -25,6 +24,7 @@ export type Settings = {
   clockOffsetMs: number
   /** Demo: last "cashier scans the Payment Code" signal; PayCode page reacts to a new nonce. */
   cashierScan?: { nonce: number; merchantId: string; amount: number }
+  paymentCodeOpen?: boolean
 }
 export type State = { world: World; settings: Settings; version: number }
 
@@ -107,7 +107,18 @@ export function freeUsed(w: World) {
   const month = vnMonth(new Date(now()))
   return w.transactions.filter((t) => (t.type === 'withdraw' || t.type === 'bank_transfer') && t.status !== 'failed' && vnMonth(new Date(t.createdAt)) === month).length
 }
-export function dayCounter(w: World) { return w.dayCounter.date === ymd(now()) ? w.dayCounter.amount : 0 }
+/** Today's PIN/biometric-approved counted amount since the last face match (rules.md#step-up, TT 50 "Tksth"); failed ones drop out. */
+export function dayCounter(w: World) {
+  const today = ymd(now())
+  let sum = 0
+  for (const t of w.transactions) { // newest first
+    if (ymd(new Date(t.createdAt).getTime()) !== today) break
+    if (t.status === 'failed') continue
+    if (t.authMethod === 'face_match') break
+    if (['topup', 'withdraw', 'p2p_out', 'bank_transfer'].includes(t.type)) sum += t.amount
+  }
+  return sum
+}
 export function gateOf(w: World) {
   return activeGate({ kycStatus: w.customer.kycStatus, walletStatus: w.walletStatus, linkedSources: w.sources.length })
 }
@@ -125,7 +136,7 @@ export function counterpartyName(c: Counterparty, w?: World): string {
   }
 }
 export function pendingEta(t: Transaction) {
-  const mins = t.pendingReason ? config.pendingEtaMinutes[t.pendingReason] : 30
+  const mins = config.pendingEtaMinutes[t.pendingReason ?? 'bank_processing']
   return new Date(new Date(t.createdAt).getTime() + mins * 60_000)
 }
 
@@ -198,16 +209,25 @@ export async function executeMoney(req: MoneyRequest): Promise<Transaction> {
     }
     if (outcome === 'pending') t.pendingReason = req.type === 'bill' ? 'biller_settling' : 'bank_processing'
     if (outcome === 'failed') {
-      t.failureReason = req.type === 'bill' ? 'biller_unavailable' : req.type === 'qr_merchant' ? (fromBank ? 'bank_declined' : 'merchant_cancelled') : s.nextFailure
+      t.failureReason = req.type === 'bill' ? 'biller_unavailable'
+        : req.type === 'qr_merchant' ? (fromBank ? 'bank_declined' : 'merchant_cancelled')
+        : req.type === 'p2p_out' ? 'system_busy'
+        : req.type === 'topup' ? 'bank_declined'
+        : s.nextFailure
       // Bank-side failures debit first and reverse within a minute; others never leave the wallet.
       if (req.type === 'bank_transfer' || req.type === 'withdraw') t.reversedAt = new Date(at + 60_000).toISOString()
     }
     if (outcome !== 'failed' && !fromBank) w.balance += direction === 'in' ? req.amount : -(req.amount + f)
     w.transactions.unshift(t)
-    if (outcome !== 'failed') {
-      w.dayCounter = { date: ymd(at), amount: nextDayCounter(dayCounter(w), { type: req.type, amount: req.amount, method: req.authMethod }) }
-      if (!fromBank) notifyBalance(w, t, at)
+    if (outcome !== 'failed' && !fromBank) notifyBalance(w, t, at)
+    if (outcome === 'failed' && t.reversedAt) {
+      // Debited, then reversed by the bank: both balance notices (US-NTF-003), net balance unchanged.
+      w.balance -= t.amount
+      notifyBalance(w, t, at)
+      w.balance += t.amount
+      notifyBalance(w, t, at + 60_000, 'reversal')
     }
+    s.nextOutcome = 'success' // US-FND-004: the armed outcome applies to one transaction
     if (req.counterparty.kind === 'contact') {
       const c = w.contacts.find((x) => x.id === (req.counterparty as { id: string }).id)
       if (c) c.lastTransferAt = t.createdAt
@@ -429,6 +449,15 @@ export function setScenario(scenario: Scenario) { commit({ ...fresh(scenario, st
 export function reset() { setScenario(state.settings.scenario) }
 export function setSetting<K extends keyof Settings>(k: K, v: Settings[K]) { mutate((_, s) => { s[k] = v }) }
 /** Advance the demo clock; pending items whose ETA has passed settle as success. */
+/** Advance to the same day of the next calendar month (clamped), Vietnam time. */
+export function msToNextMonth() {
+  const d = new Date(now() + 7 * 3600_000)
+  const y = d.getUTCFullYear(), m = d.getUTCMonth()
+  const last = new Date(Date.UTC(y, m + 2, 0)).getUTCDate()
+  const target = Date.UTC(y, m + 1, Math.min(d.getUTCDate(), last), d.getUTCHours(), d.getUTCMinutes())
+  return target - d.getTime()
+}
+export function setPaymentCodeOpen(open: boolean) { if (!!state.settings.paymentCodeOpen !== open) mutate((_, s) => { s.paymentCodeOpen = open }) }
 export function advanceClock(ms: number) {
   mutate((_, s) => { s.clockOffsetMs += ms })
   const due = state.world.transactions.some((t) => t.status === 'pending' && pendingEta(t).getTime() <= now())

@@ -22,7 +22,7 @@ export const FAQ: Topic[] = [
     slug: 'chuyen-tien', topic: 'Chuyển tiền', items: [
       { slug: 'chuyen-nham', question: 'Tôi chuyển nhầm người nhận thì sao?', answer: ['Giao dịch đã thành công không thể hủy hoặc thu hồi. Hãy nhắn người nhận để đề nghị chuyển trả, sau đó mở giao dịch và chọn Liên hệ hỗ trợ nếu cần.'], links: [{ label: 'Lịch sử', to: '/history' }] },
       { slug: 'chua-dung-vi', question: 'Vì sao một số liên hệ hiện "Chưa dùng ví"?', answer: ['Người đó chưa mở ví nên chưa nhận được tiền qua ví. Bạn có thể chuyển đến tài khoản ngân hàng của họ.'] },
-      { slug: 'chuyen-ngan-hang-toi-da', question: 'Mỗi lần chuyển đến ngân hàng được tối đa bao nhiêu?', answer: [`Tối đa ${v(c.bankTransferMax)} mỗi giao dịch, theo giới hạn của hệ thống chuyển khoản nhanh.`] },
+      { slug: 'chuyen-ngan-hang-toi-da', question: 'Mỗi lần chuyển đến ngân hàng được tối đa bao nhiêu?', answer: [`Tối đa ${v(c.bankTransferMax)} mỗi giao dịch, theo quy định của hệ thống chuyển khoản nhanh.`] },
       { slug: 'khong-thanh-cong-chua-hoan', question: 'Giao dịch không thành công nhưng tiền chưa hoàn về thì phải làm gì?', answer: ['Tiền của giao dịch không thành công thường hoàn về ví trong vài phút.', 'Nếu sau 24 giờ vẫn chưa thấy, hãy mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ.'], links: [{ label: 'Giao dịch không thành công', to: '/history?tab=failed' }] },
     ],
   },
