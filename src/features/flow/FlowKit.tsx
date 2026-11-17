@@ -262,11 +262,11 @@ function StatusMark({ status }: { status: Transaction['status'] }) {
   )
 }
 
-export function ResultView({ txId, onRetry, extra }: { txId: string; onRetry?: () => void; extra?: ReactNode }) {
+export function ResultView({ txId, onRetry, extra, successHeading = 'Thành công' }: { txId: string; onRetry?: () => void; extra?: ReactNode; successHeading?: string }) {
   const w = useWorld()
   const t = w.transactions.find((x) => x.id === txId)
   if (!t) return <p className="py-10 text-center text-muted">Không tìm thấy giao dịch.</p>
-  const heading = t.status === 'success' ? 'Thành công' : t.status === 'pending' ? 'Đang xử lý' : t.status === 'failed' ? 'Không thành công' : 'Đã hoàn tiền'
+  const heading = t.status === 'success' ? successHeading : t.status === 'pending' ? 'Đang xử lý' : t.status === 'failed' ? 'Không thành công' : 'Đã hoàn tiền'
   return (
     <div className="flex flex-col items-center pt-6 text-center">
       <StatusMark status={t.status} />
