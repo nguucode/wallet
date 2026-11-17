@@ -188,6 +188,8 @@ export async function executeMoney(req: MoneyRequest): Promise<Transaction> {
     let outcome: Outcome = s.nextOutcome
     if (outcome === 'pending' && INSTANT.includes(req.type)) outcome = 'success'
     const direction = req.type === 'topup' ? 'in' : 'out'
+    // Payment Code charged to a linked bank (US-PAY-006): the wallet balance is not touched.
+    const fromBank = req.type === 'qr_merchant' && !!req.sourceId
     const t: Transaction = {
       id: txId(w.transactions.length + 1000 + Math.floor(at / 1000) % 100000), type: req.type, status: outcome === 'failed' ? 'failed' : outcome,
       amount: req.amount, fee: outcome === 'failed' ? 0 : f, direction, counterparty: req.counterparty, message: req.message || undefined,
@@ -196,15 +198,15 @@ export async function executeMoney(req: MoneyRequest): Promise<Transaction> {
     }
     if (outcome === 'pending') t.pendingReason = req.type === 'bill' ? 'biller_settling' : 'bank_processing'
     if (outcome === 'failed') {
-      t.failureReason = req.type === 'bill' ? 'biller_unavailable' : req.type === 'qr_merchant' ? 'merchant_cancelled' : s.nextFailure
+      t.failureReason = req.type === 'bill' ? 'biller_unavailable' : req.type === 'qr_merchant' ? (fromBank ? 'bank_declined' : 'merchant_cancelled') : s.nextFailure
       // Bank-side failures debit first and reverse within a minute; others never leave the wallet.
       if (req.type === 'bank_transfer' || req.type === 'withdraw') t.reversedAt = new Date(at + 60_000).toISOString()
     }
-    if (outcome !== 'failed') w.balance += direction === 'in' ? req.amount : -(req.amount + f)
+    if (outcome !== 'failed' && !fromBank) w.balance += direction === 'in' ? req.amount : -(req.amount + f)
     w.transactions.unshift(t)
     if (outcome !== 'failed') {
       w.dayCounter = { date: ymd(at), amount: nextDayCounter(dayCounter(w), { type: req.type, amount: req.amount, method: req.authMethod }) }
-      notifyBalance(w, t, at)
+      if (!fromBank) notifyBalance(w, t, at)
     }
     if (req.counterparty.kind === 'contact') {
       const c = w.contacts.find((x) => x.id === (req.counterparty as { id: string }).id)
