@@ -93,7 +93,7 @@ function WebShell({ children }: { children: ReactNode }) {
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white">Bỏ qua điều hướng</a>
       <aside className="sticky top-0 z-40 flex h-dvh w-[240px] shrink-0 flex-col bg-surface-2 px-3 py-5">
         <Link to="/home" className="mb-6 flex items-center gap-2 px-4 text-[20px] font-extrabold tracking-tight text-ink no-underline" aria-label="Wallet, về Trang chủ">
-          <span aria-hidden className="sky inline-flex size-8 items-center justify-center rounded-[10px] text-white"><Wallet size={18} strokeWidth={2} /></span>
+          <img src="/icon.svg" alt="" width={32} height={32} className="size-8" />
           Wallet
         </Link>
         <nav aria-label="Điều hướng chính" className="flex flex-1 flex-col gap-1 overflow-y-auto">
