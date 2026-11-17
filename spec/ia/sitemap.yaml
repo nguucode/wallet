@@ -1,0 +1,126 @@
+# Single source for Wallet's navigation and routes. The real nav (sidebar + tab bar) reads this file.
+# One route tree serves both layouts. Layout is chosen by viewport width, never by route.
+#   web: >= 1024px, sidebar + top bar. app: < 1024px, tab bar + per-screen header.
+# label: Vietnamese UI text. id/route: English.
+# priority: P0 unless stated. Flow steps use ?step= (no new route segments), see rules.md.
+
+layouts:
+  web: { minWidth: 1024, nav: sidebar, flows: page in content column, max-width 560 }
+  app: { maxWidth: 1023, nav: tabBar, flows: full-screen, tab bar hidden }
+
+topBar: # web only
+  - { id: notifications, label: Thông báo, route: "/notifications", badge: unread }
+  - { id: device, label: Xem trên điện thoại, route: "/device", demo: true }
+  - { id: demo-controls, label: Demo controls, demo: true }
+  - { id: avatar, label: Tài khoản, menu: [Hồ sơ, Bảo mật, Đăng xuất] }
+
+tabBar: # app only; Scan sits in the centre slot and is the largest target
+  - { id: home, label: Trang chủ, route: "/home" }
+  - { id: history, label: Lịch sử, route: "/history" }
+  - { id: scan, label: Quét mã, route: "/pay/scan", emphasis: center }
+  - { id: notifications, label: Thông báo, route: "/notifications", badge: unread }
+  - { id: me, label: Tôi, route: "/me" }
+
+sidebar: # web only
+  - { id: home, label: Trang chủ, route: "/home" }
+  - { id: history, label: Lịch sử, route: "/history" }
+  - group: Chuyển và thanh toán
+    items:
+      - { id: transfer, label: Chuyển tiền, route: "/transfer" }
+      - { id: receive, label: Nhận tiền, route: "/receive" }
+      - { id: pay, label: Thanh toán, route: "/pay/code", note: "Web shows Payment Code and Scan (upload a QR image)." }
+      - { id: bills, label: Hóa đơn, route: "/bills" }
+  - group: Ví của tôi
+    items:
+      - { id: sources, label: Nguồn tiền, route: "/me/sources" }
+      - { id: limits, label: Hạn mức, route: "/me/limits" }
+      - { id: security, label: Bảo mật, route: "/me/security" }
+      - { id: profile, label: Hồ sơ và xác thực, route: "/me/profile" }
+  - { id: support, label: Trợ giúp, route: "/support" }
+  - { id: product, label: Product, route: "/product", priority: P1, demo: true, note: "Case-study layer: renders spec/. Web only." }
+
+screens:
+  # ── Home ─────────────────────────────────────────────
+  - id: home
+    route: "/home"
+    title: Trang chủ
+    sections:
+      - balance          # available balance, hide/show toggle, pending-out line when > 0
+      - shortcuts        # fixed row: Quét mã, Mã thanh toán, Nạp, Rút, Chuyển, Hóa đơn (web drops Quét mã)
+      - gate             # only when a wallet gate is active, see rules.md#gates
+      - bills-due        # bills due in the next 7 days
+      - recent-recipients
+      - recent-activity  # last 5 transactions, link to /history
+
+  # ── Onboarding (outside the shell, no nav) ───────────
+  - id: onboarding
+    route: "/onboarding"
+    title: Mở ví
+    shell: none
+    steps: [phone, otp, pin, id-method, id-capture, nfc, vneid, face, verifying, warning, terms, ready]
+    note: "id-method branches to nfc (CCCD chip) or vneid. ready shows wallet number + limits, primary CTA = link a bank."
+
+  # ── Money in / out ───────────────────────────────────
+  - { id: topup,    route: "/topup",    title: Nạp tiền, steps: [amount, confirm, auth, result] }
+  - { id: withdraw, route: "/withdraw", title: Rút tiền, steps: [amount, confirm, auth, result] }
+
+  # ── Transfer ─────────────────────────────────────────
+  - id: transfer
+    route: "/transfer"
+    title: Chuyển tiền
+    note: "Chooser: Đến ví (phone/contacts), Đến ngân hàng, Quét mã VietQR. Lists recent recipients."
+  - { id: transfer-wallet, route: "/transfer/wallet", title: Chuyển đến ví, steps: [recipient, amount, confirm, auth, result] }
+  - { id: transfer-bank,   route: "/transfer/bank",   title: Chuyển đến ngân hàng, steps: [recipient, amount, confirm, auth, result], note: "recipient = bank + account number, or prefilled from a scanned VietQR." }
+  - { id: receive, route: "/receive", title: Nhận tiền, note: "My receive QR (wallet + VietQR form), optional fixed amount, share/save." }
+
+  # ── Pay ──────────────────────────────────────────────
+  - id: scan
+    route: "/pay/scan"
+    title: Quét mã
+    note: "Camera on app; on web and in demo, pick from a sample QR library or upload. Detects payload: wallet QR → /transfer/wallet, VietQR → /transfer/bank, merchant QR → /pay/merchant. Unknown → error state."
+  - { id: pay-merchant, route: "/pay/merchant", title: Thanh toán, steps: [amount, confirm, auth, result], note: "amount is skipped when the QR carries a fixed amount." }
+  - { id: pay-code, route: "/pay/code", title: Mã thanh toán, note: "Rotating code (QR + barcode) with countdown, source picker, brightness hint. Demo control simulates the cashier scanning it." }
+
+  # ── Bills ────────────────────────────────────────────
+  - { id: bills, route: "/bills", title: Hóa đơn, note: "Saved bills (due / paid / overdue) + biller categories. P0 biller category: Điện." }
+  - { id: bill-new, route: "/bills/new", title: Thêm hóa đơn, steps: [biller, customer-code, lookup] }
+  - { id: bill, route: "/bills/:billId", title: Chi tiết hóa đơn, steps: [view, confirm, auth, result] }
+
+  # ── History ──────────────────────────────────────────
+  - id: history
+    route: "/history"
+    title: Lịch sử
+    filters: [month, type, status]
+    savedViews: [Tất cả, Tiền vào, Tiền ra, Đang xử lý, Không thành công]
+    note: "Web: table with month grouping. App: list grouped by day."
+  - id: transaction
+    route: "/history/:txId"
+    title: Chi tiết giao dịch
+    note: "Status timeline, amount, fee, counterparty, message, source, auth method, transaction ID. Actions: Biên lai, Liên hệ hỗ trợ, Chuyển lại (p2p/bank)."
+  - { id: receipt, route: "/history/:txId?view=receipt", title: Biên lai, note: "Shareable receipt image/print." }
+  - { id: statement, route: "/history?view=statement", title: Sao kê, priority: P1 }
+
+  # ── Me ───────────────────────────────────────────────
+  - { id: me, route: "/me", title: Tôi, note: "App only hub: profile card with KYC badge, links to sources, limits, security, profile, support. Web redirects to /me/profile." }
+  - { id: profile, route: "/me/profile", title: Hồ sơ và xác thực, note: "Name, phone, wallet number, CCCD number masked + expiry, KYC status, wallet status." }
+  - { id: sources, route: "/me/sources", title: Nguồn tiền, note: "Linked banks and cards, default source, unlink (blocked for the last one)." }
+  - { id: link-source, route: "/me/sources/link", title: Liên kết ngân hàng, steps: [bank, account, consent, bank-app, result], note: "bank-app = simulated hand-off to the bank's app." }
+  - { id: limits, route: "/me/limits", title: Hạn mức, note: "Monthly general (100tr) and essential (300tr) meters, today's step-up counter, per-transaction thresholds explained." }
+  - { id: security, route: "/me/security", title: Bảo mật, note: "Change PIN, device biometric toggle. P1: devices, lock wallet." }
+  - { id: devices, route: "/me/security?view=devices", title: Thiết bị, priority: P1 }
+
+  # ── Notifications & support ──────────────────────────
+  - { id: notifications, route: "/notifications", title: Thông báo, savedViews: [Tất cả, Giao dịch, Bảo mật, Hóa đơn] }
+  - { id: support, route: "/support", title: Trợ giúp, note: "P0: FAQ entry points + contact form. Cases list and tracking are P1." }
+  - { id: support-new, route: "/support/new", title: Liên hệ hỗ trợ, steps: [reason, details, sent], note: "Opened from a transaction (prefilled) or from /support." }
+  - { id: support-case, route: "/support/:caseId", title: Yêu cầu hỗ trợ, priority: P1 }
+
+  # ── Demo / case-study layer ──────────────────────────
+  - { id: device, route: "/device", title: Xem trên điện thoại, shell: none, demo: true, note: "390×844 phone frame, same-origin iframe of the app shell, with demo controls beside it." }
+  - { id: product, route: "/product", title: Product, priority: P1, demo: true }
+  - { id: not-found, route: "*", title: Không tìm thấy trang }
+
+overlays: # not routes; can open over any screen
+  - { id: auth-challenge, label: Xác thực giao dịch, note: "Sheet on app, dialog on web. PIN keypad or face match. See rules.md#step-up." }
+  - { id: gate, label: Chặn giao dịch, note: "Explains why a money action is blocked and the single next step. See rules.md#gates." }
+  - { id: demo-controls, label: Demo controls, demo: true, note: "Panel. See mock-data.md#demo-controls." }

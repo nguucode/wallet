@@ -1,0 +1,56 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+  --color-ink: #0e0b16;
+  --color-muted: #5d5869;
+  --color-surface: #ffffff;
+  --color-surface-2: #f5f4f8;
+  --color-line: #dcd9e3;
+  --color-line-soft: #edebf1;
+  --color-primary: #5b2be0;
+  --color-primary-hover: #4a1fc4;
+  --color-primary-soft: #efeaff;
+  --color-primary-ink: #3d1a9e;
+  --color-success: #0b7a47;
+  --color-success-soft: #e5f4ec;
+  --color-pending: #8a5200;
+  --color-pending-soft: #fff2db;
+  --color-danger: #b3261e;
+  --color-danger-soft: #fcebea;
+  --shadow-float: 0 8px 24px -8px rgb(14 11 22 / 0.18);
+  --radius-card: 16px;
+  --radius-input: 12px;
+}
+
+@layer base {
+  html { color-scheme: light; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 22px;
+    -webkit-font-smoothing: antialiased;
+    caret-color: var(--color-primary);
+  }
+  ::selection { background: var(--color-primary-soft); color: var(--color-primary-ink); }
+  :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: 4px; }
+  a { text-underline-offset: 3px; }
+  * { scrollbar-width: thin; scrollbar-color: var(--color-line) transparent; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+}
+
+@utility tnum { font-variant-numeric: tabular-nums; }
+@utility balance { font-size: 52px; line-height: 60px; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+@utility balance-app { font-size: 40px; line-height: 48px; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+@utility amount-display { font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@keyframes draw { from { stroke-dashoffset: 48; } to { stroke-dashoffset: 0; } }
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
