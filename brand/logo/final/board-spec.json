@@ -1,0 +1,35 @@
+{
+  "brand": "Wallet",
+  "tagline": "Đơn giản, mọi trạng thái luôn rõ",
+  "brief": "A demo e-wallet for young urban professionals in Vietnam. The app's promise is that every state is clear: no hidden pending, every transaction carries one status line. The icon has to sit on an iPhone home screen next to MoMo and bank apps and still feel calm and native.",
+  "adjectives": ["clear", "calm", "native", "trustworthy"],
+  "criteria": "Success: reads as an iOS icon at a glance, ownable in the violet Violet Sky world, recognisable at 16 px, survives in one colour.",
+  "industry": "finance",
+  "nav": ["Ví", "Chuyển tiền", "Lịch sử"],
+  "brand_color": "#5b2be0",
+  "greyscale": false,
+  "designer": "Kafka",
+  "round": 3,
+  "concepts": [
+    {
+      "name": "Folded W",
+      "symbol": "wallet-symbol.svg",
+      "lockup": "wallet-horizontal.svg",
+      "symbol_on_tile": "wallet-symbol-white.svg",
+      "lockup_on_dark": "wallet-horizontal-white.svg",
+      "tile_color": "#5b2be0",
+      "idea": "A W folded from a single ribbon: one continuous path, each fold visible, nothing hidden.",
+      "rationale": [
+        "One ribbon, every fold shown: the 'every state is clear' promise as form",
+        "Two tones give the iOS-native depth without effects; the fold survives in one colour as a cut",
+        "Four identical panels on one angle system, so it grows into patterns, loaders and motion (the ribbon folding in)"
+      ]
+    }
+  ],
+  "recommendation": "Folded W, approved direction. Masters, lockups and the web/iOS icon set are delivered; the app already uses the new icon.",
+  "next_steps": [
+    "Review the icon on a real home screen (add to Home Screen on iPhone)",
+    "Trademark and reverse-image search before any public use",
+    "Optional: fold-in motion for the splash and the loading state"
+  ]
+}
