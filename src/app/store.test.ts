@@ -70,3 +70,17 @@ describe('scenarios and security', () => {
     expect(verifyPin('123456')).toMatchObject({ ok: false })
   })
 })
+
+describe('balance notifications (US-NTF-003)', () => {
+  it('a pending debit notifies at debit time; a later failure adds a reversal notice; success adds none', async () => {
+    setSetting('nextOutcome', 'pending')
+    const t = await executeMoney({ type: 'bank_transfer', amount: 2_000_000, counterparty: bank, authMethod: 'pin' })
+    const n = getState().world.notifications[0]
+    expect(n.title).toBe(`Số dư ví −${(2_000_000 + t.fee).toLocaleString('de-DE')} ₫`)
+    expect(n.body).toMatch(/^Chuyển đến TRAN VAN HAI, BIDV \(đang xử lý\)\. Số dư khả dụng: /)
+    const count = getState().world.notifications.length
+    resolvePending('failed')
+    expect(getState().world.notifications.length).toBeGreaterThan(count)
+    expect(getState().world.notifications[0].body).toMatch(/^Hoàn tiền giao dịch không thành công WL/)
+  })
+})

@@ -7,17 +7,17 @@ import { Button, Callout, Sheet } from '@/components/ui'
 /** rules.md#gates copy: why the money action is blocked and the single next step. */
 export const GATE_COPY: Record<GateId, { title: string; body: string; cta?: { label: string; to: string } }> = {
   kyc: { title: 'Ví chưa được xác thực sinh trắc học', body: 'Theo quy định, bạn cần đối chiếu khuôn mặt với CCCD gắn chip hoặc VNeID trước khi giao dịch. Bạn vẫn xem được số dư và lịch sử.', cta: { label: 'Xác thực ngay', to: '/onboarding?step=id-method' } },
-  kyc_review: { title: 'Hồ sơ đang được kiểm tra', body: 'Thường xong trong 24 giờ. Chúng tôi sẽ báo ngay khi ví sẵn sàng giao dịch.' },
-  suspended: { title: 'Ví tạm ngừng giao dịch', body: 'CCCD của bạn đã hết hạn. Theo quy định, ví tạm ngừng giao dịch cho đến khi bạn cập nhật giấy tờ mới.' },
+  kyc_review: { title: 'Ví chưa được xác thực sinh trắc học', body: 'Đang kiểm tra, thường xong trong 24 giờ. Chúng tôi sẽ báo ngay khi ví sẵn sàng giao dịch.' },
+  suspended: { title: 'Giấy tờ tùy thân đã hết hạn, ví tạm ngừng giao dịch', body: 'Theo quy định, ví tạm ngừng giao dịch cho đến khi bạn cập nhật giấy tờ mới.' },
   locked: { title: 'Ví đang tạm khóa', body: 'Mọi giao dịch đã được tạm dừng để bảo vệ tài khoản. Liên hệ hỗ trợ để mở khóa.', cta: { label: 'Liên hệ hỗ trợ', to: '/support' } },
-  no_source: { title: 'Cần liên kết ngân hàng chính chủ', body: 'Theo quy định, ví chỉ dùng được sau khi liên kết tài khoản hoặc thẻ ghi nợ đứng tên bạn.', cta: { label: 'Liên kết ngân hàng', to: '/me/sources/link' } },
+  no_source: { title: 'Cần liên kết ngân hàng chính chủ trước khi dùng ví', body: 'Theo quy định, ví chỉ dùng được sau khi liên kết tài khoản hoặc thẻ ghi nợ đứng tên bạn.', cta: { label: 'Liên kết ngân hàng', to: '/me/sources/link' } },
 }
 
 export function GateCallout({ gate }: { gate: GateId }) {
   const nav = useNavigate()
   const c = GATE_COPY[gate]
   return (
-    <Callout tone={gate === 'suspended' || gate === 'locked' ? 'danger' : 'pending'} title={c.title} action={c.cta ? <Button size="sm" onClick={() => nav(c.cta!.to)}>{c.cta.label}</Button> : undefined}>
+    <Callout tone="pending" title={c.title} action={c.cta ? <Button size="sm" onClick={() => nav(c.cta!.to)}>{c.cta.label}</Button> : undefined}>
       {c.body}
     </Callout>
   )

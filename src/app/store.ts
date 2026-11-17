@@ -6,6 +6,7 @@ import { fee } from '@/domain/fees'
 import { limitUsage, vnMonth } from '@/domain/limits'
 import type { AuthMethod, TxType } from '@/domain/types'
 import { formatVnd } from '@/domain/money'
+import { dueReminders } from '@/features/ntf/reminders'
 import {
   bankByBin, bankById, BANKS, seedWorld, txId,
   type Counterparty, type FailureReason, type Notification, type Scenario, type SupportRequest, type Transaction, type World,
@@ -36,8 +37,14 @@ const DEFAULT_SETTINGS: Settings = {
 export const now = () => Date.now() + state.settings.clockOffsetMs
 
 function fresh(scenario: Scenario, keep?: Partial<Settings>): State {
-  const settings = { ...DEFAULT_SETTINGS, ...keep, scenario, clockOffsetMs: 0 }
-  return { world: seedWorld(scenario, Date.now()), settings, version: 1 }
+  const settings = { ...DEFAULT_SETTINGS, ...keep, scenario, clockOffsetMs: 0, cashierScan: undefined }
+  const world = seedWorld(scenario, Date.now())
+  // Seeded balance notices get the same wording as live ones (US-NTF-003), without the historical balance.
+  for (const n of world.notifications) {
+    const t = n.kind === 'balance_change' ? world.transactions.find((x) => n.link === `/history/${x.id}`) : undefined
+    if (t) { n.title = `Số dư ví ${t.direction === 'in' ? '+' : '−'}${formatVnd(t.amount + t.fee)}`; n.body = txDescription(t, world) + '.' }
+  }
+  return { world, settings, version: 1 }
 }
 
 function load(): State {
@@ -142,11 +149,31 @@ const TYPE_LABEL: Record<TxType, string> = {
 }
 export const typeLabel = (t: TxType) => TYPE_LABEL[t]
 
-function notifyBalance(w: World, t: Transaction, at: number) {
+/** US-NTF-003 description of a transaction for the balance notification. */
+export function txDescription(t: Transaction, w: World): string {
+  const c = t.counterparty
+  const src = (id?: string) => { const x = w.sources.find((y) => y.id === id); return x ? bankById(x.bankId).name : 'nguồn tiền' }
+  switch (t.type) {
+    case 'topup': return `Nạp tiền từ ${src(t.sourceId ?? (c.kind === 'source' ? c.id : undefined))}`
+    case 'withdraw': return `Rút tiền về ${src(t.sourceId ?? (c.kind === 'source' ? c.id : undefined))}`
+    case 'p2p_out': return `Chuyển đến ví ${counterpartyName(c, w)}`
+    case 'p2p_in': return `Nhận tiền từ ${counterpartyName(c, w)}`
+    case 'bank_transfer': return c.kind === 'bank' ? `Chuyển đến ${c.holder}, ${bankById(c.bankId).name}` : 'Chuyển đến ngân hàng'
+    case 'qr_merchant': return `Thanh toán tại ${counterpartyName(c, w)}`
+    case 'bill': return `Thanh toán hóa đơn ${counterpartyName(c, w)}`
+    case 'refund': return `Hoàn tiền từ ${counterpartyName(c, w)}`
+  }
+}
+
+/** One balance_change notification per balance change (rules.md#notifications, US-NTF-003). */
+function notifyBalance(w: World, t: Transaction, at: number, kind: 'normal' | 'reversal' = 'normal') {
+  const credit = kind === 'reversal' || t.direction === 'in'
+  const amount = kind === 'reversal' ? t.amount : t.amount + t.fee
+  const desc = kind === 'reversal' ? `Hoàn tiền giao dịch không thành công ${t.id}` : txDescription(t, w) + (t.status === 'pending' ? ' (đang xử lý)' : '')
   w.notifications.unshift({
-    id: 'n' + t.id + '-' + t.status, kind: 'balance_change', read: false, createdAt: new Date(at).toISOString(),
-    title: t.direction === 'in' ? `+${formatVnd(t.amount)}` : `−${formatVnd(t.amount + t.fee)}`,
-    body: `${typeLabel(t.type)} · ${counterpartyName(t.counterparty, w)} · Số dư ${formatVnd(w.balance)}`,
+    id: `n${t.id}-${kind === 'reversal' ? 'rev' : t.status}`, kind: 'balance_change', read: false, createdAt: new Date(at).toISOString(),
+    title: `Số dư ví ${credit ? '+' : '−'}${formatVnd(amount)}`,
+    body: `${desc}. Số dư khả dụng: ${formatVnd(w.balance)}.`,
     link: `/history/${t.id}`,
   })
 }
@@ -177,7 +204,7 @@ export async function executeMoney(req: MoneyRequest): Promise<Transaction> {
     w.transactions.unshift(t)
     if (outcome !== 'failed') {
       w.dayCounter = { date: ymd(at), amount: nextDayCounter(dayCounter(w), { type: req.type, amount: req.amount, method: req.authMethod }) }
-      if (outcome === 'success') notifyBalance(w, t, at)
+      notifyBalance(w, t, at)
     }
     if (req.counterparty.kind === 'contact') {
       const c = w.contacts.find((x) => x.id === (req.counterparty as { id: string }).id)
@@ -204,14 +231,14 @@ export function resolvePending(outcome: 'success' | 'failed') {
     for (const t of w.transactions.filter((x) => x.status === 'pending')) {
       t.updatedAt = new Date(at).toISOString()
       t.pendingReason = undefined
-      if (outcome === 'success') { t.status = 'success'; notifyBalance(w, t, at) }
+      if (outcome === 'success') t.status = 'success'
       else {
         t.status = 'failed'
         t.failureReason = t.type === 'bill' ? 'biller_unavailable' : 'timeout_reversed'
         t.reversedAt = new Date(at).toISOString()
         w.balance += t.amount + t.fee
         t.fee = 0
-        notifyBalance(w, { ...t, direction: 'in', type: 'refund' }, at)
+        notifyBalance(w, t, at, 'reversal')
       }
       if (t.counterparty.kind === 'biller') {
         const b = w.bills.find((x) => x.id === (t.counterparty as { billId: string }).billId)
@@ -382,13 +409,21 @@ export async function createSupportRequest(input: Omit<SupportRequest, 'id' | 'c
 export function markRead(ids?: string[]) {
   mutate((w) => w.notifications.forEach((n) => { if (!ids || ids.includes(n.id)) n.read = true }))
 }
-export function addNotification(n: Omit<Notification, 'id' | 'createdAt' | 'read'>) {
-  mutate((w) => { w.notifications.unshift({ ...n, id: 'n' + now(), createdAt: new Date(now()).toISOString(), read: false }) })
+/** Adds a notification; with an id it is idempotent (skipped when that id exists). */
+export function addNotification(n: Omit<Notification, 'id' | 'createdAt' | 'read'> & { id?: string; createdAt?: string }) {
+  if (n.id && state.world.notifications.some((x) => x.id === n.id)) return
+  mutate((w) => { w.notifications.unshift({ ...n, id: n.id ?? 'n' + now(), createdAt: n.createdAt ?? new Date(now()).toISOString(), read: false }) })
+}
+
+/** US-NTF-004: create due reminders (bill due in 3 days, CCCD expiring) — on load and when the clock moves. */
+export function syncReminders() {
+  const due = dueReminders(state.world, now())
+  if (due.length) mutate((w) => { for (const n of due) if (!w.notifications.some((x) => x.id === n.id)) w.notifications.unshift(n) })
 }
 
 /* ── Demo controls ────────────────────────────────────────────────── */
 
-export function setScenario(scenario: Scenario) { commit({ ...fresh(scenario, state.settings), version: state.version }) }
+export function setScenario(scenario: Scenario) { commit({ ...fresh(scenario, state.settings), version: state.version }); syncReminders() }
 export function reset() { setScenario(state.settings.scenario) }
 export function setSetting<K extends keyof Settings>(k: K, v: Settings[K]) { mutate((_, s) => { s[k] = v }) }
 /** Advance the demo clock; pending items whose ETA has passed settle as success. */
@@ -396,6 +431,7 @@ export function advanceClock(ms: number) {
   mutate((_, s) => { s.clockOffsetMs += ms })
   const due = state.world.transactions.some((t) => t.status === 'pending' && pendingEta(t).getTime() <= now())
   if (due) resolvePending('success')
+  syncReminders()
 }
 export function signOut() { setScenario('new') }
 export function cashierScan(amount: number, merchantId = 'm06') {

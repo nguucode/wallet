@@ -75,7 +75,7 @@ function AccountMenu() {
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
-      <Confirm open={confirm} onOpenChange={setConfirm} title="Đăng xuất khỏi ví?" body="Bản demo sẽ quay về màn Mở ví." confirmLabel="Đăng xuất" onConfirm={() => { signOut(); nav('/onboarding') }} danger />
+      <Confirm open={confirm} onOpenChange={setConfirm} title="Đăng xuất khỏi Wallet?" body="Bản demo sẽ quay về màn Mở ví." confirmLabel="Đăng xuất" onConfirm={() => { signOut(); nav('/onboarding') }} danger />
     </>
   )
 }
@@ -109,7 +109,7 @@ function WebShell({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-30 flex h-16 items-center justify-end gap-2 border-b border-line-soft bg-surface/95 px-8 backdrop-blur-sm">
           <Link to="/notifications" aria-label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} className="relative inline-flex size-11 items-center justify-center rounded-full text-ink hover:bg-surface-2">
             <Bell size={20} strokeWidth={1.75} aria-hidden />
-            {unread ? <span className="absolute top-1.5 right-1 min-w-[18px] rounded-full bg-danger px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum">{unread > 99 ? '99+' : unread}</span> : null}
+            {unread ? <span className="absolute top-1.5 right-1 min-w-[18px] rounded-full bg-danger px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum">{unread > 9 ? '9+' : unread}</span> : null}
           </Link>
           <DemoControlsButton />
           <span aria-hidden className="mx-2 h-6 w-px bg-line" />
@@ -144,10 +144,10 @@ function TabBar() {
             )
           return (
             <li key={t.id}>
-              <Link to={t.route!} aria-current={active ? 'page' : undefined} className={cx('relative flex h-full flex-col items-center justify-center gap-1 no-underline', active ? 'text-primary' : 'text-muted')}>
+              <Link to={t.route!} aria-current={active ? 'page' : undefined} aria-label={t.badge && unread ? `${t.label}, ${unread} chưa đọc` : undefined} className={cx('relative flex h-full flex-col items-center justify-center gap-1 no-underline', active ? 'text-primary' : 'text-muted')}>
                 <Icon size={22} strokeWidth={active ? 2.25 : 1.75} aria-hidden />
                 <span className={cx('text-[11px] leading-3', active ? 'font-semibold' : 'font-medium')}>{t.label}</span>
-                {t.badge && unread ? <span className="absolute top-2 left-1/2 ml-1.5 min-w-[18px] rounded-full bg-danger px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum" aria-label={`${unread} chưa đọc`}>{unread > 99 ? '99+' : unread}</span> : null}
+                {t.badge && unread ? <span className="absolute top-2 left-1/2 ml-1.5 min-w-[18px] rounded-full bg-danger px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum" aria-hidden>{unread > 9 ? '9+' : unread}</span> : null}
               </Link>
             </li>
           )
@@ -200,7 +200,7 @@ export function ViewSwitchFab() {
   return (
     <button
       onClick={() => nav(target)}
-      className="fixed right-6 bottom-6 z-40 inline-flex h-12 items-center gap-2 rounded-full bg-ink pr-5 pl-4 text-[14px] font-semibold text-white shadow-[var(--shadow-float)] hover:bg-ink/85"
+      className={cx("fixed bottom-6 z-40 inline-flex", onDevice ? "right-[404px]" : "right-6") + "  h-12 items-center gap-2 rounded-full bg-ink pr-5 pl-4 text-[14px] font-semibold text-white shadow-[var(--shadow-float)] hover:bg-ink/85"}
     >
       {onDevice ? <Monitor size={18} strokeWidth={2} aria-hidden /> : <Smartphone size={18} strokeWidth={2} aria-hidden />}
       {onDevice ? 'Xem bản web' : 'Xem bản điện thoại'}

@@ -132,9 +132,9 @@ export function StatusPill({ status, className }: { status: TxStatus; className?
   return <span className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[12px] leading-4 font-medium whitespace-nowrap', tone, className)}>{STATUS_LABEL[status]}</span>
 }
 
-export function Money({ amount, sign, hidden, className }: { amount: number; sign?: 'in' | 'out'; hidden?: boolean; className?: string }) {
-  if (hidden) return <span className={cx('tnum', className)} aria-label="Số dư đã ẩn">•••••• ₫</span>
-  return <span className={cx('tnum whitespace-nowrap', sign === 'in' && 'text-success', className)}>{formatVnd(amount, { sign })}</span>
+export function Money({ amount, sign, hidden, className, tone }: { amount: number; sign?: 'in' | 'out'; hidden?: boolean; className?: string; tone?: boolean }) {
+  if (hidden) return <span className={cx('tnum', className)} aria-label="Số dư đang ẩn">•••••• ₫</span>
+  return <span className={cx('tnum whitespace-nowrap', tone && sign === 'in' && 'text-success', className)}>{formatVnd(amount, { sign })}</span>
 }
 
 export function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'success' | 'pending' | 'danger' }) {
