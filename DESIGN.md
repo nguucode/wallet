@@ -6,6 +6,8 @@ colors:
   primary-hover: "#4a1fc4"
   primary-soft: "#ece6ff"
   primary-ink: "#3d1a9e"
+  primary-soft-hover: "#e0d7ff"
+  danger-soft-hover: "#fbdcd9"
   sky-from: "#4a1fc4"
   sky-to: "#7655f2"
   ink: "#1c1840"

@@ -14,9 +14,9 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'ink'
 const VARIANT: Record<Variant, string> = {
   primary: 'bg-primary text-white hover:bg-primary-hover disabled:bg-line disabled:text-muted',
   ink: 'bg-ink text-white hover:bg-ink/85 disabled:bg-line disabled:text-muted',
-  secondary: 'bg-primary-soft text-primary-ink hover:bg-[#e0d7ff] disabled:text-muted disabled:bg-surface-2',
+  secondary: 'bg-primary-soft text-primary-ink hover:bg-primary-soft-hover disabled:text-muted disabled:bg-surface-2',
   ghost: 'text-primary hover:bg-primary-soft disabled:text-muted',
-  danger: 'bg-danger-soft text-danger hover:bg-[#fbdcd9]',
+  danger: 'bg-danger-soft text-danger hover:bg-danger-soft-hover',
 }
 export const Button = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; size?: 'md' | 'sm'; block?: boolean; loading?: boolean }>(
   function Button({ variant = 'primary', size = 'md', block, loading, className, children, disabled, ...rest }, ref) {
@@ -230,7 +230,7 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
         <Dialog.Content
           onPointerDownOutside={(e) => !dismissible && e.preventDefault()}
           onEscapeKeyDown={(e) => !dismissible && e.preventDefault()}
-          aria-describedby={description ? undefined : undefined}
+          {...(description ? {} : { 'aria-describedby': undefined })}
           className={cx(
             'fixed z-50 bg-surface shadow-[var(--shadow-float)] focus:outline-none',
             layout === 'app'
@@ -242,7 +242,7 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
           <div className="mb-4 flex items-start justify-between gap-4">
             <div>
               <Dialog.Title className="text-[18px] leading-[26px] font-bold">{title}</Dialog.Title>
-              {description ? <Dialog.Description className="mt-1 text-muted">{description}</Dialog.Description> : <Dialog.Description className="sr-only">{title}</Dialog.Description>}
+              {description ? <Dialog.Description className="mt-1 text-muted">{description}</Dialog.Description> : null}
             </div>
             {dismissible ? (
               <Dialog.Close asChild>

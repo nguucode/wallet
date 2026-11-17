@@ -48,7 +48,7 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
             <button
               key={k} type="button" tabIndex={-1} disabled={disabled}
               onClick={() => (k === 'del' ? setPin((p) => p.slice(0, -1)) : push(k))}
-              className="flex h-14 items-center justify-center rounded-[16px] bg-surface-2 text-[24px] font-semibold text-ink hover:bg-primary-soft active:bg-[#ddd3ff] disabled:opacity-40"
+              className="flex h-14 items-center justify-center rounded-[14px] bg-surface-2 text-[24px] font-semibold text-ink hover:bg-primary-soft active:bg-primary-soft-hover disabled:opacity-40"
             >
               {k === 'del' ? <Delete size={22} strokeWidth={1.75} /> : k}
             </button>

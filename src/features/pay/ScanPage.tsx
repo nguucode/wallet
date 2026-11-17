@@ -34,7 +34,7 @@ function useScanHandler() {
   const handle = (raw: string) => {
     const r = routeForQr(parseQr(raw), raw)
     if (!r.ok) return setProblem({ title: r.title, body: r.body, action: 'rescan' })
-    if (layout === 'app') navigator.vibrate?.(30)
+    if (layout === 'app' && navigator.userActivation?.hasBeenActive) navigator.vibrate?.(30)
     nav(r.to)
   }
   const handleFile = async (file?: File) => {
@@ -186,13 +186,13 @@ function AppScan() {
 
   const tool = (label: string, icon: ReactNode, onClick: () => void, pressed?: boolean) => (
     <button type="button" onClick={onClick} aria-pressed={pressed} className="flex min-w-[64px] flex-col items-center gap-1.5 rounded-xl py-1 text-white">
-      <span aria-hidden className={cx('inline-flex size-12 items-center justify-center rounded-full', pressed ? 'bg-white text-[#0E0B16]' : 'bg-white/15')}>{icon}</span>
+      <span aria-hidden className={cx('inline-flex size-12 items-center justify-center rounded-full', pressed ? 'bg-white text-ink' : 'bg-white/15')}>{icon}</span>
       <span className="text-[13px] leading-[18px]">{label}</span>
     </button>
   )
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-[#0E0B16] text-white">
+    <div className="fixed inset-0 z-40 flex flex-col bg-ink text-white">
       <video ref={videoRef} playsInline muted aria-hidden className={cx('absolute inset-0 size-full object-cover', cam !== 'live' && 'hidden')} />
       <div className="relative z-10 flex h-14 items-center px-2 pt-[env(safe-area-inset-top)]">
         <button type="button" onClick={close} aria-label="Đóng" className="inline-flex size-11 items-center justify-center rounded-full hover:bg-white/10"><X size={24} strokeWidth={1.75} /></button>

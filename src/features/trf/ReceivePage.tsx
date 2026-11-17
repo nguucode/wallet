@@ -29,13 +29,13 @@ async function renderImage(payload: string, name: string, amount: number): Promi
   g.fillStyle = '#ffffff'; g.fillRect(0, 0, c.width, c.height)
   g.drawImage(qr, 40, 40)
   await document.fonts?.ready
-  g.fillStyle = '#0E0B16'; g.textAlign = 'center'
+  g.fillStyle = '#1c1840'; g.textAlign = 'center'
   g.font = '700 30px "Be Vietnam Pro", sans-serif'
   g.fillText(name, 320, 660, 600)
   g.font = '500 24px "Be Vietnam Pro", sans-serif'
-  g.fillStyle = '#5D5869'
+  g.fillStyle = '#625d7d'
   g.fillText('Mã nhận tiền · Wallet', 320, 702, 600)
-  if (amount) { g.fillStyle = '#0E0B16'; g.font = '700 30px "Be Vietnam Pro", sans-serif'; g.fillText(formatVnd(amount), 320, 770, 600) }
+  if (amount) { g.fillStyle = '#1c1840'; g.font = '700 30px "Be Vietnam Pro", sans-serif'; g.fillText(formatVnd(amount), 320, 770, 600) }
   return new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error('toBlob'))), 'image/png'))
 }
 

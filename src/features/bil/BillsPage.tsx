@@ -63,14 +63,19 @@ export default function BillsPage() {
     <div>
       <ScreenTitle description={payable.length ? <span className="tnum">{payable.length} hóa đơn cần thanh toán · {formatVnd(total)}</span> : undefined}>Hóa đơn</ScreenTitle>
 
-      <Section title="Hóa đơn của tôi" className="mt-6!" action={<button type="button" onClick={() => guard('/bills/new')} className="min-h-11 font-semibold text-primary">+ Thêm hóa đơn</button>}>
+      <section aria-labelledby="my-bills" className="mt-4">
         {!bills.length ? (
           <Card>
+            <h2 id="my-bills" className="label-caps px-4 pt-4">Hóa đơn của tôi</h2>
             <EmptyState icon={<FileText size={22} strokeWidth={1.75} />} title="Chưa có hóa đơn nào được lưu"
               action={<button type="button" onClick={() => guard('/bills/new')} className="min-h-11 font-semibold text-primary">Thêm hóa đơn điện</button>} />
           </Card>
         ) : (
           <Card>
+            <div className="flex items-center justify-between gap-3 px-4 pt-4">
+              <h2 id="my-bills" className="label-caps">Hóa đơn của tôi</h2>
+              <button type="button" onClick={() => guard('/bills/new')} className="min-h-11 rounded-full px-3 font-semibold text-primary hover:bg-primary-soft">+ Thêm hóa đơn</button>
+            </div>
             <ul className="divide-y divide-line-soft">
               {bills.map((b) => {
                 const s = billStatusOn(b, at)
@@ -101,7 +106,7 @@ export default function BillsPage() {
             </ul>
           </Card>
         )}
-      </Section>
+      </section>
 
       <Section title="Thêm hóa đơn">
         <ul className="flex gap-6">

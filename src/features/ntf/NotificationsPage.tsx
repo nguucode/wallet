@@ -33,8 +33,8 @@ export default function NotificationsPage() {
   }
   const markAll = unreadIds.length && loaded ? (
     layout === 'web'
-      ? <button type="button" onClick={() => markRead(unreadIds)} className="h-11 shrink-0 rounded-full px-3 text-[14px] font-semibold text-primary hover:bg-primary-soft">Đánh dấu tất cả đã đọc</button>
-      : <IconButton label="Đánh dấu tất cả đã đọc" onClick={() => markRead(unreadIds)} className="shrink-0"><CheckCheck size={22} strokeWidth={1.75} /></IconButton>
+      ? <button type="button" onClick={() => markRead(unreadIds)} className="h-11 shrink-0 rounded-full px-3 text-[14px] font-semibold text-white hover:bg-white/15">Đánh dấu tất cả đã đọc</button>
+      : <IconButton label="Đánh dấu tất cả đã đọc" onClick={() => markRead(unreadIds)} className="shrink-0 text-white hover:bg-white/15"><CheckCheck size={22} strokeWidth={1.75} /></IconButton>
   ) : null
 
   return (

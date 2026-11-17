@@ -121,12 +121,12 @@ function PayCode() {
     }
   }
 
+  // Demo controls enable "Thu ngân quét Mã thanh toán" only while a code is showing.
+  useEffect(() => { setPaymentCodeOpen(phase === 'code' && !!code); return () => setPaymentCodeOpen(false) }, [phase, code])
   if (phase === 'result' && txId) return <Result txId={txId} />
 
   const sources = w.sources
   const label = sourceId === WALLET ? 'Ví' : srcLabel(sources.find((s) => s.id === sourceId) ?? sources[0])
-  // Demo controls enable "Thu ngân quét Mã thanh toán" only while a code is showing.
-  useEffect(() => { setPaymentCodeOpen(phase === 'code' && !!code); return () => setPaymentCodeOpen(false) }, [phase, code])
   const revealed = revealUntil > tick
   const urgent = remaining <= 10
 
