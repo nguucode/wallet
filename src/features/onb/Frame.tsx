@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Clock, Wallet, X } from 'lucide-react'
+import { ArrowLeft, Check, Clock, X } from 'lucide-react'
 import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
@@ -56,7 +56,7 @@ export function StepShell({ title, children, footer, description }: { title: str
         <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[360px]" />
         <header className="relative mx-auto flex h-16 max-w-[960px] items-center justify-between gap-4 px-8 text-white">
           <span className="flex items-center gap-2 text-[20px] font-extrabold tracking-tight">
-            <span aria-hidden className="inline-flex size-8 items-center justify-center rounded-[10px] bg-white text-primary"><Wallet size={18} strokeWidth={2} /></span>
+            <img src="/mark-on-sky.svg" alt="" width={36} height={20} className="h-5 w-auto" />
             Wallet
           </span>
           <span className="flex items-center gap-2"><DemoControlsButton /><SampleBadge onSky />{skip}</span>

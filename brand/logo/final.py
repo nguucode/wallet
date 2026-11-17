@@ -81,6 +81,7 @@ def write(name, body): open(f"final/{name}", "w").write(body)
 write("wallet-symbol.svg", svg(256, 256, two_tone(PRIMARY, INK)))
 write("wallet-symbol-black.svg", svg(256, 256, mono("#000")))
 write("wallet-symbol-white.svg", svg(256, 256, mono("#fff")))
+write("wallet-mark-on-sky.svg", svg(0, 0, two_tone("#fff", SOFT), vb="34 76 188 104"))  # glyph only, cropped, for violet backgrounds
 write("wallet-symbol-small.svg", svg(256, 256, solid("#000")))
 write("wallet-appicon.svg", tile("url(#f)", "url(#b)"))
 write("wallet-appicon-flat.svg", tile("#fff", SOFT, shadow=False))

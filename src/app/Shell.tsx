@@ -178,7 +178,13 @@ export function AppHeader({ title, back, right, centered }: { title: string; bac
       {back ? (
         <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={() => (typeof back === 'string' ? nav(back) : nav(-1))}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton>
       ) : <span className="w-3" />}
-      {centered ? <p className={cx('pointer-events-none absolute inset-x-[100px] truncate text-center font-bold tracking-tight', title === 'Wallet' ? 'text-[22px]' : 'text-[17px]')}>{title}</p> : null}
+      {centered ? (
+        title === 'Wallet' ? (
+          <p className="pointer-events-none absolute inset-x-[100px] flex items-center justify-center gap-2 text-[22px] font-bold tracking-tight">
+            <img src="/mark-on-sky.svg" alt="" width={34} height={19} className="h-[19px] w-auto" />{title}
+          </p>
+        ) : <p className="pointer-events-none absolute inset-x-[100px] truncate text-center text-[17px] font-bold tracking-tight">{title}</p>
+      ) : null}
       <p className={cx('flex-1 truncate text-[17px] font-bold', centered && 'invisible')} aria-hidden={centered || undefined}>{centered ? '' : title}</p>
       {right}
     </header>
