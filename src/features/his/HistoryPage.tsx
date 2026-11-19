@@ -110,7 +110,8 @@ function take(groups: Group[], count: number) {
 
 /** Month-grouped table: ARIA table roles on gluestack stacks (gluestack has no Table). */
 function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w: World; onOpen: (id: string) => void }) {
-  const col = { date: 'w-28 shrink-0 pr-6 pl-4', tx: 'min-w-0 flex-1 pr-6', status: 'w-44 shrink-0 pr-6', amount: 'w-36 shrink-0 items-end pr-4' }
+  // Flat inside the web panel: columns start and end on the content edge.
+  const col = { date: 'w-28 shrink-0 pr-6', tx: 'min-w-0 flex-1 pr-6', status: 'w-44 shrink-0 pr-6', amount: 'w-36 shrink-0 items-end' }
   return (
     <Card className="overflow-hidden p-0 pb-2">
       <VStack role="table" aria-label="Lịch sử giao dịch, mới nhất trước, nhóm theo tháng">
@@ -125,7 +126,7 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
           return (
             <VStack key={g.key} role="rowgroup">
               <HStack role="row">
-                <Box role="columnheader" aria-colspan={4} className={cx('px-4 pb-2', gi === 0 ? 'pt-3' : 'pt-6')}>
+                <Box role="columnheader" aria-colspan={4} className={cx('pb-2', gi === 0 ? 'pt-3' : 'pt-6')}>
                   <Text size="sm" className="font-semibold text-muted-foreground">
                     {g.label} · Vào <Text size="sm" className="tabular-nums text-success">{formatVnd(tot.in, { sign: 'in' })}</Text> · Ra <Text size="sm" className="tabular-nums text-destructive">{formatVnd(tot.out, { sign: 'out' })}</Text>
                   </Text>

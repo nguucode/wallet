@@ -7,7 +7,7 @@ import { signOut, unreadCount, useWorld } from '@/app/store'
 import { useTheme } from '@/app/theme'
 import { DemoControlsButton, DemoControlsSheet } from '@/features/demo/DemoControls'
 import { BACKDROP_PATTERN, ThemeControls } from '@/features/demo/ThemeControls'
-import { Avatar, BackButton, Confirm, cx, Ico, IconButton, NavBar, useLinkPress } from '@/components/app-ui'
+import { Avatar, BackButton, Confirm, cx, FlatContext, Ico, IconButton, NavBar, useLinkPress } from '@/components/app-ui'
 import { Badge, BadgeText } from '@/components/ui/badge'
 import { Box } from '@/components/ui/box'
 import { Button, ButtonText } from '@/components/ui/button'
@@ -208,7 +208,10 @@ function WebShell({ children }: { children: ReactNode }) {
       {/* The white panel IS the content column (sketch): centred on the backdrop, which shows on both sides; the area
           around it scrolls, so the panel grows with its content. */}
       <Box id="main-scroll" className="min-w-0 flex-1 overflow-y-auto px-6 py-2 print:overflow-visible">
-        <Box role="main" id="main" className="mx-auto min-h-[calc(100dvh-16px)] w-full max-w-[816px] shrink-0 rounded-2xl border border-border bg-background px-12 pb-16 pt-10">{children}</Box>
+        <Box role="main" id="main" className="mx-auto min-h-[calc(100dvh-16px)] w-full max-w-[768px] shrink-0 rounded-2xl border border-border bg-background px-12 pb-16 pt-10">
+          {/* 672px of content: everything inside is flat (no nested cards). */}
+          <FlatContext.Provider value>{children}</FlatContext.Provider>
+        </Box>
       </Box>
       <DemoControlsSheet open={demoOpen} onOpenChange={setDemoOpen} />
     </HStack>

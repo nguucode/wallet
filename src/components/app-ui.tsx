@@ -4,7 +4,7 @@
  * The exported API is the one the screens already use; everything inside is gluestack.
  */
 import { Check, ChevronLeft, ChevronRight, X } from 'lucide-react'
-import { useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { formatVnd } from '@/domain/money'
@@ -96,8 +96,18 @@ export function Ico({ as, size = 'md', className }: { as: React.ElementType; siz
 
 /* ── Layout pieces ────────────────────────────────────────────────── */
 
-export function Card({ className, children }: { className?: string; children: ReactNode; as?: 'div' | 'section' | 'article' }) {
-  return <GCard className={cx('gap-0', className)}>{children}</GCard>
+/**
+ * Flat surface (sếp 2026-11-19): inside the web content panel (672px) nothing is a card; the panel is the only frame.
+ * WebShell provides it; sheets and modals render outside the panel and the app layout keeps its cards.
+ */
+export const FlatContext = createContext(false)
+export const useFlat = () => useContext(FlatContext)
+// Appended last so tailwind-merge (gluestack's tva) drops the card's frame and side padding but keeps vertical rhythm.
+const FLAT_CARD = 'rounded-none border-0 bg-transparent px-0 shadow-none'
+
+export function Card({ className, children, role, ...aria }: { className?: string; children: ReactNode; as?: 'div' | 'section' | 'article'; role?: string; 'aria-label'?: string }) {
+  const flat = useFlat()
+  return <GCard role={role} {...aria} className={cx('gap-0', className, flat && FLAT_CARD)}>{children}</GCard>
 }
 
 export function Section({ title, action, children, className }: { title: string; action?: ReactNode; children: ReactNode; className?: string }) {
@@ -172,8 +182,9 @@ export function Row({ left, title, subtitle, right, rightSub, chevron, selected,
   to?: string; onClick?: Press; className?: string; 'aria-label'?: string; 'aria-current'?: 'page' | undefined; 'aria-describedby'?: string
 }) {
   const press = useLinkPress(to, disabled ? undefined : onClick)
+  const flat = useFlat()
   const body = (
-    <HStack className="min-h-[60px] w-full items-center gap-3 px-4 py-2">
+    <HStack className={cx('min-h-[60px] w-full items-center gap-3 py-2', flat ? 'px-0' : 'px-4')}>
       {left ? <Box className="shrink-0">{left}</Box> : null}
       <VStack className="min-w-0 flex-1">
         <Text className="line-clamp-2 font-medium">{title}</Text>
@@ -195,7 +206,8 @@ export function Row({ left, title, subtitle, right, rightSub, chevron, selected,
       onPress={press}
       {...(to ? { href: to, role: 'link' } : { role: 'button', 'aria-pressed': selected })}
       aria-disabled={disabled || undefined}
-      className={cx('w-full data-[hover=true]:bg-accent data-[active=true]:bg-accent', disabled && 'opacity-40', className)}
+      // Flat: text meets the content edge; the hover fill reaches 8px past it with rounded ends.
+      className={cx('w-full data-[hover=true]:bg-accent data-[active=true]:bg-accent', flat && '-mx-2 w-[calc(100%+16px)] rounded-md px-2', disabled && 'opacity-40', className)}
       {...aria}
     >
       {body}
@@ -220,8 +232,9 @@ export function RailTile({ to, onClick, label, leading, name, sub }: { to: strin
 }
 
 export function RowSkeleton() {
+  const flat = useFlat()
   return (
-    <HStack className="min-h-[60px] items-center gap-3 px-4 py-2" aria-hidden>
+    <HStack className={cx('min-h-[60px] items-center gap-3 py-2', flat ? 'px-0' : 'px-4')} aria-hidden>
       <GSkeleton variant="circular" className="h-10 w-10" />
       <VStack className="flex-1 gap-2"><GSkeleton className="h-4 w-2/5" /><GSkeleton className="h-3 w-1/4" /></VStack>
       <GSkeleton className="h-4 w-20" />
@@ -400,7 +413,7 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
           <ActionsheetDragIndicatorWrapper><ActionsheetDragIndicator /></ActionsheetDragIndicatorWrapper>
           {header}
           {/* Scroll box is a fixed-height flex column: the content wrapper must not shrink, or its children overlap. */}
-          <Box className="mt-4 overflow-y-auto pb-4"><Box className="shrink-0">{children}</Box></Box>
+          <Box className="mt-4 overflow-y-auto pb-4"><Box className="shrink-0"><FlatContext.Provider value={false}>{children}</FlatContext.Provider></Box></Box>
         </ActionsheetContent>
       </Actionsheet>
     )
@@ -409,7 +422,7 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
       <ModalBackdrop />
       <ModalContent role="dialog" aria-modal aria-label={title} className="max-h-[88vh]">
         <ModalHeader>{header}</ModalHeader>
-        <ModalBody className="mt-4"><Box className="shrink-0">{children}</Box></ModalBody>
+        <ModalBody className="mt-4"><Box className="shrink-0"><FlatContext.Provider value={false}>{children}</FlatContext.Provider></Box></ModalBody>
       </ModalContent>
     </Modal>
   )

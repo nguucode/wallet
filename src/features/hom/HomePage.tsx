@@ -11,7 +11,6 @@ import { Avatar, BankMark, Card, EmptyState, Ico, RailTile, Row, RowSkeleton, Se
 import { Badge, BadgeIcon, BadgeText } from '@/components/ui/badge'
 import { Box } from '@/components/ui/box'
 import { Button as GButton } from '@/components/ui/button'
-import { Card as GCard } from '@/components/ui/card'
 import { Center } from '@/components/ui/center'
 import { Grid, GridItem } from '@/components/ui/grid'
 import { Heading } from '@/components/ui/heading'
@@ -71,7 +70,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
   const series = loaded ? balanceSeries(w, now()) : []
   const delta = series.length ? series[series.length - 1] - series[0] : 0
   return (
-    <GCard role="region" aria-label="Số dư" className="gap-0 p-5">
+    <Card role="region" aria-label="Số dư" className="gap-0 p-5">
       <HStack className="items-center gap-1">
         <Heading as="h2" size="sm" className="font-semibold text-muted-foreground">Số dư khả dụng</Heading>
         <GButton
@@ -117,7 +116,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
           </HStack>
         </VStack>
       ) : null}
-    </GCard>
+    </Card>
   )
 }
 
@@ -149,7 +148,7 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
   const layout = useLayout()
   const items = SHORTCUTS.filter((s) => layout === 'app' || !s.app)
   return (
-    <GCard role="navigation" aria-label="Lối tắt" className="mt-3 gap-0 px-2 py-3 lg:py-4">
+    <Card role="navigation" aria-label="Lối tắt" className="mt-3 gap-0 px-2 py-3 lg:py-4">
       {/* Equal columns: every shortcut gets the same width, so the gaps between icons and to the edges are one rhythm. */}
       <Grid role="list" _extra={{ className: layout === 'app' ? 'grid-cols-6' : 'grid-cols-5' }}>
         {items.map((s) => (
@@ -158,7 +157,7 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
           </GridItem>
         ))}
       </Grid>
-    </GCard>
+    </Card>
   )
 }
 
