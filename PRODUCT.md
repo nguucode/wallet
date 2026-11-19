@@ -8,12 +8,12 @@ web
 
 ## Stack
 
-React 19 + Vite + TypeScript + React Router 7 + Tailwind v4 + Radix, Vitest, axe, the same stack as Fortify. One app with two layouts: a desktop web wallet (≥ 1024px, sidebar) and a mobile app shell (< 1024px, tab bar, sheets, numeric keypad). It is installable as a PWA, and a `/device` route renders the mobile shell in a 390×844 phone frame for desktop reviewers. Deployed to Cloudflare Pages at wallet.ontheshore.biz by GitHub Actions on every push to `main` (check-spec, test, build, deploy). Capacitor is added only if a real install file is ever needed. Expo and a split web + Expo monorepo were ruled out.
+React 19 + Vite + TypeScript + React Router 7 + Tailwind v4 + Radix, Vitest, axe, the same stack as Fortify. One app with two layouts: a desktop web wallet (≥ 1024px, sidebar) and a mobile app shell (< 1024px, tab bar, sheets, numeric keypad). It is installable as a PWA. The layout follows the viewport width, so a desktop reviewer sees the mobile shell by narrowing the window below 1024px (or on a phone); the `/device` phone-frame preview was removed 2026-11-19. Deployed to Cloudflare Pages at wallet.ontheshore.biz by GitHub Actions on every push to `main` (check-spec, test, build, deploy). Capacitor is added only if a real install file is ever needed. Expo and a split web + Expo monorepo were ruled out.
 
 ## Users
 
 - **Persona in the product:** a young urban professional in Vietnam, 22–35 and salaried. They send money to friends and family by phone number or contact, scan merchant QR codes at the counter, pay electricity and phone bills, and transfer out to bank accounts via VietQR. They use the wallet on a phone, one-handed, often while standing at a counter or in a queue.
-- **Audience of the demo:** enterprise and fintech product teams (PMs, BAs, POs, designers) viewing it as a portfolio case study. They judge the product thinking: how regulation, transaction states and edge cases become UI. Most open it on desktop, so the mobile experience must be reviewable there (`/device`).
+- **Audience of the demo:** enterprise and fintech product teams (PMs, BAs, POs, designers) viewing it as a portfolio case study. They judge the product thinking: how regulation, transaction states and edge cases become UI. Most open it on desktop, so the mobile experience must be reviewable there by narrowing the window.
 
 ## Product Purpose
 
@@ -27,7 +27,7 @@ Simple, with every state always clear. Wallet does only the core jobs, and it sh
 
 - Mobile: at a shop counter scanning a QR code, with a queue behind; on the move sending money; at home paying a bill. Speed to Scan/Payment Code matters most.
 - Desktop web wallet: reviewing history, receipts, statements and limits.
-- Reviewers: open wallet.ontheshore.biz on desktop, switch between the web wallet and `/device`, and trigger demo states with demo controls (as in Fortify).
+- Reviewers: open wallet.ontheshore.biz on desktop, narrow the window to see the app layout, and trigger demo states with demo controls (as in Fortify).
 
 ## Capabilities and Constraints
 
@@ -80,7 +80,7 @@ Simple, with every state always clear. Wallet does only the core jobs, and it sh
 2. **No hidden states.** Every transaction always shows where it is and what happens next. Pending and failed get as much design care as success.
 3. **Core jobs only.** Anything that is not top up, withdraw, transfer, pay, bills or history must earn its place; no filler tiles.
 4. **Scan is one tap away.** On mobile, Scan and Payment Code are reachable from anywhere in one tap.
-5. **Reviewable by design.** Demo controls and `/device` let a reviewer reach any state without real setup.
+5. **Reviewable by design.** Demo controls let a reviewer reach any state without real setup, and the responsive layout shows mobile without a device.
 
 ## Accessibility & Inclusion
 

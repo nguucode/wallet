@@ -82,7 +82,7 @@ The confirm step shows the free slots left: "Miễn phí (còn 3 lượt trong t
 - **Mandatory warning** lists prohibited uses (renting/selling the wallet, using it for illegal transactions, etc.). The continue button enables only after scrolling to the end **and** ticking "Tôi đã đọc và hiểu". [law, Đ.22 k.1 c]
 - **Ready** screen shows wallet number, the two monthly limits, and one primary CTA: Liên kết ngân hàng. Skipping is allowed ("Để sau") and lands on Home with gate #4. [law, Đ.22 k.1 đ]
 - Verifying resolves instantly to `verified` by default; demo controls can force `needs_review` (stays `verifying`, message "thường xong trong 24 giờ") or failure with a reason from: ảnh CCCD mờ, không đọc được chip (ốp lưng/NFC), khuôn mặt không khớp, mạng yếu. [demo, error set from MoMo help]
-- On web, NFC is not possible: the web onboarding shows "Mở ví trên điện thoại" with a link to /device, or the VNeID path. [demo]
+- On web, NFC is not possible: the web onboarding shows "Mở ví trên điện thoại" (use the app layout: narrow window or phone), or the VNeID path. [demo]
 
 ## History and support
 
@@ -101,7 +101,7 @@ The confirm step shows the free slots left: "Miễn phí (còn 3 lượt trong t
 
 Resolved by the coordinator from the four story agents' gap reports. These win over any story that says otherwise.
 
-- **Query params.** History saved views use `?tab=`; `?view=` stays for sub-views. Prefill: `/transfer/wallet?contact=<id>` or `?qr=<payload>`, `/transfer/bank?recipient=<id>` or `?qr=`, `/pay/merchant?qr=`. `/device?path=<route>` sets the framed page.
+- **Query params.** History saved views use `?tab=`; `?view=` stays for sub-views. Prefill: `/transfer/wallet?contact=<id>` or `?qr=<payload>`, `/transfer/bank?recipient=<id>` or `?qr=`, `/pay/merchant?qr=`.
 - **Bills.** The amount is fixed, so balance and essential-limit checks run on the bill's `view` step and disable "Thanh toán" with the reason. P0 pays bills from the wallet balance only. Browsing `/bills` is not gated; the gate appears on "Thanh toán" and on "Thêm hóa đơn".
 - **Receive.** `/receive` is gated only by `suspended` and `locked`; an unverified wallet or one without a bank can still show its receive QR.
 - **Link and unlink** are never gated. Unlink asks for PIN.

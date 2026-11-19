@@ -40,8 +40,9 @@ Dir.glob(File.join(ROOT, "epics/*/")).sort.each do |dir|
     err.("#{name}: expected #{format('US-%s-%03d', code, i + 1)} (numbering gap)") unless name == format("US-%s-%03d", code, i + 1)
     err.("#{name}: priority #{fm['priority']} (only P0 gets a file)") unless fm["priority"] == "P0"
     err.("#{name}: size #{fm['size']}") unless %w[S M].include?(fm["size"])
-    err.("#{name}: status #{fm['status']}") unless ["Draft", "Ready", "In design", "In build", "Done"].include?(fm["status"])
-    Array(fm["routes"]).each { |r| err.("#{name}: route #{r} not in sitemap") unless routes.include?(r.to_s.split("?").first) }
+    err.("#{name}: status #{fm['status']}") unless ["Draft", "Ready", "In design", "In build", "Done", "Removed"].include?(fm["status"])
+    # A removed story keeps its number (no renumbering) but its routes are gone from the sitemap.
+    Array(fm["status"] == "Removed" ? [] : fm["routes"]).each { |r| err.("#{name}: route #{r} not in sitemap") unless routes.include?(r.to_s.split("?").first) }
     SECTIONS.each { |s| err.("#{name}: missing section #{s}") unless text.include?("\n#{s}\n") }
     BANNED.each { |re| err.("#{name}: banned text #{re.source}") if text =~ re }
     stories[name] = fm

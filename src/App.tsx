@@ -1,7 +1,7 @@
 import { Component, lazy, Suspense, type ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router'
 import { useLayout } from '@/app/layout'
-import { FlowShell, Shell, ViewSwitchFab } from '@/app/Shell'
+import { FlowShell, Shell } from '@/app/Shell'
 import { useWorld } from '@/app/store'
 import { NotFound, ErrorPage } from '@/features/demo/NotFound'
 import { Skeleton } from '@/components/ui'
@@ -32,7 +32,6 @@ const TopupFlow = p(() => import('@/features/mny/TopupFlow'))
 const WithdrawFlow = p(() => import('@/features/mny/WithdrawFlow'))
 const NotificationsPage = p(() => import('@/features/ntf/NotificationsPage'))
 const OnboardingFlow = p(() => import('@/features/onb/OnboardingFlow'))
-const DevicePage = p(() => import('@/features/demo/DevicePage'))
 
 class Boundary extends Component<{ children: ReactNode; resetKey: string }, { error: boolean }> {
   state = { error: false }
@@ -63,7 +62,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/onboarding" element={<OnboardingFlow />} />
-          <Route path="/device" element={<DevicePage />} />
+          {/* The phone-frame preview was removed 2026-11-19; the app layout is reached by width (< 1024px). Old links land on Home. */}
+          <Route path="/device" element={<Navigate to="/home" replace />} />
           <Route element={<RequireWallet><Shell /></RequireWallet>}>
             <Route path="/home" element={<HomePage />} />
             <Route path="/history" element={<HistoryPage />} />
@@ -95,7 +95,6 @@ export default function App() {
           </Route>
         </Routes>
       </Suspense>
-      <ViewSwitchFab />
     </Boundary>
   )
 }

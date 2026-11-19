@@ -1,7 +1,7 @@
 import { Flashlight, ImageUp, LayoutGrid, X } from 'lucide-react'
 import { useEffect, useRef, useState, type DragEvent, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
-import { inFrame, useLayout } from '@/app/layout'
+import { useLayout } from '@/app/layout'
 import { useWorld } from '@/app/store'
 import { parseQr } from '@/domain/qr'
 import { sampleQrs } from '@/mock/seed'
@@ -116,11 +116,10 @@ function AppScan() {
   const { problem, setProblem, handle, handleFile } = useScanHandler()
   const [cam, setCam] = useState<Cam>('idle')
   const [torch, setTorch] = useState<boolean | null>(null) // null = unsupported
-  const [samples, setSamples] = useState(inFrame) // in /device there is no camera: samples first
+  const [samples, setSamples] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
-  const canOfferCamera = !inFrame
 
   const stop = () => {
     streamRef.current?.getTracks().forEach((t) => t.stop())
@@ -177,8 +176,7 @@ function AppScan() {
   const close = () => (window.history.length > 1 ? nav(-1) : nav('/home'))
 
   let message: string
-  if (!canOfferCamera) message = 'Bản xem trên điện thoại không dùng camera. Chọn Mã mẫu hoặc ảnh.'
-  else if (cam === 'denied') message = 'Wallet cần quyền dùng camera để quét mã.'
+  if (cam === 'denied') message = 'Wallet cần quyền dùng camera để quét mã.'
   else if (cam === 'error') message = 'Không mở được camera.'
   else if (cam === 'starting') message = 'Đang mở camera…'
   else if (cam === 'live') message = Detector ? 'Đưa mã QR vào khung' : 'Trình duyệt này chưa đọc được mã từ camera. Dùng Chọn ảnh hoặc Mã mẫu.'
@@ -206,7 +204,7 @@ function AppScan() {
             <span key={c} className={cx('absolute size-12 border-white', c)} />
           ))}
         </div>
-        {canOfferCamera && cam !== 'live' && cam !== 'starting' ? (
+        {cam !== 'live' && cam !== 'starting' ? (
           <Button className="mt-6" onClick={() => void start()}>{cam === 'error' ? 'Thử lại' : cam === 'denied' ? 'Thử lại' : 'Bật camera'}</Button>
         ) : null}
       </div>

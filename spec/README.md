@@ -21,7 +21,7 @@ spec/
 
 | Code | Epic |
 |---|---|
-| FND | Shell for both layouts, nav from sitemap.yaml, money formatting, mock store + latency, demo controls, scenarios, /device, 404 |
+| FND | Shell for both layouts, nav from sitemap.yaml, money formatting, mock store + latency, demo controls, scenarios, 404 |
 | ONB | Onboarding and eKYC, link first bank |
 | HOM | Home |
 | MNY | Funding sources, top up, withdraw |
@@ -45,7 +45,6 @@ Other Epics may depend on these before they are written. The owning Epic must us
 | US-FND-002 | Money, date, and phone formatting with the amount input |
 | US-FND-003 | Mock store, scenarios, and latency |
 | US-FND-004 | Demo controls panel |
-| US-FND-005 | Phone-frame preview at /device |
 | US-FND-006 | Not-found page and error boundary |
 | US-FND-007 | Money flow pattern: steps, confirm, and result |
 | US-SEC-001 | Step-up auth sheet with PIN |
@@ -106,7 +105,7 @@ As a wallet user, I want …, so that ….
 ## Rules
 
 - **One story is one screen-level behavior.** A list, a detail, and a flow are separate stories. UI states live inside each story.
-- **P0** is the demo loop in PRODUCT.md (onboarding → link bank → top up → transfer / pay / bill → history → support), plus the shell, demo controls, and /device. **P1** is the rest of PRODUCT.md's P1 list plus the Product menu.
+- **P0** is the demo loop in PRODUCT.md (onboarding → link bank → top up → transfer / pay / bill → history → support), plus the shell and demo controls. (A /device phone-frame preview was built, then removed 2026-11-19: the app layout is reached by narrowing the window or on a phone.) **P1** is the rest of PRODUCT.md's P1 list plus the Product menu.
 - A P0 story's `dependsOn` lists only P0 IDs. When it would use a P1 capability, its FE notes say "Enhanced by <Epic> P1: <title>".
 - [ia/rules.md](ia/rules.md) wins over any story. Stories cite the rule they apply instead of restating thresholds as hard-coded numbers.
 - Every story covers both layouts. Story text in English; UI copy in Vietnamese using the labels in [ia/object-model.md](ia/object-model.md).

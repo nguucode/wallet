@@ -35,7 +35,6 @@ As a wallet user at a counter, I want one scan screen that reads whatever QR is 
 
 - App (< 1024): full-screen dark camera surface (the only dark screen), white rounded-corner frame 240px, hint text above, a bottom bar with three 48px icon circles ("Đèn", "Chọn ảnh", "Mã mẫu"), close (×) top-left. Tab bar hidden. "Mã mẫu" opens a bottom sheet with the sample grid. Reachable in one tap from every app screen (PRODUCT principle 4).
 - Web (≥ 1024): content column, max-width 560, H1 "Quét mã". Drop zone as a 1px dashed bordered card (12px radius), then "Mã mẫu" as a 4-column grid of bordered cards with the QR thumbnail and label. A link to "Mã thanh toán" (`/pay/code`) at the top, because the sidebar "Thanh toán" lands on Payment Code.
-- In `/device`, the camera is replaced by "Mã mẫu" by default (no camera inside the iframe demo).
 
 ## FE notes
 

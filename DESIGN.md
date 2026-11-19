@@ -266,7 +266,7 @@ A neutral Apple grouped palette with a single violet voice and three accessible 
 - **Chart greens, oranges, reds** (`chart-up` #34c759 / #30d158, `chart-warn` #ff9500 / #ff9f0a, `chart-over` #ff3b30 / #ff453a): Apple's system colours, used only as large chart marks (limit rings, spending bars), never as text.
 
 ### Neutral
-- **Label** (`ink`, #000000 / #ffffff): primary text; also the fill of the ink button, toast and the device-preview pill, with **On Label** (`on-ink`, #ffffff / #000000) on top.
+- **Label** (`ink`, #000000 / #ffffff): primary text; also the fill of the ink button, and toast, with **On Label** (`on-ink`, #ffffff / #000000) on top.
 - **Secondary Label** (`muted`, #6c6c70 / #aeaeb2): subtitles, captions, group headers, placeholders. The accessible variant, at least 4.5:1 on ground and on sections.
 - **Section** (`surface`, #ffffff / #1c1c1e): inset grouped sections, sheets, keypad keys, unselected segments.
 - **Tertiary Fill** (`surface-2`, grey 118/118/128 at 12% / 24%): discs, avatars, bank marks, inputs, secondary buttons, hover and active rows, selected nav items, skeletons.
@@ -318,7 +318,7 @@ Flows use the same rhythm. On web: a tint "‹ Quay lại" link, a large title w
 Flat by default, with material for chrome. Content surfaces carry no shadow; they separate from the ground by tone alone (white on #f2f2f7, #1c1c1e on black). Depth is reserved for things that float over content.
 
 ### Shadow Vocabulary
-- **Float** (light `0 10px 30px -8px rgb(0 0 0 / 0.18), 0 1px 3px rgb(0 0 0 / 0.06)`; dark `0 10px 30px -8px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.08)`): sheets, dialogs, menus, toasts, the device-preview pill.
+- **Float** (light `0 10px 30px -8px rgb(0 0 0 / 0.18), 0 1px 3px rgb(0 0 0 / 0.06)`; dark `0 10px 30px -8px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.08)`): sheets, dialogs, menus, toasts.
 - **Glass** (translucent white at 86% / dark #252528 at 82%, `blur(24px) saturate(180%)`, inner highlight plus a soft drop): the web sidebar and app tab bar only. Falls back to the solid section colour without backdrop-filter support or under reduced transparency.
 - **Bar** (ground at 80%, `blur(20px) saturate(180%)`, 0.5px separator below): the nav bar once content scrolls under it.
 - **Key** (`0 1px 0 rgb(0 0 0 / 0.12)`): keypad keys only, the system key edge.

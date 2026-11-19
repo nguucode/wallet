@@ -3,13 +3,15 @@ id: US-FND-005
 title: Phone-frame preview at /device
 epic: FND
 priority: P0
-status: Draft
+status: Removed
 size: M
-routes: ["/device"]
+routes: []
 dependsOn: [US-FND-001, US-FND-004]
 ---
 
 ## Story
+
+> **Removed 2026-11-19 (owner):** the phone-frame preview and the "Xem bản điện thoại" button are gone; the responsive app layout (< 1024px, or a real phone) is how reviewers see mobile. `/device` redirects to `/home`. Kept for history; the criteria below no longer apply.
 
 As a reviewer on a desktop, I want to use the real app layout inside a phone frame with the demo controls beside it, so that I can judge the mobile experience without picking up a phone.
 

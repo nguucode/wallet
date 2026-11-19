@@ -7,7 +7,7 @@ summary: Open a wallet outside the shell: phone, OTP, PIN, identity by CCCD chip
 
 # ONB · Onboarding and eKYC
 
-Opening a wallet is where the law shows up first, so this Epic turns TT 40 Đ.22 into screens rather than fine print (rules.md#onboarding). The flow runs outside the shell at `/onboarding` with `?step=`: phone → OTP → PIN → identity method (CCCD chip by NFC, or VNeID) → face → verifying → mandatory warning → terms → ready. Verification has three visible outcomes (verified, needs review, failed with a reason), the warning cannot be skipped, and the ready screen states the wallet number and both monthly limits before offering "Liên kết ngân hàng". Web cannot read a chip, so it routes the reviewer to `/device` or to VNeID.
+Opening a wallet is where the law shows up first, so this Epic turns TT 40 Đ.22 into screens rather than fine print (rules.md#onboarding). The flow runs outside the shell at `/onboarding` with `?step=`: phone → OTP → PIN → identity method (CCCD chip by NFC, or VNeID) → face → verifying → mandatory warning → terms → ready. Verification has three visible outcomes (verified, needs review, failed with a reason), the warning cannot be skipped, and the ready screen states the wallet number and both monthly limits before offering "Liên kết ngân hàng". Web cannot read a chip, so it tells the reviewer to use the app layout (narrow window or phone) or VNeID.
 
 ## P0 stories
 

@@ -17,7 +17,7 @@ As a wallet user, I want to see at a glance that something new happened to my wa
 
 - Given unread notifications, then the "Thông báo" item in the web top bar and the app tab bar (items with `badge: unread` in sitemap.yaml) shows a badge with the count 1–9, or "9+" above 9.
 - Given no unread notifications, then no badge is rendered.
-- Given a new notification is created anywhere (a money commit, Demo controls "Nhận tiền từ liên hệ"), then the badge updates within the same render, without a reload, including inside `/device`.
+- Given a new notification is created anywhere (a money commit, Demo controls "Nhận tiền từ liên hệ"), then the badge updates within the same render, without a reload.
 - Given a screen reader, then the item's accessible name reads "Thông báo, 8 chưa đọc", or "Thông báo" with none.
 - Given I mark notifications read (US-NTF-001), then the badge decreases accordingly.
 

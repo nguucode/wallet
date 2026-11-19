@@ -1,6 +1,5 @@
 import { FlaskConical, RotateCcw } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
-import { useLocation } from 'react-router'
 import {
   advanceClock, cashierScan, msToNextMonth, refundLatestMerchant, reset, resolvePending, resolveVerification, setScenario, setSetting, simulateIncoming,
   useSettings, useWorld, type Settings,
@@ -102,8 +101,6 @@ export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => vo
 export function DemoControlsButton({ compact, className }: { compact?: boolean; className?: string }) {
   const [open, setOpen] = useState(false)
   const [msg, setMsg] = useState('')
-  const { pathname } = useLocation()
-  if (pathname === '/device') return null
   return (
     <>
       {compact ? (

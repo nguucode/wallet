@@ -22,7 +22,7 @@ As a reviewer, I want the wallet to behave like a real one, with data that chang
 - Given a money commit action, when it runs, then the transaction, the balance change and its notification are written in one update, so no screen ever renders one without the others.
 - Given the next-outcome override is "Đang xử lý" or "Không thành công", when the next money commit runs, then the transaction is created in that state (respecting the state machine in object-model.md: instant types never become pending) and the override returns to "Thành công".
 - Given the clock is advanced by demo controls, then every derived value (day groups, limit month, pending expiry, bill due) recomputes from the new "now".
-- Given `/device` and the web page are open in the same browser, when one changes the store, then the other reflects it within one second.
+- Given two tabs of the app are open in the same browser, when one changes the store, then the other reflects it within one second.
 
 ## UI states
 

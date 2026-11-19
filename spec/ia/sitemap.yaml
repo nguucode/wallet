@@ -8,9 +8,8 @@ layouts:
   web: { minWidth: 1024, nav: sidebar, flows: page in content column, max-width 560 }
   app: { maxWidth: 1023, nav: tabBar, flows: full-screen, tab bar hidden }
 
-topBar: # web only
+sidebarFooter: # web only: account, notifications and demo controls sit at the foot of the sidebar (no top bar since 2026-11-19)
   - { id: notifications, label: Thông báo, route: "/notifications", badge: unread }
-  - { id: device, label: Xem trên điện thoại, route: "/device", demo: true }
   - { id: demo-controls, label: Demo controls, demo: true }
   - { id: avatar, label: Tài khoản, menu: [Hồ sơ, Bảo mật, Đăng xuất] }
 
@@ -116,7 +115,6 @@ screens:
   - { id: support-case, route: "/support/:caseId", title: Yêu cầu hỗ trợ, priority: P1 }
 
   # ── Demo / case-study layer ──────────────────────────
-  - { id: device, route: "/device", title: Xem trên điện thoại, shell: none, demo: true, note: "390×844 phone frame, same-origin iframe of the app shell, with demo controls beside it." }
   - { id: product, route: "/product", title: Product, priority: P1, demo: true }
   - { id: not-found, route: "*", title: Không tìm thấy trang }
 

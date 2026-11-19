@@ -5,7 +5,7 @@ epic: FND
 priority: P0
 status: Draft
 size: M
-routes: ["/home", "/device"]
+routes: ["/home"]
 dependsOn: [US-FND-001, US-FND-003]
 ---
 
@@ -15,7 +15,7 @@ As a reviewer, I want one panel that puts the wallet into any state and forces t
 
 ## Acceptance criteria
 
-- Given the web layout, when I click "Demo controls" in the top bar, then a non-modal panel opens on the right without covering the content column; given the app layout, when I long-press the screen header for 600 ms, then the same panel opens as a full-height sheet; on `/device` it is always open beside the frame (US-FND-005).
+- Given the web layout, when I click "Demo controls" in the top bar, then a non-modal panel opens on the right without covering the content column; given the app layout, when I long-press the screen header for 600 ms, then the same panel opens as a full-height sheet.
 - Given the panel, then it shows, in this order: "Kịch bản" (the eight scenarios from mock-data.md, current one selected) with "Đặt lại dữ liệu"; "Kết quả giao dịch tiếp theo" ("Thành công", "Đang xử lý", "Không thành công" with a reason picker); "Xử lý giao dịch đang chờ" ("Tất cả thành công", "Tất cả không thành công"); "Nhận tiền từ liên hệ"; "Thu ngân quét Mã thanh toán"; "Kết quả xác thực danh tính"; "Kết quả xác thực khuôn mặt" ("Khớp", "Không khớp"); "Cửa hàng hoàn tiền"; "Đồng hồ" ("+1 giờ", "+1 ngày", "Sang tháng sau"); "Độ trễ" ("Mặc định", "0 giây", "3 giây").
 - Given the panel header, then it reads "Demo controls" with the line "Mô phỏng cho người xem bản demo, không phải tính năng của ví."
 - Given I pick "Không thành công" with reason `bank_declined`, when the next money commit runs, then that transaction fails with that reason and the control returns to "Thành công", showing "Áp dụng cho giao dịch tiếp theo" while armed.

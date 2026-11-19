@@ -55,7 +55,7 @@ The persona's state is a named scenario, picked in Demo controls. Default is `re
 
 ## Demo controls
 
-A panel available from the web top bar, beside the phone frame on /device, and via a long-press on the app header in the app shell. Every control is labelled as a simulation.
+A panel available from the web sidebar footer and via a long-press on the app header in the app shell. Every control is labelled as a simulation.
 
 - **Scenario** picker (table above) and **Reset** to the seed.
 - **Next outcome** for the next money action: Thành công (default) / Đang xử lý / Không thành công (with reason).

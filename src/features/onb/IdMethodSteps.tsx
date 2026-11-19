@@ -1,13 +1,12 @@
 import { CreditCard, Fingerprint, Smartphone } from 'lucide-react'
 import { useState } from 'react'
-import { Link } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { useWorld } from '@/app/store'
 import { Button, cx, Disc } from '@/components/ui'
 import { StepShell, useOnb } from './Frame'
 import { maskIdNumber } from './steps'
 
-/** Layout, not device detection, decides NFC: inside /device the iframe is in app layout. */
+/** Layout, not device detection, decides NFC: the app layout (< 1024px) offers the chip path. */
 export const canReadChip = (layout: 'web' | 'app') => layout === 'app'
 
 /** US-ONB-004: identity method. */
@@ -44,8 +43,7 @@ export function IdMethodStep() {
           <Disc><Smartphone size={22} strokeWidth={1.75} /></Disc>
           <div>
             <p className="font-semibold">Mở ví trên điện thoại</p>
-            <p className="text-[15px] leading-5 text-muted">Đọc chip CCCD cần điện thoại có NFC. Bạn cũng có thể dùng VNeID ngay trên máy tính.</p>
-            <Link to={`/device?path=${encodeURIComponent('/onboarding?step=id-method')}`} className="mt-2 inline-flex min-h-11 items-center font-semibold text-tint">Xem trên điện thoại</Link>
+            <p className="text-[15px] leading-5 text-muted">Đọc chip CCCD cần điện thoại có NFC. Bạn cũng có thể dùng VNeID ngay trên máy tính. Bản demo: thu cửa sổ dưới 1024px hoặc mở trên điện thoại để thử đọc chip.</p>
           </div>
         </div>
       ) : null}

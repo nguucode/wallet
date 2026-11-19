@@ -12,4 +12,3 @@ export function useLayout(): 'web' | 'app' {
   )
 }
 
-export const inFrame = typeof window !== 'undefined' && window.self !== window.top

@@ -1,8 +1,8 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import { Bell, CreditCard, FileText, Gauge, HelpCircle, History, Home, Landmark, Monitor, PanelLeftClose, PanelLeftOpen, QrCode, ScanLine, Send, ShieldCheck, Smartphone, User, Wallet } from 'lucide-react'
+import { Bell, CreditCard, FileText, Gauge, HelpCircle, History, Home, Landmark, PanelLeftClose, PanelLeftOpen, QrCode, ScanLine, Send, ShieldCheck, User, Wallet } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
-import { inFrame, useLayout } from '@/app/layout'
+import { useLayout } from '@/app/layout'
 import { isTabRoot, screenFor, sidebar, tabBar, type NavItem } from '@/app/sitemap'
 import { signOut, unreadCount, useWorld } from '@/app/store'
 import { DemoControlsButton } from '@/features/demo/DemoControls'
@@ -10,7 +10,7 @@ import { Avatar, BackButton, Confirm, cx, IconButton, NavBar, useScrolled } from
 
 const ICONS: Record<string, typeof Home> = {
   home: Home, history: History, scan: ScanLine, notifications: Bell, me: User, transfer: Send, receive: QrCode, pay: CreditCard,
-  bills: FileText, sources: Landmark, limits: Gauge, security: ShieldCheck, profile: User, support: HelpCircle, device: Smartphone,
+  bills: FileText, sources: Landmark, limits: Gauge, security: ShieldCheck, profile: User, support: HelpCircle,
 }
 
 export function SampleBadge({ className, compact }: { className?: string; compact?: boolean }) {
@@ -230,25 +230,7 @@ function AppShell({ children }: { children: ReactNode }) {
   )
 }
 
-/* ── Shell switch + FAB ───────────────────────────────────────────── */
-
-export function ViewSwitchFab() {
-  const layout = useLayout()
-  const { pathname, search } = useLocation()
-  const nav = useNavigate()
-  if (inFrame || layout !== 'web') return null
-  const onDevice = pathname === '/device'
-  const target = onDevice ? new URLSearchParams(search).get('path') || '/home' : `/device?path=${encodeURIComponent(pathname + search)}`
-  return (
-    <button
-      onClick={() => nav(target)}
-      className={cx("fixed bottom-6 z-40 inline-flex", onDevice ? "right-[404px]" : "right-6") + "  h-12 items-center gap-2 rounded-full bg-ink pr-5 pl-4 text-[15px] font-semibold text-on-ink shadow-[var(--shadow-float)] hover:bg-ink/85"}
-    >
-      {onDevice ? <Monitor size={18} strokeWidth={2} aria-hidden /> : <Smartphone size={18} strokeWidth={2} aria-hidden />}
-      {onDevice ? 'Xem bản web' : 'Xem bản điện thoại'}
-    </button>
-  )
-}
+/* ── Shell switch ─────────────────────────────────────────────────── */
 
 /** Shell for nav screens. Flows and onboarding render without it (FlowShell / bare). */
 export function Shell() {

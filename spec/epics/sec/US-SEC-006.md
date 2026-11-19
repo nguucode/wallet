@@ -19,7 +19,7 @@ As a wallet user on my phone, I want to turn on Face ID or fingerprint for every
 - Given the app layout and the switch off, when I turn it on, then the PIN sheet opens with summary "Bật sinh trắc học thiết bị"; on success the switch is on, a toast reads "Đã bật sinh trắc học thiết bị", and a `security` notification is created.
 - Given the switch on, when I turn it off, then it turns off immediately without auth, with toast "Đã tắt sinh trắc học thiết bị" and a `security` notification.
 - Given the PIN sheet is cancelled or locked, then the switch stays off.
-- Given the web layout, then the biometric row shows "Chỉ có trên ứng dụng điện thoại" with a link "Xem trên điện thoại" → `/device?path=/me/security`, and no switch (rules.md#step-up).
+- Given the web layout, then the biometric row shows "Chỉ có trên ứng dụng điện thoại" with a demo note to narrow the window below 1024px, and no switch (rules.md#step-up).
 - Given P1 items (devices, lock wallet), then no rows or disabled tiles are shown for them.
 
 ## UI states
@@ -42,4 +42,4 @@ As a wallet user on my phone, I want to turn on Face ID or fingerprint for every
 
 ## Mock data
 
-- Seed: biometric off. Test in `/device` (on) and web (unavailable row).
+- Seed: biometric off. Test in the app layout (on) and web (unavailable row).

@@ -20,7 +20,7 @@ As a wallet user, I want the same wallet on a wide screen and on my phone, with 
 - Given I resize across 1024px, when the layout switches, then the route, query string and any in-progress flow draft stay unchanged (layout depends only on width, rules.md#spec-conventions).
 - Given I am on a flow route with `steps` (for example `/topup?step=amount`), when the app layout renders, then the tab bar is hidden and the flow is full-screen; in the web layout the flow renders in the content column at max-width 560px.
 - Given I am on `/history/WL000000001234`, when the nav renders, then "Lịch sử" is active by route prefix with `aria-current="page"`.
-- Given any screen, including onboarding and `/device`, then a "Dữ liệu mẫu" badge is visible (mock-data.md).
+- Given any screen, including onboarding, then a "Dữ liệu mẫu" badge is visible (mock-data.md).
 - Given `/` or `/me` in the web layout, then `/` redirects to `/home` and `/me` redirects to `/me/profile`; given scenario `new`, any shell route redirects to `/onboarding`.
 - Given the avatar menu "Tài khoản", when I open it, then it lists "Hồ sơ" (`/me/profile`), "Bảo mật" (`/me/security`) and "Đăng xuất"; "Đăng xuất" asks "Đăng xuất khỏi ví?" and on confirm switches to scenario `new`.
 
@@ -43,7 +43,7 @@ As a wallet user, I want the same wallet on a wide screen and on my phone, with 
 
 - `src/shell/AppShell.tsx` chooses `WebLayout` or `AppLayout` from `useLayout()` (matchMedia `(min-width: 1024px)`); both wrap the same `<Outlet>`.
 - `src/shell/nav.ts` imports `/spec/ia/sitemap.yaml?raw`, parses once with `yaml`, and exposes `sidebar()`, `tabBar()`, `topBar()`, `screenFor(pathname)` (title, steps, shell). Pure, unit-tested against the real file: Product filtered, order preserved, `screenFor('/history/WL1')` returns the transaction screen.
-- `shell: none` screens (`/onboarding`, `/device`) render outside `AppShell` but still mount `<SampleDataBadge>`.
+- `shell: none` screens (`/onboarding`) render outside `AppShell` but still mount `<SampleDataBadge>`.
 - Icons: one Lucide icon per nav id in `nav-icons.ts`. Badge slot reads `badge: unread` and renders US-NTF-002.
 - Long-press (600 ms) on the app header opens Demo controls (US-FND-004).
 - "Đăng xuất" calls `store.demo.setScenario('new')`; there is no sign-in screen in the sitemap (reported gap).
