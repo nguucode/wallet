@@ -5,7 +5,7 @@
   --font-sans: -apple-system, BlinkMacSystemFont, 'Be Vietnam Pro', system-ui, sans-serif;
   /* Light values; dark values below. Names kept from the previous system so screens map 1:1. */
   --color-ink: #000000;                       /* label */
-  --color-muted: #6c6c70;                     /* secondaryLabel, accessible variant (≥4.5:1 on ground and surface) */
+  --color-muted: #66666b;                     /* secondaryLabel, accessible variant (≥4.5:1 on ground, surface and the ambient wash) */
   --color-surface: #ffffff;                   /* secondarySystemGroupedBackground: inset grouped sections */
   --color-surface-2: rgb(118 118 128 / 0.12); /* tertiarySystemFill: discs, inputs, hover, skeletons */
   --color-ground: #f2f2f7;                    /* systemGroupedBackground */
@@ -29,6 +29,11 @@
   --color-chart-over: #ff3b30;
   --color-on-ink: #ffffff;                    /* text on an ink (label-coloured) fill */
   --color-badge: #c00012;                     /* count badge: one red in both modes, white text 6:1 */
+  /* Money card accents (same in both modes; the card is always dark). Teal complements the violet glow. */
+  --color-card-accent: #3ee0c5;
+  --color-card-violet: #9d7bff;
+  --color-pending-on-card: #ffc46b;          /* amber text on the dark card */
+  --color-pending-soft-on-card: rgb(255 179 64 / 0.16);
   --shadow-float: 0 10px 30px -8px rgb(0 0 0 / 0.18), 0 1px 3px rgb(0 0 0 / 0.06);
   --shadow-card: 0 0 #0000;                   /* grouped sections carry no shadow */
   --shadow-thumb: 0 3px 8px rgb(0 0 0 / 0.12), 0 3px 1px rgb(0 0 0 / 0.04);
@@ -120,6 +125,29 @@
 @utility sheet-scroll {
   scrollbar-width: thin;
   scrollbar-color: color-mix(in oklab, var(--color-muted) 45%, transparent) transparent;
+}
+/* Ambient wash: a faint violet light at the top of the page that fades into the grouped background.
+   It sits behind the content and the glass sidebar, so the glass has something to blur. Kept faint enough that secondary text stays >= 4.5:1. */
+@utility ambient {
+  background:
+    radial-gradient(60% 100% at 18% 0%, color-mix(in oklab, var(--color-primary) 22%, transparent), transparent 70%),
+    radial-gradient(55% 90% at 75% 0%, color-mix(in oklab, var(--color-primary) 15%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in oklab, var(--color-primary) 9%, var(--color-ground)) 0%, var(--color-ground) 100%);
+}
+/* Money card (Home balance): a dark physical-card material with violet light inside it, not a violet fill.
+   Graphite base, a violet glow from the top-right corner, a faint teal counter-glow bottom-left, a diagonal sheen and a light rim.
+   The glow stays dim enough that white text keeps >= 7:1 everywhere. Same card in light and dark (the rim separates it from black). */
+@utility money-card {
+  position: relative; isolation: isolate; overflow: hidden; color: #fff;
+  background:
+    radial-gradient(65% 85% at 100% 0%, rgb(124 82 255 / 0.55), transparent 62%),
+    radial-gradient(55% 70% at 0% 100%, rgb(62 224 197 / 0.13), transparent 65%),
+    linear-gradient(160deg, #1d1a29 0%, #14121c 55%, #0f0d16 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14), inset 0 0 0 1px rgb(255 255 255 / 0.07), 0 20px 40px -22px rgb(15 13 22 / 0.7);
+  &::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(115deg, transparent 35%, rgb(255 255 255 / 0.05) 48%, transparent 62%);
+  }
 }
 @utility tnum { font-variant-numeric: tabular-nums; }
 @utility balance { font-size: 48px; line-height: 58px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }

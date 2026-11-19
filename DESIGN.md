@@ -10,7 +10,7 @@ colors:
   primary-ink: "#3d1a9e"
   ink: "#000000"
   on-ink: "#ffffff"
-  muted: "#6c6c70"
+  muted: "#66666b"
   surface: "#ffffff"
   surface-2: "rgb(118 118 128 / 0.12)"
   ground: "#f2f2f7"
@@ -24,6 +24,13 @@ colors:
   danger-soft: "#fde8ea"
   danger-soft-hover: "#fbd7db"
   badge: "#c00012"
+  card-accent: "#3ee0c5"
+  card-violet: "#9d7bff"
+  card-base-top: "#1d1a29"
+  card-base: "#14121c"
+  card-base-bottom: "#0f0d16"
+  card-glow: "rgb(124 82 255 / 0.55)"
+  card-shadow: "rgb(15 13 22 / 0.7)"
   chart-up: "#34c759"
   chart-warn: "#ff9500"
   chart-over: "#ff3b30"
@@ -267,7 +274,8 @@ A neutral Apple grouped palette with a single violet voice and three accessible 
 
 ### Neutral
 - **Label** (`ink`, #000000 / #ffffff): primary text; also the fill of the ink button, and toast, with **On Label** (`on-ink`, #ffffff / #000000) on top.
-- **Secondary Label** (`muted`, #6c6c70 / #aeaeb2): subtitles, captions, group headers, placeholders. The accessible variant, at least 4.5:1 on ground and on sections.
+- **Secondary Label** (`muted`, #66666b / #aeaeb2): subtitles, captions, group headers, placeholders. Darker than Apple's accessible variant so it stays at least 4.5:1 on the ambient wash as well as on ground and sections.
+- **Card Teal** (`card-accent`, #3ee0c5, both modes) and **Card Violet** (`card-violet`, #9d7bff): used only on the money card. The balance line runs violet to teal along time, the change tag is teal with dark text, and a faint teal counter-glow sits bottom-left against the violet glow top-right. Teal complements the violet and the graphite; it carries no up/down meaning.
 - **Section** (`surface`, #ffffff / #1c1c1e): inset grouped sections, sheets, keypad keys, unselected segments.
 - **Tertiary Fill** (`surface-2`, grey 118/118/128 at 12% / 24%): discs, avatars, bank marks, inputs, secondary buttons, hover and active rows, selected nav items, skeletons.
 - **Grouped Ground** (`ground`, #f2f2f7 / #000000): the page background behind everything.
@@ -326,7 +334,11 @@ Flat by default, with material for chrome. Content surfaces carry no shadow; the
 ### Named Rules
 **The Glass Is Chrome Rule.** Translucent material belongs to navigation (sidebar, tab bar, scrolled nav bar, flow footer). Content, sections, cards and sheets are opaque.
 
-**The No Lift Rule.** Grouped sections never take a shadow. If a section needs more separation, it is in the wrong place.
+**The No Lift Rule.** Grouped sections never take a shadow. If a section needs more separation, it is in the wrong place. The one exception is the money card.
+
+**The Money Card Rule.** The Home balance is a dark physical card, not a section: graphite base (#1d1a29 → #0f0d16), violet light glowing from inside the top-right corner (never a violet fill), a faint teal counter-glow bottom-left, a diagonal sheen, a light top rim, a banknote guilloche (three hairline hypotrochoids) fanning in from the top-right corner and masked before the text, and a soft drop shadow. Text is left-aligned and white; the pending capsule is translucent amber with amber text. The card looks the same in light and dark.
+
+**The Ambient Wash Rule.** The top of every app and web page carries a faint violet light (two soft radial glows over a 9% violet tint, fading into the ground by about 440px on web, 380px on app, 320px in flows). It sits behind content and the glass sidebar, so the glass has something to blur. It never carries text contrast below 4.5:1.
 
 ## Shapes
 

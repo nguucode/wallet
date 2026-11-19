@@ -60,15 +60,16 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
   const series = loaded ? balanceSeries(w, now()) : []
   const delta = series.length ? series[series.length - 1] - series[0] : 0
   return (
-    <section aria-label="Số dư" className="card px-5 pt-5 pb-4 text-center lg:px-8 lg:pt-7">
-      <div className="flex items-center justify-center gap-0.5">
-        <h2 className="text-[15px] leading-[22px] font-semibold text-muted">Số dư khả dụng</h2>
-        <IconButton label={hidden ? 'Hiện số dư' : 'Ẩn số dư'} aria-pressed={hidden} className="size-11 text-muted" onClick={() => setBalanceHidden(!hidden)}>
+    <section aria-label="Số dư" className="money-card rounded-[var(--radius-card)] px-5 pt-4 pb-4 lg:px-7 lg:pt-6">
+      <Guilloche />
+      <div className="-ml-1 flex items-center gap-0.5">
+        <h2 className="pl-1 text-[15px] leading-[22px] font-semibold text-white/85">Số dư khả dụng</h2>
+        <IconButton label={hidden ? 'Hiện số dư' : 'Ẩn số dư'} aria-pressed={hidden} className="size-11 text-white/85 hover:bg-white/15 focus-visible:outline-white" onClick={() => setBalanceHidden(!hidden)}>
           {hidden ? <EyeOff size={18} strokeWidth={1.75} aria-hidden /> : <Eye size={18} strokeWidth={1.75} aria-hidden />}
         </IconButton>
       </div>
       {!loaded ? (
-        <Skeleton className={cx('mx-auto mt-1 w-[260px] max-w-full', layout === 'web' ? 'h-[58px]' : 'h-12')} />
+        <Skeleton className={cx('mt-1 w-[260px] max-w-full bg-white/20', layout === 'web' ? 'h-[58px]' : 'h-12')} />
       ) : (
         <p className={cx(size, 'whitespace-nowrap')}>
           {hidden ? (
@@ -79,7 +80,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
         </p>
       )}
       {loaded && held > 0 ? (
-        <Link to="/history?tab=dang-xu-ly" className="mt-2 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-pending-soft px-3 text-[13px] font-semibold text-pending no-underline">
+        <Link to="/history?tab=dang-xu-ly" className="mt-2 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-[var(--color-pending-soft-on-card)] px-3 text-[13px] font-semibold text-[color:var(--color-pending-on-card)] no-underline ring-1 ring-[#ffc46b]/30 ring-inset focus-visible:outline-white">
           <Clock size={15} strokeWidth={2.25} aria-hidden />
           Đang xử lý{' '}
           {hidden ? <><span aria-hidden>••••••</span><span className="sr-only">số tiền đang ẩn</span></> : <span className="tnum">{formatVnd(held)}</span>}
@@ -93,11 +94,33 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
             endTag={delta ? `${delta > 0 ? '+' : '−'}${(Math.abs(delta) / 1_000_000).toLocaleString('vi-VN', { maximumFractionDigits: 2 })}tr · 30 ngày` : undefined}
             className="px-1 pt-6"
             wide={layout === 'web'}
+            inverse
           />
-          <p className="mt-1 flex justify-between text-[12px] text-muted" aria-hidden><span>30 ngày trước</span><span>Hôm nay</span></p>
+          <p className="mt-1 flex justify-between text-[12px] text-white/80" aria-hidden><span>30 ngày trước</span><span>Hôm nay</span></p>
         </div>
       ) : null}
     </section>
+  )
+}
+
+/** Banknote-style guilloche: three hypotrochoids traced once at module load, drawn as hairlines in the card's top-right
+ *  and masked so they fade out before reaching the balance text. Decorative only. */
+const GUILLOCHE = [[60, 0], [48, 0.21], [36, 0.42]].map(([d, rot]) => {
+  const R = 100, r = 37, k = (R - r) / r, pts: string[] = []
+  for (let i = 0; i <= 2220; i++) {
+    const t = (i / 2220) * 2 * Math.PI * 37
+    const x = (R - r) * Math.cos(t) + d * Math.cos(k * t), y = (R - r) * Math.sin(t) - d * Math.sin(k * t)
+    const c = Math.cos(rot), sn = Math.sin(rot)
+    pts.push(`${(x * c - y * sn).toFixed(1)},${(x * sn + y * c).toFixed(1)}`)
+  }
+  return 'M' + pts.join('L')
+})
+
+function Guilloche() {
+  return (
+    <svg aria-hidden viewBox="-170 -170 340 340" className="pointer-events-none absolute -top-[200px] -right-[200px] -z-10 size-[400px] [mask-image:radial-gradient(circle,black_35%,transparent_70%)] lg:-top-[240px] lg:-right-[240px] lg:size-[480px]">
+      {GUILLOCHE.map((d, i) => <path key={i} d={d} fill="none" stroke="#fff" strokeOpacity={0.14 - i * 0.03} strokeWidth={0.5} />)}
+    </svg>
   )
 }
 

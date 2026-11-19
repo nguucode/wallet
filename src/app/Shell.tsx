@@ -106,7 +106,8 @@ function WebShell({ children }: { children: ReactNode }) {
   const unread = unreadCount(w)
   const pin = () => { setPeek(false); toggleCollapsed() }
   return (
-    <div className="relative flex min-h-dvh">
+    <div className="relative isolate flex min-h-dvh">
+      <div aria-hidden className="ambient pointer-events-none absolute -z-10 inset-x-0 top-0 h-[440px]" />
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-on-ink">Bỏ qua điều hướng</a>
       {/* Placeholder keeps the content column at the pinned width; the panel itself can grow over the content while peeking. */}
       <div className={cx('sticky top-3 z-40 m-3 mr-0 h-[calc(100dvh-24px)] shrink-0 transition-[width] duration-200 motion-reduce:transition-none', collapsed ? 'w-14' : 'w-[224px]')}>
@@ -208,7 +209,8 @@ function AppShell({ children }: { children: ReactNode }) {
   const title = root && pathname === '/home' ? 'Wallet' : s?.title ?? 'Wallet'
   const scrolled = useScrolled()
   return (
-    <div className="relative min-h-dvh">
+    <div className="relative isolate min-h-dvh">
+      <div aria-hidden className="ambient pointer-events-none absolute -z-10 inset-x-0 top-0 h-[380px]" />
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-on-ink">Bỏ qua điều hướng</a>
       <NavBar
         title={<p aria-hidden>{title}</p>}

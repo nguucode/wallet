@@ -85,7 +85,8 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
       </div>
     )
   return (
-    <div className="relative flex min-h-dvh flex-col">
+    <div className="relative isolate flex min-h-dvh flex-col">
+      <div aria-hidden className="ambient pointer-events-none absolute -z-10 inset-x-0 top-0 h-[320px]" />
       <NavBar
         title={<h1 tabIndex={-1} data-page-title className="truncate outline-none">{title}</h1>}
         left={onBack ? <BackButton onClick={onBack} /> : <span className="w-11" />}

@@ -2,7 +2,8 @@ import { useId } from 'react'
 import { cx } from '@/components/ui'
 
 /** Daily line (e.g. balance over 30 days). Decorative shape; the summary lives in aria-label. */
-export function LineChart({ values, label, className, endTag, wide }: { values: number[]; label: string; className?: string; endTag?: string; wide?: boolean }) {
+export function LineChart({ values, label, className, endTag, wide, inverse }: { values: number[]; label: string; className?: string; endTag?: string; wide?: boolean; /** Violet-to-teal line on the dark money card. */ inverse?: boolean }) {
+  const ink = inverse ? 'var(--color-card-accent)' : 'var(--color-tint)'
   const id = useId()
   const W = wide ? 560 : 320, H = 96, pad = 8
   if (values.length < 2) return null
@@ -15,17 +16,22 @@ export function LineChart({ values, label, className, endTag, wide }: { values: 
     <div className={cx('relative', className)}>
       <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full overflow-visible" role="img" aria-label={label}>
         <defs>
+          {/* On the money card the line runs violet → teal along time; the area takes the teal. */}
+          <linearGradient id={`${id}-line`} x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stopColor="var(--color-card-violet)" />
+            <stop offset="1" stopColor="var(--color-card-accent)" />
+          </linearGradient>
           <linearGradient id={id} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="var(--color-tint)" stopOpacity="0.18" />
-            <stop offset="1" stopColor="var(--color-tint)" stopOpacity="0" />
+            <stop offset="0" stopColor={ink} stopOpacity={inverse ? 0.22 : 0.18} />
+            <stop offset="1" stopColor={ink} stopOpacity="0" />
           </linearGradient>
         </defs>
         <path d={`${d} L${ex},${H} L${pts[0][0]},${H} Z`} fill={`url(#${id})`} />
-        <path d={d} fill="none" stroke="var(--color-tint)" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-        <circle cx={ex} cy={ey} r="5" fill="var(--color-surface)" stroke="var(--color-tint)" strokeWidth="2.5" />
+        <path d={d} fill="none" stroke={inverse ? `url(#${id}-line)` : ink} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+        <circle cx={ex} cy={ey} r="5" fill={inverse ? '#14121c' : 'var(--color-surface)'} stroke={ink} strokeWidth="2.5" />
       </svg>
       {endTag ? (
-        <span aria-hidden className="absolute -translate-x-full -translate-y-[130%] rounded-[8px] bg-primary px-2 py-0.5 text-[12px] font-bold whitespace-nowrap text-white" style={{ left: `${(ex / W) * 100}%`, top: `${(ey / H) * 100}%` }}>{endTag}</span>
+        <span aria-hidden className={cx('absolute -translate-x-full -translate-y-[130%] rounded-[8px] px-2 py-0.5 text-[12px] font-bold whitespace-nowrap', inverse ? 'bg-[var(--color-card-accent)] text-[#0f0d16]' : 'bg-primary text-white')} style={{ left: `${(ex / W) * 100}%`, top: `${(ey / H) * 100}%` }}>{endTag}</span>
       ) : null}
     </div>
   )
