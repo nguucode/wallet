@@ -153,7 +153,7 @@ function RailThemeButton({ onMore }: { onMore: () => void }) {
 
 /**
  * Web shell (sếp's sketch 2026-11-19): the whole window is the viewer's backdrop; the sidebar sits on it with no surface
- * of its own; content lives in one rounded panel that fills the rest of the window and scrolls inside.
+ * of its own; content lives in one rounded panel, the content column itself, centred on the backdrop.
  */
 function WebShell({ children }: { children: ReactNode }) {
   const [collapsed, toggleCollapsed] = useSidebarCollapsed()
@@ -205,8 +205,10 @@ function WebShell({ children }: { children: ReactNode }) {
           </Box>
         </VStack>
       </VStack>
-      <Box id="main-scroll" className="my-2 mr-2 min-w-0 flex-1 overflow-y-auto rounded-2xl border border-border bg-background print:overflow-visible">
-        <Box role="main" id="main" className="mx-auto w-full max-w-[768px] shrink-0 px-12 pb-24 pt-12">{children}</Box>
+      {/* The white panel IS the content column (sketch): centred on the backdrop, which shows on both sides; the area
+          around it scrolls, so the panel grows with its content. */}
+      <Box id="main-scroll" className="min-w-0 flex-1 overflow-y-auto px-6 py-2 print:overflow-visible">
+        <Box role="main" id="main" className="mx-auto min-h-[calc(100dvh-16px)] w-full max-w-[816px] shrink-0 rounded-2xl border border-border bg-background px-12 pb-16 pt-10">{children}</Box>
       </Box>
       <DemoControlsSheet open={demoOpen} onOpenChange={setDemoOpen} />
     </HStack>
@@ -296,6 +298,6 @@ export function Shell() {
 export function FlowShell() {
   const layout = useLayout()
   useRouteFocus()
-  if (layout === 'web') return <WebShell><Box className="max-w-[560px]"><Outlet /></Box></WebShell>
+  if (layout === 'web') return <WebShell><Box className="mx-auto w-full max-w-[560px]"><Outlet /></Box></WebShell>
   return <Box className="min-h-dvh bg-backdrop-app"><Outlet /></Box>
 }
