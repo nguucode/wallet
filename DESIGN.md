@@ -130,10 +130,10 @@ typography:
 rounded:
   focus-ring: "4px"
   input: "12px"
-  nav-item: "12px"
+  nav-item: "10px"
   key: "14px"
   card: "24px"
-  sidebar: "28px"
+  sidebar: "24px"
   sheet-app: "34px"
   full: "9999px"
 spacing:
@@ -307,7 +307,7 @@ A neutral Apple grouped palette with a single violet voice and three accessible 
 
 The app layout (below 1024px) is a single 560px-max column with 16px gutters. Tab roots show a large title in the content; pushed screens show an inline title in a sticky nav bar that is transparent at rest and gains the bar material once content scrolls. A floating glass tab bar (64px tall, 12px from the sides and bottom, 536px max) carries five items; a gradient of the ground fades content out beneath it, and pages reserve 128px of bottom padding.
 
-The web layout (1024px and up) puts a floating glass sidebar inset 12px from the window, 240px wide, collapsible to a 76px icon rail that is remembered per viewer. Its footer holds the account (avatar and short name, menu opening upward), notifications with a red count badge, and demo controls. There is no toolbar above web content. Content sits in a 768px main column with 48px gutters and 56px top padding; pages inside it cap at 560px.
+The web layout (1024px and up) puts a floating glass sidebar inset 12px from the window, 224px wide, collapsible to a 56px icon rail that is remembered per viewer. In the rail the app icon is the expand control: hovering it peeks the full sidebar over the content (the content column does not move), leaving the sidebar returns it to the rail, clicking the icon pins it open. Rows are compact, macOS-sidebar density: 36px items (10px radius, 18px icons, 15px label), 1px apart, group names 12px semibold on a 24px line, 10px panel padding, so the whole menu fits a 800px-tall window without scrolling. Its footer holds the account (avatar and short name, menu opening upward), notifications with a red count badge, and demo controls. There is no toolbar above web content. Content sits in a 768px main column with 48px gutters and 56px top padding; pages inside it cap at 560px.
 
 Sections stack with 32px (app) or 40px (web) between them, each preceded by a Title 3 header with an optional tint link on the right. Section padding is 20px on app, 24px on web. List rows are at least 64px tall with a 12px gap between leading disc and text.
 
@@ -330,7 +330,7 @@ Flat by default, with material for chrome. Content surfaces carry no shadow; the
 
 ## Shapes
 
-Continuous, generous rounding. Inset sections and callouts are 24px; the web sidebar 28px; app sheets 34px at the top (web dialogs 24px); inputs, nav items, QR plates and the Home app icon 9 to 12px; keypad keys 14px. Every button, capsule, segment, disc, avatar, tab-bar item and the tab bar itself is a full capsule or circle. Borders are rare: hairline separators inside lists, a 2px underline under the amount entry, a 1px danger border on an invalid input.
+Continuous, generous rounding. Inset sections and callouts are 24px; the web sidebar 24px; app sheets 34px at the top (web dialogs 24px); inputs, QR plates and the Home app icon 9 to 12px; sidebar items 10px; keypad keys 14px. Every button, capsule, segment, disc, avatar, tab-bar item and the tab bar itself is a full capsule or circle. Borders are rare: hairline separators inside lists, a 2px underline under the amount entry, a 1px danger border on an invalid input.
 
 ## Components
 

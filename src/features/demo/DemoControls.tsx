@@ -99,7 +99,7 @@ export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => vo
   )
 }
 
-export function DemoControlsButton({ compact }: { compact?: boolean }) {
+export function DemoControlsButton({ compact, className }: { compact?: boolean; className?: string }) {
   const [open, setOpen] = useState(false)
   const [msg, setMsg] = useState('')
   const { pathname } = useLocation()
@@ -107,7 +107,7 @@ export function DemoControlsButton({ compact }: { compact?: boolean }) {
   return (
     <>
       {compact ? (
-        <IconButton label="Demo controls" className="text-tint" onClick={() => setOpen(true)}><FlaskConical size={20} strokeWidth={1.75} /></IconButton>
+        <IconButton label="Demo controls" className={cx('text-tint', className)} onClick={() => setOpen(true)}><FlaskConical size={20} strokeWidth={1.75} /></IconButton>
       ) : (
         <Button variant="secondary" size="sm" onClick={() => setOpen(true)}><FlaskConical size={16} strokeWidth={1.75} aria-hidden />Demo controls</Button>
       )}

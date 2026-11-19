@@ -46,15 +46,14 @@ function SideLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
       to={item.route!}
       aria-current={active ? 'page' : undefined}
       title={collapsed ? item.label : undefined}
-      className={cx('flex h-10 shrink-0 items-center gap-3 rounded-[12px] text-[15px] no-underline', collapsed ? 'w-11 justify-center self-center' : 'px-3', active ? 'bg-surface-2 font-semibold text-tint' : 'text-ink hover:bg-surface-2')}
+      className={cx('flex h-9 shrink-0 items-center gap-2.5 rounded-[10px] text-[15px] no-underline', collapsed ? 'w-9 justify-center self-center' : 'px-2.5', active ? 'bg-surface-2 font-semibold text-tint' : 'text-ink hover:bg-surface-2')}
     >
-      <Icon size={20} strokeWidth={1.75} aria-hidden className={cx('shrink-0', !active && 'text-tint')} />
+      <Icon size={18} strokeWidth={1.75} aria-hidden className={cx('shrink-0', !active && 'text-tint')} />
       <span className={cx('truncate', collapsed && 'sr-only')}>{item.label}</span>
     </NavLink>
   )
 }
 
-/** Account in the sidebar footer, as on macOS: avatar (+ name when expanded); the menu opens upward. */
 function AccountMenu({ expanded }: { expanded: boolean }) {
   const w = useWorld()
   const nav = useNavigate()
@@ -64,8 +63,8 @@ function AccountMenu({ expanded }: { expanded: boolean }) {
     <>
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
-          <button type="button" title={expanded ? undefined : 'Tài khoản'} className={cx('flex min-w-0 items-center gap-2.5 rounded-[12px] text-left hover:bg-surface-2', expanded ? 'h-11 flex-1 px-1.5' : 'size-11 justify-center')}>
-            <span aria-hidden className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-2 text-[12px] font-semibold text-ink">{initials}</span>
+          <button type="button" title={expanded ? undefined : 'Tài khoản'} className={cx('flex min-w-0 items-center gap-2.5 rounded-[12px] text-left hover:bg-surface-2', expanded ? 'h-9 flex-1 px-1' : 'size-9 justify-center')}>
+            <span aria-hidden className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-surface-2 text-[11px] font-semibold text-ink">{initials}</span>
             {expanded ? <span className="min-w-0 truncate text-[13px] font-semibold">{w.customer.name.split(' ').slice(-2).join(' ')}</span> : null}
             <span className="sr-only">Tài khoản</span>
           </button>
@@ -100,46 +99,64 @@ function useSidebarCollapsed() {
 
 function WebShell({ children }: { children: ReactNode }) {
   const [collapsed, toggleCollapsed] = useSidebarCollapsed()
+  // Collapsed rail: hovering the logo peeks the full sidebar over the content; clicking it pins the sidebar open.
+  const [peek, setPeek] = useState(false)
+  const rail = collapsed && !peek
   const w = useWorld()
   const unread = unreadCount(w)
+  const pin = () => { setPeek(false); toggleCollapsed() }
   return (
     <div className="relative flex min-h-dvh">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-on-ink">Bỏ qua điều hướng</a>
-      <aside className={cx('glass sticky top-3 z-40 m-3 mr-0 flex h-[calc(100dvh-24px)] shrink-0 flex-col rounded-[28px] py-5 transition-[width] duration-200 motion-reduce:transition-none', collapsed ? 'w-[76px] px-2' : 'w-[240px] px-3')}>
-        <div className={cx('mb-6 flex items-center', collapsed ? 'flex-col gap-3' : 'justify-between pr-1 pl-3')}>
-          <Link to="/home" className="flex items-center gap-2 text-[20px] font-extrabold tracking-tight text-ink no-underline" aria-label="Wallet, về Trang chủ">
-            <img src="/icon.svg" alt="" width={32} height={32} className="size-8 shrink-0" />
-            {collapsed ? null : <span aria-hidden>Wallet</span>}
-          </Link>
-          <IconButton label={collapsed ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'} aria-expanded={!collapsed} className="text-muted hover:bg-surface-2 hover:text-ink" onClick={toggleCollapsed}>
-            {collapsed ? <PanelLeftOpen size={20} strokeWidth={1.75} /> : <PanelLeftClose size={20} strokeWidth={1.75} />}
-          </IconButton>
-        </div>
-        <nav aria-label="Điều hướng chính" className="flex flex-1 flex-col gap-1 overflow-x-hidden overflow-y-auto">
-          {sidebar.map((x) =>
-            'group' in x ? (
-              <div key={x.group} className="mt-4 flex flex-col gap-1">
-                {collapsed
-                  ? <p className="sr-only">{x.group}</p>
-                  : <p className="mb-1 truncate px-3 text-[12px] font-semibold text-muted">{x.group}</p>}
-                {collapsed ? <span aria-hidden className="mx-auto mb-1 h-px w-8 bg-line" /> : null}
-                {x.items.map((i) => <SideLink key={i.id} item={i} collapsed={collapsed} />)}
-              </div>
+      {/* Placeholder keeps the content column at the pinned width; the panel itself can grow over the content while peeking. */}
+      <div className={cx('sticky top-3 z-40 m-3 mr-0 h-[calc(100dvh-24px)] shrink-0 transition-[width] duration-200 motion-reduce:transition-none', collapsed ? 'w-14' : 'w-[224px]')}>
+        <aside
+          onMouseLeave={() => setPeek(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setPeek(false) }}
+          className={cx('glass absolute inset-y-0 left-0 flex flex-col rounded-[24px] px-2.5 py-3 transition-[width] duration-200 motion-reduce:transition-none', rail ? 'w-14' : 'w-[224px]')}
+        >
+          <div className={cx('mb-3 flex h-9 shrink-0 items-center', rail ? 'justify-center' : 'justify-between pl-1')}>
+            {rail ? (
+              <button type="button" onMouseEnter={() => setPeek(true)} onClick={pin} aria-expanded={false} aria-label="Mở rộng thanh bên" title="Mở rộng thanh bên" className="inline-flex size-9 items-center justify-center rounded-[10px] hover:bg-surface-2">
+                <img src="/icon.svg" alt="" width={28} height={28} className="size-7" />
+              </button>
             ) : (
-              <SideLink key={x.id} item={x} collapsed={collapsed} />
-            ),
-          )}
-        </nav>
-        {/* Footer: account, notifications and demo controls live with navigation, so the content column has no toolbar. */}
-        <div className={cx('mt-3 flex border-t border-line/70 pt-3', collapsed ? 'flex-col items-center gap-1' : 'items-center gap-0.5')}>
-          <AccountMenu expanded={!collapsed} />
-          <Link to="/notifications" title={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} aria-label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} className={cx('relative inline-flex size-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-2', collapsed && 'order-first', 'text-tint')}>
-            <Bell size={20} strokeWidth={1.75} aria-hidden />
-            {unread ? <span className="absolute top-1 right-0.5 min-w-[18px] rounded-full bg-badge px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum">{unread > 9 ? '9+' : unread}</span> : null}
-          </Link>
-          <span className={cx('shrink-0', collapsed && 'order-first')}><DemoControlsButton compact /></span>
-        </div>
-      </aside>
+              <>
+                <Link to="/home" className="flex items-center gap-2 text-[17px] font-bold tracking-tight text-ink no-underline" aria-label="Wallet, về Trang chủ">
+                  <img src="/icon.svg" alt="" width={28} height={28} className="size-7 shrink-0" />
+                  <span aria-hidden>Wallet</span>
+                </Link>
+                <IconButton label={collapsed ? 'Ghim thanh bên mở rộng' : 'Thu gọn thanh bên'} aria-expanded={!collapsed} className="size-9 text-muted hover:bg-surface-2 hover:text-ink" onClick={pin}>
+                  {collapsed ? <PanelLeftOpen size={18} strokeWidth={1.75} /> : <PanelLeftClose size={18} strokeWidth={1.75} />}
+                </IconButton>
+              </>
+            )}
+          </div>
+          <nav aria-label="Điều hướng chính" className="flex flex-1 flex-col gap-px overflow-x-hidden overflow-y-auto">
+            {sidebar.map((x) =>
+              'group' in x ? (
+                <div key={x.group} className="mt-3 flex flex-col gap-px">
+                  {rail
+                    ? <><p className="sr-only">{x.group}</p><span aria-hidden className="mx-auto mb-1 h-px w-6 bg-line" /></>
+                    : <p className="truncate px-2.5 pb-0.5 text-[12px] leading-6 font-semibold text-muted">{x.group}</p>}
+                  {x.items.map((i) => <SideLink key={i.id} item={i} collapsed={rail} />)}
+                </div>
+              ) : (
+                <SideLink key={x.id} item={x} collapsed={rail} />
+              ),
+            )}
+          </nav>
+          {/* Footer: account, notifications and demo controls live with navigation, so the content column has no toolbar. */}
+          <div className={cx('mt-2 flex shrink-0 border-t border-line/70 pt-2', rail ? 'flex-col items-center gap-px' : 'items-center gap-0.5')}>
+            <AccountMenu expanded={!rail} />
+            <Link to="/notifications" title={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} aria-label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} className={cx('relative inline-flex size-9 shrink-0 items-center justify-center rounded-full text-tint hover:bg-surface-2', rail && 'order-first')}>
+              <Bell size={18} strokeWidth={1.75} aria-hidden />
+              {unread ? <span className="absolute -top-0.5 -right-1 min-w-[18px] rounded-full bg-badge px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum">{unread > 9 ? '9+' : unread}</span> : null}
+            </Link>
+            <span className={cx('shrink-0', rail && 'order-first')}><DemoControlsButton compact className="size-9" /></span>
+          </div>
+        </aside>
+      </div>
       <div className="relative flex min-w-0 flex-1 flex-col">
         <main id="main" className="relative mx-auto w-full max-w-[768px] flex-1 px-12 pt-14 pb-24">{children}</main>
       </div>
