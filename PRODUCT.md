@@ -58,13 +58,13 @@ Simple, with every state always clear. Wallet does only the core jobs, and it sh
   - Step-up thresholds (10M VND per transaction, 20M VND cumulative per day, as MoMo publishes them) live in config.
 - **Currency:** VND, no decimals, formatted `1.250.000 ₫`. The balance can be hidden or shown.
 - **Language:** UI in Vietnamese. Spec, User Stories and code identifiers in English.
-- **Visual system:** gluestack-ui v4 with its default theme (decided 2026-11-19, replacing the Apple HIG "Inset Grouped" build), plus one `success` green token so money reads green (gained) and red (cost). Neutral palette otherwise, no brand tint; Inter for Vietnamese diacritics; light and dark follow the system setting. See DESIGN.md.
+- **Visual system:** gluestack-ui v4 components in the iOS / iPadOS 27 language (decided 2026-11-19): Apple semantic colours behind the gluestack tokens, the iOS Dynamic Type ramp, SF Pro through the system font (Inter fallback for Vietnamese), inset grouped cards, capsule controls, Liquid Glass only on bars. Viewer-selectable tint (seven rainbow colours), light/dark and backdrop. Green and red carry money meaning. See DESIGN.md.
 
 ## Brand Commitments
 
 - The product name is **Wallet** (working name), hosted at wallet.ontheshore.biz.
-- UI is gluestack-ui exactly as the library ships it: its components and default theme, nothing custom on top. Icons are Lucide through gluestack Icon.
-- History: PayPal grammar ("Clear Ledger", 2026-11-17), then Copilot grammar ("Violet Sky", 2026-11-17), then Apple HIG ("Inset Grouped", 2026-11-19), then gluestack-ui default (2026-11-19, sếp rejected the custom UI). The PayPal study stays in the vault note `10-projects/wallet/paypal-style-study.md` for flow reference.
+- UI is built from gluestack-ui components dressed in Apple's iOS / iPadOS 27 language, as a third-party app would: no Apple logo, no Apple Pay or Apple Wallet marks, no SF Symbols artwork (icons are Lucide), SF Pro only through the system font stack.
+- History: PayPal grammar ("Clear Ledger", 2026-11-17), then Copilot grammar ("Violet Sky", 2026-11-17), then Apple HIG ("Inset Grouped", 2026-11-19), then gluestack-ui default (2026-11-19, sếp rejected the custom UI), then gluestack in the iOS / iPadOS 27 language (2026-11-19). The PayPal study stays in the vault note `10-projects/wallet/paypal-style-study.md` for flow reference.
 - Never use the PayPal logo or monogram, PayPal Pro or PayPal Open fonts, PayPal's exact colours (#0065F2, #002991, #001435, #0070BA, #003087), its yellow or black logo buttons, or the word "PayPal".
 - No MoMo, ZaloPay, NAPAS or bank logos. Banks use real Vietnamese bank names as text (decided 2026-11-17: it is a demo). People, merchants and billers in mock data are fictional; VietQR is referenced by name only.
 

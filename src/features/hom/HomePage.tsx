@@ -70,7 +70,11 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
   const series = loaded ? balanceSeries(w, now()) : []
   const delta = series.length ? series[series.length - 1] - series[0] : 0
   return (
-    <Card role="region" aria-label="Số dư" className="gap-0 p-5">
+    // The money card (sếp: dark, as the old Wallet card): a `dark` scope, so every token inside takes its dark value
+    // (text, chart, chip, the tint) in both modes; a soft glow of the tint from the top-right corner.
+    <Card role="region" aria-label="Số dư" className="dark relative isolate gap-0 overflow-hidden bg-card p-5">
+      {/* Glow on its own layer: gluestack's tailwind-merge would drop bg-card for a bg-[gradient] on the card. */}
+      <Box aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_100%_0%,rgb(var(--primary)/0.4),transparent_62%)]" />
       <HStack className="items-center gap-1">
         <Heading as="h2" size="sm" className="font-semibold text-muted-foreground">Số dư khả dụng</Heading>
         <GButton
@@ -93,7 +97,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
         <Pressable href="/history?tab=dang-xu-ly" role="link" onPress={pendingPress} className="mt-3 min-h-8 self-start justify-center">
           <Badge variant="outline" className="gap-2 rounded-full px-3 py-1">
             <BadgeIcon as={Clock} aria-hidden />
-            <BadgeText>
+            <BadgeText className="normal-case font-semibold">
               Đang xử lý{' '}
               {hidden ? <><Text size="xs" aria-hidden>••••••</Text><Text className="sr-only">số tiền đang ẩn</Text></> : <Text size="xs" className="font-medium tabular-nums">{formatVnd(held)}</Text>}
             </BadgeText>

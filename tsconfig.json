@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "preserve",
@@ -17,11 +21,36 @@
     "noEmit": true,
     "incremental": true,
     "esModuleInterop": true,
-    "moduleSuffixes": [".web", ""],
-    "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
-    "plugins": [{ "name": "next" }],
-    "paths": { "@/*": ["./src/*"] }
+    "moduleSuffixes": [
+      ".web",
+      ""
+    ],
+    "types": [
+      "node",
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
-  "include": ["next-env.d.ts", "nativewind-env.d.ts", "src", "app", "registry.tsx"],
-  "exclude": ["node_modules", "src/components/ui"]
+  "include": [
+    "app",
+    "nativewind-env.d.ts",
+    "next-env.d.ts",
+    "registry.tsx",
+    "src",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/components/ui"
+  ]
 }

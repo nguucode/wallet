@@ -13,11 +13,11 @@ History: "Clear Ledger" (PayPal grammar) → "Violet Sky" (Copilot grammar, 2026
 
 ## Direction contract
 
-THESIS: The library is the design. Every surface is gluestack-ui components in the default theme, composed plainly; nothing custom competes with the balance, the states and the rules.
+THESIS (revised 2026-11-19, iOS / iPadOS 27 revamp): gluestack components dressed as a first-party iOS 27 app: semantic colours, Dynamic Type, inset grouped cells, capsule controls, Liquid Glass bars, a dark money card. Earlier thesis: The library is the design. Every surface is gluestack-ui components in the default theme, composed plainly; nothing custom competes with the balance, the states and the rules.
 
-OWN-WORLD: gluestack default tokens only (background, card, primary, secondary, muted, accent, destructive, border and their foregrounds); Inter; component-default radii and type sizes; Tailwind 4pt spacing. No glass, gradients, glow, custom shadows or brand tint. Transaction states are Badge variants plus text.
+OWN-WORLD: gluestack token names carrying Apple's semantic colours (grouped style) light and dark; SF Pro via the system stack, Inter fallback; iOS Dynamic Type ramp (Body 17, Large Title 34); inset grouped cards (24px), capsule buttons and badges in sentence case; Liquid Glass only on the nav bar, tab bar, demo box and sheets; viewer tint from the seven rainbow colours; green/red keep money meaning; dark money card with a tint glow.
 
-FIRST VIEWPORT: App: NavBar, large title "Wallet" with the app icon, balance Card (available balance, pending Badge, 30-day line), shortcut grid, "Hóa đơn sắp đến hạn"; bottom tab bar with Scan as a filled Button. Web: bordered sidebar (collapsible rail; account Menu, notifications, demo controls in its footer), large title, the same sections in a 768px column.
+FIRST VIEWPORT: App: clear NavBar (glass on scroll), large title "Wallet" with the app icon, dark balance card (available balance, pending Badge, 30-day line), shortcut grid, "Hóa đơn sắp đến hạn"; floating glass tab bar with Scan as the filled tint button. Web: edge-to-edge sidebar on the viewer's backdrop (Demo controls glass box, account, notifications in its footer), the 672px grouped panel with large title and inset cards.
 
 FORM: Pinned whole by sếp, seed: none (pinned).
 

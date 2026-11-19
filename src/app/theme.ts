@@ -1,63 +1,76 @@
 /**
- * Viewer theme (sếp 2026-11-19): primary colour, light/dark, page backdrop. It only re-values gluestack tokens at runtime
- * (`--primary`, `--primary-foreground`, `--ring`) plus the app's `--backdrop` (the page behind the content panel);
- * "default" is the untouched gluestack theme. Green/red keep their money meaning, so no primary is green or red.
+ * Viewer theme (sếp 2026-11-19): tint colour, light/dark, page backdrop. It only re-values tokens at runtime
+ * (`--primary`, `--primary-foreground`, `--ring`, plus the app's backdrop tokens), written as one stylesheet with a
+ * `:root` (light) and a `.dark` rule, so any `.dark` scope (the dark balance card, dark mode) picks the right value.
  * Stored per viewer in localStorage; "Đặt lại dữ liệu" (demo data) does not touch it.
  */
 import { useSyncExternalStore } from 'react'
 import { script as applyColorMode } from '@/components/ui/gluestack-ui-provider/script'
+import { THEME_KEY as KEY } from './theme-boot'
 
 export type Mode = 'system' | 'light' | 'dark'
-// Light values are -700 shades (white text, AA on white); dark values are -400 shades (dark text, AA on near-black).
+/**
+ * The seven rainbow colours as Apple's accessible (increased-contrast) system colours: the light values carry white
+ * text and read as text on white; the dark values carry black text and read on black. Blue is iOS's default tint.
+ */
 export const PRIMARIES = {
-  default: { label: 'Mặc định', light: null, dark: null },
-  violet: { label: 'Tím', light: '91 43 224', dark: '167 139 250' },
-  blue: { label: 'Xanh dương', light: '29 78 216', dark: '96 165 250' },
-  indigo: { label: 'Chàm', light: '67 56 202', dark: '129 140 248' },
-  pink: { label: 'Hồng', light: '190 24 93', dark: '244 114 182' },
+  red: { label: 'Đỏ', light: '215 0 21', dark: '255 105 97' },
+  orange: { label: 'Cam', light: '201 52 0', dark: '255 179 64' },
+  yellow: { label: 'Vàng', light: '178 80 0', dark: '255 212 38' },
+  green: { label: 'Lục', light: '28 122 52', dark: '48 219 91' }, // Apple's #248A3D is 4.4:1 on the grouped grey; one step darker
+  blue: { label: 'Lam', light: '0 64 221', dark: '64 156 255' },
+  indigo: { label: 'Chàm', light: '54 52 163', dark: '125 122 255' },
+  violet: { label: 'Tím', light: '137 68 171', dark: '218 143 255' },
 } as const
 export const BACKGROUNDS = {
-  plain: { label: 'Trơn' },
-  tint: { label: 'Ám màu' },
-  warm: { label: 'Ấm' },
-  pattern: { label: 'Sọc chéo' },
+  neutral: { label: 'Xám trung tính' },
+  gradient: { label: 'Chuyển màu' },
+  solid: { label: 'Đơn sắc' },
 } as const
 export const MODES: Record<Mode, string> = { system: 'Theo hệ thống', light: 'Sáng', dark: 'Tối' }
 
 export type ThemePrefs = { primary: keyof typeof PRIMARIES; mode: Mode; background: keyof typeof BACKGROUNDS }
-export const DEFAULT_THEME: ThemePrefs = { primary: 'default', mode: 'system', background: 'plain' }
+export const DEFAULT_THEME: ThemePrefs = { primary: 'blue', mode: 'system', background: 'neutral' }
 
-// gluestack default primary, used to tint the backdrop when no colour is chosen.
-export const GS_PRIMARY = { light: '23 23 23', dark: '255 245 245' }
-const PLAIN = { light: '245 245 245', dark: '23 23 23' }
-const WARM = { light: '250 241 236', dark: '30 25 23' }
+// iOS systemGray5 / secondarySystemBackground behind the grouped panel; the app page is the grouped background itself.
+const NEUTRAL = { light: '229 229 234', dark: '28 28 30' }
+const GROUPED = { light: '242 242 247', dark: '0 0 0' }
 
 const mix = (a: string, b: string, t: number) => {
   const x = a.split(' ').map(Number), y = b.split(' ').map(Number)
   return x.map((v, i) => Math.round(v * t + y[i] * (1 - t))).join(' ')
 }
 
-/** CSS variables for a theme in one colour mode. Only the primary overrides are set; the rest stay gluestack's. */
+/** CSS variables for a theme in one colour mode. */
 export function themeVars(p: ThemePrefs, dark: boolean): Record<string, string> {
   const m = dark ? 'dark' : 'light'
-  const pick = PRIMARIES[p.primary]
-  const v: Record<string, string> = {}
-  if (pick.light) {
-    v['--primary'] = pick[m]!
-    v['--primary-foreground'] = dark ? '10 10 10' : '255 255 255'
-    v['--ring'] = v['--primary']
+  const primary = PRIMARIES[p.primary][m]
+  const solid = p.background === 'solid'
+  const grad = p.background === 'gradient'
+  // Web backdrop (behind the panel) and the gradient's tinted end.
+  const backdrop = solid ? mix(primary, GROUPED[m], dark ? 0.2 : 0.14) : NEUTRAL[m]
+  const tint = grad ? mix(primary, GROUPED[m], dark ? 0.3 : 0.22) : backdrop
+  // App page: the same idea kept pale enough for secondary text (AA) in light mode.
+  const APP_LIGHT = '248 248 250'
+  const app = solid ? (dark ? mix(primary, GROUPED.dark, 0.14) : mix(primary, APP_LIGHT, 0.05)) : GROUPED[m]
+  const appTint = grad ? (dark ? mix(primary, GROUPED.dark, 0.2) : mix(primary, APP_LIGHT, 0.06)) : app
+  return {
+    '--primary': primary,
+    '--primary-foreground': dark ? '0 0 0' : '255 255 255',
+    '--ring': primary,
+    '--backdrop': backdrop,
+    '--backdrop-tint': tint,
+    '--backdrop-app': app,
+    '--backdrop-app-tint': appTint,
   }
-  const primary = pick[m] ?? GS_PRIMARY[m]
-  v['--backdrop'] = p.background === 'warm' ? WARM[m] : p.background === 'tint' ? mix(primary, PLAIN[m], dark ? 0.14 : 0.08) : PLAIN[m]
-  // App pages put gluestack's muted text straight on the page, so in light mode the app gets a paler cut of the same
-  // backdrop (muted-foreground stays AA); dark backdrops already pass.
-  v['--backdrop-app'] = dark ? v['--backdrop'] : mix(v['--backdrop'], '255 255 255', 0.2)
-  return v
 }
+
+const decl = (v: Record<string, string>) => Object.entries(v).map(([k, val]) => `${k}:${val};`).join('')
+/** The theme as one stylesheet: light on :root, dark on .dark (the class gluestack's colour-mode script sets). */
+export const themeCss = (p: ThemePrefs) => `:root{${decl(themeVars(p, false))}}.dark{${decl(themeVars(p, true))}}`
 
 export const nextMode = (m: Mode): Mode => (m === 'system' ? 'light' : m === 'light' ? 'dark' : 'system')
 
-import { THEME_KEY as KEY } from './theme-boot'
 export function loadTheme(): ThemePrefs {
   try {
     const raw = JSON.parse(localStorage.getItem(KEY) ?? '{}')
@@ -73,14 +86,15 @@ export function saveTheme(p: ThemePrefs) {
 
 let current: ThemePrefs = typeof window === 'undefined' ? DEFAULT_THEME : loadTheme()
 const listeners = new Set<() => void>()
-const isDark = () => document.documentElement.classList.contains('dark')
+const STYLE_ID = 'wallet-theme'
 
-/** Sets the light/dark class (gluestack's own script) and writes the token overrides on <html>. */
+/** Sets the light/dark class (gluestack's own script) and (re)writes the theme stylesheet, last in <head> so it wins. */
 export function applyTheme(p: ThemePrefs = current) {
   applyColorMode(p.mode)
-  const root = document.documentElement
-  for (const k of ['--primary', '--primary-foreground', '--ring']) root.style.removeProperty(k)
-  for (const [k, val] of Object.entries(themeVars(p, isDark()))) root.style.setProperty(k, val)
+  let el = document.getElementById(STYLE_ID)
+  if (!el) { el = document.createElement('style'); el.id = STYLE_ID }
+  document.head.appendChild(el)
+  el.textContent = themeCss(p)
 }
 
 export function setTheme(patch: Partial<ThemePrefs>) {
@@ -95,8 +109,8 @@ export function useTheme(): ThemePrefs {
 }
 
 /**
- * Start-up: apply the stored theme, and re-apply after an OS light/dark change (gluestack's provider listener flips the
- * class to the OS value first; a forced Light or Dark must win, and "system" needs its token values re-read).
+ * Start-up: apply the stored theme, and after an OS light/dark change re-apply (gluestack's provider listener flips the
+ * class to the OS value first; a forced Light or Dark must win) and re-render swatch previews.
  */
 let started = false
 export function initTheme() {
@@ -105,7 +119,6 @@ export function initTheme() {
   applyTheme()
   window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change', () => setTimeout(() => {
     applyTheme()
-    // Swatch previews read the active mode: re-render them too.
     current = { ...current }
     listeners.forEach((l) => l())
   }, 0))

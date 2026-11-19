@@ -24,8 +24,10 @@ module.exports = {
         foreground: 'rgb(var(--foreground)/<alpha-value>)',
         // Page behind the content panel (web) / behind cards (app); value set by src/app/theme.ts.
         backdrop: {
-          DEFAULT: 'rgb(var(--backdrop, 245 245 245) / <alpha-value>)',
-          app: 'rgb(var(--backdrop-app, 252 252 252) / <alpha-value>)',
+          DEFAULT: 'rgb(var(--backdrop, 229 229 234) / <alpha-value>)',
+          tint: 'rgb(var(--backdrop-tint, 229 229 234) / <alpha-value>)',
+          app: 'rgb(var(--backdrop-app, 242 242 247) / <alpha-value>)',
+          'app-tint': 'rgb(var(--backdrop-app-tint, 242 242 247) / <alpha-value>)',
         },
         success: {
           DEFAULT: 'rgb(var(--success) / <alpha-value>)',
@@ -98,10 +100,11 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: undefined,
-        body: 'var(--font-sans)',
+        // iOS 27 revamp: SF Pro through the system stack on Apple devices; Inter (next/font, Vietnamese) elsewhere.
+        heading: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', 'var(--font-sans)', 'system-ui', 'sans-serif'],
+        body: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', 'var(--font-sans)', 'system-ui', 'sans-serif'],
         mono: 'var(--font-mono)',
-        sans: 'var(--font-sans)',
+        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', 'var(--font-sans)', 'system-ui', 'sans-serif'],
         serif: 'var(--font-serif)',
         inter: ['var(--font-inter)'],
         georgia: ['Georgia'],
@@ -124,8 +127,20 @@ module.exports = {
       fontWeight: {
         extrablack: '950',
       },
+      // iOS Dynamic Type default sizes on the Tailwind scale gluestack's Text/Heading sizes resolve to:
+      // xs Footnote 13 · sm Subheadline 15 · base Body/Headline 17 · lg Title 3 20 · xl Title 2 22 · 2xl Title 1 28 ·
+      // 3xl 30 · 4xl Large Title 34 (Heading 3xl, page titles, amounts) · 5xl 48 (balance).
       fontSize: {
         '2xs': '10px',
+        xs: ['13px', '18px'],
+        sm: ['15px', '20px'],
+        base: ['17px', '23px'], // iOS Body is 17/22; 23 gives Vietnamese diacritics and wrapped paragraphs room (1.35)
+        lg: ['20px', '25px'],
+        xl: ['22px', '28px'],
+        '2xl': ['28px', '34px'],
+        '3xl': ['30px', '36px'],
+        '4xl': ['34px', '41px'],
+        '5xl': ['48px', '52px'],
       },
       boxShadow: {
         'hard-1': '-2px 2px 8px 0px rgba(38, 38, 38, 0.20)',

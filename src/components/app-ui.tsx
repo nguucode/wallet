@@ -4,7 +4,7 @@
  * The exported API is the one the screens already use; everything inside is gluestack.
  */
 import { Check, ChevronLeft, ChevronRight, X } from 'lucide-react'
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { formatVnd } from '@/domain/money'
@@ -68,7 +68,8 @@ export function Button({ variant = 'primary', size = 'md', block, loading, disab
       onPress={press}
       {...(to ? { href: to, role: 'link' } : {})}
       aria-busy={loading || undefined}
-      className={cx(block && 'w-full', className)}
+      // iOS: capsule buttons; the large (md) size is the 50pt iOS filled button.
+      className={cx('rounded-full', size === 'md' && 'h-12', block && 'w-full', className)}
       {...rest}
     >
       {loading ? <ButtonSpinner /> : null}
@@ -97,18 +98,9 @@ export function Ico({ as, size = 'md', className }: { as: React.ElementType; siz
 
 /* ── Layout pieces ────────────────────────────────────────────────── */
 
-/**
- * Flat surface (sếp 2026-11-19): inside the web content panel (672px) nothing is a card; the panel is the only frame.
- * WebShell provides it; sheets and modals render outside the panel and the app layout keeps its cards.
- */
-export const FlatContext = createContext(false)
-export const useFlat = () => useContext(FlatContext)
-// Appended last so tailwind-merge (gluestack's tva) drops the card's frame and side padding but keeps vertical rhythm.
-const FLAT_CARD = 'rounded-none border-0 bg-transparent px-0 shadow-none'
-
 export function Card({ className, children, role, ...aria }: { className?: string; children: ReactNode; as?: 'div' | 'section' | 'article'; role?: string; 'aria-label'?: string }) {
-  const flat = useFlat()
-  return <GCard role={role} {...aria} className={cx('gap-0', className, flat && FLAT_CARD)}>{children}</GCard>
+  // iOS inset grouped: cells on the grouped background, 24px corners, no border or shadow.
+  return <GCard role={role} {...aria} className={cx('gap-0 rounded-3xl border-0 shadow-none', className)}>{children}</GCard>
 }
 
 export function Section({ title, action, children, className }: { title: string; action?: ReactNode; children: ReactNode; className?: string }) {
@@ -158,7 +150,8 @@ export function useScrolled(px = 8) {
 export function NavBar({ title, titleVisible = true, left, right, className }: { title: ReactNode; titleVisible?: boolean; left?: ReactNode; right?: ReactNode; className?: string }) {
   const scrolled = useScrolled()
   return (
-    <HStack className={cx('sticky top-0 z-30 min-h-14 items-center bg-backdrop-app px-1', scrolled && 'border-b border-border', className)} role="banner">
+    // iOS: the bar is clear at rest and becomes a glass material once content scrolls under it.
+    <HStack className={cx('sticky top-0 z-30 min-h-14 items-center px-1', scrolled ? 'border-b border-border/60 bg-backdrop-app/75 backdrop-blur-xl' : 'bg-transparent', className)} role="banner">
       <HStack className="min-w-[88px] flex-1 items-center">{left}</HStack>
       <Text bold isTruncated className={cx('max-w-[60vw] text-center', titleVisible || scrolled ? 'opacity-100' : 'opacity-0')}>{title}</Text>
       <HStack className="min-w-[88px] flex-1 items-center justify-end">{right}</HStack>
@@ -193,9 +186,8 @@ export function Row({ left, title, subtitle, right, rightSub, chevron, selected,
   to?: string; onClick?: Press; className?: string; 'aria-label'?: string; 'aria-current'?: 'page' | undefined; 'aria-describedby'?: string
 }) {
   const press = useLinkPress(to, disabled ? undefined : onClick)
-  const flat = useFlat()
   const body = (
-    <HStack className={cx('min-h-[60px] w-full items-center gap-3 py-2', flat ? 'px-0' : 'px-4')}>
+    <HStack className="min-h-[60px] w-full items-center gap-3 px-4 py-2">
       {left ? <Box className="shrink-0">{left}</Box> : null}
       <VStack className="min-w-0 flex-1">
         <Text className="line-clamp-2 font-medium">{title}</Text>
@@ -217,8 +209,7 @@ export function Row({ left, title, subtitle, right, rightSub, chevron, selected,
       onPress={press}
       {...(to ? { href: to, role: 'link' } : { role: 'button', 'aria-pressed': selected })}
       aria-disabled={disabled || undefined}
-      // Flat: text meets the content edge; the hover fill reaches 8px past it with rounded ends.
-      className={cx('w-full data-[hover=true]:bg-accent data-[active=true]:bg-accent', flat && '-mx-2 w-[calc(100%+16px)] rounded-md px-2', disabled && 'opacity-40', className)}
+      className={cx('w-full data-[hover=true]:bg-accent data-[active=true]:bg-accent', disabled && 'opacity-40', className)}
       {...aria}
     >
       {body}
@@ -243,9 +234,8 @@ export function RailTile({ to, onClick, label, leading, name, sub }: { to: strin
 }
 
 export function RowSkeleton() {
-  const flat = useFlat()
   return (
-    <HStack className={cx('min-h-[60px] items-center gap-3 py-2', flat ? 'px-0' : 'px-4')} aria-hidden>
+    <HStack className="min-h-[60px] items-center gap-3 px-4 py-2" aria-hidden>
       <GSkeleton variant="circular" className="h-10 w-10" />
       <VStack className="flex-1 gap-2"><GSkeleton className="h-4 w-2/5" /><GSkeleton className="h-3 w-1/4" /></VStack>
       <GSkeleton className="h-4 w-20" />
@@ -285,10 +275,11 @@ type Tone = 'neutral' | 'primary' | 'secondary' | 'success' | 'pending' | 'dange
 function ToneBadge({ tone, children }: { tone: Tone; children: ReactNode }) {
   // Success is the normal outcome: outline in green, so it reads calmly next to amounts; failure is the solid one.
   if (tone === 'success')
-    return <GBadge variant="outline" className="border-success/50"><BadgeText className="text-success">{children}</BadgeText></GBadge>
+    return <GBadge variant="outline" className="rounded-full border-success/50"><BadgeText className="normal-case font-semibold text-success">{children}</BadgeText></GBadge>
   const variant = tone === 'danger' ? 'destructive' : tone === 'primary' ? 'default' : tone === 'pending' ? 'outline' : 'secondary'
   // Dark theme's destructive is a light red: white text fails (2.9:1), so it takes the background colour there.
-  return <GBadge variant={variant} className={variant === 'destructive' ? 'dark:bg-destructive' : undefined}><BadgeText className={variant === 'destructive' ? 'dark:text-background' : undefined}>{children}</BadgeText></GBadge>
+  // iOS capsules in sentence case (gluestack's BadgeText is uppercase by default).
+  return <GBadge variant={variant} className={cx('rounded-full', variant === 'destructive' && 'dark:bg-destructive')}><BadgeText className={cx('normal-case font-semibold', variant === 'destructive' && 'dark:text-background')}>{children}</BadgeText></GBadge>
 }
 
 const STATUS_TONE: Record<TxStatus, Tone> = { success: 'success', failed: 'danger', pending: 'pending', refunded: 'neutral' }
@@ -420,20 +411,20 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
     return (
       <Actionsheet isOpen={open} onClose={close} closeOnOverlayClick={dismissible}>
         <ActionsheetBackdrop />
-        <ActionsheetContent role="dialog" aria-modal aria-label={title} className="max-h-[92dvh] items-stretch">
+        <ActionsheetContent role="dialog" aria-modal aria-label={title} className="max-h-[92dvh] items-stretch rounded-t-[32px] border-0 bg-card">
           <ActionsheetDragIndicatorWrapper><ActionsheetDragIndicator /></ActionsheetDragIndicatorWrapper>
           {header}
           {/* Scroll box is a fixed-height flex column: the content wrapper must not shrink, or its children overlap. */}
-          <Box className="mt-4 overflow-y-auto pb-4"><Box className="shrink-0"><FlatContext.Provider value={false}>{children}</FlatContext.Provider></Box></Box>
+          <Box className="mt-4 overflow-y-auto pb-4"><Box className="shrink-0">{children}</Box></Box>
         </ActionsheetContent>
       </Actionsheet>
     )
   return (
     <Modal isOpen={open} onClose={close} closeOnOverlayClick={dismissible} size="md">
       <ModalBackdrop />
-      <ModalContent role="dialog" aria-modal aria-label={title} className="max-h-[88vh]">
+      <ModalContent role="dialog" aria-modal aria-label={title} className="max-h-[88vh] rounded-3xl border-0 bg-card">
         <ModalHeader>{header}</ModalHeader>
-        <ModalBody className="mt-4"><Box className="shrink-0"><FlatContext.Provider value={false}>{children}</FlatContext.Provider></Box></ModalBody>
+        <ModalBody className="mt-4"><Box className="shrink-0">{children}</Box></ModalBody>
       </ModalContent>
     </Modal>
   )
@@ -487,7 +478,8 @@ export function useToast(ms = 3000) {
 /** Inline text link that routes on the client: gluestack Link + LinkText rendered as <a href>. */
 export function TextLink({ to, children, onClick }: { to: string; children: ReactNode; onClick?: Press }) {
   const press = useLinkPress(to, onClick)
-  return <Link href={to} onPress={press}><LinkText>{children}</LinkText></Link>
+  // iOS: links are tint-coloured text, not underlined.
+  return <Link href={to} onPress={press}><LinkText className="font-medium no-underline">{children}</LinkText></Link>
 }
 
 /** Key/value detail rows (confirm, result, profile): label left, value right, a divider between rows. */

@@ -33,7 +33,7 @@ export function LineChart({ values, label, className, endTag, endTone, wide }: {
       </svg>
       {endTag ? (
         <Box aria-hidden className="absolute -translate-x-full -translate-y-[130%]" style={{ left: `${(ex / W) * 100}%`, top: `${(ey / H) * 100}%` }}>
-          <Badge className={endTone === 'up' ? 'bg-success' : endTone === 'down' ? 'bg-destructive dark:bg-destructive' : undefined}><BadgeText className={cx('whitespace-nowrap', endTone === 'up' ? 'text-success-foreground' : endTone === 'down' ? 'text-white dark:text-background' : undefined)}>{endTag}</BadgeText></Badge>
+          <Badge className={cx('rounded-full', endTone === 'up' ? 'bg-success' : endTone === 'down' ? 'bg-destructive dark:bg-destructive' : undefined)}><BadgeText className={cx('whitespace-nowrap normal-case font-semibold', endTone === 'up' ? 'text-success-foreground' : endTone === 'down' ? 'text-white dark:text-background' : undefined)}>{endTag}</BadgeText></Badge>
         </Box>
       ) : null}
     </Box>
@@ -70,7 +70,7 @@ export function BarsWithLimit({ bars, limit, limitLabel, label }: { bars: { key:
     <VStack role="figure" aria-label={label}>
       <Box className="relative" style={{ height: H + 24 }}>
         <Box aria-hidden className="absolute inset-x-0 border-t-2 border-foreground" style={{ top: y(limit) }}>
-          <Box className="absolute right-0 -translate-y-1/2"><Badge><BadgeText className="whitespace-nowrap">{limitLabel}</BadgeText></Badge></Box>
+          <Box className="absolute right-0 -translate-y-1/2"><Badge className="rounded-full"><BadgeText className="whitespace-nowrap normal-case font-semibold">{limitLabel}</BadgeText></Badge></Box>
         </Box>
         <HStack className="absolute inset-x-0 top-0 items-end justify-between gap-2" style={{ height: H }}>
           {bars.map((b) => (

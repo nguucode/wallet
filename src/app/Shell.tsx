@@ -6,8 +6,8 @@ import { isTabRoot, screenFor, sidebar, tabBar, type NavItem } from '@/app/sitem
 import { signOut, unreadCount, useWorld } from '@/app/store'
 import { useTheme } from '@/app/theme'
 import { DemoControlsButton, DemoControlsSheet } from '@/features/demo/DemoControls'
-import { BACKDROP_PATTERN, ThemeControls } from '@/features/demo/ThemeControls'
-import { Avatar, BackButton, Confirm, cx, FlatContext, Ico, IconButton, NavBar, useLinkPress } from '@/components/app-ui'
+import { backdropClass, ThemeControls } from '@/features/demo/ThemeControls'
+import { Avatar, BackButton, Confirm, cx, Ico, IconButton, NavBar, useLinkPress } from '@/components/app-ui'
 import { Badge, BadgeText } from '@/components/ui/badge'
 import { Box } from '@/components/ui/box'
 import { Button, ButtonText } from '@/components/ui/button'
@@ -28,7 +28,7 @@ const ICONS: Record<string, typeof Home> = {
 }
 
 export function SampleBadge({ compact }: { className?: string; compact?: boolean }) {
-  return <Badge variant="outline" aria-label="Dữ liệu mẫu"><BadgeText>{compact ? 'Mẫu' : 'Dữ liệu mẫu'}</BadgeText></Badge>
+  return <Badge variant="outline" aria-label="Dữ liệu mẫu" className="rounded-full"><BadgeText className="normal-case font-semibold">{compact ? 'Mẫu' : 'Dữ liệu mẫu'}</BadgeText></Badge>
 }
 
 /** Moves focus to the page h1 and updates the document title on route change (a11y). */
@@ -78,8 +78,8 @@ function SideLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
       role="link"
       aria-current={active ? 'page' : undefined}
       aria-label={collapsed ? item.label : undefined}
-      // On the backdrop the current page is the panel's own surface: bg-background with a hairline, icon in primary.
-      className={cx('h-10 justify-start gap-3 data-[hover=true]:bg-background/70', collapsed ? 'w-10 justify-center self-center px-0' : 'px-2.5', active && 'border border-border bg-background')}
+      // iPadOS sidebar: the current item is a rounded cell (card surface) with the tint on its icon; hover is a lighter cell.
+      className={cx('h-10 justify-start gap-3 rounded-xl data-[hover=true]:bg-card/60', collapsed ? 'w-10 justify-center self-center px-0' : 'px-2.5', active && 'bg-card shadow-sm')}
     >
       <Ico as={I} size="md" className={cx('shrink-0', active ? 'text-primary' : 'text-foreground')} />
       {/* Same size as page content (text-base): the sm button's text-xs read smaller than the content beside it. */}
@@ -167,7 +167,7 @@ function WebShell({ children }: { children: ReactNode }) {
   const bellLabel = unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'
   const toggleLabel = collapsed ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'
   return (
-    <HStack className={cx('h-dvh overflow-hidden bg-backdrop print:h-auto print:overflow-visible', theme.background === 'pattern' && BACKDROP_PATTERN)}>
+    <HStack className={cx('h-dvh overflow-hidden print:h-auto print:overflow-visible', backdropClass(theme.background))}>
       <SkipLink />
       <VStack role="complementary" className={cx('h-full shrink-0 px-2.5 py-3', collapsed ? 'w-16' : 'w-64')}>
         <HStack className={cx('mb-3 h-9 shrink-0 items-center', collapsed ? 'flex-col gap-2 h-auto' : 'justify-between pl-1')}>
@@ -196,7 +196,7 @@ function WebShell({ children }: { children: ReactNode }) {
         <VStack className={cx('mt-2 shrink-0 gap-2', collapsed && 'items-center')}>
           {collapsed
             ? <RailThemeButton onMore={() => setDemoOpen(true)} />
-            : <Box className="rounded-xl border border-border bg-background p-3"><ThemeControls onMore={() => setDemoOpen(true)} /></Box>}
+            : <Box className="rounded-2xl border border-border/50 bg-card/80 p-3 shadow-sm backdrop-blur-xl"><ThemeControls onMore={() => setDemoOpen(true)} /></Box>}
           <Box className={cx('flex', collapsed ? 'flex-col items-center gap-px' : 'flex-row items-center gap-1')}>
             <AccountMenu expanded={!collapsed} />
             <Box className="relative">
@@ -209,9 +209,9 @@ function WebShell({ children }: { children: ReactNode }) {
       {/* The white panel IS the content column (sketch): centred on the backdrop, which shows on both sides; the area
           around it scrolls, so the panel grows with its content. */}
       <Box id="main-scroll" className="min-w-0 flex-1 overflow-y-auto px-6 py-2 print:overflow-visible">
-        <Box role="main" id="main" className="mx-auto min-h-[calc(100dvh-16px)] w-full max-w-[672px] shrink-0 rounded-2xl border border-border bg-background px-8 pb-16 pt-10">
-          {/* The panel is 672px wide; everything inside is flat (no nested cards). */}
-          <FlatContext.Provider value>{children}</FlatContext.Provider>
+        {/* iOS grouped surface: the panel is systemGroupedBackground, the cards on it are the cells. */}
+        <Box role="main" id="main" className="mx-auto min-h-[calc(100dvh-16px)] w-full max-w-[672px] shrink-0 rounded-[28px] bg-background px-8 pb-16 pt-10 shadow-sm">
+          {children}
         </Box>
       </Box>
       <DemoControlsSheet open={demoOpen} onOpenChange={setDemoOpen} />
@@ -233,9 +233,9 @@ function TabItem({ t, active, unread }: { t: NavItem; active: boolean; unread: n
       </Box>
     )
   return (
-    <Pressable onPress={press} href={t.route} role="link" aria-current={active ? 'page' : undefined} className="relative flex-1 items-center justify-center gap-1 py-1.5">
-      <Ico as={I} size="lg" className={active ? 'text-foreground' : 'text-muted-foreground'} />
-      <Text size="xs" className={active ? 'font-semibold text-foreground' : 'text-muted-foreground'}>
+    <Pressable onPress={press} href={t.route} role="link" aria-current={active ? 'page' : undefined} className={cx('relative h-full flex-1 items-center justify-center gap-0.5 rounded-full', active && 'bg-primary/10')}>
+      <Ico as={I} size="lg" className={active ? 'text-primary' : 'text-foreground'} />
+      <Text size="xs" className={active ? 'font-semibold text-primary' : 'text-foreground'}>
         {t.label}{t.badge && unread ? <Text className="sr-only">, {unread} chưa đọc</Text> : null}
       </Text>
       {t.badge && unread ? <UnreadBadge n={unread} /> : null}
@@ -247,7 +247,8 @@ function TabBar() {
   const { pathname } = useLocation()
   const unread = unreadCount(useWorld())
   return (
-    <HStack role="navigation" aria-label="Điều hướng chính" className="fixed inset-x-0 bottom-0 z-30 h-16 items-center border-t border-border bg-background px-1.5 pb-[env(safe-area-inset-bottom)]">
+    // iOS 27 tab bar: a floating Liquid Glass capsule above the home indicator; the current tab is a tinted pill.
+    <HStack role="navigation" aria-label="Điều hướng chính" className="fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom))] z-30 mx-auto h-16 max-w-[520px] items-center rounded-full border border-border/50 bg-card/75 p-1.5 shadow-hard-5 backdrop-blur-2xl">
       {tabBar.map((t) => {
         const active = isActive(pathname, t.route) || (t.id === 'me' && pathname.startsWith('/me')) || (t.id === 'scan' && pathname === '/pay/scan')
         return <TabItem key={t.id} t={t} active={active} unread={unread} />
@@ -264,7 +265,7 @@ function AppShell({ children }: { children: ReactNode }) {
   const title = root && pathname === '/home' ? 'Wallet' : s?.title ?? 'Wallet'
   const theme = useTheme()
   return (
-    <Box className={cx('min-h-dvh bg-backdrop-app', theme.background === 'pattern' && BACKDROP_PATTERN)}>
+    <Box className={cx('min-h-dvh', backdropClass(theme.background, true))}>
       <SkipLink />
       <NavBar
         title={<Text aria-hidden>{title}</Text>}
