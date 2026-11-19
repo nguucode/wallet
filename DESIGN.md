@@ -191,7 +191,7 @@ Every screen is built from two layers. Above, a violet gradient band (the sky) c
 
 The mood is calm and soft, never loud. Density is moderate: one card per idea, generous section gaps, 64px list rows, 48px controls. Colour is rationed. Violet means you can act, it is selected, or it is the sky; green, amber and red appear only to state where money is.
 
-The layout has two shapes from one system. On the web (1024px and up) a lavender sidebar sits beside a content column whose top carries the sky band. On the app (below 1024px) a transparent header floats over the sky with a centred title, and a white tab bar sits at the bottom with a raised violet Scan disc.
+The layout has two shapes from one system. On the web (1024px and up) a floating glass sidebar sits beside a content column, and the sky band runs behind both. On the app (below 1024px) a transparent header floats over the sky with a centred title, and a white tab bar sits at the bottom with a raised violet Scan disc.
 
 **Key Characteristics:**
 - Lifted white cards over a violet sky band that fades into lavender ground.
@@ -217,7 +217,7 @@ One violet, a navy ink, a lavender neutral family, and three status pairs that n
 - **Night Navy** (ink): all primary text, the balance, the limit line and its flag on bar charts, the ink button, toasts.
 - **Dusk Grey** (muted): secondary text, section labels, sublines, inactive segments.
 - **White** (surface): cards, sheets, inputs, the tab bar, the active sidebar item.
-- **Mist** (surface-2): the web sidebar, icon and monogram discs, row hover, skeletons, confirm-row panels.
+- **Mist** (surface-2): the glass sidebar's fallback when blur is unsupported or transparency is reduced, icon and monogram discs, row hover, skeletons, confirm-row panels.
 - **Lavender Ground** (ground): the page under everything.
 - **Heather Line** (line): input borders, the amount underline, disabled button fill, the sheet grabber.
 - **Faint Line** (line-soft): row dividers inside cards, ring tracks.
@@ -257,7 +257,7 @@ One violet, a navy ink, a lavender neutral family, and three status pairs that n
 
 App (below 1024px): a single column, max 560px, 20px side gutter, a sky band 276px tall (240px in flows) behind a 56px transparent header that turns solid Deep Violet on scroll. Tab-root screens end above a 64px tab bar; flow screens hide the tab bar and pin their footer actions to a white sheet-topped bar.
 
-Web (1024px and up): a 240px Mist sidebar with pill nav items, then a content column (max 768px, 48px side padding) under a 300px sky band and a 64px header carrying notifications and the account menu. Flows sit in a 560px column inside it.
+Web (1024px and up): a glass sidebar inset 12px from the window (240px, or a 76px icon rail when collapsed), then a content column (max 768px, 48px side padding) under a 300px sky band and a 64px header carrying notifications and the account menu. Flows sit in a 560px column inside it.
 
 Rhythm: sections are 32px apart (48px on web), section label 12px above its card. Cards pad 20px (24px in flows, 32px horizontal on web). List rows are at least 64px tall; tap targets at least 44px.
 
@@ -308,7 +308,7 @@ Soft and round. Cards 24px; sheets and the keypad panel 28px; callouts and confi
 - **Error:** border and message in danger; the message is an alert.
 
 ### Navigation
-- **Web sidebar:** Mist panel, 44px pill items; active item is a white pill with card shadow and Violet Ink semibold text. Group headings use the Label style.
+- **Web sidebar:** floating glass panel (`glass` utility: white 72%, blur 24px + saturate 180%, white inner rim, violet drop shadow), radius 28, inset 12px from the window edges, sticky. 44px pill items; active item is a white pill with card shadow and Violet Ink semibold text. Group headings are 11px caps in Violet Ink (Muted fails contrast over glass on the sky). A toggle beside the logo collapses it to a 76px icon rail (labels become `sr-only` + tooltip, groups become a hairline); the choice is kept in localStorage per viewer.
 - **App header:** transparent over the sky, centred white title, 44px icon buttons either side.
 - **Tab bar:** white, five slots, with the middle Scan as a 56px raised disc filled with the sky gradient, float shadow and a 4px white ring. Unread counts are navy pills.
 
