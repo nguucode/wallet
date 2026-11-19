@@ -11,14 +11,14 @@ import { ScreenTitle, useToast } from '@/features/his/parts'
 import { Badge, Button, Card, cx, EmptyState, Section } from '@/components/ui'
 import { billStatusOn, isPayable, maskCode, overdueDays, periodLabel, sortBills, type BillStatus } from './bills'
 
-const CHIP: Record<BillStatus, { label: string; tone: 'danger' | 'primary' | 'pending' | 'neutral' }> = {
-  overdue: { label: 'Quá hạn', tone: 'danger' }, due: { label: 'Sắp đến hạn', tone: 'primary' },
+const CHIP: Record<BillStatus, { label: string; tone: 'danger' | 'secondary' | 'pending' | 'neutral' }> = {
+  overdue: { label: 'Quá hạn', tone: 'danger' }, due: { label: 'Sắp đến hạn', tone: 'secondary' },
   settling: { label: 'Đang xử lý', tone: 'pending' }, paid: { label: 'Đã thanh toán', tone: 'neutral' },
 }
 
 export function BillChip({ status }: { status: BillStatus }) {
   const c = CHIP[status]
-  const dot = { danger: 'bg-danger', primary: 'bg-primary', pending: 'bg-pending', neutral: 'bg-muted' }[c.tone]
+  const dot = { danger: 'bg-danger', secondary: 'bg-secondary-ink', pending: 'bg-pending', neutral: 'bg-muted' }[c.tone]
   return <Badge tone={c.tone}><span aria-hidden className={cx('mr-1.5 size-1.5 rounded-full', dot)} />{c.label}</Badge>
 }
 

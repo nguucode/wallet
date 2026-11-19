@@ -146,8 +146,8 @@ export function Row({ left, title, subtitle, right, rightSub, to, onClick, class
   return <div className={cls}>{body}</div>
 }
 
-export function Disc({ children, tone = 'neutral', size = 48 }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'success' | 'pending' | 'danger'; size?: number }) {
-  const t = { neutral: 'bg-surface-2 text-tint', primary: 'bg-primary-soft text-primary-ink', success: 'bg-success-soft text-success', pending: 'bg-pending-soft text-pending', danger: 'bg-danger-soft text-danger' }[tone]
+export function Disc({ children, tone = 'neutral', size = 48 }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'secondary' | 'success' | 'pending' | 'danger'; size?: number }) {
+  const t = { neutral: 'bg-surface-2 text-tint', primary: 'bg-primary-soft text-primary-ink', secondary: 'bg-secondary-soft text-secondary-ink', success: 'bg-success-soft text-success', pending: 'bg-pending-soft text-pending', danger: 'bg-danger-soft text-danger' }[tone]
   return <span aria-hidden className={cx('inline-flex shrink-0 items-center justify-center rounded-full', t)} style={{ width: size, height: size }}>{children}</span>
 }
 
@@ -182,8 +182,8 @@ export function Dong() {
   return <span className="ml-[0.12em] align-[0.42em] text-[0.55em] font-semibold"><span aria-hidden>₫</span><span className="sr-only"> đồng</span></span>
 }
 
-export function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'success' | 'pending' | 'danger' }) {
-  const t = { neutral: 'bg-surface-2 text-ink', primary: 'bg-primary-soft text-primary-ink', success: 'bg-success-soft text-success', pending: 'bg-pending-soft text-pending', danger: 'bg-danger-soft text-danger' }[tone]
+export function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'secondary' | 'success' | 'pending' | 'danger' }) {
+  const t = { neutral: 'bg-surface-2 text-ink', primary: 'bg-primary-soft text-primary-ink', secondary: 'bg-secondary-soft text-secondary-ink', success: 'bg-success-soft text-success', pending: 'bg-pending-soft text-pending', danger: 'bg-danger-soft text-danger' }[tone]
   return <span className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[13px] leading-4 font-semibold whitespace-nowrap', t)}>{children}</span>
 }
 

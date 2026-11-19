@@ -17,6 +17,11 @@
   --color-primary-soft: #eee9fd;
   --color-primary-soft-hover: #e3dbfc;
   --color-primary-ink: #3d1a9e;
+  /* Secondary (teal): information and data, never actions. Fill takes dark text; ink is for text/icons on light surfaces. */
+  --color-secondary: #3ee0c5;
+  --color-secondary-ink: #0e7a6c;
+  --color-secondary-soft: #e0f7f3;
+  --color-on-secondary: #0f0d16;
   --color-success: #1a7a35;
   --color-success-soft: #e4f5e8;
   --color-pending: #a05a00;
@@ -29,8 +34,8 @@
   --color-chart-over: #ff3b30;
   --color-on-ink: #ffffff;                    /* text on an ink (label-coloured) fill */
   --color-badge: #c00012;                     /* count badge: one red in both modes, white text 6:1 */
-  /* Money card accents (same in both modes; the card is always dark). Teal complements the violet glow. */
-  --color-card-accent: #3ee0c5;
+  /* Money card accents (same in both modes; the card is always dark). The secondary teal complements the violet glow. */
+  --color-card-accent: var(--color-secondary);
   --color-card-violet: #9d7bff;
   --color-pending-on-card: #ffc46b;          /* amber text on the dark card */
   --color-pending-soft-on-card: rgb(255 179 64 / 0.16);
@@ -56,6 +61,8 @@
     --color-primary-soft: rgb(110 72 245 / 0.26);
     --color-primary-soft-hover: rgb(110 72 245 / 0.36);
     --color-primary-ink: #cbbcff;
+    --color-secondary-ink: #3ee0c5;
+    --color-secondary-soft: rgb(62 224 197 / 0.16);
     --color-success: #30d158;
     --color-success-soft: rgb(48 209 88 / 0.18);
     --color-pending: #ffb340;

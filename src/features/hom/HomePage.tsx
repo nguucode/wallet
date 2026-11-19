@@ -60,18 +60,18 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
   const series = loaded ? balanceSeries(w, now()) : []
   const delta = series.length ? series[series.length - 1] - series[0] : 0
   return (
-    <section aria-label="Số dư" className="money-card rounded-[var(--radius-card)] px-5 pt-4 pb-4 lg:px-7 lg:pt-6">
+    <section aria-label="Số dư" className="money-card rounded-[var(--radius-card)] p-5 lg:p-7">
       <Guilloche />
-      <div className="-ml-1 flex items-center gap-0.5">
-        <h2 className="pl-1 text-[15px] leading-[22px] font-semibold text-white/85">Số dư khả dụng</h2>
-        <IconButton label={hidden ? 'Hiện số dư' : 'Ẩn số dư'} aria-pressed={hidden} className="size-11 text-white/85 hover:bg-white/15 focus-visible:outline-white" onClick={() => setBalanceHidden(!hidden)}>
+      <div className="flex items-center gap-1">
+        <h2 className="text-[15px] leading-[22px] font-semibold text-white/85">Số dư khả dụng</h2>
+        <IconButton label={hidden ? 'Hiện số dư' : 'Ẩn số dư'} aria-pressed={hidden} className="-my-1 size-[30px] text-white/85 hover:bg-white/15 focus-visible:outline-white" onClick={() => setBalanceHidden(!hidden)}>
           {hidden ? <EyeOff size={18} strokeWidth={1.75} aria-hidden /> : <Eye size={18} strokeWidth={1.75} aria-hidden />}
         </IconButton>
       </div>
       {!loaded ? (
-        <Skeleton className={cx('mt-1 w-[260px] max-w-full bg-white/20', layout === 'web' ? 'h-[58px]' : 'h-12')} />
+        <Skeleton className={cx('mt-2 w-[260px] max-w-full bg-white/20', layout === 'web' ? 'h-[52px]' : 'h-11')} />
       ) : (
-        <p className={cx(size, 'whitespace-nowrap')}>
+        <p className={cx(size, 'mt-2 whitespace-nowrap !leading-[1.08]')}>
           {hidden ? (
             <><span aria-hidden>•••••••<Dong /></span><span className="sr-only">Số dư đang ẩn</span></>
           ) : (
@@ -80,7 +80,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
         </p>
       )}
       {loaded && held > 0 ? (
-        <Link to="/history?tab=dang-xu-ly" className="mt-2 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-[var(--color-pending-soft-on-card)] px-3 text-[13px] font-semibold text-[color:var(--color-pending-on-card)] no-underline ring-1 ring-[#ffc46b]/30 ring-inset focus-visible:outline-white">
+        <Link to="/history?tab=dang-xu-ly" className="mt-3 inline-flex min-h-8 items-center gap-1.5 rounded-full bg-[var(--color-pending-soft-on-card)] px-3 text-[13px] font-semibold text-[color:var(--color-pending-on-card)] no-underline ring-1 ring-[#ffc46b]/30 ring-inset focus-visible:outline-white">
           <Clock size={15} strokeWidth={2.25} aria-hidden />
           Đang xử lý{' '}
           {hidden ? <><span aria-hidden>••••••</span><span className="sr-only">số tiền đang ẩn</span></> : <span className="tnum">{formatVnd(held)}</span>}
@@ -92,11 +92,11 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
             values={series}
             label={`Số dư 30 ngày qua, từ ${formatVnd(series[0])} đến ${formatVnd(series[series.length - 1])}`}
             endTag={delta ? `${delta > 0 ? '+' : '−'}${(Math.abs(delta) / 1_000_000).toLocaleString('vi-VN', { maximumFractionDigits: 2 })}tr · 30 ngày` : undefined}
-            className="px-1 pt-6"
+            className="px-1 pt-2"
             wide={layout === 'web'}
             inverse
           />
-          <p className="mt-1 flex justify-between text-[12px] text-white/80" aria-hidden><span>30 ngày trước</span><span>Hôm nay</span></p>
+          <p className="mt-2 flex justify-between text-[12px] text-white/80" aria-hidden><span>30 ngày trước</span><span>Hôm nay</span></p>
         </div>
       ) : null}
     </section>
