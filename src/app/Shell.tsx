@@ -158,7 +158,7 @@ function WebShell({ children }: { children: ReactNode }) {
         </aside>
       </div>
       <div className="relative flex min-w-0 flex-1 flex-col">
-        <main id="main" className="relative mx-auto w-full max-w-[768px] flex-1 px-12 pt-14 pb-24">{children}</main>
+        <main id="main" className="relative mx-auto w-full max-w-[768px] flex-1 px-12 pt-14 pb-24 [&>*]:mx-auto">{children}</main>
       </div>
     </div>
   )
