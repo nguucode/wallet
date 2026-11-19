@@ -37,6 +37,8 @@ export type SupportRequest = {
 export type Customer = {
   name: string; phone: string; idNumber: string; idExpiry: string; dob: string
   kycStatus: KycStatus; kycMethod?: 'nfc' | 'vneid'; walletNumber: string
+  /** Profile photo URL (stock, see public/avatar-minh-anh.jpg provenance). Initials show when absent. */
+  photo?: string
 }
 
 export type World = {
@@ -256,6 +258,7 @@ export function seedWorld(scenario: Scenario, now: number): World {
     customer: {
       name: 'Trần Minh Anh', phone: '0901234567', idNumber: '001099012345', dob: '1999-04-12',
       idExpiry: ymd(now + 4 * 365 * DAY), kycStatus: 'verified', kycMethod: 'nfc', walletNumber: '0901234567',
+      photo: '/avatar-minh-anh.jpg',
     },
     walletStatus: 'active',
     balance: balanceFromHistory,

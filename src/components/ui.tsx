@@ -151,7 +151,8 @@ export function Disc({ children, tone = 'neutral', size = 48 }: { children: Reac
   return <span aria-hidden className={cx('inline-flex shrink-0 items-center justify-center rounded-full', t)} style={{ width: size, height: size }}>{children}</span>
 }
 
-export function Avatar({ name, size = 44 }: { name: string; size?: number }) {
+export function Avatar({ name, size = 44, src }: { name: string; size?: number; src?: string }) {
+  if (src) return <img src={src} alt="" width={size} height={size} className="shrink-0 rounded-full bg-surface-2 object-cover" style={{ width: size, height: size }} />
   const parts = name.trim().split(/\s+/)
   const initials = ((parts.length > 1 ? parts[parts.length - 2][0] : '') + parts[parts.length - 1][0]).toUpperCase()
   return <Disc size={size}><span className="text-[15px] font-semibold text-ink/80">{initials}</span></Disc>

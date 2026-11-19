@@ -6,7 +6,7 @@ import { inFrame, useLayout } from '@/app/layout'
 import { isTabRoot, screenFor, sidebar, tabBar, type NavItem } from '@/app/sitemap'
 import { signOut, unreadCount, useWorld } from '@/app/store'
 import { DemoControlsButton } from '@/features/demo/DemoControls'
-import { BackButton, Confirm, cx, IconButton, NavBar, useScrolled } from '@/components/ui'
+import { Avatar, BackButton, Confirm, cx, IconButton, NavBar, useScrolled } from '@/components/ui'
 
 const ICONS: Record<string, typeof Home> = {
   home: Home, history: History, scan: ScanLine, notifications: Bell, me: User, transfer: Send, receive: QrCode, pay: CreditCard,
@@ -64,7 +64,7 @@ function AccountMenu({ expanded }: { expanded: boolean }) {
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
           <button type="button" title={expanded ? undefined : 'Tài khoản'} className={cx('flex min-w-0 items-center gap-2.5 rounded-[12px] text-left hover:bg-surface-2', expanded ? 'h-9 flex-1 px-1' : 'size-9 justify-center')}>
-            <span aria-hidden className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-surface-2 text-[11px] font-semibold text-ink">{initials}</span>
+            {w.customer.photo ? <Avatar name={w.customer.name} src={w.customer.photo} size={28} /> : <span aria-hidden className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-surface-2 text-[11px] font-semibold text-ink">{initials}</span>}
             {expanded ? <span className="min-w-0 truncate text-[13px] font-semibold">{w.customer.name.split(' ').slice(-2).join(' ')}</span> : null}
             <span className="sr-only">Tài khoản</span>
           </button>
@@ -147,7 +147,7 @@ function WebShell({ children }: { children: ReactNode }) {
             )}
           </nav>
           {/* Footer: account, notifications and demo controls live with navigation, so the content column has no toolbar. */}
-          <div className={cx('mt-2 flex shrink-0 border-t border-line/70 pt-2', rail ? 'flex-col items-center gap-px' : 'items-center gap-0.5')}>
+          <div className={cx('mt-2 flex shrink-0', rail ? 'flex-col items-center gap-px' : 'items-center gap-0.5')}>
             <AccountMenu expanded={!rail} />
             <Link to="/notifications" title={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} aria-label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} className={cx('relative inline-flex size-9 shrink-0 items-center justify-center rounded-full text-tint hover:bg-surface-2', rail && 'order-first')}>
               <Bell size={18} strokeWidth={1.75} aria-hidden />

@@ -41,7 +41,7 @@ export default function ProfilePage() {
     <div>
       <ScreenTitle>Hồ sơ và xác thực</ScreenTitle>
       <div className="card flex items-center gap-4 p-5">
-        <Avatar name={c.name} size={64} />
+        <Avatar name={c.name} src={c.photo} size={64} />
         <div className="min-w-0 flex-1 pt-1">
           <p className="text-[17px] leading-[26px] font-bold break-words">{c.name}</p>
           <div className="mt-1"><Badge tone={tone}>{KYC_LABEL[c.kycStatus]}</Badge></div>
