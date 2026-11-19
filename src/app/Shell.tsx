@@ -235,7 +235,8 @@ function TabItem({ t, active, unread }: { t: NavItem; active: boolean; unread: n
   return (
     <Pressable onPress={press} href={t.route} role="link" aria-current={active ? 'page' : undefined} className={cx('relative h-full flex-1 items-center justify-center gap-0.5 rounded-full', active && 'bg-primary/10')}>
       <Ico as={I} size="lg" className={active ? 'text-primary' : 'text-foreground'} />
-      <Text size="xs" className={active ? 'font-semibold text-primary' : 'text-foreground'}>
+      {/* Label stays label-coloured: tint text on the 10% tint pill drops under AA for yellow/orange. */}
+      <Text size="xs" className={active ? 'font-semibold text-foreground' : 'text-foreground'}>
         {t.label}{t.badge && unread ? <Text className="sr-only">, {unread} chưa đọc</Text> : null}
       </Text>
       {t.badge && unread ? <UnreadBadge n={unread} /> : null}
