@@ -1,10 +1,12 @@
-import { Bell, CreditCard, FileText, Gauge, HelpCircle, History, Home, Landmark, PanelLeftClose, PanelLeftOpen, QrCode, ScanLine, Send, ShieldCheck, User, Wallet } from 'lucide-react'
+import { Bell, CreditCard, Palette, FileText, Gauge, HelpCircle, History, Home, Landmark, PanelLeftClose, PanelLeftOpen, QrCode, ScanLine, Send, ShieldCheck, User, Wallet } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
-import { useLayout } from '@/app/layout'
+import { pageScroller, useLayout } from '@/app/layout'
 import { isTabRoot, screenFor, sidebar, tabBar, type NavItem } from '@/app/sitemap'
 import { signOut, unreadCount, useWorld } from '@/app/store'
-import { DemoControlsButton } from '@/features/demo/DemoControls'
+import { useTheme } from '@/app/theme'
+import { DemoControlsButton, DemoControlsSheet } from '@/features/demo/DemoControls'
+import { BACKDROP_PATTERN, ThemeControls } from '@/features/demo/ThemeControls'
 import { Avatar, BackButton, Confirm, cx, Ico, IconButton, NavBar, useLinkPress } from '@/components/app-ui'
 import { Badge, BadgeText } from '@/components/ui/badge'
 import { Box } from '@/components/ui/box'
@@ -15,6 +17,7 @@ import { HStack } from '@/components/ui/hstack'
 import { Image } from '@/components/ui/image'
 import { Link, LinkText } from '@/components/ui/link'
 import { Menu, MenuItem, MenuItemLabel, MenuSeparator } from '@/components/ui/menu'
+import { Popover, PopoverBackdrop, PopoverBody, PopoverContent } from '@/components/ui/popover'
 import { Pressable } from '@/components/ui/pressable'
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
@@ -36,7 +39,7 @@ function useRouteFocus() {
     document.title = (s ? s.title + ' · ' : '') + 'Wallet'
     const h = document.querySelector<HTMLElement>('[data-page-title]')
     h?.focus({ preventScroll: true })
-    window.scrollTo(0, 0)
+    pageScroller().to(0)
   }, [pathname])
 }
 
@@ -68,16 +71,17 @@ function SideLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
   const press = useLinkPress(item.route)
   return (
     <Button
-      variant={active ? 'secondary' : 'ghost'}
+      variant="ghost"
       size="sm"
       onPress={press}
       href={item.route}
       role="link"
       aria-current={active ? 'page' : undefined}
       aria-label={collapsed ? item.label : undefined}
-      className={cx('h-9 justify-start gap-3', collapsed ? 'w-9 justify-center self-center px-0' : 'px-2.5')}
+      // On the backdrop the current page is the panel's own surface: bg-background with a hairline, icon in primary.
+      className={cx('h-9 justify-start gap-3 data-[hover=true]:bg-background/70', collapsed ? 'w-9 justify-center self-center px-0' : 'px-2.5', active && 'border border-border bg-background')}
     >
-      <Ico as={I} size="sm" className="shrink-0 text-foreground" />
+      <Ico as={I} size="sm" className={cx('shrink-0', active ? 'text-primary' : 'text-foreground')} />
       {collapsed ? null : <ButtonText className={cx('truncate', active && 'font-semibold')}>{item.label}</ButtonText>}
     </Button>
   )
@@ -123,71 +127,88 @@ function useSidebarCollapsed() {
   return [collapsed, toggle] as const
 }
 
+/** Collapsed rail: the Demo controls box folds into one palette button that opens it in a popover beside the rail. */
+function RailThemeButton({ onMore }: { onMore: () => void }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <Popover
+      isOpen={open}
+      onOpen={() => setOpen(true)}
+      onClose={() => setOpen(false)}
+      placement="right bottom"
+      offset={12}
+      trigger={(props) => (
+        <Button {...props} variant="ghost" size="icon" aria-label="Demo controls" className="h-9 w-9 rounded-full">
+          <Ico as={Palette} size="sm" />
+        </Button>
+      )}
+    >
+      <PopoverBackdrop />
+      <PopoverContent className="w-64">
+        <PopoverBody><ThemeControls onMore={() => { setOpen(false); onMore() }} /></PopoverBody>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+/**
+ * Web shell (sếp's sketch 2026-11-19): the whole window is the viewer's backdrop; the sidebar sits on it with no surface
+ * of its own; content lives in one rounded panel that fills the rest of the window and scrolls inside.
+ */
 function WebShell({ children }: { children: ReactNode }) {
   const [collapsed, toggleCollapsed] = useSidebarCollapsed()
-  // Collapsed rail: hovering the logo peeks the full sidebar over the content; clicking it pins the sidebar open.
-  const [peek, setPeek] = useState(false)
-  const rail = collapsed && !peek
+  const [demoOpen, setDemoOpen] = useState(false)
+  const theme = useTheme()
   const w = useWorld()
   const unread = unreadCount(w)
-  const pin = () => { setPeek(false); toggleCollapsed() }
   const home = useLinkPress('/home')
   const bell = useLinkPress('/notifications')
   const bellLabel = unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'
+  const toggleLabel = collapsed ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'
   return (
-    <HStack className="min-h-dvh bg-background">
+    <HStack className={cx('h-dvh overflow-hidden bg-backdrop print:h-auto print:overflow-visible', theme.background === 'pattern' && BACKDROP_PATTERN)}>
       <SkipLink />
-      <Box className={cx('sticky top-0 z-40 h-dvh shrink-0', collapsed ? 'w-16' : 'w-60')}>
-        <VStack
-          role="complementary"
-          onMouseLeave={() => setPeek(false)}
-          className={cx('absolute inset-y-0 left-0 border-r border-border bg-card px-2.5 py-3', rail ? 'w-16' : 'w-60')}
-        >
-          <HStack className={cx('mb-3 h-9 shrink-0 items-center', rail ? 'justify-center' : 'justify-between pl-1')}>
-            {rail ? (
-              <Pressable onHoverIn={() => setPeek(true)} onPress={pin} aria-expanded={false} aria-label="Mở rộng thanh bên" className="h-9 w-9 items-center justify-center rounded-md data-[hover=true]:bg-accent">
-                <Logo />
-              </Pressable>
+      <VStack role="complementary" className={cx('h-full shrink-0 px-2.5 py-3', collapsed ? 'w-16' : 'w-64')}>
+        <HStack className={cx('mb-3 h-9 shrink-0 items-center', collapsed ? 'flex-col gap-2 h-auto' : 'justify-between pl-1')}>
+          <Pressable onPress={home} href="/home" role="link" aria-label="Wallet, về Trang chủ">
+            <HStack className="items-center gap-2"><Logo />{collapsed ? null : <Heading as="p" size="md" aria-hidden>Wallet</Heading>}</HStack>
+          </Pressable>
+          <IconButton label={toggleLabel} aria-expanded={!collapsed} onClick={toggleCollapsed} className="h-9 w-9">
+            <Ico as={collapsed ? PanelLeftOpen : PanelLeftClose} size="sm" className="text-foreground/70" />
+          </IconButton>
+        </HStack>
+        <VStack role="navigation" aria-label="Điều hướng chính" className="flex-1 gap-px overflow-y-auto overflow-x-hidden">
+          {sidebar.map((x) =>
+            'group' in x ? (
+              <VStack key={x.group} className="mt-3 gap-px">
+                {collapsed
+                  ? <><Text className="sr-only">{x.group}</Text><Divider className="mx-auto mb-1 w-6" /></>
+                  : <Text size="xs" bold isTruncated className="px-2.5 pb-0.5 text-foreground/70">{x.group}</Text>}
+                {x.items.map((i) => <SideLink key={i.id} item={i} collapsed={collapsed} />)}
+              </VStack>
             ) : (
-              <>
-                <Pressable onPress={home} href="/home" role="link" aria-label="Wallet, về Trang chủ">
-                  <HStack className="items-center gap-2"><Logo /><Heading as="p" size="md" aria-hidden>Wallet</Heading></HStack>
-                </Pressable>
-                <IconButton label={collapsed ? 'Ghim thanh bên mở rộng' : 'Thu gọn thanh bên'} aria-expanded={!collapsed} onClick={pin}>
-                  <Ico as={collapsed ? PanelLeftOpen : PanelLeftClose} size="sm" className="text-muted-foreground" />
-                </IconButton>
-              </>
-            )}
-          </HStack>
-          <VStack role="navigation" aria-label="Điều hướng chính" className="flex-1 gap-px overflow-y-auto overflow-x-hidden">
-            {sidebar.map((x) =>
-              'group' in x ? (
-                <VStack key={x.group} className="mt-3 gap-px">
-                  {rail
-                    ? <><Text className="sr-only">{x.group}</Text><Divider className="mx-auto mb-1 w-6" /></>
-                    : <Text size="xs" bold isTruncated className="px-2.5 pb-0.5 text-muted-foreground">{x.group}</Text>}
-                  {x.items.map((i) => <SideLink key={i.id} item={i} collapsed={rail} />)}
-                </VStack>
-              ) : (
-                <SideLink key={x.id} item={x} collapsed={rail} />
-              ),
-            )}
-          </VStack>
-          {/* Footer: account, notifications and demo controls live with navigation, so the content column has no toolbar. */}
-          <Divider className="my-2" />
-          <Box className={cx('flex shrink-0', rail ? 'flex-col-reverse items-center gap-px' : 'flex-row items-center gap-1')}>
-            <AccountMenu expanded={!rail} />
+              <SideLink key={x.id} item={x} collapsed={collapsed} />
+            ),
+          )}
+        </VStack>
+        {/* Footer: demo controls, then account and notifications (sketch). */}
+        <VStack className={cx('mt-2 shrink-0 gap-2', collapsed && 'items-center')}>
+          {collapsed
+            ? <RailThemeButton onMore={() => setDemoOpen(true)} />
+            : <Box className="rounded-xl border border-border bg-background p-3"><ThemeControls onMore={() => setDemoOpen(true)} /></Box>}
+          <Box className={cx('flex', collapsed ? 'flex-col items-center gap-px' : 'flex-row items-center gap-1')}>
+            <AccountMenu expanded={!collapsed} />
             <Box className="relative">
               <IconButton label={bellLabel} onClick={bell}><Ico as={Bell} size="sm" /></IconButton>
               {unread ? <UnreadBadge n={unread} /> : null}
             </Box>
-            <DemoControlsButton compact />
           </Box>
         </VStack>
+      </VStack>
+      <Box id="main-scroll" className="my-2 mr-2 min-w-0 flex-1 overflow-y-auto rounded-2xl border border-border bg-background print:overflow-visible">
+        <Box role="main" id="main" className="mx-auto w-full max-w-[768px] shrink-0 px-12 pb-24 pt-12">{children}</Box>
       </Box>
-      <Box className="min-w-0 flex-1">
-        <Box role="main" id="main" className="mx-auto w-full max-w-[768px] px-12 pb-24 pt-14">{children}</Box>
-      </Box>
+      <DemoControlsSheet open={demoOpen} onOpenChange={setDemoOpen} />
     </HStack>
   )
 }
@@ -235,8 +256,9 @@ function AppShell({ children }: { children: ReactNode }) {
   const s = screenFor(pathname)
   const root = isTabRoot(pathname)
   const title = root && pathname === '/home' ? 'Wallet' : s?.title ?? 'Wallet'
+  const theme = useTheme()
   return (
-    <Box className="min-h-dvh bg-background">
+    <Box className={cx('min-h-dvh bg-backdrop-app', theme.background === 'pattern' && BACKDROP_PATTERN)}>
       <SkipLink />
       <NavBar
         title={<Text aria-hidden>{title}</Text>}
@@ -275,5 +297,5 @@ export function FlowShell() {
   const layout = useLayout()
   useRouteFocus()
   if (layout === 'web') return <WebShell><Box className="max-w-[560px]"><Outlet /></Box></WebShell>
-  return <Box className="min-h-dvh bg-background"><Outlet /></Box>
+  return <Box className="min-h-dvh bg-backdrop-app"><Outlet /></Box>
 }

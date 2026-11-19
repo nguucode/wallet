@@ -137,7 +137,7 @@ export function useScrolled(px = 8) {
 export function NavBar({ title, titleVisible = true, left, right, className }: { title: ReactNode; titleVisible?: boolean; left?: ReactNode; right?: ReactNode; className?: string }) {
   const scrolled = useScrolled()
   return (
-    <HStack className={cx('sticky top-0 z-30 min-h-14 items-center bg-background px-1', scrolled && 'border-b border-border', className)} role="banner">
+    <HStack className={cx('sticky top-0 z-30 min-h-14 items-center bg-backdrop-app px-1', scrolled && 'border-b border-border', className)} role="banner">
       <HStack className="min-w-[88px] flex-1 items-center">{left}</HStack>
       <Text bold isTruncated className={cx('max-w-[60vw] text-center', titleVisible || scrolled ? 'opacity-100' : 'opacity-0')}>{title}</Text>
       <HStack className="min-w-[88px] flex-1 items-center justify-end">{right}</HStack>
@@ -399,7 +399,8 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
         <ActionsheetContent role="dialog" aria-modal aria-label={title} className="max-h-[92dvh] items-stretch">
           <ActionsheetDragIndicatorWrapper><ActionsheetDragIndicator /></ActionsheetDragIndicatorWrapper>
           {header}
-          <Box className="mt-4 overflow-y-auto pb-4">{children}</Box>
+          {/* Scroll box is a fixed-height flex column: the content wrapper must not shrink, or its children overlap. */}
+          <Box className="mt-4 overflow-y-auto pb-4"><Box className="shrink-0">{children}</Box></Box>
         </ActionsheetContent>
       </Actionsheet>
     )
@@ -408,7 +409,7 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
       <ModalBackdrop />
       <ModalContent role="dialog" aria-modal aria-label={title} className="max-h-[88vh]">
         <ModalHeader>{header}</ModalHeader>
-        <ModalBody className="mt-4">{children}</ModalBody>
+        <ModalBody className="mt-4"><Box className="shrink-0">{children}</Box></ModalBody>
       </ModalContent>
     </Modal>
   )

@@ -95,7 +95,7 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
       </VStack>
     )
   return (
-    <VStack className="min-h-dvh bg-background">
+    <VStack className="min-h-dvh bg-backdrop-app">
       <NavBar
         title={<Heading as="h1" size="sm" tabIndex={-1} data-page-title className="truncate outline-none">{title}</Heading>}
         left={onBack ? <BackButton onClick={onBack} /> : <Box className="w-11" />}
@@ -107,7 +107,7 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
         {/* The app keypad portals here so it stands on its own below the card, like the system number pad. */}
         <Box id="flow-keypad-slot" />
       </Box>
-      {footer ? <VStack className="sticky bottom-0 z-20 mx-auto w-full max-w-[560px] gap-2 border-t border-border bg-background px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-3">{footer}</VStack> : null}
+      {footer ? <VStack className="sticky bottom-0 z-20 mx-auto w-full max-w-[560px] gap-2 border-t border-border bg-backdrop-app px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-3">{footer}</VStack> : null}
     </VStack>
   )
 }

@@ -13,6 +13,7 @@ import { Radio, RadioGroup, RadioIcon, RadioIndicator, RadioLabel } from '@/comp
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
 import { formatVnd } from '@/domain/money'
+import { ThemeControls } from './ThemeControls'
 
 function Group({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
   return (
@@ -125,9 +126,20 @@ export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => vo
   )
 }
 
+/** The full demo panel in a Sheet; the web sidebar opens it from the Demo controls box (">"), the app from its NavBar. */
+export function DemoControlsSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
+  const [msg, setMsg] = useState('')
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange} title="Demo controls">
+      <VStack className="mb-3 border-b border-border pb-3"><ThemeControls title={false} /></VStack>
+      <DemoControlsPanel onAction={setMsg} />
+      <Box role="status" aria-live="polite" className="min-h-5"><Text size="sm">{msg}</Text></Box>
+    </Sheet>
+  )
+}
+
 export function DemoControlsButton({ compact, className }: { compact?: boolean; className?: string }) {
   const [open, setOpen] = useState(false)
-  const [msg, setMsg] = useState('')
   return (
     <>
       {compact ? (
@@ -135,10 +147,7 @@ export function DemoControlsButton({ compact, className }: { compact?: boolean; 
       ) : (
         <Button variant="secondary" size="sm" className={className} onClick={() => setOpen(true)}><Ico as={FlaskConical} size="sm" />Demo controls</Button>
       )}
-      <Sheet open={open} onOpenChange={setOpen} title="Demo controls">
-        <DemoControlsPanel onAction={setMsg} />
-        <Box role="status" aria-live="polite" className="min-h-5"><Text size="sm">{msg}</Text></Box>
-      </Sheet>
+      <DemoControlsSheet open={open} onOpenChange={setOpen} />
     </>
   )
 }

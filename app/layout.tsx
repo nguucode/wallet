@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google'
 import type { ReactNode } from 'react'
 import './globals.css'
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider'
-import { script } from '@/components/ui/gluestack-ui-provider/script'
+import { MODE_BOOT } from '@/app/theme-boot'
 import StyledJsxRegistry from '../registry'
 
 // gluestack's Next template feeds --font-sans from next/font; Inter covers Vietnamese.
@@ -20,8 +20,8 @@ export const viewport: Viewport = { width: 'device-width', initialScale: 1, view
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="vi" suppressHydrationWarning className={sans.variable}>
-      {/* gluestack colour mode: set the light/dark class before paint (mode "system" only reacts to later changes). */}
-      <head><script dangerouslySetInnerHTML={{ __html: `(${script.toString()})('system')` }} /></head>
+      {/* Light/dark class before paint, from the viewer's stored choice (src/app/theme.ts). */}
+      <head><script dangerouslySetInnerHTML={{ __html: MODE_BOOT }} /></head>
       <body className="bg-background font-body text-foreground antialiased">
         <StyledJsxRegistry>
           {/* This provider writes the theme variables during SSR; src/main.tsx adds a second one inside the router for overlays. */}

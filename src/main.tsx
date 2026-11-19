@@ -3,8 +3,10 @@ import { BrowserRouter } from 'react-router'
 import App from './App'
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider'
 import { syncReminders } from './app/store'
+import { initTheme } from './app/theme'
 
 syncReminders()
+initTheme()
 
 export default function Main() {
   return (

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { formatVnd } from '@/domain/money'
 import type { TxStatus, TxType } from '@/domain/types'
-import { useLayout } from '@/app/layout'
+import { useLayout, pageScroller } from '@/app/layout'
 import { counterpartyName, now, typeLabel, useWorld } from '@/app/store'
 import type { Transaction, World } from '@/mock/seed'
 import { fmtDate, fmtTime, truthLine } from '@/features/flow/FlowKit'
@@ -197,7 +197,7 @@ export default function HistoryPage() {
   useEffect(() => {
     let saved: { key: string; y: number } | null = null
     try { saved = JSON.parse(sessionStorage.getItem(SCROLL_KEY) ?? 'null'); sessionStorage.removeItem(SCROLL_KEY) } catch { /* ignore */ }
-    if (saved?.key === key) requestAnimationFrame(() => window.scrollTo(0, saved!.y))
+    if (saved?.key === key) requestAnimationFrame(() => pageScroller().to(saved!.y))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -208,7 +208,7 @@ export default function HistoryPage() {
   const active = ([['month', f.month && monthLabel(f.month)], ['type', f.type && typeLabel(f.type)], ['status', f.status && STATUS_LABEL[f.status]]] as const).filter(([, v]) => v)
 
   const open = (id: string) => {
-    try { sessionStorage.setItem(SCROLL_KEY, JSON.stringify({ key, y: window.scrollY, count })) } catch { /* ignore */ }
+    try { sessionStorage.setItem(SCROLL_KEY, JSON.stringify({ key, y: pageScroller().y, count })) } catch { /* ignore */ }
     nav(`/history/${id}`)
   }
 

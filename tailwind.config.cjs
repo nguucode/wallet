@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: process.env.DARK_MODE ? process.env.DARK_MODE : 'media',
+  // Class, not media: the viewer can force Light or Dark (src/app/theme.ts); gluestack's script sets the class.
+  darkMode: 'class',
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
     './app/**/*.{js,jsx,ts,tsx}',
@@ -21,6 +22,11 @@ module.exports = {
     extend: {
       colors: {
         foreground: 'rgb(var(--foreground)/<alpha-value>)',
+        // Page behind the content panel (web) / behind cards (app); value set by src/app/theme.ts.
+        backdrop: {
+          DEFAULT: 'rgb(var(--backdrop, 245 245 245) / <alpha-value>)',
+          app: 'rgb(var(--backdrop-app, 252 252 252) / <alpha-value>)',
+        },
         success: {
           DEFAULT: 'rgb(var(--success) / <alpha-value>)',
           foreground: 'rgb(var(--success-foreground) / <alpha-value>)',
