@@ -41,7 +41,7 @@ export function SourcePicker({ label, value, onChange }: { label: string; value?
               className={cx('flex min-h-[64px] items-center gap-3 rounded-[12px] px-3 py-2', s.id === current.id ? 'bg-primary-soft' : 'hover:bg-surface-2')}
             >
               <SourceLine s={s} sub={s.isDefault ? ' · Mặc định' : null} />
-              {s.id === current.id ? <Check size={20} strokeWidth={2} aria-hidden className="text-primary" /> : null}
+              {s.id === current.id ? <Check size={20} strokeWidth={2} aria-hidden className="text-tint" /> : null}
             </button>
           ))}
         </div>

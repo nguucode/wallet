@@ -28,7 +28,7 @@ export function IdMethodStep() {
             key={o.path} type="button" role="radio" aria-checked={draft.path === o.path} aria-disabled={o.disabled || undefined}
             aria-describedby={o.disabled ? 'chip-reason' : undefined}
             onClick={() => !o.disabled && pick(o.path)}
-            className={cx('flex items-start gap-3 rounded-[12px] border p-4 text-left', o.disabled ? 'cursor-not-allowed border-line-soft bg-surface-2 text-muted' : draft.path === o.path ? 'border-primary bg-primary-soft' : 'border-line hover:bg-surface-2')}
+            className={cx('flex items-start gap-3 rounded-[12px] border p-4 text-left', o.disabled ? 'cursor-not-allowed border-line-soft bg-surface-2 text-muted' : draft.path === o.path ? 'border-tint bg-primary-soft' : 'border-line hover:bg-surface-2')}
           >
             <Disc size={44}>{o.icon}</Disc>
             <span className="min-w-0 flex-1">
@@ -45,7 +45,7 @@ export function IdMethodStep() {
           <div>
             <p className="font-semibold">Mở ví trên điện thoại</p>
             <p className="text-[14px] leading-5 text-muted">Đọc chip CCCD cần điện thoại có NFC. Bạn cũng có thể dùng VNeID ngay trên máy tính.</p>
-            <Link to={`/device?path=${encodeURIComponent('/onboarding?step=id-method')}`} className="mt-2 inline-flex min-h-11 items-center font-semibold text-primary">Xem trên điện thoại</Link>
+            <Link to={`/device?path=${encodeURIComponent('/onboarding?step=id-method')}`} className="mt-2 inline-flex min-h-11 items-center font-semibold text-tint">Xem trên điện thoại</Link>
           </div>
         </div>
       ) : null}
@@ -90,7 +90,7 @@ export function IdCaptureStep() {
     )
   return (
     <StepShell title="Chụp mặt trước CCCD">
-      <div className="flex flex-col items-center rounded-[16px] bg-ink px-5 py-8 text-white">
+      <div className="flex flex-col items-center rounded-[16px] bg-black px-5 py-8 text-white">
         <div aria-hidden className="aspect-[85.6/54] w-full max-w-[340px] rounded-[12px] border-2 border-white/90" />
         <p className="mt-4 text-center text-[14px] leading-5">Đặt CCCD nằm gọn trong khung, đủ sáng, không bị lóa.</p>
         <button type="button" onClick={() => setShot(true)} aria-label="Chụp" className="mt-6 inline-flex size-[72px] items-center justify-center rounded-full border-4 border-white focus-visible:outline-white">

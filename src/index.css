@@ -1,75 +1,124 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
-  --color-ink: #1c1840;
-  --color-muted: #625d7d;
-  --color-surface: #ffffff;
-  --color-surface-2: #f1eefc;
-  --color-ground: #f6f4fd;
-  --color-line: #dfdaf0;
-  --color-line-soft: #edeaf7;
-  --color-primary: #5b2be0;
+  /* Apple HIG world (DESIGN.md). System font: SF Pro on Apple devices; Be Vietnam Pro elsewhere (full Vietnamese diacritics). */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Be Vietnam Pro', system-ui, sans-serif;
+  /* Light values; dark values below. Names kept from the previous system so screens map 1:1. */
+  --color-ink: #000000;                       /* label */
+  --color-muted: #6c6c70;                     /* secondaryLabel, accessible variant (≥4.5:1 on ground and surface) */
+  --color-surface: #ffffff;                   /* secondarySystemGroupedBackground: inset grouped sections */
+  --color-surface-2: rgb(118 118 128 / 0.12); /* tertiarySystemFill: discs, inputs, hover, skeletons */
+  --color-ground: #f2f2f7;                    /* systemGroupedBackground */
+  --color-line: #c6c6c8;                      /* opaqueSeparator */
+  --color-line-soft: #e5e5ea;                 /* systemGray5: list separators */
+  --color-primary: #5b2be0;                   /* app tint as a fill (white text on it) */
   --color-primary-hover: #4a1fc4;
-  --color-primary-soft: #ece6ff;
+  --color-tint: #5b2be0;                      /* app tint as text, icon, border, focus */
+  --color-primary-soft: #eee9fd;
+  --color-primary-soft-hover: #e3dbfc;
   --color-primary-ink: #3d1a9e;
-  --color-primary-soft-hover: #e0d7ff;
-  --color-danger-soft-hover: #fbdcd9;
-  --color-sky-from: #4a1fc4;
-  --color-sky-to: #7655f2;
-  --color-success: #0b7a47;
-  --color-success-soft: #e3f5ea;
-  --color-chart-up: #1f9d55;
-  --color-pending: #8a5200;
-  --color-pending-soft: #fff0da;
-  --color-chart-warn: #e8891c;
-  --color-danger: #b3261e;
-  --color-danger-soft: #fdeceb;
-  --color-chart-over: #d93a2b;
-  --shadow-float: 0 12px 32px -10px rgb(28 24 64 / 0.28);
-  --shadow-card: 0 1px 2px rgb(28 24 64 / 0.04), 0 14px 36px -14px rgb(74 31 196 / 0.22);
+  --color-success: #1a7a35;
+  --color-success-soft: #e4f5e8;
+  --color-pending: #a05a00;
+  --color-pending-soft: #fff1dc;
+  --color-danger: #c00012;
+  --color-danger-soft: #fde8ea;
+  --color-danger-soft-hover: #fbd7db;
+  --color-chart-up: #34c759;
+  --color-chart-warn: #ff9500;
+  --color-chart-over: #ff3b30;
+  --color-on-ink: #ffffff;                    /* text on an ink (label-coloured) fill */
+  --shadow-float: 0 10px 30px -8px rgb(0 0 0 / 0.18), 0 1px 3px rgb(0 0 0 / 0.06);
+  --shadow-card: 0 0 #0000;                   /* grouped sections carry no shadow */
+  --shadow-thumb: 0 3px 8px rgb(0 0 0 / 0.12), 0 3px 1px rgb(0 0 0 / 0.04);
   --radius-card: 24px;
-  --radius-input: 14px;
+  --radius-input: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-ink: #ffffff;
+    --color-muted: #aeaeb2;
+    --color-surface: #1c1c1e;
+    --color-surface-2: rgb(118 118 128 / 0.24);
+    --color-ground: #000000;
+    --color-line: #38383a;
+    --color-line-soft: #2c2c2e;
+    --color-primary: #6e48f5;
+    --color-primary-hover: #7d5bf7;
+    --color-tint: #b19dff;
+    --color-primary-soft: rgb(110 72 245 / 0.26);
+    --color-primary-soft-hover: rgb(110 72 245 / 0.36);
+    --color-primary-ink: #cbbcff;
+    --color-success: #30d158;
+    --color-success-soft: rgb(48 209 88 / 0.18);
+    --color-pending: #ffb340;
+    --color-pending-soft: rgb(255 159 10 / 0.18);
+    --color-danger: #ff6961;
+    --color-danger-soft: rgb(255 69 58 / 0.2);
+    --color-danger-soft-hover: rgb(255 69 58 / 0.3);
+    --color-chart-up: #30d158;
+    --color-chart-warn: #ff9f0a;
+    --color-chart-over: #ff453a;
+    --color-on-ink: #000000;
+    --shadow-float: 0 10px 30px -8px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.08);
+    --shadow-thumb: 0 3px 8px rgb(0 0 0 / 0.4);
+  }
 }
 
 @layer base {
-  html { color-scheme: light; -webkit-text-size-adjust: 100%; }
+  html { color-scheme: light dark; -webkit-text-size-adjust: 100%; }
   body {
     background: var(--color-ground);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-size: 15px;
+    font-size: 17px;
     line-height: 22px;
     -webkit-font-smoothing: antialiased;
-    caret-color: var(--color-primary);
+    caret-color: var(--color-tint);
   }
-  ::selection { background: var(--color-primary-soft); color: var(--color-primary-ink); }
-  :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: 4px; }
+  ::selection { background: color-mix(in oklab, var(--color-tint) 30%, transparent); }
+  :focus-visible { outline: 2px solid var(--color-tint); outline-offset: 2px; border-radius: 4px; }
   a { text-underline-offset: 3px; }
   * { scrollbar-width: thin; scrollbar-color: var(--color-line) transparent; }
+  @media (min-width: 1024px) { body { font-size: 15px; line-height: 20px; } }
   button { cursor: pointer; }
   button:disabled { cursor: not-allowed; }
 }
 
-/* Lifted white card on lavender ground (DESIGN.md). */
-@utility card { background: var(--color-surface); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
-/* Violet sky band that fades into the ground. */
-@utility sky { background: linear-gradient(180deg, var(--color-sky-from) 0%, var(--color-sky-to) 58%, color-mix(in oklab, var(--color-sky-to) 18%, var(--color-ground)) 86%, var(--color-ground) 100%); }
-/* Uppercase section label. */
-/* Glass panel (Apple Liquid Glass feel): translucent white, blur + saturation, specular rim. Solid fallback when unsupported or reduced transparency. */
+/* Inset grouped section (DESIGN.md). */
+@utility card { background: var(--color-surface); border-radius: var(--radius-card); }
+/* Liquid Glass for navigation chrome only (sidebar, tab bar, scrolled nav bar). Solid fallback when unsupported or reduced transparency. */
 @utility glass {
-  background: rgb(255 255 255 / 0.72);
+  background: rgb(255 255 255 / 0.86);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   backdrop-filter: blur(24px) saturate(180%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 1px 2px rgb(28 24 64 / 0.06), 0 18px 40px -16px rgb(74 31 196 / 0.3);
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { background: var(--color-surface-2); }
-  @media (prefers-reduced-transparency: reduce) { background: var(--color-surface-2); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 1px 2px rgb(0 0 0 / 0.05), 0 12px 32px -12px rgb(0 0 0 / 0.18);
+  @media (prefers-color-scheme: dark) {
+    background: rgb(37 37 40 / 0.82);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 12px 32px -12px rgb(0 0 0 / 0.7);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { background: var(--color-surface); }
+  @media (prefers-reduced-transparency: reduce) { background: var(--color-surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
-@utility label-caps { font-size: 13px; line-height: 18px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-muted); }
+/* Bar material: the nav bar once content scrolls under it. */
+@utility bar {
+  background: color-mix(in oklab, var(--color-ground) 80%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 0.5px 0 var(--color-line);
+  @media (prefers-reduced-transparency: reduce) { background: var(--color-ground); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+/* Grouped-list header inside a section: footnote caps, secondary label. */
+@utility label-caps { font-size: 13px; line-height: 18px; font-weight: 400; letter-spacing: 0; text-transform: uppercase; color: var(--color-muted); }
+/* Large Title (iOS 34/41 bold). */
+@utility large-title { font-size: 34px; line-height: 41px; font-weight: 700; letter-spacing: 0.01em; }
+/* Title 3 for section headers. */
+@utility title-3 { font-size: 20px; line-height: 25px; font-weight: 600; letter-spacing: -0.01em; }
 @utility tnum { font-variant-numeric: tabular-nums; }
-@utility balance { font-size: 48px; line-height: 58px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-@utility balance-app { font-size: 40px; line-height: 50px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-@utility amount-display { font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+@utility balance { font-size: 48px; line-height: 58px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+@utility balance-app { font-size: 40px; line-height: 50px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+@utility amount-display { font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }

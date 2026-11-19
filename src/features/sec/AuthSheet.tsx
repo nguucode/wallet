@@ -38,7 +38,7 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
       />
       <button type="button" onClick={() => inputRef.current?.focus()} aria-hidden tabIndex={-1} className={cx('mx-auto flex gap-4 py-3', shake && 'animate-[pulse_300ms]')}>
         {Array.from({ length }, (_, i) => (
-          <span key={i} className={cx('size-3.5 rounded-full border-2 transition-colors', i < pin.length ? 'border-primary bg-primary' : 'border-line')} />
+          <span key={i} className={cx('size-3.5 rounded-full border-2 transition-colors', i < pin.length ? 'border-tint bg-primary' : 'border-line')} />
         ))}
       </button>
       <p id="pin-error" role="alert" className="min-h-5 text-center text-[13px] leading-5 text-danger">{error}</p>
@@ -76,7 +76,7 @@ function FaceScan({ onDone, reason }: { onDone: (ok: boolean) => void; reason: s
       <div className="relative mx-auto my-6 size-44">
         <svg viewBox="0 0 100 100" className="absolute inset-0" aria-hidden>
           <circle cx="50" cy="50" r="46" fill="none" stroke="var(--color-line)" strokeWidth="3" />
-          {phase === 'scanning' ? <circle cx="50" cy="50" r="46" fill="none" stroke="var(--color-primary)" strokeWidth="3" strokeDasharray="289" strokeDashoffset="289" strokeLinecap="round" style={{ animation: 'ring 1.6s linear forwards' }} transform="rotate(-90 50 50)" /> : null}
+          {phase === 'scanning' ? <circle cx="50" cy="50" r="46" fill="none" stroke="var(--color-tint)" strokeWidth="3" strokeDasharray="289" strokeDashoffset="289" strokeLinecap="round" style={{ animation: 'ring 1.6s linear forwards' }} transform="rotate(-90 50 50)" /> : null}
         </svg>
         <span className="absolute inset-4 flex items-center justify-center rounded-full bg-surface-2"><ScanFace size={64} strokeWidth={1.25} aria-hidden className="text-muted" /></span>
       </div>

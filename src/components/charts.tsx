@@ -16,13 +16,13 @@ export function LineChart({ values, label, className, endTag, wide }: { values: 
       <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full overflow-visible" role="img" aria-label={label}>
         <defs>
           <linearGradient id={id} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="var(--color-primary)" stopOpacity="0.18" />
-            <stop offset="1" stopColor="var(--color-primary)" stopOpacity="0" />
+            <stop offset="0" stopColor="var(--color-tint)" stopOpacity="0.18" />
+            <stop offset="1" stopColor="var(--color-tint)" stopOpacity="0" />
           </linearGradient>
         </defs>
         <path d={`${d} L${ex},${H} L${pts[0][0]},${H} Z`} fill={`url(#${id})`} />
-        <path d={d} fill="none" stroke="var(--color-primary)" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-        <circle cx={ex} cy={ey} r="5" fill="var(--color-surface)" stroke="var(--color-primary)" strokeWidth="2.5" />
+        <path d={d} fill="none" stroke="var(--color-tint)" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+        <circle cx={ex} cy={ey} r="5" fill="var(--color-surface)" stroke="var(--color-tint)" strokeWidth="2.5" />
       </svg>
       {endTag ? (
         <span aria-hidden className="absolute -translate-x-full -translate-y-[130%] rounded-[8px] bg-primary px-2 py-0.5 text-[12px] font-bold whitespace-nowrap text-white" style={{ left: `${(ex / W) * 100}%`, top: `${(ey / H) * 100}%` }}>{endTag}</span>
@@ -61,7 +61,7 @@ export function BarsWithLimit({ bars, limit, limitLabel, label }: { bars: { key:
     <figure className="m-0" aria-label={label}>
       <div className="relative" style={{ height: H + 24 }}>
         <div aria-hidden className="absolute inset-x-0 border-t-2 border-ink" style={{ top: y(limit) }}>
-          <span className="absolute right-0 -translate-y-1/2 rounded-l-[10px] rounded-r-[4px] bg-ink px-2 py-0.5 text-[12px] font-bold text-white tnum">{limitLabel}</span>
+          <span className="absolute right-0 -translate-y-1/2 rounded-l-[10px] rounded-r-[4px] bg-ink px-2 py-0.5 text-[12px] font-bold text-on-ink tnum">{limitLabel}</span>
         </div>
         <ul className="absolute inset-x-0 top-0 flex items-end justify-between gap-1.5" style={{ height: H }}>
           {bars.map((b) => {

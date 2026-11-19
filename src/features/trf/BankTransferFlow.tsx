@@ -139,11 +139,12 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
       ) : null}
 
       <Section title="Tài khoản nhận" className="mt-8 lg:mt-8">
+        <Card className="p-5">
         <div className="mb-5">
           <p id="bank-label" className="mb-1.5 text-[13px] font-medium">Ngân hàng</p>
           <button
             type="button" aria-labelledby="bank-label bank-value" aria-haspopup="dialog" onClick={() => setPicker(true)}
-            className="flex h-12 w-full items-center gap-3 rounded-[12px] border border-line bg-surface px-4 text-left"
+            className="flex h-12 w-full items-center gap-3 rounded-[var(--radius-input)] bg-surface-2 px-4 text-left lg:h-11"
           >
             {bank ? <BankMark short={bank.short} size={28} /> : null}
             <span id="bank-value" className={cx('flex-1', !bank && 'text-muted')}>{bank?.name ?? 'Chọn ngân hàng'}</span>
@@ -178,6 +179,7 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
             </div>
           </div>
         ) : null}
+        </Card>
       </Section>
       <div className="mt-8">
         <Button block disabled={!found || !bankId} onClick={() => onNext(bankId!, account, found!, false)}>Tiếp tục</Button>

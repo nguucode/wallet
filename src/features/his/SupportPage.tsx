@@ -67,7 +67,7 @@ export default function SupportPage() {
                           {q.answer.map((p) => <p key={p}>{p}</p>)}
                           {q.links?.length ? (
                             <p className="flex flex-wrap gap-x-4">
-                              {q.links.map((l) => <Link key={l.to} to={l.to} className="inline-flex min-h-11 items-center font-semibold text-primary">{l.label}</Link>)}
+                              {q.links.map((l) => <Link key={l.to} to={l.to} className="inline-flex min-h-11 items-center font-semibold text-tint">{l.label}</Link>)}
                             </p>
                           ) : null}
                         </div>

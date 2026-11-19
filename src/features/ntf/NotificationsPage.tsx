@@ -33,8 +33,8 @@ export default function NotificationsPage() {
   }
   const markAll = unreadIds.length && loaded ? (
     layout === 'web'
-      ? <button type="button" onClick={() => markRead(unreadIds)} className="h-11 shrink-0 rounded-full px-3 text-[14px] font-semibold text-white hover:bg-white/15">Đánh dấu tất cả đã đọc</button>
-      : <IconButton label="Đánh dấu tất cả đã đọc" onClick={() => markRead(unreadIds)} className="shrink-0 text-white hover:bg-white/15"><CheckCheck size={22} strokeWidth={1.75} /></IconButton>
+      ? <button type="button" onClick={() => markRead(unreadIds)} className="h-11 shrink-0 rounded-full px-3 text-[17px] text-tint hover:bg-surface-2 lg:text-[15px]">Đánh dấu tất cả đã đọc</button>
+      : <IconButton label="Đánh dấu tất cả đã đọc" onClick={() => markRead(unreadIds)} className="shrink-0 text-tint"><CheckCheck size={22} strokeWidth={1.75} /></IconButton>
   ) : null
 
   return (
@@ -62,9 +62,9 @@ export default function NotificationsPage() {
           <EmptyState icon={<BellOff size={22} strokeWidth={1.75} />} title={view.empty} />
         ) : (
           groups.map((g) => (
-            <section key={g.label} aria-label={g.label} className="card mt-4 px-4 pt-4 first:mt-2">
-              <h2 className="label-caps">{g.label}</h2>
-              <ul className="divide-y divide-line-soft">
+            <section key={g.label} aria-label={g.label} className="mt-5 first:mt-3">
+              <h2 className="label-caps mb-1.5 px-4">{g.label}</h2>
+              <ul className="card divide-y divide-line-soft px-4">
                 {g.items.map((n) => {
                   const Icon = ICON[n.kind]
                   return (

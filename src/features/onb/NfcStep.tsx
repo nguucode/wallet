@@ -71,7 +71,7 @@ export function NfcStep() {
       <div className="relative mx-auto my-8 size-44">
         <svg viewBox="0 0 100 100" className="absolute inset-0" aria-hidden>
           <circle cx="50" cy="50" r={r} fill="none" stroke="var(--color-line)" strokeWidth="4" />
-          <circle cx="50" cy="50" r={r} fill="none" stroke="var(--color-primary)" strokeWidth="4" strokeLinecap="round" strokeDasharray={len} strokeDashoffset={len * (1 - pct / 100)} transform="rotate(-90 50 50)" className="transition-[stroke-dashoffset] duration-150" />
+          <circle cx="50" cy="50" r={r} fill="none" stroke="var(--color-tint)" strokeWidth="4" strokeLinecap="round" strokeDasharray={len} strokeDashoffset={len * (1 - pct / 100)} transform="rotate(-90 50 50)" className="transition-[stroke-dashoffset] duration-150" />
         </svg>
         <span className="absolute inset-5 flex items-center justify-center rounded-full bg-surface-2"><Nfc size={56} strokeWidth={1.25} aria-hidden className="text-muted" /></span>
       </div>

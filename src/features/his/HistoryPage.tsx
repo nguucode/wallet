@@ -1,4 +1,4 @@
-import { Inbox, SlidersHorizontal, X } from 'lucide-react'
+import { ChevronDown, Inbox, SlidersHorizontal, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { formatVnd } from '@/domain/money'
@@ -63,30 +63,31 @@ function RowStatus({ t, web }: { t: Transaction; web?: boolean }) {
   )
 }
 
-function Filters({ f, set, months }: { f: HistoryFilter; set: (k: keyof HistoryFilter, v?: string) => void; months: string[] }) {
-  const sel = 'text-ink h-11 rounded-[12px] border border-line bg-surface px-3 text-[14px]'
+function Filters({ f, set, months, onGround }: { f: HistoryFilter; set: (k: keyof HistoryFilter, v?: string) => void; months: string[]; onGround?: boolean }) {
+  // Fields take the fill that contrasts with what they sit on: white on the grouped background, tertiary fill inside a sheet.
+  const sel = cx('h-11 w-full appearance-none rounded-[var(--radius-input)] pr-9', onGround ? 'bg-surface' : 'bg-surface-2') + ' pl-3 text-[15px] font-normal text-ink'
   return (
     <>
-      <label className="flex flex-col gap-1 text-[13px] font-semibold lg:text-white">
+      <label className="flex flex-col gap-1 text-[13px] font-semibold">
         Tháng
-        <select className={sel} value={f.month ?? ''} onChange={(e) => set('month', e.target.value)}>
+        <span className="relative block"><select className={sel} value={f.month ?? ''} onChange={(e) => set('month', e.target.value)}>
           <option value="">Tất cả các tháng</option>
           {months.map((m) => <option key={m} value={m}>{monthLabel(m)}</option>)}
-        </select>
+        </select><ChevronDown size={16} strokeWidth={2} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
       </label>
-      <label className="flex flex-col gap-1 text-[13px] font-semibold lg:text-white">
+      <label className="flex flex-col gap-1 text-[13px] font-semibold">
         Loại giao dịch
-        <select className={sel} value={f.type ?? ''} onChange={(e) => set('type', e.target.value)}>
+        <span className="relative block"><select className={sel} value={f.type ?? ''} onChange={(e) => set('type', e.target.value)}>
           <option value="">Tất cả loại</option>
           {TYPES.map((t) => <option key={t} value={t}>{typeLabel(t)}</option>)}
-        </select>
+        </select><ChevronDown size={16} strokeWidth={2} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
       </label>
-      <label className="flex flex-col gap-1 text-[13px] font-semibold lg:text-white">
+      <label className="flex flex-col gap-1 text-[13px] font-semibold">
         Trạng thái
-        <select className={sel} value={f.status ?? ''} onChange={(e) => set('status', e.target.value)}>
+        <span className="relative block"><select className={sel} value={f.status ?? ''} onChange={(e) => set('status', e.target.value)}>
           <option value="">Tất cả trạng thái</option>
           {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
-        </select>
+        </select><ChevronDown size={16} strokeWidth={2} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
       </label>
     </>
   )
@@ -110,7 +111,7 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
     <table className="w-full border-collapse text-left">
       <caption className="sr-only">Lịch sử giao dịch, mới nhất trước, nhóm theo tháng</caption>
       <thead>
-        <tr className="border-b border-line-soft text-[12px] tracking-[0.05em] text-muted uppercase">
+        <tr className="border-b border-line-soft text-[13px] text-muted">
           <th scope="col" className="w-[120px] py-2 pr-4 font-medium">Ngày</th>
           <th scope="col" className="py-2 pr-4 font-medium">Giao dịch</th>
           <th scope="col" className="w-[170px] py-2 pr-4 font-medium">Trạng thái</th>
@@ -122,7 +123,7 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
         return (
           <tbody key={g.key}>
             <tr>
-              <th scope="colgroup" colSpan={4} className="bg-surface px-3 pt-5 pb-2 text-[12px] font-bold tracking-[0.05em] text-muted uppercase">
+              <th scope="colgroup" colSpan={4} className="bg-surface px-3 pt-5 pb-2 text-[13px] font-semibold text-muted">
                 {g.label} · Vào <span className="tnum text-success">{formatVnd(tot.in, { sign: 'in' })}</span> · Ra <span className="tnum">{formatVnd(tot.out, { sign: 'out' })}</span>
               </th>
             </tr>
@@ -160,9 +161,9 @@ function AppList({ groups, w, onOpen }: { groups: Group[]; w: World; onOpen: (id
   return (
     <div>
       {groups.map((g) => (
-        <section key={g.key} aria-label={g.label} className="card mt-4 px-4 pt-4 first:mt-2">
-          <h2 className="label-caps">{g.label}</h2>
-          <ul className="divide-y divide-line-soft">
+        <section key={g.key} aria-label={g.label} className="mt-5 first:mt-3">
+          <h2 className="label-caps mb-1.5 px-4">{g.label}</h2>
+          <ul className="card divide-y divide-line-soft px-4">
             {g.rows.map((t) => {
               const name = counterpartyName(t.counterparty, w)
               return (
@@ -227,7 +228,7 @@ export default function HistoryPage() {
     return (
       <div>
         <ScreenTitle>Lịch sử</ScreenTitle>
-        <EmptyState icon={<Inbox size={22} strokeWidth={1.75} />} title="Chưa có giao dịch nào" action={<Link to="/topup" className="font-semibold text-primary">Nạp tiền vào ví</Link>} />
+        <EmptyState icon={<Inbox size={22} strokeWidth={1.75} />} title="Chưa có giao dịch nào" action={<Link to="/topup" className="font-semibold text-tint">Nạp tiền vào ví</Link>} />
       </div>
     )
 
@@ -239,9 +240,9 @@ export default function HistoryPage() {
           <Segmented label="Chế độ xem" value={f.tab ?? 'all'} options={TABS} onChange={(v) => set('tab', v)} />
         </div>
         {layout === 'web' ? (
-          <div className="grid grid-cols-3 gap-3"><Filters f={f} set={set} months={months} /></div>
+          <div className="grid grid-cols-3 gap-3"><Filters f={f} set={set} months={months} onGround /></div>
         ) : (
-          <button type="button" onClick={() => setSheet(true)} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-surface px-3 text-[13px] font-semibold text-primary-ink shadow-[var(--shadow-card)]">
+          <button type="button" onClick={() => setSheet(true)} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-surface px-3 text-[15px] text-tint">
             <SlidersHorizontal size={16} strokeWidth={1.75} aria-hidden />Bộ lọc
             {active.length ? <span className="min-w-5 rounded-full bg-primary px-1.5 text-[12px] leading-5 text-white tnum" aria-label={`${active.length} bộ lọc đang bật`}>{active.length}</span> : null}
           </button>

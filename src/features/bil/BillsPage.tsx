@@ -68,13 +68,13 @@ export default function BillsPage() {
           <Card>
             <h2 id="my-bills" className="label-caps px-4 pt-4">Hóa đơn của tôi</h2>
             <EmptyState icon={<FileText size={22} strokeWidth={1.75} />} title="Chưa có hóa đơn nào được lưu"
-              action={<button type="button" onClick={() => guard('/bills/new')} className="min-h-11 font-semibold text-primary">Thêm hóa đơn điện</button>} />
+              action={<button type="button" onClick={() => guard('/bills/new')} className="min-h-11 font-semibold text-tint">Thêm hóa đơn điện</button>} />
           </Card>
         ) : (
           <Card>
             <div className="flex items-center justify-between gap-3 px-4 pt-4">
               <h2 id="my-bills" className="label-caps">Hóa đơn của tôi</h2>
-              <button type="button" onClick={() => guard('/bills/new')} className="min-h-11 rounded-full px-3 font-semibold text-primary hover:bg-primary-soft">+ Thêm hóa đơn</button>
+              <button type="button" onClick={() => guard('/bills/new')} className="min-h-11 rounded-full px-3 font-semibold text-tint hover:bg-primary-soft">+ Thêm hóa đơn</button>
             </div>
             <ul className="divide-y divide-line-soft">
               {bills.map((b) => {
@@ -98,7 +98,7 @@ export default function BillsPage() {
                       </span>
                     </Link>
                     {s === 'due' || s === 'overdue' ? (
-                      <Button size={layout === 'app' ? 'md' : 'sm'} variant="secondary" block={layout === 'app'} className="border-primary text-primary" onClick={() => guard(`/bills/${b.id}`)}>Thanh toán</Button>
+                      <Button size={layout === 'app' ? 'md' : 'sm'} variant="secondary" block={layout === 'app'} className="border-tint text-tint" onClick={() => guard(`/bills/${b.id}`)}>Thanh toán</Button>
                     ) : null}
                   </li>
                 )

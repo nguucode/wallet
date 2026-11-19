@@ -1,5 +1,5 @@
 // run axe-core (WCAG 2.2 A/AA) against each route in headless Chrome and print the violations.
-// Usage: node scripts/a11y.mjs <width>x<height> <path> [<path> ...]   (dev server on :5174)
+// Usage: [SCHEME=dark] [PORT=5174] node scripts/a11y.mjs <width>x<height> <path> [<path> ...]   (dev server on :5174 by default)
 // Needs the dev server on :5174 and Google Chrome installed.
 import { spawn } from 'node:child_process'
 import { mkdtempSync, readFileSync } from 'node:fs'
@@ -30,10 +30,11 @@ const send = (method, params = {}) => new Promise((r) => { const id = ++seq; pen
 
 await send('Page.enable')
 await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 640 })
+await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: process.env.SCHEME === 'dark' ? 'dark' : 'light' }] })
 const axe = readFileSync(new URL('../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8')
 let total = 0
 for (const path of paths) {
-  await send('Page.navigate', { url: `http://localhost:5174${path}` })
+  await send('Page.navigate', { url: `http://localhost:${process.env.PORT || 5174}${path}` })
   for (let i = 0; i < 40; i++) {
     await sleep(250)
     const r = await send('Runtime.evaluate', { expression: 'document.querySelector("main")?.innerText.length ?? 0', returnByValue: true })

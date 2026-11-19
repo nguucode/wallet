@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Clock, Delete, X } from 'lucide-react'
+import { Check, ChevronLeft, Clock, Delete, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate, useSearchParams } from 'react-router'
@@ -16,7 +16,7 @@ import {
 import type { FailureReason, Transaction } from '@/mock/seed'
 import { AuthSheet } from '@/features/sec/AuthSheet'
 import { GATE_COPY } from '@/features/sec/Gate'
-import { Button, ButtonLink, Confirm, cx, IconButton, Money } from '@/components/ui'
+import { Button, ButtonLink, Confirm, cx, BackButton, CloseButton, NavBar, Money } from '@/components/ui'
 
 export { fmtTime, fmtDate, fmtDateTime, maskPhone, formatPhone, maskAccount } from '@/app/format'
 import { fmtTime, fmtDateTime } from '@/app/format'
@@ -70,41 +70,34 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
   title: string; onBack?: () => void; onClose?: () => void; footer?: ReactNode; children: ReactNode; description?: ReactNode
 }) {
   const layout = useLayout()
-  const [solid, setSolid] = useState(false)
-  useEffect(() => {
-    const on = () => setSolid(window.scrollY > 8)
-    on()
-    window.addEventListener('scroll', on, { passive: true })
-    return () => window.removeEventListener('scroll', on)
-  }, [])
   if (layout === 'web')
     return (
       <div>
-        <div className="mb-6 flex items-center gap-2">
-          {onBack ? <IconButton label="Quay lại" className="-ml-3 text-white hover:bg-white/15" onClick={onBack}><ArrowLeft size={20} strokeWidth={1.75} /></IconButton> : null}
-          <h1 tabIndex={-1} data-page-title className="flex-1 text-[28px] leading-[36px] font-bold tracking-tight text-white outline-none">{title}</h1>
-          {onClose ? <IconButton label="Đóng" className="text-white hover:bg-white/15" onClick={onClose}><X size={20} strokeWidth={1.75} /></IconButton> : null}
+        {onBack ? <button type="button" onClick={onBack} className="-ml-2 mb-1 inline-flex h-9 items-center gap-0.5 rounded-full pr-3 pl-1 text-[15px] text-tint hover:bg-surface-2"><ChevronLeft size={22} strokeWidth={2.25} aria-hidden />Quay lại</button> : null}
+        <div className="mb-6 flex items-start gap-2">
+          <h1 tabIndex={-1} data-page-title className="large-title flex-1 outline-none">{title}</h1>
+          {onClose ? <CloseButton onClick={onClose} /> : null}
         </div>
-        {description ? <p className="-mt-4 mb-6 text-white/85">{description}</p> : null}
-        <div className="card p-6">{children}</div>
+        {description ? <p className="-mt-4 mb-6 text-muted">{description}</p> : null}
+        {/* One inset group for a plain step; a step that brings its own sections sits on the grouped background. */}
+        <div className="[&:not(:has(.card))]:card [&:not(:has(.card))]:p-6">{children}</div>
         {footer ? <div className="mt-8 flex flex-col gap-2">{footer}</div> : null}
       </div>
     )
   return (
     <div className="relative flex min-h-dvh flex-col">
-      <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[240px]" />
-      <header className={cx('sticky top-0 z-30 flex h-14 items-center gap-1 px-2 text-white transition-colors duration-200', solid ? 'bg-sky-from' : 'bg-transparent')}>
-        {onBack ? <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={onBack}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton> : <span className="w-11" />}
-        <h1 tabIndex={-1} data-page-title className="flex-1 truncate text-center text-[17px] font-bold outline-none">{title}</h1>
-        {onClose ? <IconButton label="Đóng" className="text-white hover:bg-white/15" onClick={onClose}><X size={22} strokeWidth={1.75} /></IconButton> : <span className="w-11" />}
-      </header>
+      <NavBar
+        title={<h1 tabIndex={-1} data-page-title className="truncate outline-none">{title}</h1>}
+        left={onBack ? <BackButton onClick={onBack} /> : <span className="w-11" />}
+        right={onClose ? <CloseButton onClick={onClose} /> : <span className="w-11" />}
+      />
       <main id="main" className="relative mx-auto w-full max-w-[560px] flex-1 px-4 pt-2 pb-6">
-        {description ? <p className="mb-4 px-1 text-white/90">{description}</p> : null}
-        <div className="card p-5">{children}</div>
-        {/* The app keypad portals here so the violet panel stands on its own below the card. */}
+        {description ? <p className="mb-4 px-1 text-muted">{description}</p> : null}
+        <div className="[&:not(:has(.card))]:card [&:not(:has(.card))]:p-5">{children}</div>
+        {/* The app keypad portals here so it stands on its own below the card, like the system number pad. */}
         <div id="flow-keypad-slot" />
       </main>
-      {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 rounded-t-[24px] bg-surface px-5 shadow-[0_-8px_24px_-12px_rgb(28_24_64/0.18)] pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</div> : null}
+      {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 border-t border-line/60 bg-ground/85 px-4 pt-3 pb-[max(16px,env(safe-area-inset-bottom))] backdrop-blur-xl">{footer}</div> : null}
     </div>
   )
 }
@@ -133,10 +126,10 @@ export function checkAmount(type: TxType, amount: number, opts: { essential?: bo
   if (type === 'bank_transfer' && amount > config.bankTransferMax) return { ok: false, message: `Mỗi lần chuyển đến ngân hàng tối đa ${formatVnd(config.bankTransferMax)}` }
   const f = fee(type, amount, freeUsed(w)).amount
   if (type !== 'topup' && !opts.fromSource && amount + f > w.balance)
-    return { ok: false, message: <>Số dư không đủ. Số dư khả dụng {formatVnd(w.balance)}{f ? `, phí ${formatVnd(f)}` : ''}. <Link to="/topup" className="font-semibold text-primary">Nạp tiền</Link></> }
+    return { ok: false, message: <>Số dư không đủ. Số dư khả dụng {formatVnd(w.balance)}{f ? `, phí ${formatVnd(f)}` : ''}. <Link to="/topup" className="font-semibold text-tint">Nạp tiền</Link></> }
   const lim = checkLimit(usage(w), type, amount, !!opts.essential)
   if (!lim.ok)
-    return { ok: false, message: <>Vượt hạn mức {lim.pool === 'essential' ? 'thanh toán thiết yếu' : 'giao dịch'} tháng này. Còn lại {formatVnd(lim.remaining)}. <Link to="/me/limits" className="font-semibold text-primary">Xem hạn mức</Link></> }
+    return { ok: false, message: <>Vượt hạn mức {lim.pool === 'essential' ? 'thanh toán thiết yếu' : 'giao dịch'} tháng này. Còn lại {formatVnd(lim.remaining)}. <Link to="/me/limits" className="font-semibold text-tint">Xem hạn mức</Link></> }
   return { ok: true }
 }
 
@@ -148,7 +141,7 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
   const set = (n: number) => { if (n <= 9_999_999_999) onChange(n) }
   return (
     <div>
-      <label htmlFor="amount" className="label-caps mb-2 block text-center">{label}</label>
+      <label htmlFor="amount" className="mb-2 block text-center text-[15px] text-muted">{label}</label>
       <div className={cx('flex items-start justify-center border-b-2 pb-2', error ? 'border-danger' : 'border-line')}>
         <input
           id="amount" autoFocus={autoFocus && layout === 'web'} autoComplete="off" placeholder="0"
@@ -183,7 +176,7 @@ function KeypadPortal(props: { value: number; onChange: (n: number) => void }) {
   return slot ? createPortal(pad, slot) : pad
 }
 
-/** Wallet keypad (app layout): lavender keys on a violet panel, with 000 for đồng amounts. */
+/** Wallet keypad (app layout): system number-pad keys on the grouped background, with 000 for đồng amounts. */
 export function Keypad({ value, onChange }: { value: number; onChange: (n: number) => void }) {
   const press = (k: string) => {
     if (k === 'del') return onChange(Math.floor(value / 10))
@@ -192,13 +185,13 @@ export function Keypad({ value, onChange }: { value: number; onChange: (n: numbe
   }
   const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '000', '0', 'del']
   return (
-    <div className="mt-4 rounded-[28px] bg-gradient-to-b from-sky-from to-sky-to px-3 pt-3 pb-3 shadow-[var(--shadow-card)]">
+    <div className="mt-4 px-1">
       <div className="grid grid-cols-3 gap-2" role="group" aria-label="Bàn phím số">
         {KEYS.map((k) => (
           <button
             key={k} type="button" onClick={() => press(k)}
             aria-label={k === 'del' ? 'Xóa một chữ số' : undefined}
-            className="flex h-14 items-center justify-center rounded-[14px] bg-primary-soft text-ink shadow-[0_1px_0_rgb(28_24_64/0.18)] active:bg-white"
+            className="flex h-14 items-center justify-center rounded-[14px] bg-surface text-ink shadow-[0_1px_0_rgb(0_0_0/0.12)] active:bg-surface-2"
           >
             {k === 'del' ? <Delete size={24} strokeWidth={1.75} aria-hidden /> : <span className="text-[24px] leading-7 font-medium tnum">{k}</span>}
           </button>
@@ -212,7 +205,7 @@ export function Keypad({ value, onChange }: { value: number; onChange: (n: numbe
 
 export function ConfirmRows({ rows }: { rows: [string, ReactNode][] }) {
   return (
-    <dl className="divide-y divide-line-soft rounded-[20px] bg-surface-2/60 px-4">
+    <dl className="divide-y divide-line-soft">
       {rows.map(([k, v]) => (
         <div key={k} className="flex items-start justify-between gap-4 py-3">
           <dt className="shrink-0 text-muted">{k}</dt>

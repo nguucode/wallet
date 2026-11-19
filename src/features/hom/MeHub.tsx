@@ -66,7 +66,7 @@ export default function MeHub() {
         </ul>
       </nav>
 
-      <button type="button" onClick={() => setConfirm(true)} className="mt-8 h-12 rounded-full px-4 font-semibold text-danger hover:bg-danger-soft">Đăng xuất</button>
+      <button type="button" onClick={() => setConfirm(true)} className="card mt-8 flex h-12 w-full items-center justify-center text-danger hover:bg-danger-soft">Đăng xuất</button>
       <Confirm
         open={confirm} onOpenChange={setConfirm} title="Đăng xuất khỏi Wallet?" confirmLabel="Đăng xuất" danger
         onConfirm={() => { signOut(); nav('/onboarding') }}

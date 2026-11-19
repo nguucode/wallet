@@ -6,7 +6,7 @@ import { SampleBadge } from '@/app/Shell'
 import { lookupBill, mutate, now, saveBill, useWorld } from '@/app/store'
 import { ConfirmRows, FlowFrame, fmtDate, useCloseFlow, useFlow } from '@/features/flow/FlowKit'
 import { GatedRoute } from '@/features/sec/Gate'
-import { Button, Field, TextInput } from '@/components/ui'
+import { BankMark, Button, Field, Row, TextInput } from '@/components/ui'
 import { isValidCustomerCode, periodLabel, vnToday } from './bills'
 
 const STEPS = ['biller', 'customer-code', 'lookup'] as const
@@ -44,16 +44,16 @@ function Flow() {
   if (flow.step === 'biller' || !biller)
     return (
       <FlowFrame title="Chọn nhà cung cấp" onClose={close}>
-        <p className="mb-3 text-[13px] font-medium text-muted">Điện</p>
-        <ul className="divide-y divide-line-soft card">
+        <h2 className="label-caps mb-1.5 px-4">Điện</h2>
+        <ul className="card divide-y divide-line-soft px-4">
           {billers.map((b) => (
             <li key={b.id}>
-              <button type="button" onClick={() => { setDraft({ billerId: b.id, found: undefined, noDebt: false }); setError(undefined); go('customer-code') }}
-                className="flex min-h-14 w-full items-center gap-3 px-4 py-2 text-left hover:bg-surface-2">
-                <span aria-hidden className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-line text-[12px] font-bold">{monogram(b.name)}</span>
-                <span className="flex-1 font-medium">{b.name}</span>
-                <ChevronRight size={18} strokeWidth={1.75} aria-hidden className="text-muted" />
-              </button>
+              <Row
+                onClick={() => { setDraft({ billerId: b.id, found: undefined, noDebt: false }); setError(undefined); go('customer-code') }}
+                left={<BankMark short={monogram(b.name)} size={40} />}
+                title={b.name}
+                right={<ChevronRight size={18} strokeWidth={1.75} aria-hidden className="text-muted" />}
+              />
             </li>
           ))}
         </ul>
@@ -103,7 +103,7 @@ function Flow() {
     setError(undefined)
     if (!isValidCustomerCode(draft.code)) return setError('Mã khách hàng không đúng định dạng')
     const saved = w.bills.find((b) => b.billerId === biller.id && b.customerCode === draft.code)
-    if (saved) return setError(<>Hóa đơn này đã có trong danh sách. <Link to={`/bills/${saved.id}`} className="font-semibold text-primary">Xem hóa đơn</Link></>)
+    if (saved) return setError(<>Hóa đơn này đã có trong danh sách. <Link to={`/bills/${saved.id}`} className="font-semibold text-tint">Xem hóa đơn</Link></>)
     setBusy(true)
     try {
       const r = await lookupBill(biller.id, draft.code)
@@ -111,7 +111,7 @@ function Flow() {
       else if (r.error === 'no_debt') { setDraft({ found: undefined, noDebt: true }); go('lookup') }
       else setError(r.error === 'not_found' ? `Không tìm thấy mã khách hàng tại ${biller.name}` : 'Nhà cung cấp đang tạm gián đoạn, vui lòng thử lại sau')
     } catch {
-      setError(<>Không tra cứu được. <button type="button" onClick={lookup} className="font-semibold text-primary underline">Thử lại</button></>)
+      setError(<>Không tra cứu được. <button type="button" onClick={lookup} className="font-semibold text-tint underline">Thử lại</button></>)
     } finally { setBusy(false) }
   }
   return (
@@ -119,7 +119,7 @@ function Flow() {
       footer={<Button block loading={busy} onClick={lookup}>{busy ? 'Đang tra cứu…' : 'Tra cứu'}</Button>}>
       <form onSubmit={(e) => { e.preventDefault(); void lookup() }}>
         <p className="mb-4 flex items-center gap-2 font-medium">
-          <span aria-hidden className="inline-flex size-8 items-center justify-center rounded-full border border-line text-[11px] font-bold">{monogram(biller.name)}</span>
+          <BankMark short={monogram(biller.name)} size={32} />
           {biller.name}
         </p>
         <Field label="Mã khách hàng" htmlFor="bill-code" error={error} hint="Mã in ở góc trên hóa đơn tiền điện, ví dụ HH01234567890">

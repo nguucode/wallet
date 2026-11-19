@@ -44,7 +44,7 @@ export default function SecurityPage() {
             title="Sinh trắc học thiết bị"
             descId="bio-desc"
             desc={layout === 'web'
-              ? <>Chỉ có trên ứng dụng điện thoại. <Link to="/device?path=/me/security" className="font-semibold text-primary">Xem trên điện thoại</Link></>
+              ? <>Chỉ có trên ứng dụng điện thoại. <Link to="/device?path=/me/security" className="font-semibold text-tint">Xem trên điện thoại</Link></>
               : 'Dùng Face ID hoặc vân tay thay mã PIN cho giao dịch không cần xác thực khuôn mặt.'}
             control={layout === 'web' ? null : !loaded ? <Skeleton className="h-7 w-12 rounded-full" /> : (
               <button

@@ -34,7 +34,7 @@ export default function HomePage() {
   return (
     <div className="lg:max-w-[610px]">
       <h1 tabIndex={-1} data-page-title className="sr-only">Trang chủ</h1>
-      {layout === 'web' ? <p className="mb-5 text-[28px] leading-[36px] font-bold tracking-tight text-white" aria-hidden>Chào {shortName(w.customer.name)}</p> : null}
+      {layout === 'web' ? <p className="large-title mb-5" aria-hidden>Chào {shortName(w.customer.name)}</p> : null}
       <BalanceSection loaded={loaded} />
       <ShortcutsRow guard={guard} />
       {gate ? <section aria-label="Trạng thái ví" className="mt-8 lg:mt-12"><GateCallout gate={gate} /></section> : null}
@@ -126,7 +126,7 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
               onClick={s.ungated ? undefined : guardedClick(guard, s.to)}
               className="group flex flex-col items-center gap-2 rounded-xl py-1 text-center text-ink no-underline focus-visible:outline-none lg:w-[84px]"
             >
-              <span className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-primary-ink group-hover:bg-primary-soft group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-primary">
+              <span className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-tint group-hover:bg-primary-soft group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-tint">
                 <s.icon size={24} strokeWidth={1.75} aria-hidden />
               </span>
               <span className="px-0.5 text-[11px] leading-[14px] font-semibold lg:text-[12px] lg:leading-4 lg:whitespace-nowrap">{s.label}</span>
@@ -146,7 +146,7 @@ function BillsDue({ loaded, guard }: { loaded: boolean; guard: Guard }) {
   const due = selectBillsDue(w.bills, now())
   if (loaded && !due.length) return null
   return (
-    <Section title="Hóa đơn sắp đến hạn" action={loaded ? <Link to="/bills" className="text-[14px] font-semibold text-primary">Xem tất cả</Link> : undefined}>
+    <Section title="Hóa đơn sắp đến hạn" action={loaded ? <Link to="/bills" className="text-[14px] font-semibold text-tint">Xem tất cả</Link> : undefined}>
       <Card className="px-4">
         {!loaded ? <SkeletonRow /> : (
           <ul className="divide-y divide-line-soft">
@@ -195,7 +195,7 @@ function RecentRecipients({ loaded, guard }: { loaded: boolean; guard: Guard }) 
   const list = selectRecentRecipients(w.transactions, 8)
   if (loaded && !list.length) return null
   return (
-    <Section title="Người nhận gần đây" action={<Link to="/transfer" className="text-[14px] font-semibold text-primary">Chuyển tiền</Link>}>
+    <Section title="Người nhận gần đây" action={<Link to="/transfer" className="text-[14px] font-semibold text-tint">Chuyển tiền</Link>}>
       <ul className="-mx-5 flex gap-2 overflow-x-auto px-3 pb-1 lg:mx-0 lg:overflow-visible lg:px-0">
         {!loaded
           ? Array.from({ length: 4 }, (_, i) => <li key={i} className="w-[72px] shrink-0"><Skeleton className="mx-auto size-14 rounded-full" /></li>)
@@ -248,7 +248,7 @@ function RecentActivity({ loaded, guard }: { loaded: boolean; guard: Guard }) {
     body = (
       <p className="px-4 py-6 text-center text-muted">
         Chưa có giao dịch nào.{' '}
-        <Link to="/topup" onClick={guardedClick(guard, '/topup')} className="font-semibold text-primary">Nạp tiền</Link>
+        <Link to="/topup" onClick={guardedClick(guard, '/topup')} className="font-semibold text-tint">Nạp tiền</Link>
       </p>
     )
   else
@@ -277,7 +277,7 @@ function RecentActivity({ loaded, guard }: { loaded: boolean; guard: Guard }) {
       </ul>
     )
   return (
-    <Section title="Hoạt động gần đây" action={recent.length ? <Link to="/history" className="text-[14px] font-semibold text-primary">Xem tất cả</Link> : undefined}>
+    <Section title="Hoạt động gần đây" action={recent.length ? <Link to="/history" className="text-[14px] font-semibold text-tint">Xem tất cả</Link> : undefined}>
       <Card>{body}</Card>
     </Section>
   )

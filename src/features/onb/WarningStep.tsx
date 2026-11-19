@@ -31,7 +31,7 @@ export function WarningStep() {
   return (
     <StepShell title="Cảnh báo quan trọng" footer={<>
       <label className={cx('flex min-h-11 items-center gap-3', !reached && 'text-muted')}>
-        <input type="checkbox" checked={ticked} disabled={!reached} onChange={(e) => setTicked(e.target.checked)} aria-describedby={!reached ? 'warn-help' : undefined} className="size-5 accent-[var(--color-primary)]" />
+        <input type="checkbox" checked={ticked} disabled={!reached} onChange={(e) => setTicked(e.target.checked)} aria-describedby={!reached ? 'warn-help' : undefined} className="size-5 accent-[var(--color-tint)]" />
         <span className="font-medium">Tôi đã đọc và hiểu</span>
       </label>
       {!reached ? <p id="warn-help" className="text-[13px] text-muted">Cuộn hết nội dung để xác nhận</p> : null}

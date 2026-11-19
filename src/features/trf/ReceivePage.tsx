@@ -67,7 +67,7 @@ function Receive() {
   const incoming = w.transactions.find((t) => t.type === 'p2p_in' && t.createdAt > since.current)
   useEffect(() => {
     if (!incoming || incoming.counterparty.kind !== 'contact') return
-    setToast(<>Bạn vừa nhận {formatVnd(incoming.amount)} từ {incoming.counterparty.name}. <Link to={`/history/${incoming.id}`} className="font-semibold text-primary">Xem</Link></>)
+    setToast(<>Bạn vừa nhận {formatVnd(incoming.amount)} từ {incoming.counterparty.name}. <Link to={`/history/${incoming.id}`} className="font-semibold text-tint">Xem</Link></>)
   }, [incoming])
 
   const save = async () => {

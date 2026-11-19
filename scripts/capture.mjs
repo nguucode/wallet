@@ -1,5 +1,5 @@
 // Review captures through the Chrome DevTools Protocol, so mobile widths below headless Chrome's ~500px window minimum work.
-// Usage: node scripts/capture.mjs <outDir> <width>x<height> <name>=<path> [<name>=<path> ...]
+// Usage: [SCHEME=dark] [PORT=5174] node scripts/capture.mjs <outDir> <width>x<height> <name>=<path> [<name>=<path> ...]
 // Needs the dev server on :5174 and Google Chrome installed.
 import { spawn } from 'node:child_process'
 import { mkdtempSync, writeFileSync } from 'node:fs'
@@ -30,9 +30,10 @@ const send = (method, params = {}) => new Promise((r) => { const id = ++seq; pen
 
 await send('Page.enable')
 await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 2, mobile: width < 640 })
+await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: process.env.SCHEME === 'dark' ? 'dark' : 'light' }] })
 for (const shot of shots) {
   const [name, path] = shot.split(/=(.*)/s)
-  await send('Page.navigate', { url: `http://localhost:5174${path}` })
+  await send('Page.navigate', { url: `http://localhost:${process.env.PORT || 5174}${path}` })
   // The dataset loads with a top-level await; wait for the app to paint real content.
   for (let i = 0; i < 40; i++) {
     await sleep(250)

@@ -58,7 +58,7 @@ export default function DevicePage() {
           <Button variant="secondary" size="sm" onClick={() => nav(params.get('path') || '/home')}><ExternalLink size={14} aria-hidden />Mở bản web</Button>
         </div>
         <div style={{ width: (W + BEZEL * 2) * scale, height: (H + BEZEL * 2) * scale }}>
-          <div className="origin-top-left rounded-[56px] bg-ink p-[14px] shadow-[var(--shadow-float)]" style={{ transform: `scale(${scale})`, width: W + BEZEL * 2 }}>
+          <div className="origin-top-left rounded-[56px] bg-black p-[14px] shadow-[var(--shadow-float)]" style={{ transform: `scale(${scale})`, width: W + BEZEL * 2 }}>
             <iframe ref={frame} title="Wallet trên điện thoại" src={src} width={W} height={H} className="block rounded-[42px] bg-surface" />
           </div>
         </div>

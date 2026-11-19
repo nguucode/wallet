@@ -83,7 +83,7 @@ export function OtpStep() {
           onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 6); setCode(v); setError(undefined); if (v.length === 6) verify(v) }}
           className="peer absolute inset-0 z-10 w-full cursor-text opacity-0"
         />
-        <div aria-hidden className="flex gap-2 rounded-[12px] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-primary">
+        <div aria-hidden className="flex gap-2 rounded-[12px] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-tint">
           {Array.from({ length: 6 }, (_, i) => (
             <span key={i} className={cx('flex size-11 items-center justify-center rounded-[12px] border text-[20px] font-semibold tnum lg:size-12', error ? 'border-danger' : i === code.length ? 'border-ink' : 'border-line', exhausted && 'bg-surface-2')}>
               {code[i] ?? ''}

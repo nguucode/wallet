@@ -86,7 +86,7 @@ function WebScan() {
       <h2 className="mb-3 text-[18px] leading-[26px] font-bold">Tải ảnh mã QR</h2>
       <label
         onDragOver={(e) => { e.preventDefault(); setOver(true) }} onDragLeave={() => setOver(false)} onDrop={onDrop}
-        className={cx('flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[12px] border border-dashed p-6 text-center focus-within:outline-2 focus-within:outline-primary', over ? 'border-primary bg-primary-soft' : 'border-line hover:bg-surface-2')}
+        className={cx('flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[12px] border border-dashed p-6 text-center focus-within:outline-2 focus-within:outline-tint', over ? 'border-tint bg-primary-soft' : 'border-line hover:bg-surface-2')}
       >
         <ImageUp size={28} strokeWidth={1.75} aria-hidden className="text-muted" />
         <span aria-live="polite">{busy ? 'Đang đọc mã…' : 'Kéo ảnh vào đây hoặc chọn từ máy'}</span>
@@ -192,7 +192,7 @@ function AppScan() {
   )
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-ink text-white">
+    <div className="fixed inset-0 z-40 flex flex-col bg-black text-white">
       <video ref={videoRef} playsInline muted aria-hidden className={cx('absolute inset-0 size-full object-cover', cam !== 'live' && 'hidden')} />
       <div className="relative z-10 flex h-14 items-center px-2 pt-[env(safe-area-inset-top)]">
         <button type="button" onClick={close} aria-label="Đóng" className="inline-flex size-11 items-center justify-center rounded-full hover:bg-white/10"><X size={24} strokeWidth={1.75} /></button>

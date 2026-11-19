@@ -1,4 +1,4 @@
-import { ArrowLeft, Copy, FileText, LifeBuoy, MessageCircle, Printer, Repeat, Share2, X } from 'lucide-react'
+import { ChevronLeft, Copy, FileText, LifeBuoy, MessageCircle, Printer, Repeat, Share2, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
 import { config } from '@/domain/config'
@@ -213,7 +213,7 @@ export default function TransactionPage() {
       <p className="mt-1 text-[14px] leading-5">Giao dịch chuyển tiền đã thành công không thể hủy hoặc thu hồi. Hãy nhắn người nhận để đề nghị chuyển trả.</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {/* Placeholder deep link (rules.md#history-and-support): no chat in P0. */}
-        <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-4 text-[14px] font-semibold text-white no-underline"><MessageCircle size={18} strokeWidth={1.75} aria-hidden />Nhắn người nhận</a>
+        <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-4 text-[14px] font-semibold text-on-ink no-underline"><MessageCircle size={18} strokeWidth={1.75} aria-hidden />Nhắn người nhận</a>
         {!request ? <ButtonLink to={supportTo} variant="secondary" className="h-11">Liên hệ hỗ trợ</ButtonLink> : null}
       </div>
     </section>
@@ -221,7 +221,7 @@ export default function TransactionPage() {
 
   return (
     <div className="max-w-[560px]">
-      {layout === 'web' ? <Link to="/history" className="mb-4 inline-flex h-11 items-center gap-1 font-semibold text-white no-underline"><ArrowLeft size={18} strokeWidth={1.75} aria-hidden />Lịch sử</Link> : null}
+      {layout === 'web' ? <Link to="/history" className="-ml-2 mb-2 inline-flex h-9 items-center gap-0.5 rounded-full pr-3 pl-1 text-tint no-underline hover:bg-surface-2"><ChevronLeft size={22} strokeWidth={2.25} aria-hidden />Lịch sử</Link> : null}
 
       <header className="card flex flex-col items-center gap-2 px-5 pt-6 pb-5 text-center">
         <TxIcon type={t.type} size={56} />
@@ -256,7 +256,7 @@ export default function TransactionPage() {
           ['Mã giao dịch', (
             <span className="inline-flex items-center gap-1">
               <span className="tnum">{t.id}</span>
-              <button type="button" onClick={copyId} aria-label="Sao chép mã giao dịch" title="Sao chép" className="-my-2 -mr-2 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-primary hover:bg-primary-soft"><Copy size={18} strokeWidth={1.75} aria-hidden /></button>
+              <button type="button" onClick={copyId} aria-label="Sao chép mã giao dịch" title="Sao chép" className="-my-2 -mr-2 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-tint hover:bg-primary-soft"><Copy size={18} strokeWidth={1.75} aria-hidden /></button>
             </span>
           )],
           ...detailRows(t, w),

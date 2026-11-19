@@ -99,7 +99,7 @@ export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => vo
   )
 }
 
-export function DemoControlsButton({ compact, onSky = true }: { compact?: boolean; onSky?: boolean }) {
+export function DemoControlsButton({ compact }: { compact?: boolean }) {
   const [open, setOpen] = useState(false)
   const [msg, setMsg] = useState('')
   const { pathname } = useLocation()
@@ -107,9 +107,9 @@ export function DemoControlsButton({ compact, onSky = true }: { compact?: boolea
   return (
     <>
       {compact ? (
-        <IconButton label="Demo controls" className={onSky ? 'text-white hover:bg-white/15' : undefined} onClick={() => setOpen(true)}><FlaskConical size={20} strokeWidth={1.75} /></IconButton>
+        <IconButton label="Demo controls" className="text-tint" onClick={() => setOpen(true)}><FlaskConical size={20} strokeWidth={1.75} /></IconButton>
       ) : (
-        <Button variant="secondary" size="sm" className={onSky ? 'bg-white/15 text-white hover:bg-white/25' : undefined} onClick={() => setOpen(true)}><FlaskConical size={16} strokeWidth={1.75} aria-hidden />Demo controls</Button>
+        <Button variant="secondary" size="sm" onClick={() => setOpen(true)}><FlaskConical size={16} strokeWidth={1.75} aria-hidden />Demo controls</Button>
       )}
       <Sheet open={open} onOpenChange={setOpen} title="Demo controls">
         <DemoControlsPanel onAction={setMsg} />

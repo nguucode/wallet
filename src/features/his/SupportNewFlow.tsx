@@ -93,7 +93,7 @@ export default function SupportNewFlow() {
         {draft.reason === 'wrong_recipient' && t?.type === 'p2p_out' && t.status === 'success' ? (
           <div className="mb-6 rounded-[16px] bg-surface-2 p-4">
             <p className="font-semibold">Ví không thể tự hủy giao dịch đã thành công</p>
-            <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="mt-2 inline-flex min-h-11 items-center font-semibold text-primary">Nhắn người nhận</a>
+            <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="mt-2 inline-flex min-h-11 items-center font-semibold text-tint">Nhắn người nhận</a>
           </div>
         ) : null}
         <p className="mb-4 text-[14px] text-muted">Lý do: <span className="font-medium text-ink">{REASON_LABEL[draft.reason]}</span></p>
@@ -127,7 +127,7 @@ export default function SupportNewFlow() {
         <div className="divide-y divide-line-soft card">
           {reasons.map((r) => (
             <label key={r} className="flex min-h-12 cursor-pointer items-center gap-3 px-4 py-3 has-disabled:cursor-not-allowed">
-              <input type="radio" name="reason" value={r} checked={draft.reason === r} onChange={() => flow.setDraft({ ...draft, reason: r })} className="size-5 accent-primary" />
+              <input type="radio" name="reason" value={r} checked={draft.reason === r} onChange={() => flow.setDraft({ ...draft, reason: r })} className="size-5 accent-tint" />
               <span>{REASON_LABEL[r]}</span>
             </label>
           ))}
@@ -135,7 +135,7 @@ export default function SupportNewFlow() {
       </fieldset>
       {needsTx ? (
         <p role="status" className="mt-4 rounded-[16px] bg-surface-2 p-4 text-[14px] leading-5">
-          Hãy mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ để gửi yêu cầu về giao dịch đó. <Link to="/history" className="font-semibold text-primary">Mở Lịch sử</Link>
+          Hãy mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ để gửi yêu cầu về giao dịch đó. <Link to="/history" className="font-semibold text-tint">Mở Lịch sử</Link>
         </p>
       ) : null}
       {dialog}

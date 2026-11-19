@@ -35,8 +35,8 @@ export default function LimitsPage() {
             <p className="mt-4 text-center text-[13px] text-muted tnum">{reset}</p>
           </Card>
           <Card as="section" className="px-5 pt-5 pb-4 lg:px-8">
-            <h2 className="label-caps mb-1 text-center">Hạn mức chung theo tháng</h2>
-            <p className="mb-5 text-center text-[14px] text-muted">Cột đỏ là tháng vượt mức {formatVnd(config.limits.generalMonth)}</p>
+            <h2 className="text-[17px] leading-[22px] font-semibold">Hạn mức chung theo tháng</h2>
+            <p className="mt-0.5 mb-5 text-[15px] text-muted">Cột đỏ là tháng vượt mức {formatVnd(config.limits.generalMonth)}</p>
             <BarsWithLimit
               bars={monthlyGeneral(w.transactions, at)}
               limit={config.limits.generalMonth}

@@ -79,9 +79,9 @@ export default function PayBillFlow() {
           <Callout tone={status === 'settling' ? 'pending' : 'neutral'} title={status === 'settling' ? 'Đang xử lý · Nhà cung cấp đang xác nhận' : 'Đã thanh toán'}
             action={tx ? <ButtonLink to={`/history/${tx.id}`} size="sm" variant="secondary">Xem giao dịch</ButtonLink> : undefined} />
         ) : !check.ok && check.reason === 'insufficient_balance' ? (
-          <p role="alert" className="text-danger">Số dư không đủ, cần thêm {formatVnd(check.short)}. <Link to="/topup" className="font-semibold text-primary">Nạp tiền</Link></p>
+          <p role="alert" className="text-danger">Số dư không đủ, cần thêm {formatVnd(check.short)}. <Link to="/topup" className="font-semibold text-tint">Nạp tiền</Link></p>
         ) : !check.ok && check.reason === 'essential_limit' ? (
-          <p role="alert" className="text-danger">Vượt hạn mức thanh toán thiết yếu tháng này, còn lại {formatVnd(check.remaining)}. <Link to="/me/limits" className="font-semibold text-primary">Xem hạn mức</Link></p>
+          <p role="alert" className="text-danger">Vượt hạn mức thanh toán thiết yếu tháng này, còn lại {formatVnd(check.remaining)}. <Link to="/me/limits" className="font-semibold text-tint">Xem hạn mức</Link></p>
         ) : <p className="text-[14px] text-muted">Thanh toán từ số dư ví · Miễn phí</p>}
       </div>
       {gateSheet}

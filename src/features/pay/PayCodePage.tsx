@@ -186,7 +186,7 @@ function PayCode() {
               right={sources.length ? <ChevronRight size={20} strokeWidth={1.75} aria-hidden className="text-muted" /> : undefined}
             />
           </Card>
-          <p className="mt-4 text-[13px] text-muted">Thu ngân quét mã này để trừ tiền. Không chia sẻ mã với người khác. <Link to="/pay/scan" className="font-medium text-primary">Quét mã thay vì đưa mã</Link></p>
+          <p className="mt-4 text-[13px] text-muted">Thu ngân quét mã này để trừ tiền. Không chia sẻ mã với người khác. <Link to="/pay/scan" className="font-medium text-tint">Quét mã thay vì đưa mã</Link></p>
         </>
       ) : (
         <p className="card py-10 text-center text-muted">Xác thực để hiện mã thanh toán.</p>

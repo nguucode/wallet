@@ -65,7 +65,7 @@ export default function SourcesPage() {
         />
       ) : (
         <>
-          <p className="mb-4 text-white/90">{NOTE}</p>
+          <p className="mb-4 text-muted">{NOTE}</p>
           <ul className="flex flex-col gap-3">
             {sources.map((s) => (
               <li key={s.id}>
