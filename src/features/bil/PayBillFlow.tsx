@@ -50,7 +50,7 @@ export default function PayBillFlow() {
       <FlowFrame title="Xác nhận thanh toán" onBack={() => flow.go('view')} onClose={exit}
         footer={<Button block loading={commit.busy} onClick={commit.start}>Xác nhận</Button>}>
         <p className="text-[13px] font-medium text-muted">Số tiền</p>
-        <p className="amount-display mb-6">{formatVnd(bill.amount)}</p>
+        <p className="amount-display mb-group">{formatVnd(bill.amount)}</p>
         <ConfirmRows rows={[
           ['Phí', feeLabel('bill', bill.amount)],
           ['Tổng tiền', <span className="tnum">{formatVnd(bill.amount)}</span>],
@@ -58,8 +58,8 @@ export default function PayBillFlow() {
           ['Nhà cung cấp', <span className="break-words">{biller.name} · <span className="tnum">{maskCode(bill.customerCode)}</span></span>],
           ['Chủ hộ', <span className="break-words">{bill.holder || '—'}</span>],
         ]} />
-        <p className="mt-4 text-[15px] text-muted">{authLine('bill', bill.amount)}</p>
-        {commit.error ? <p role="alert" className="mt-3 text-danger">{commit.error}</p> : null}
+        <p className="mt-stack text-[15px] text-muted">{authLine('bill', bill.amount)}</p>
+        {commit.error ? <p role="alert" className="mt-stack text-danger">{commit.error}</p> : null}
         {commit.sheet}
       </FlowFrame>
     )
@@ -71,10 +71,10 @@ export default function PayBillFlow() {
     <FlowFrame title="Chi tiết hóa đơn" onBack={() => nav('/bills')}
       footer={status === 'due' || status === 'overdue' ? <Button block disabled={!check.ok} onClick={() => guard(() => flow.go('confirm'))}>Thanh toán</Button> : undefined}>
       <div className="flex items-center gap-2"><BillChip status={status} />{status === 'overdue' ? <span className="text-[15px] text-danger">Quá hạn {overdueDays(bill, at)} ngày</span> : null}</div>
-      <p className="amount-display mt-2 mb-6">{formatVnd(bill.amount)}</p>
+      <p className="amount-display mt-header mb-group">{formatVnd(bill.amount)}</p>
       <ConfirmRows rows={detailRows()} />
 
-      <div className="mt-4">
+      <div className="mt-stack">
         {status === 'settling' || status === 'paid' ? (
           <Callout tone={status === 'settling' ? 'pending' : 'neutral'} title={status === 'settling' ? 'Đang xử lý · Nhà cung cấp đang xác nhận' : 'Đã thanh toán'}
             action={tx ? <ButtonLink to={`/history/${tx.id}`} size="sm" variant="secondary">Xem giao dịch</ButtonLink> : undefined} />

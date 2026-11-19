@@ -41,7 +41,7 @@ class Boundary extends Component<{ children: ReactNode; resetKey: string }, { er
 }
 
 function Loading() {
-  return <div className="space-y-3 pt-4" aria-busy><Skeleton className="h-8 w-48" /><Skeleton className="h-24" /><Skeleton className="h-16" /></div>
+  return <div className="space-y-stack pt-stack" aria-busy><Skeleton className="h-8 w-48" /><Skeleton className="h-24" /><Skeleton className="h-16" /></div>
 }
 
 /** Scenario `new` (signed out): every shell route goes to onboarding. */

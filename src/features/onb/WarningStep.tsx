@@ -37,14 +37,14 @@ export function WarningStep() {
       {!reached ? <p id="warn-help" className="text-[13px] text-muted">Cuộn hết nội dung để xác nhận</p> : null}
       <Button block disabled={!ok} onClick={() => { mark('warningAt'); go('terms') }}>Tiếp tục</Button>
     </>}>
-      <div tabIndex={0} role="region" aria-label="Các hành vi bị cấm" className={cx('relative overflow-y-auto rounded-[12px] border border-line p-4', layout === 'web' ? 'max-h-[360px]' : 'max-h-[calc(100dvh-380px)] min-h-40')}>
+      <div tabIndex={0} role="region" aria-label="Các hành vi bị cấm" className={cx('relative overflow-y-auto rounded-[12px] border border-line p-inset', layout === 'web' ? 'max-h-[360px]' : 'max-h-[calc(100dvh-380px)] min-h-40')}>
         <ul className="flex flex-col gap-4">
           {WARNING_ITEMS.map((t) => (
-            <li key={t} className="flex gap-3"><span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-ink" />{t}</li>
+            <li key={t} className="flex gap-3"><span aria-hidden className="mt-header size-1.5 shrink-0 rounded-full bg-ink" />{t}</li>
           ))}
         </ul>
-        <p className="mt-5 flex gap-3 rounded-[12px] bg-danger-soft p-3 font-medium text-danger">
-          <TriangleAlert size={20} strokeWidth={1.75} aria-hidden className="mt-0.5 shrink-0" />{WARNING_CONSEQUENCE}
+        <p className="mt-group flex gap-3 rounded-[12px] bg-danger-soft p-3 font-medium text-danger">
+          <TriangleAlert size={20} strokeWidth={1.75} aria-hidden className="mt-1 shrink-0" />{WARNING_CONSEQUENCE}
         </p>
         <div ref={ref} aria-hidden className="h-px" />
       </div>

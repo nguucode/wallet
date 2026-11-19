@@ -55,16 +55,16 @@ export default function NotificationsPage() {
         {markAll}
       </div>
 
-      <div className="mt-4">
+      <div className="mt-stack">
         {!loaded ? (
           <div aria-busy>{Array.from({ length: 8 }, (_, i) => <RowSkeleton key={i} />)}</div>
         ) : !items.length ? (
           <EmptyState icon={<BellOff size={22} strokeWidth={1.75} />} title={view.empty} />
         ) : (
           groups.map((g) => (
-            <section key={g.label} aria-label={g.label} className="mt-5 first:mt-3">
-              <h2 className="label-caps mb-1.5 px-4">{g.label}</h2>
-              <ul className="card divide-y divide-line-soft px-4">
+            <section key={g.label} aria-label={g.label} className="mt-group first:mt-stack">
+              <h2 className="label-caps mb-header px-inset">{g.label}</h2>
+              <ul className="card divide-y divide-line-soft px-inset">
                 {g.items.map((n) => {
                   const Icon = ICON[n.kind]
                   return (
@@ -76,10 +76,10 @@ export default function NotificationsPage() {
                             <span className={cx('min-w-0 flex-1 tnum', n.read ? 'font-medium' : 'font-bold')}>{n.title}</span>
                             <span className="shrink-0 text-[13px] leading-[18px] text-muted tnum">{fmtTime(n.createdAt)}</span>
                           </span>
-                          {n.body ? <span className="mt-0.5 line-clamp-2 block text-[15px] leading-5 text-muted">{n.body}</span> : null}
+                          {n.body ? <span className="mt-1 line-clamp-2 block text-[15px] leading-5 text-muted">{n.body}</span> : null}
                         </span>
                         {n.read ? <span className="w-2 shrink-0" /> : (
-                          <span className="mt-2 size-2 shrink-0 rounded-full bg-ink"><span className="sr-only">Chưa đọc</span></span>
+                          <span className="mt-header size-2 shrink-0 rounded-full bg-ink"><span className="sr-only">Chưa đọc</span></span>
                         )}
                       </button>
                     </li>
@@ -98,7 +98,7 @@ function RowSkeleton() {
   return (
     <div className="flex min-h-[72px] items-start gap-3 py-3" aria-hidden>
       <Skeleton className="size-12 rounded-full" />
-      <span className="flex-1 space-y-2"><Skeleton className="h-4 w-1/2" /><Skeleton className="h-3 w-4/5" /></span>
+      <span className="flex-1 space-y-header"><Skeleton className="h-4 w-1/2" /><Skeleton className="h-3 w-4/5" /></span>
     </div>
   )
 }

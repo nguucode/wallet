@@ -91,9 +91,9 @@ export function OtpStep() {
           ))}
         </div>
       </div>
-      <p id="otp-msg" role="alert" className="mt-3 min-h-5 text-center text-[13px] leading-5 text-danger">{error}</p>
+      <p id="otp-msg" role="alert" className="mt-stack min-h-5 text-center text-[13px] leading-5 text-danger">{error}</p>
       <p id="otp-note" className="mt-1 text-center text-[13px] text-muted">Mô phỏng: mã OTP là 123456</p>
-      <div className="mt-6 flex flex-col items-center gap-1">
+      <div className="mt-group flex flex-col items-center gap-1">
         {wait > 0 && !exhausted ? (
           <p className="text-[15px] text-muted">Gửi lại mã sau <span className="tnum">{mmss(wait)}</span></p>
         ) : (

@@ -42,7 +42,7 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
         ))}
       </button>
       <p id="pin-error" role="alert" className="min-h-5 text-center text-[13px] leading-5 text-danger">{error}</p>
-      <div className="mx-auto mt-2 grid max-w-[320px] grid-cols-3 gap-2 rounded-[24px] bg-primary-soft/60 p-2" aria-hidden>
+      <div className="mx-auto mt-header grid max-w-[320px] grid-cols-3 gap-2 rounded-[24px] bg-primary-soft/60 p-2" aria-hidden>
         {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'].map((k) =>
           k === '' ? <span key="blank" /> : (
             <button
@@ -73,7 +73,7 @@ function FaceScan({ onDone, reason }: { onDone: (ok: boolean) => void; reason: s
   return (
     <div className="text-center">
       <p className="text-[15px] text-muted">{reason}</p>
-      <div className="relative mx-auto my-6 size-44">
+      <div className="relative mx-auto my-group size-44">
         <svg viewBox="0 0 100 100" className="absolute inset-0" aria-hidden>
           <circle cx="50" cy="50" r="46" fill="none" stroke="var(--color-line)" strokeWidth="3" />
           {phase === 'scanning' ? <circle cx="50" cy="50" r="46" fill="none" stroke="var(--color-tint)" strokeWidth="3" strokeDasharray="289" strokeDashoffset="289" strokeLinecap="round" style={{ animation: 'ring 1.6s linear forwards' }} transform="rotate(-90 50 50)" /> : null}
@@ -87,9 +87,9 @@ function FaceScan({ onDone, reason }: { onDone: (ok: boolean) => void; reason: s
         {phase === 'out' && <span className="text-danger">Bạn đã thử quá số lần cho phép. Thử lại sau.</span>}
       </p>
       {phase === 'out' ? (
-        <Button variant="secondary" block className="mt-4" onClick={() => onDone(false)}>Đóng</Button>
+        <Button variant="secondary" block className="mt-stack" onClick={() => onDone(false)}>Đóng</Button>
       ) : (
-        <Button block className="mt-4" loading={phase === 'scanning'} onClick={start}>{phase === 'failed' ? 'Thử lại' : 'Bắt đầu quét'}</Button>
+        <Button block className="mt-stack" loading={phase === 'scanning'} onClick={start}>{phase === 'failed' ? 'Thử lại' : 'Bắt đầu quét'}</Button>
       )}
     </div>
   )
@@ -117,14 +117,14 @@ export function AuthSheet({ open, onOpenChange, method, amount, onSuccess }: {
         <FaceScan reason={reason} onDone={(ok) => (ok ? onSuccess('face_match') : onOpenChange(false))} />
       ) : effective === 'device_biometric' ? (
         <div className="text-center">
-          <button type="button" onClick={() => setTimeout(() => onSuccess('device_biometric'), 500)} className="mx-auto my-6 flex size-24 items-center justify-center rounded-full bg-primary-soft text-primary-ink" aria-label="Xác thực bằng sinh trắc học thiết bị">
+          <button type="button" onClick={() => setTimeout(() => onSuccess('device_biometric'), 500)} className="mx-auto my-group flex size-24 items-center justify-center rounded-full bg-primary-soft text-primary-ink" aria-label="Xác thực bằng sinh trắc học thiết bị">
             <Fingerprint size={48} strokeWidth={1.5} aria-hidden />
           </button>
           <p className="text-[15px] text-muted">Chạm để dùng vân tay hoặc Face ID của điện thoại.</p>
-          <Button variant="ghost" className="mt-4" onClick={() => setUsePin(true)}>Dùng mã PIN</Button>
+          <Button variant="ghost" className="mt-stack" onClick={() => setUsePin(true)}>Dùng mã PIN</Button>
         </div>
       ) : locked ? (
-        <p role="alert" className="py-6 text-center text-danger">Mã PIN đang tạm khóa do nhập sai nhiều lần. Thử lại sau {fmtTime(sec.pinLockedUntil!)}.</p>
+        <p role="alert" className="py-group text-center text-danger">Mã PIN đang tạm khóa do nhập sai nhiều lần. Thử lại sau {fmtTime(sec.pinLockedUntil!)}.</p>
       ) : (
         <PinPad
           label="Mã PIN 6 số"

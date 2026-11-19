@@ -32,12 +32,12 @@ export default function HomePage() {
   const gate = gateOf(w)
 
   return (
-    <div className="lg:max-w-[610px]">
+    <div>
       <h1 tabIndex={-1} data-page-title className="sr-only">Trang chủ</h1>
-      {layout === 'web' ? <p className="large-title mb-5" aria-hidden>Chào {shortName(w.customer.name)}</p> : null}
+      {layout === 'web' ? <p className="large-title mb-group" aria-hidden>Chào {shortName(w.customer.name)}</p> : null}
       <BalanceSection loaded={loaded} />
       <ShortcutsRow guard={guard} />
-      {gate ? <section aria-label="Trạng thái ví" className="mt-8 lg:mt-12"><GateCallout gate={gate} /></section> : null}
+      {gate ? <section aria-label="Trạng thái ví" className="mt-section"><GateCallout gate={gate} /></section> : null}
       <BillsDue loaded={loaded} guard={guard} />
       <RecentRecipients loaded={loaded} guard={guard} />
       <RecentActivity loaded={loaded} guard={guard} />
@@ -60,7 +60,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
   const series = loaded ? balanceSeries(w, now()) : []
   const delta = series.length ? series[series.length - 1] - series[0] : 0
   return (
-    <section aria-label="Số dư" className="money-card rounded-[var(--radius-card)] p-5 lg:p-7">
+    <section aria-label="Số dư" className="money-card rounded-[var(--radius-card)] p-hero">
       <Guilloche />
       <div className="flex items-center gap-1">
         <h2 className="text-[15px] leading-[22px] font-semibold text-white/85">Số dư khả dụng</h2>
@@ -69,9 +69,9 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
         </IconButton>
       </div>
       {!loaded ? (
-        <Skeleton className={cx('mt-2 w-[260px] max-w-full bg-white/20', layout === 'web' ? 'h-[52px]' : 'h-11')} />
+        <Skeleton className={cx('mt-header w-[260px] max-w-full bg-white/20', layout === 'web' ? 'h-[52px]' : 'h-11')} />
       ) : (
-        <p className={cx(size, 'mt-2 whitespace-nowrap !leading-[1.08]')}>
+        <p className={cx(size, 'mt-header whitespace-nowrap !leading-[1.08]')}>
           {hidden ? (
             <><span aria-hidden>•••••••<Dong /></span><span className="sr-only">Số dư đang ẩn</span></>
           ) : (
@@ -80,14 +80,14 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
         </p>
       )}
       {loaded && held > 0 ? (
-        <Link to="/history?tab=dang-xu-ly" className="mt-3 inline-flex min-h-8 items-center gap-1.5 rounded-full bg-[var(--color-pending-soft-on-card)] px-3 text-[13px] font-semibold text-[color:var(--color-pending-on-card)] no-underline ring-1 ring-[#ffc46b]/30 ring-inset focus-visible:outline-white">
+        <Link to="/history?tab=dang-xu-ly" className="mt-stack inline-flex min-h-8 items-center gap-2 rounded-full bg-[var(--color-pending-soft-on-card)] px-3 text-[13px] font-semibold text-[color:var(--color-pending-on-card)] no-underline ring-1 ring-[#ffc46b]/30 ring-inset focus-visible:outline-white">
           <Clock size={15} strokeWidth={2.25} aria-hidden />
           Đang xử lý{' '}
           {hidden ? <><span aria-hidden>••••••</span><span className="sr-only">số tiền đang ẩn</span></> : <span className="tnum">{formatVnd(held)}</span>}
         </Link>
       ) : null}
       {loaded && !hidden && series.length > 1 ? (
-        <div className="mt-4">
+        <div className="mt-stack">
           <LineChart
             values={series}
             label={`Số dư 30 ngày qua, từ ${formatVnd(series[0])} đến ${formatVnd(series[series.length - 1])}`}
@@ -96,7 +96,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
             wide={layout === 'web'}
             inverse
           />
-          <p className="mt-2 flex justify-between text-[12px] text-white/80" aria-hidden><span>30 ngày trước</span><span>Hôm nay</span></p>
+          <p className="mt-header flex justify-between text-[12px] text-white/80" aria-hidden><span>30 ngày trước</span><span>Hôm nay</span></p>
         </div>
       ) : null}
     </section>
@@ -140,14 +140,15 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
   const layout = useLayout()
   const items = SHORTCUTS.filter((s) => layout === 'app' || !s.app)
   return (
-    <nav aria-label="Lối tắt" className="mt-4 card px-2 py-4">
-      <ul className={cx(layout === 'app' ? 'grid grid-cols-6' : 'flex justify-around gap-2')}>
+    <nav aria-label="Lối tắt" className="mt-stack card px-header py-header lg:py-stack">
+      {/* Equal columns: every shortcut gets the same width, so the gaps between icons and to the edges are one rhythm. */}
+      <ul className={cx('grid', layout === 'app' ? 'grid-cols-6' : 'grid-cols-5')}>
         {items.map((s) => (
           <li key={s.to} className="min-w-0">
             <Link
               to={s.to}
               onClick={s.ungated ? undefined : guardedClick(guard, s.to)}
-              className="group flex flex-col items-center gap-2 rounded-xl py-1 text-center text-ink no-underline focus-visible:outline-none lg:w-[84px]"
+              className="group flex flex-col items-center gap-header rounded-xl py-1 text-center text-ink no-underline focus-visible:outline-none"
             >
               <span className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-tint group-hover:bg-primary-soft group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-tint">
                 <s.icon size={24} strokeWidth={1.75} aria-hidden />
@@ -170,7 +171,7 @@ function BillsDue({ loaded, guard }: { loaded: boolean; guard: Guard }) {
   if (loaded && !due.length) return null
   return (
     <Section title="Hóa đơn sắp đến hạn" action={loaded ? <Link to="/bills" className="text-[15px] font-semibold text-tint">Xem tất cả</Link> : undefined}>
-      <Card className="px-4">
+      <Card className="px-inset">
         {!loaded ? <SkeletonRow /> : (
           <ul className="divide-y divide-line-soft">
             {due.slice(0, 3).map(({ bill, days, overdue }) => {
@@ -219,7 +220,8 @@ function RecentRecipients({ loaded, guard }: { loaded: boolean; guard: Guard }) 
   if (loaded && !list.length) return null
   return (
     <Section title="Người nhận gần đây" action={<Link to="/transfer" className="text-[15px] font-semibold text-tint">Chuyển tiền</Link>}>
-      <ul className="-mx-5 flex gap-2 overflow-x-auto px-3 pb-1 lg:mx-0 lg:overflow-visible lg:px-0">
+      {/* The 56px avatar sits centred in a 72px item, so the rail is pulled 8px left to put the first avatar on the title edge. */}
+      <ul className="-mx-inset flex gap-header overflow-x-auto pr-inset pb-1 pl-2 lg:mr-0 lg:-ml-2 lg:overflow-visible lg:pr-0 lg:pl-0">
         {!loaded
           ? Array.from({ length: 4 }, (_, i) => <li key={i} className="w-[72px] shrink-0"><Skeleton className="mx-auto size-14 rounded-full" /></li>)
           : list.map((r) => {
@@ -266,17 +268,17 @@ function RecentActivity({ loaded, guard }: { loaded: boolean; guard: Guard }) {
   const w = useWorld()
   const recent = [...w.transactions].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5)
   let body: ReactNode
-  if (!loaded) body = <div className="px-4">{Array.from({ length: 5 }, (_, i) => <SkeletonRow key={i} />)}</div>
+  if (!loaded) body = <div className="px-inset">{Array.from({ length: 5 }, (_, i) => <SkeletonRow key={i} />)}</div>
   else if (!recent.length)
     body = (
-      <p className="px-4 py-6 text-center text-muted">
+      <p className="px-inset py-group text-center text-muted">
         Chưa có giao dịch nào.{' '}
         <Link to="/topup" onClick={guardedClick(guard, '/topup')} className="font-semibold text-tint">Nạp tiền</Link>
       </p>
     )
   else
     body = (
-      <ul className="divide-y divide-line-soft px-4">
+      <ul className="divide-y divide-line-soft px-inset">
         {recent.map((t) => {
           const name = t.counterparty.kind === 'source' ? typeLabel(t.type) : counterpartyName(t.counterparty, w)
           const st = STATUS_LINE[t.status]
@@ -310,7 +312,7 @@ function SkeletonRow() {
   return (
     <div className="flex min-h-[64px] items-center gap-3 py-2" aria-hidden>
       <Skeleton className="size-10 rounded-full" />
-      <span className="flex-1 space-y-2"><Skeleton className="h-4 w-2/5" /><Skeleton className="h-3 w-1/4" /></span>
+      <span className="flex-1 space-y-header"><Skeleton className="h-4 w-2/5" /><Skeleton className="h-3 w-1/4" /></span>
       <Skeleton className="h-4 w-20" />
     </div>
   )

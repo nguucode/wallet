@@ -27,7 +27,7 @@ export function QrImage({ payload, size, label }: { payload: string; size: numbe
   }, [payload, size, retry])
   if (state.error && state.payload === payload)
     return (
-      <div role="alert" className="flex flex-col items-center justify-center gap-3 rounded-[12px] border border-line bg-surface p-4 text-center" style={{ width: size, height: size }}>
+      <div role="alert" className="flex flex-col items-center justify-center gap-3 rounded-[12px] border border-line bg-surface p-inset text-center" style={{ width: size, height: size }}>
         <p className="text-[15px]">Không tạo được mã. Thử lại.</p>
         <Button size="sm" variant="secondary" onClick={() => setRetry((r) => r + 1)}>Thử lại</Button>
       </div>
@@ -39,8 +39,8 @@ export function QrImage({ payload, size, label }: { payload: string; size: numbe
 
 export function MessageField({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
-    <div className="mt-6">
-      <div className="mb-1.5 flex items-baseline justify-between">
+    <div className="mt-group">
+      <div className="mb-header flex items-baseline justify-between">
         <label htmlFor="message" className="text-[13px] font-medium">Lời nhắn</label>
         <span className="text-[13px] text-muted tnum" aria-live="off">{value.length}/{config.messageMax}</span>
       </div>
@@ -59,12 +59,12 @@ export function MessageField({ value, onChange, placeholder }: { value: string; 
 export function LockedAmount({ amount, note, error }: { amount: number; note: string; error?: ReactNode }) {
   return (
     <div>
-      <p className="mb-2 text-[13px] font-medium">Số tiền</p>
+      <p className="mb-header text-[13px] font-medium">Số tiền</p>
       <p className={cx('flex items-center gap-2 border-b-2 pb-2', error ? 'border-danger' : 'border-line')}>
         <span className="amount-display tnum">{formatVnd(amount)}</span>
         <Lock size={18} strokeWidth={1.75} aria-hidden className="text-muted" />
       </p>
-      <p className="mt-2 text-[13px] text-muted">{note}</p>
+      <p className="mt-header text-[13px] text-muted">{note}</p>
       {error ? <p role="alert" className="mt-1 text-[13px] leading-5 text-danger">{error}</p> : null}
     </div>
   )
@@ -87,7 +87,7 @@ export function useWakeLock(on: boolean) {
 
 export function RecipientChip({ name, sub, note, onChange }: { name: string; sub: ReactNode; note?: string; onChange?: () => void }) {
   return (
-    <div className="mb-6 flex items-center gap-3 card p-3">
+    <div className="mb-group flex items-center gap-3 card p-inset">
       <Avatar name={name} />
       <div className="min-w-0 flex-1">
         <p className="font-semibold break-words">{name}</p>
@@ -102,8 +102,8 @@ export function RecipientChip({ name, sub, note, onChange }: { name: string; sub
 export function AuthNote({ type, amount }: { type: Parameters<typeof authLine>[0]; amount: number }) {
   const face = authFor(type, amount) === 'face_match'
   return (
-    <p className="mt-4 flex items-start gap-2 rounded-[12px] bg-surface-2 px-4 py-3 text-[15px]">
-      {face ? <ScanFace size={18} strokeWidth={1.75} aria-hidden className="mt-0.5 shrink-0" /> : <Lock size={18} strokeWidth={1.75} aria-hidden className="mt-0.5 shrink-0" />}
+    <p className="mt-stack flex items-start gap-2 rounded-[12px] bg-surface-2 px-4 py-3 text-[15px]">
+      {face ? <ScanFace size={18} strokeWidth={1.75} aria-hidden className="mt-1 shrink-0" /> : <Lock size={18} strokeWidth={1.75} aria-hidden className="mt-1 shrink-0" />}
       {authLine(type, amount)}
     </p>
   )

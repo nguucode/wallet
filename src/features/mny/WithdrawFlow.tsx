@@ -66,12 +66,12 @@ export default function WithdrawFlow() {
             ['Chủ tài khoản', w.customer.name.toUpperCase()],
           ]} />
           {/* Total separated by a 1px rule and bold (US-MNY-006 design notes). */}
-          <div className="mt-3 flex items-baseline justify-between gap-4 border-t border-line px-4 pt-3">
+          <div className="mt-stack flex items-baseline justify-between gap-4 border-t border-line px-4 pt-3">
             <span className="font-bold">Tổng tiền trừ từ ví</span>
             <Money amount={draft.amount + f} className="font-bold" />
           </div>
-          <p className="mt-4 text-[15px] text-muted">{authLine('withdraw', draft.amount)}</p>
-          {commit.busy ? <p role="status" className="mt-2 text-[15px] text-muted">Đang gửi yêu cầu…</p> : null}
+          <p className="mt-stack text-[15px] text-muted">{authLine('withdraw', draft.amount)}</p>
+          {commit.busy ? <p role="status" className="mt-header text-[15px] text-muted">Đang gửi yêu cầu…</p> : null}
         </FlowFrame>
         {commit.sheet}
         {dialog}
@@ -115,7 +115,7 @@ function WithdrawResult({ t }: { t: Transaction }) {
       <ResultBlock tone="pending" heading="Đang xử lý" amount={amount}>
         <p>Ngân hàng đang xử lý, dự kiến xong trước {fmtTime(pendingEta(t))}.</p>
         <p>Nếu không thành công, tiền và phí sẽ hoàn về ví.</p>
-        <ol aria-label="Tiến trình" className="mt-4 flex flex-col gap-2 text-left text-ink">
+        <ol aria-label="Tiến trình" className="mt-stack flex flex-col gap-2 text-left text-ink">
           {['Đã gửi yêu cầu', 'Ngân hàng đang xử lý', 'Tiền về tài khoản'].map((l, i) => (
             <li key={l} className="flex items-center gap-3">
               <span aria-hidden className={cx('size-3 rounded-full', i === 0 ? 'bg-success' : i === 1 ? 'bg-pending' : 'border-2 border-line')} />

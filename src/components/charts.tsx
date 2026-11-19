@@ -69,7 +69,7 @@ export function BarsWithLimit({ bars, limit, limitLabel, label }: { bars: { key:
         <div aria-hidden className="absolute inset-x-0 border-t-2 border-ink" style={{ top: y(limit) }}>
           <span className="absolute right-0 -translate-y-1/2 rounded-l-[10px] rounded-r-[4px] bg-ink px-2 py-0.5 text-[12px] font-bold text-on-ink tnum">{limitLabel}</span>
         </div>
-        <ul className="absolute inset-x-0 top-0 flex items-end justify-between gap-1.5" style={{ height: H }}>
+        <ul className="absolute inset-x-0 top-0 flex items-end justify-between gap-2" style={{ height: H }}>
           {bars.map((b) => {
             const tone = b.value > limit ? 'bg-chart-over' : b.current ? 'bg-chart-up' : 'bg-chart-up/70'
             return (
@@ -79,7 +79,7 @@ export function BarsWithLimit({ bars, limit, limitLabel, label }: { bars: { key:
             )
           })}
         </ul>
-        <ul aria-hidden className="absolute inset-x-0 bottom-0 flex justify-between gap-1.5">
+        <ul aria-hidden className="absolute inset-x-0 bottom-0 flex justify-between gap-2">
           {bars.map((b) => <li key={b.key} className={cx('flex-1 text-center text-[11px] leading-4', b.current ? 'font-bold text-ink' : 'text-muted')}>{b.short}</li>)}
         </ul>
       </div>

@@ -44,8 +44,8 @@ function Flow() {
   if (flow.step === 'biller' || !biller)
     return (
       <FlowFrame title="Chọn nhà cung cấp" onClose={close}>
-        <h2 className="label-caps mb-1.5 px-4">Điện</h2>
-        <ul className="card divide-y divide-line-soft px-4">
+        <h2 className="label-caps mb-header px-4">Điện</h2>
+        <ul className="card divide-y divide-line-soft px-inset">
           {billers.map((b) => (
             <li key={b.id}>
               <Row
@@ -76,13 +76,13 @@ function Flow() {
             <Button block variant="secondary" onClick={() => finish(false)}>Chỉ lưu</Button>
           </>
         ) : <Button block onClick={() => finish(false)}>Lưu hóa đơn</Button>}>
-        <div className="card p-4">
+        <div className="card p-inset">
           <p className="font-semibold">{biller.name}</p>
           <p className="text-[13px] text-muted tnum">{draft.code}</p>
           {draft.found ? (
             <>
-              <p className="amount-display mt-4">{formatVnd(draft.found.amount)}</p>
-              <div className="mt-4">
+              <p className="amount-display mt-stack">{formatVnd(draft.found.amount)}</p>
+              <div className="mt-stack">
                 <ConfirmRows rows={[
                   ['Chủ hộ', draft.found.holder],
                   ['Địa chỉ', draft.found.address],
@@ -91,7 +91,7 @@ function Flow() {
                 ]} />
               </div>
             </>
-          ) : <p role="status" className="mt-4">Không có hóa đơn cần thanh toán kỳ này</p>}
+          ) : <p role="status" className="mt-stack">Không có hóa đơn cần thanh toán kỳ này</p>}
         </div>
         {dialog}
       </FlowFrame>
@@ -118,7 +118,7 @@ function Flow() {
     <FlowFrame title="Nhập mã khách hàng" onBack={() => go('biller')} onClose={close}
       footer={<Button block loading={busy} onClick={lookup}>{busy ? 'Đang tra cứu…' : 'Tra cứu'}</Button>}>
       <form onSubmit={(e) => { e.preventDefault(); void lookup() }}>
-        <p className="mb-4 flex items-center gap-2 font-medium">
+        <p className="mb-stack flex items-center gap-2 font-medium">
           <BankMark short={monogram(biller.name)} size={32} />
           {biller.name}
         </p>
@@ -130,8 +130,8 @@ function Flow() {
           />
         </Field>
       </form>
-      <div className="rounded-[16px] bg-surface-2 p-4">
-        <p className="mb-2 flex items-center gap-2 text-[13px] font-semibold">Mã mẫu <SampleBadge /></p>
+      <div className="rounded-[16px] bg-surface-2 p-inset">
+        <p className="mb-header flex items-center gap-2 text-[13px] font-semibold">Mã mẫu <SampleBadge /></p>
         <ul className="text-[13px]">
           {SAMPLES.map((s) => (
             <li key={s.code}>

@@ -10,10 +10,10 @@ import { formatVnd } from '@/domain/money'
 
 function Group({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
   return (
-    <fieldset className="border-t border-line-soft pt-4 pb-4 first:border-t-0 first:pt-0">
+    <fieldset className="border-t border-line-soft pt-stack pb-stack first:border-t-0 first:pt-0">
       <legend className="text-[13px] font-semibold">{title}</legend>
-      {note ? <p className="mt-0.5 text-[12px] leading-4 text-muted">{note}</p> : null}
-      <div className="mt-2 flex flex-wrap gap-2">{children}</div>
+      {note ? <p className="mt-1 text-[12px] leading-4 text-muted">{note}</p> : null}
+      <div className="mt-header flex flex-wrap gap-2">{children}</div>
     </fieldset>
   )
 }
@@ -31,7 +31,7 @@ function Act({ onClick, children, disabled }: { onClick: () => void; children: R
   return (
     <span className="inline-flex flex-col">
       <button type="button" onClick={onClick} disabled={!!disabled} className="h-8 rounded-full bg-surface-2 px-3 text-[13px] font-medium text-primary-ink hover:bg-primary-soft disabled:bg-transparent disabled:text-muted disabled:ring-1 disabled:ring-line">{children}</button>
-      {disabled ? <span className="mt-0.5 px-1 text-[12px] leading-4 text-muted">{disabled}</span> : null}
+      {disabled ? <span className="mt-1 px-1 text-[12px] leading-4 text-muted">{disabled}</span> : null}
     </span>
   )
 }
@@ -45,7 +45,7 @@ export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => vo
   const pending = w.transactions.filter((t) => t.status === 'pending').length
   return (
     <div className="text-[15px]">
-      <p className="mb-4 text-[13px] leading-[18px] text-muted">Công cụ cho người xem demo. Mọi thao tác ở đây là mô phỏng. Mã PIN và OTP mẫu: <b className="tnum text-ink">123456</b>.</p>
+      <p className="mb-stack text-[13px] leading-[18px] text-muted">Công cụ cho người xem demo. Mọi thao tác ở đây là mô phỏng. Mã PIN và OTP mẫu: <b className="tnum text-ink">123456</b>.</p>
       <Group title="Kịch bản" note={SCENARIOS.find((x) => x.id === s.scenario)?.hint}>
         <label className="sr-only" htmlFor="demo-scenario">Kịch bản</label>
         <select id="demo-scenario" value={s.scenario} onChange={(e) => { setScenario(e.target.value as Scenario); say('Đã chuyển kịch bản') }} className="h-10 flex-1 rounded-[12px] border border-line bg-surface px-3">

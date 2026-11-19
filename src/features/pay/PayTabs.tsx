@@ -12,7 +12,7 @@ export function PayTabs({ active }: { active: 'code' | 'scan' }) {
     </Link>
   )
   return (
-    <nav aria-label="Thanh toán" className="mb-6 flex gap-2">
+    <nav aria-label="Thanh toán" className="mb-group flex gap-2">
       {tab('code', '/pay/code', 'Mã thanh toán')}
       {tab('scan', '/pay/scan', 'Quét mã')}
     </nav>

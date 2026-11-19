@@ -27,7 +27,7 @@ export default function TransferChooser() {
   const name = (r: Recent) => (r.kind === 'wallet' ? r.name : r.holder)
 
   const options = (
-    <Card className="px-4">
+    <Card className="px-inset">
       <ul className="divide-y divide-line-soft">
         {OPTIONS.map(({ to, icon: Icon, title, sub }) => (
           <li key={to}>
@@ -40,7 +40,7 @@ export default function TransferChooser() {
   const empty = <p className="text-muted">Chưa có người nhận gần đây.</p>
 
   const recentWeb = recent.length ? (
-    <Card className="px-4">
+    <Card className="px-inset">
       <ul className="divide-y divide-line-soft">
         {recent.map((r) => (
           <li key={r.key}>
@@ -56,12 +56,13 @@ export default function TransferChooser() {
     </Card>
   ) : empty
 
+  // Same rail spec as Home's recipients: 72px items, 56px avatars, 8px gap, first avatar on the title edge.
   const recentApp = recent.length ? (
-    <ul className="-mx-5 flex gap-3 overflow-x-auto px-5 pb-1">
+    <ul className="-mx-inset flex gap-header overflow-x-auto pr-inset pb-1 pl-2">
       {recent.map((r) => (
-        <li key={r.key} className="w-[76px] shrink-0">
-          <Link to={recentLink(r, w.bankRecipients)} title={name(r)} className="flex flex-col items-center gap-1.5 rounded-xl py-1 text-center text-ink no-underline hover:bg-surface-2">
-            {r.kind === 'wallet' ? <Avatar name={r.name} size={48} /> : <BankMark short={bankById(r.bankId).short} size={48} />}
+        <li key={r.key} className="w-[72px] shrink-0">
+          <Link to={recentLink(r, w.bankRecipients)} title={name(r)} className="flex flex-col items-center gap-header rounded-xl py-1 text-center text-ink no-underline hover:bg-surface-2">
+            {r.kind === 'wallet' ? <Avatar name={r.name} size={56} /> : <BankMark short={bankById(r.bankId).short} size={56} />}
             <span className="line-clamp-2 text-[12px] leading-4">{name(r)}</span>
           </Link>
         </li>
@@ -80,7 +81,7 @@ export default function TransferChooser() {
           </>
         ) : (
           <>
-            <div className="mt-2">{options}</div>
+            <div className="mt-header">{options}</div>
             <Section title="Gần đây">{recentApp}</Section>
           </>
         )}

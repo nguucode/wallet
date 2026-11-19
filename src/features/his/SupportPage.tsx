@@ -32,10 +32,10 @@ export default function SupportPage() {
     <div>
       <ScreenTitle>Trợ giúp</ScreenTitle>
 
-      <Card className="p-5">
+      <Card className="p-inset">
         <h2 className="text-[17px] leading-[26px] font-bold">Có vấn đề với một giao dịch?</h2>
         <p className="mt-1 text-muted">Mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ.</p>
-        <ButtonLink to="/history" block={layout === 'app'} className="mt-4">Mở Lịch sử</ButtonLink>
+        <ButtonLink to="/history" block={layout === 'app'} className="mt-stack">Mở Lịch sử</ButtonLink>
       </Card>
 
       <Section title="Câu hỏi thường gặp">
@@ -63,7 +63,7 @@ export default function SupportPage() {
                             <ChevronDown size={18} strokeWidth={1.75} aria-hidden className={cx('shrink-0 transition-transform duration-150', qOpen && 'rotate-180')} />
                           </button>
                         </h4>
-                        <div id={`a-${q.slug}`} hidden={!qOpen} className="space-y-2 pr-4 pb-4 pl-6 text-[15px] leading-[20px]">
+                        <div id={`a-${q.slug}`} hidden={!qOpen} className="space-y-header pr-4 pb-stack pl-6 text-[15px] leading-[20px]">
                           {q.answer.map((p) => <p key={p}>{p}</p>)}
                           {q.links?.length ? (
                             <p className="flex flex-wrap gap-x-4">
@@ -82,9 +82,9 @@ export default function SupportPage() {
       </Section>
 
       <Section title="Không tìm thấy câu trả lời?">
-        <Card className="p-5">
+        <Card className="p-inset">
           <p className="text-muted">Gửi yêu cầu cho chúng tôi. Thời gian xử lý tối đa 30 ngày làm việc.</p>
-          <ButtonLink to="/support/new" variant="secondary" block={layout === 'app'} className="mt-4">Gửi yêu cầu hỗ trợ</ButtonLink>
+          <ButtonLink to="/support/new" variant="secondary" block={layout === 'app'} className="mt-stack">Gửi yêu cầu hỗ trợ</ButtonLink>
         </Card>
       </Section>
     </div>

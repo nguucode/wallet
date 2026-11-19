@@ -26,8 +26,8 @@ export function SourcePicker({ label, value, onChange }: { label: string; value?
   const current = w.sources.find((s) => s.id === value) ?? w.sources[0]
   if (!current) return null
   return (
-    <div className="mb-6">
-      <p id="source-label" className="mb-1.5 text-[13px] font-medium">{label}</p>
+    <div className="mb-group">
+      <p id="source-label" className="mb-header text-[13px] font-medium">{label}</p>
       <button type="button" aria-describedby="source-label" onClick={() => setOpen(true)} className="flex min-h-[64px] w-full items-center gap-3 rounded-[16px] bg-surface-2 px-4 py-2 hover:bg-primary-soft">
         <span id="source-current" className="contents"><SourceLine s={current} /></span>
         <ChevronDown size={20} strokeWidth={1.75} aria-hidden className="text-muted" />
@@ -61,14 +61,14 @@ export function ResultBlock({ tone, heading, amount, children, actions }: {
   const Icon = tone === 'pending' ? Clock : tone === 'failed' ? X : Check
   const cls = tone === 'success' ? 'bg-success-soft text-success' : tone === 'pending' ? 'bg-pending-soft text-pending' : 'bg-danger-soft text-danger'
   return (
-    <div className="flex flex-col items-center pt-6 text-center">
+    <div className="flex flex-col items-center pt-group text-center">
       <span aria-hidden className={cx('inline-flex size-16 items-center justify-center rounded-full animate-[fade-in_200ms_ease-out]', cls)}><Icon size={32} strokeWidth={2.25} /></span>
       <div role="status" aria-live="polite" className="w-full">
-        <p className="mt-4 text-[17px] leading-[26px] font-bold">{heading}</p>
-        {amount ? <p className="mt-2 break-words">{amount}</p> : null}
-        {children ? <div className="mx-auto mt-3 flex max-w-[44ch] flex-col gap-1 text-muted">{children}</div> : null}
+        <p className="mt-stack text-[17px] leading-[26px] font-bold">{heading}</p>
+        {amount ? <p className="mt-header break-words">{amount}</p> : null}
+        {children ? <div className="mx-auto mt-stack flex max-w-[44ch] flex-col gap-1 text-muted">{children}</div> : null}
       </div>
-      {actions ? <div className="mt-8 flex w-full flex-col gap-2">{actions}</div> : null}
+      {actions ? <div className="mt-section flex w-full flex-col gap-2">{actions}</div> : null}
     </div>
   )
 }

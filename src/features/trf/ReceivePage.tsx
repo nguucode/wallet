@@ -96,26 +96,26 @@ function Receive() {
 
   return (
     <>
-      <Card className="flex flex-col items-center px-5 py-6 text-center">
+      <Card className="flex flex-col items-center px-inset py-group text-center">
         <Segmented label="Loại mã" value={kind} onChange={setKind} options={[{ value: 'wallet', label: 'Mã ví' }, { value: 'vietqr', label: 'VietQR' }]} />
-        <h2 className="mt-5 text-[13px] font-medium text-muted">Mã nhận tiền</h2>
-        <div className="mt-3 card p-2">
+        <h2 className="mt-group text-[13px] font-medium text-muted">Mã nhận tiền</h2>
+        <div className="mt-stack card p-2">
           <QrImage payload={payload} size={size} label={`Mã nhận tiền của ${w.customer.name}${amount ? `, số tiền ${formatVnd(amount)}` : ''}`} />
         </div>
-        {kind === 'vietqr' ? <p className="mt-3 text-[13px] text-muted">Quét bằng app ngân hàng bất kỳ</p> : null}
-        {amount ? <p className="mt-3 amount-display tnum">{formatVnd(amount)}</p> : null}
-        <p className="mt-3 text-[16px] font-bold break-words">{w.customer.name}</p>
+        {kind === 'vietqr' ? <p className="mt-stack text-[13px] text-muted">Quét bằng app ngân hàng bất kỳ</p> : null}
+        {amount ? <p className="mt-stack amount-display tnum">{formatVnd(amount)}</p> : null}
+        <p className="mt-stack text-[16px] font-bold break-words">{w.customer.name}</p>
         <p className="text-[15px] text-muted tnum">{formatPhone(phone)}</p>
 
         {layout === 'web' ? (
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <div className="mt-group flex flex-wrap justify-center gap-2">
             {actions.map((a) => <Button key={a.label} variant="secondary" onClick={a.onClick}>{a.icon}{a.label}</Button>)}
           </div>
         ) : (
-          <ul className="mt-6 grid w-full grid-cols-3 gap-2">
+          <ul className="mt-group grid w-full grid-cols-3 gap-2">
             {actions.map((a) => (
               <li key={a.label}>
-                <button type="button" onClick={a.onClick} className="flex w-full flex-col items-center gap-1.5 rounded-xl py-1 hover:bg-surface-2">
+                <button type="button" onClick={a.onClick} className="flex w-full flex-col items-center gap-2 rounded-xl py-1 hover:bg-surface-2">
                   <Disc>{a.icon}</Disc>
                   <span className="text-[13px] leading-[18px]">{a.label}</span>
                 </button>
@@ -124,11 +124,11 @@ function Receive() {
           </ul>
         )}
       </Card>
-      <p role="status" aria-live="polite" className="mt-4 min-h-6 text-center text-[15px]">{toast}</p>
+      <p role="status" aria-live="polite" className="mt-stack min-h-6 text-center text-[15px]">{toast}</p>
 
       <Sheet open={sheet} onOpenChange={setSheet} title="Thêm số tiền" description="Người quét mã sẽ thấy sẵn số tiền này.">
         <AmountInput value={entry} onChange={setEntry} quick={[50_000, 100_000, 200_000, 500_000]} />
-        <Button block className="mt-6" disabled={!entry} onClick={() => { setAmount(entry); setSheet(false) }}>Xong</Button>
+        <Button block className="mt-group" disabled={!entry} onClick={() => { setAmount(entry); setSheet(false) }}>Xong</Button>
       </Sheet>
     </>
   )

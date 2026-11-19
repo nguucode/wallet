@@ -28,7 +28,7 @@ export function VneidStep() {
   const decide = (ok: boolean) => setPhase(ok ? 'approved' : 'declined')
   const sim = (
     <div className="flex flex-col gap-2">
-      <p className="mb-2 text-[15px] leading-5">Wallet yêu cầu: họ và tên, số CCCD, ngày sinh, ngày hết hạn, ảnh chân dung.</p>
+      <p className="mb-header text-[15px] leading-5">Wallet yêu cầu: họ và tên, số CCCD, ngày sinh, ngày hết hạn, ảnh chân dung.</p>
       <Button variant="ink" block onClick={() => decide(true)}>Đồng ý chia sẻ</Button>
       <Button variant="secondary" block onClick={() => decide(false)}>Từ chối</Button>
     </div>
@@ -57,18 +57,18 @@ export function VneidStep() {
           {left > 0 ? (
             <>
               {qr ? <img src={qr} alt="Mã QR để quét bằng ứng dụng VNeID" width={200} height={200} className="size-[200px]" /> : <span className="size-[200px] rounded-[12px] bg-surface-2" />}
-              <p className="mt-3 font-medium">Quét mã bằng ứng dụng VNeID trên điện thoại</p>
+              <p className="mt-stack font-medium">Quét mã bằng ứng dụng VNeID trên điện thoại</p>
               <p className="text-[15px] text-muted">Mã hết hạn sau <span className="tnum">{mmss(left)}</span></p>
             </>
           ) : (
-            <div role="status" className="py-6">
+            <div role="status" className="py-group">
               <p className="font-semibold">Mã đã hết hạn</p>
-              <Button className="mt-3" onClick={() => setIssuedAt(now())}>Tạo mã mới</Button>
+              <Button className="mt-stack" onClick={() => setIssuedAt(now())}>Tạo mã mới</Button>
             </div>
           )}
         </div>
         {left > 0 ? (
-          <section aria-label="Mô phỏng ứng dụng VNeID" className="mt-6 rounded-[16px] border border-dashed border-line bg-surface-2 p-4">
+          <section aria-label="Mô phỏng ứng dụng VNeID" className="mt-group rounded-[16px] border border-dashed border-line bg-surface-2 p-inset">
             <SimLabel>Mô phỏng ứng dụng VNeID</SimLabel>
             {sim}
           </section>
@@ -80,7 +80,7 @@ export function VneidStep() {
     <StepShell title="Xác thực qua VNeID" footer={phase === 'intro' ? <Button block onClick={() => setPhase('waiting')}>Mở VNeID</Button> : <Button variant="secondary" block onClick={() => setPhase('intro')}>Hủy</Button>}>
       <p>Bạn sẽ được chuyển sang ứng dụng VNeID để đồng ý chia sẻ thông tin định danh với Wallet. Cần tài khoản định danh điện tử mức 2.</p>
       {phase === 'waiting' ? (
-        <p role="status" className="mt-6 flex items-center gap-2 text-muted">
+        <p role="status" className="mt-group flex items-center gap-2 text-muted">
           <span aria-hidden className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" />
           Đang chờ xác nhận từ VNeID…
         </p>

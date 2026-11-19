@@ -65,8 +65,8 @@ export function Card({ className, children, as: As = 'div' }: { className?: stri
 
 export function Section({ title, action, children, className }: { title: string; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={cx('mt-8 lg:mt-10', className)} aria-label={title}>
-      <div className="mb-2 flex items-baseline justify-between gap-4 px-1">
+    <section className={cx('mt-section', className)} aria-label={title}>
+      <div className="mb-header flex items-baseline justify-between gap-4">
         <h2 className="title-3">{title}</h2>
         <span className="text-[15px] text-tint [&_a]:text-tint [&_a]:no-underline [&_a:hover]:underline [&_button]:text-tint">{action}</span>
       </div>
@@ -77,7 +77,7 @@ export function Section({ title, action, children, className }: { title: string;
 
 export function PageTitle({ children, description }: { children: ReactNode; description?: ReactNode }) {
   return (
-    <div className="mb-6">
+    <div className="mb-group">
       <h1 tabIndex={-1} data-page-title className="large-title outline-none">{children}</h1>
       {description ? <p className="mt-1 text-muted">{description}</p> : null}
     </div>
@@ -193,11 +193,11 @@ export function Skeleton({ className }: { className?: string }) {
 
 export function EmptyState({ icon, title, body, action }: { icon: ReactNode; title: string; body?: ReactNode; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center px-6 py-12 text-center">
+    <div className="flex flex-col items-center px-inset py-12 text-center">
       <Disc>{icon}</Disc>
-      <p className="mt-4 font-semibold">{title}</p>
+      <p className="mt-stack font-semibold">{title}</p>
       {body ? <p className="mt-1 max-w-[42ch] text-muted">{body}</p> : null}
-      {action ? <div className="mt-5">{action}</div> : null}
+      {action ? <div className="mt-group">{action}</div> : null}
     </div>
   )
 }
@@ -205,10 +205,10 @@ export function EmptyState({ icon, title, body, action }: { icon: ReactNode; tit
 export function Callout({ tone = 'neutral', title, children, action }: { tone?: 'neutral' | 'pending' | 'danger' | 'primary'; title: ReactNode; children?: ReactNode; action?: ReactNode }) {
   const t = { neutral: 'bg-surface', pending: 'bg-pending-soft', danger: 'bg-danger-soft', primary: 'bg-primary-soft' }[tone]
   return (
-    <div role={tone === 'danger' ? 'alert' : 'status'} className={cx('rounded-[var(--radius-card)] p-5', t)}>
+    <div role={tone === 'danger' ? 'alert' : 'status'} className={cx('rounded-[var(--radius-card)] p-inset', t)}>
       <p className="font-semibold">{title}</p>
       {children ? <div className="mt-1 text-[15px] leading-[20px]">{children}</div> : null}
-      {action ? <div className="mt-3">{action}</div> : null}
+      {action ? <div className="mt-stack">{action}</div> : null}
     </div>
   )
 }
@@ -217,10 +217,10 @@ export function Callout({ tone = 'neutral', title, children, action }: { tone?: 
 
 export function Field({ label, hint, error, children, htmlFor }: { label: string; hint?: ReactNode; error?: ReactNode; children: ReactNode; htmlFor?: string }) {
   return (
-    <div className="mb-5">
-      <label htmlFor={htmlFor} className="mb-1.5 block text-[13px] leading-[18px] font-medium">{label}</label>
+    <div className="mb-group">
+      <label htmlFor={htmlFor} className="mb-header block text-[13px] leading-[18px] font-medium">{label}</label>
       {children}
-      {error ? <p role="alert" className="mt-1.5 text-[13px] leading-[18px] text-danger">{error}</p> : hint ? <p className="mt-1.5 text-[13px] leading-[18px] text-muted">{hint}</p> : null}
+      {error ? <p role="alert" className="mt-header text-[13px] leading-[18px] text-danger">{error}</p> : hint ? <p className="mt-header text-[13px] leading-[18px] text-muted">{hint}</p> : null}
     </div>
   )
 }
@@ -248,7 +248,7 @@ export function Segmented<T extends string>({ value, options, onChange, label }:
           className={cx('h-9 shrink-0 rounded-full px-4 text-[15px] font-semibold whitespace-nowrap transition-colors', o.value === value ? 'bg-primary text-white' : 'bg-surface text-ink hover:bg-surface-2')}
         >
           {o.label}
-          {o.count !== undefined ? <span className={cx('ml-1.5 tnum', o.value === value ? 'text-white/80' : 'text-muted')}>{o.count}</span> : null}
+          {o.count !== undefined ? <span className={cx('ml-2 tnum', o.value === value ? 'text-white/80' : 'text-muted')}>{o.count}</span> : null}
         </button>
       ))}
     </div>
@@ -278,8 +278,8 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
               : 'top-1/2 left-1/2 max-h-[88vh] w-[440px] -translate-x-1/2 -translate-y-1/2 rounded-[24px] animate-[fade-in_150ms_ease-out]',
           )}
         >
-          {layout === 'app' ? <div aria-hidden className="mx-auto mt-2 h-[5px] w-9 shrink-0 rounded-full bg-line" /> : null}
-          <div className={cx('flex shrink-0 items-start justify-between gap-4 pb-4', layout === 'app' ? 'px-5 pt-3' : 'px-6 pt-6')}>
+          {layout === 'app' ? <div aria-hidden className="mx-auto mt-header h-[5px] w-9 shrink-0 rounded-full bg-line" /> : null}
+          <div className={cx('flex shrink-0 items-start justify-between gap-4 px-inset pb-stack', layout === 'app' ? 'pt-3' : 'pt-group')}>
             <div className="min-w-0">
               <Dialog.Title className="title-3">{title}</Dialog.Title>
               {description ? <Dialog.Description className="mt-1 text-muted">{description}</Dialog.Description> : null}
@@ -291,7 +291,7 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
               </Dialog.Close>
             ) : null}
           </div>
-          <div className={cx('sheet-scroll min-h-0 overflow-y-auto overscroll-contain', layout === 'app' ? 'mr-1 px-5 pb-[max(20px,env(safe-area-inset-bottom))]' : 'mr-1.5 mb-3 px-6 pb-3')}>
+          <div className={cx('sheet-scroll min-h-0 overflow-y-auto overscroll-contain', layout === 'app' ? 'mr-1 px-inset pb-[max(20px,env(safe-area-inset-bottom))]' : 'mr-2 mb-stack px-inset pb-stack')}>
             {children}
           </div>
         </Dialog.Content>
@@ -305,7 +305,7 @@ export function Confirm({ open, onOpenChange, title, body, confirmLabel, cancelL
 }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title={title} description={body}>
-      <div className="mt-2 flex flex-col gap-2">
+      <div className="mt-header flex flex-col gap-2">
         <Button variant={danger ? 'ink' : 'primary'} block onClick={() => { onConfirm(); onOpenChange(false) }}>{confirmLabel}</Button>
         <Button variant="secondary" block onClick={() => onOpenChange(false)}>{cancelLabel}</Button>
       </div>
@@ -317,7 +317,7 @@ export function Confirm({ open, onOpenChange, title, body, confirmLabel, cancelL
 export function ScreenTitle({ children, description }: { children: ReactNode; description?: ReactNode }) {
   const layout = useLayout()
   return (
-    <div className={layout === 'web' ? 'mb-6' : 'mb-2'}>
+    <div className={layout === 'web' ? 'mb-group' : 'mb-stack'}>
       <h1 tabIndex={-1} data-page-title className={cx('large-title outline-none', layout === 'app' && 'sr-only')}>{children}</h1>
       {description ? <p className="mt-1 text-muted">{description}</p> : null}
     </div>

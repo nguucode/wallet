@@ -56,7 +56,7 @@ function RowAmount({ t }: { t: Transaction }) {
 function RowStatus({ t, web }: { t: Transaction; web?: boolean }) {
   if (t.status === 'success') return web ? <span className="text-[13px] text-muted">{STATUS_LABEL.success}</span> : null
   return (
-    <span className="flex flex-col items-start gap-0.5">
+    <span className="flex flex-col items-start gap-1">
       <StatusPill status={t.status} />
       {t.status === 'pending' ? <span className="text-[12px] leading-4 text-pending">{truthLine(t).replace('Đang xử lý · ', '')}</span> : null}
     </span>
@@ -68,21 +68,21 @@ function Filters({ f, set, months, onGround }: { f: HistoryFilter; set: (k: keyo
   const sel = cx('h-11 w-full appearance-none rounded-[var(--radius-input)] pr-9', onGround ? 'bg-surface' : 'bg-surface-2') + ' pl-3 text-[15px] font-normal text-ink'
   return (
     <>
-      <label className="flex flex-col gap-1 text-[13px] font-semibold">
+      <label className="flex flex-col gap-header text-[13px] font-semibold">
         Tháng
         <span className="relative block"><select className={sel} value={f.month ?? ''} onChange={(e) => set('month', e.target.value)}>
           <option value="">Tất cả các tháng</option>
           {months.map((m) => <option key={m} value={m}>{monthLabel(m)}</option>)}
         </select><ChevronDown size={16} strokeWidth={2} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
       </label>
-      <label className="flex flex-col gap-1 text-[13px] font-semibold">
+      <label className="flex flex-col gap-header text-[13px] font-semibold">
         Loại giao dịch
         <span className="relative block"><select className={sel} value={f.type ?? ''} onChange={(e) => set('type', e.target.value)}>
           <option value="">Tất cả loại</option>
           {TYPES.map((t) => <option key={t} value={t}>{typeLabel(t)}</option>)}
         </select><ChevronDown size={16} strokeWidth={2} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
       </label>
-      <label className="flex flex-col gap-1 text-[13px] font-semibold">
+      <label className="flex flex-col gap-header text-[13px] font-semibold">
         Trạng thái
         <span className="relative block"><select className={sel} value={f.status ?? ''} onChange={(e) => set('status', e.target.value)}>
           <option value="">Tất cả trạng thái</option>
@@ -107,15 +107,15 @@ function take(groups: Group[], count: number) {
 
 function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w: World; onOpen: (id: string) => void }) {
   return (
-    <div className="card overflow-hidden px-2 pb-2">
+    <div className="card overflow-hidden pb-header">
     <table className="w-full border-collapse text-left">
       <caption className="sr-only">Lịch sử giao dịch, mới nhất trước, nhóm theo tháng</caption>
       <thead>
         <tr className="border-b border-line-soft text-[13px] text-muted">
-          <th scope="col" className="w-[120px] py-2 pr-4 font-medium">Ngày</th>
-          <th scope="col" className="py-2 pr-4 font-medium">Giao dịch</th>
-          <th scope="col" className="w-[170px] py-2 pr-4 font-medium">Trạng thái</th>
-          <th scope="col" className="w-[160px] py-2 text-right font-medium">Số tiền</th>
+          <th scope="col" className="w-[120px] py-stack pr-group pl-inset font-medium">Ngày</th>
+          <th scope="col" className="py-stack pr-group font-medium">Giao dịch</th>
+          <th scope="col" className="w-[180px] py-stack pr-group font-medium">Trạng thái</th>
+          <th scope="col" className="w-[136px] py-stack pr-inset text-right font-medium">Số tiền</th>
         </tr>
       </thead>
       {groups.map((g) => {
@@ -123,7 +123,7 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
         return (
           <tbody key={g.key}>
             <tr>
-              <th scope="colgroup" colSpan={4} className="bg-surface px-3 pt-5 pb-2 text-[13px] font-semibold text-muted">
+              <th scope="colgroup" colSpan={4} className="bg-surface px-inset pt-group pb-header text-[13px] font-semibold text-muted [tbody:first-of-type_&]:pt-stack">
                 {g.label} · Vào <span className="tnum text-success">{formatVnd(tot.in, { sign: 'in' })}</span> · Ra <span className="tnum">{formatVnd(tot.out, { sign: 'out' })}</span>
               </th>
             </tr>
@@ -131,11 +131,11 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
               const name = counterpartyName(t.counterparty, w)
               return (
                 <tr key={t.id} onClick={() => onOpen(t.id)} className="cursor-pointer border-b border-line-soft last:border-0 hover:bg-surface-2/70">
-                  <td className="py-3 pr-4 align-middle text-[13px] tnum">
+                  <td className="py-stack pr-group pl-inset align-middle text-[13px] tnum">
                     <span className="block">{fmtDate(t.createdAt)}</span>
                     <span className="block text-muted">{fmtTime(t.createdAt)}</span>
                   </td>
-                  <td className="max-w-0 py-3 pr-4 align-middle">
+                  <td className="max-w-0 py-stack pr-group align-middle">
                     <span className="flex items-center gap-3">
                       <TxIcon type={t.type} />
                       <span className="min-w-0">
@@ -144,8 +144,8 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
                       </span>
                     </span>
                   </td>
-                  <td className="py-3 pr-4 align-middle"><RowStatus t={t} web /></td>
-                  <td className="py-3 text-right align-middle"><RowAmount t={t} /></td>
+                  <td className="py-stack pr-group align-middle"><RowStatus t={t} web /></td>
+                  <td className="py-stack pr-inset text-right align-middle"><RowAmount t={t} /></td>
                 </tr>
               )
             })}
@@ -161,9 +161,9 @@ function AppList({ groups, w, onOpen }: { groups: Group[]; w: World; onOpen: (id
   return (
     <div>
       {groups.map((g) => (
-        <section key={g.key} aria-label={g.label} className="mt-5 first:mt-3">
-          <h2 className="label-caps mb-1.5 px-4">{g.label}</h2>
-          <ul className="card divide-y divide-line-soft px-4">
+        <section key={g.key} aria-label={g.label} className="mt-group first:mt-stack">
+          <h2 className="label-caps mb-header px-inset">{g.label}</h2>
+          <ul className="card divide-y divide-line-soft px-inset">
             {g.rows.map((t) => {
               const name = counterpartyName(t.counterparty, w)
               return (
@@ -235,14 +235,14 @@ export default function HistoryPage() {
   return (
     <div>
       <ScreenTitle>Lịch sử</ScreenTitle>
-      <div className={cx('flex gap-3', layout === 'web' ? 'flex-col' : 'items-center')}>
+      <div className={cx('flex gap-stack', layout === 'web' ? 'flex-col' : 'items-center')}>
         <div className="min-w-0 flex-1">
           <Segmented label="Chế độ xem" value={f.tab ?? 'all'} options={TABS} onChange={(v) => set('tab', v)} />
         </div>
         {layout === 'web' ? (
-          <div className="grid grid-cols-3 gap-3"><Filters f={f} set={set} months={months} onGround /></div>
+          <div className="grid grid-cols-3 gap-stack"><Filters f={f} set={set} months={months} onGround /></div>
         ) : (
-          <button type="button" onClick={() => setSheet(true)} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-surface px-3 text-[15px] text-tint">
+          <button type="button" onClick={() => setSheet(true)} className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full bg-surface px-3 text-[15px] text-tint">
             <SlidersHorizontal size={16} strokeWidth={1.75} aria-hidden />Bộ lọc
             {active.length ? <span className="min-w-5 rounded-full bg-primary px-1.5 text-[12px] leading-5 text-white tnum" aria-label={`${active.length} bộ lọc đang bật`}>{active.length}</span> : null}
           </button>
@@ -250,7 +250,7 @@ export default function HistoryPage() {
       </div>
 
       {active.length ? (
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+        <div className="mt-stack flex flex-wrap items-center gap-header">
           {active.map(([k, v]) => (
             <span key={k} className="inline-flex h-9 items-center gap-1 rounded-full bg-primary-soft pr-1 pl-3 text-[13px] font-medium text-primary-ink">
               {v}
@@ -261,7 +261,7 @@ export default function HistoryPage() {
         </div>
       ) : null}
 
-      <div className="mt-4">
+      <div className="mt-group">
         {!filtered.length ? (
           <EmptyState icon={<Inbox size={22} strokeWidth={1.75} />} title="Không có giao dịch phù hợp" action={<Button variant="secondary" onClick={() => clear(true)}>Xóa bộ lọc</Button>} />
         ) : layout === 'web' ? (
@@ -270,7 +270,7 @@ export default function HistoryPage() {
           <AppList groups={shown} w={w} onOpen={open} />
         )}
         {filtered.length ? (
-          <div className="mt-6 flex flex-col items-center gap-2 text-[13px] text-muted">
+          <div className="mt-group flex flex-col items-center gap-header text-[13px] text-muted">
             <p aria-live="polite">{count >= filtered.length ? 'Đã hiển thị tất cả giao dịch' : `Đang hiển thị ${Math.min(count, filtered.length)}/${filtered.length} giao dịch`}</p>
             {count < filtered.length ? <Button variant="secondary" onClick={() => setPage({ key, count: count + PAGE })}>Xem thêm</Button> : null}
           </div>
@@ -278,8 +278,8 @@ export default function HistoryPage() {
       </div>
 
       <Sheet open={sheet} onOpenChange={setSheet} title="Bộ lọc">
-        <div className="flex flex-col gap-4"><Filters f={f} set={set} months={months} /></div>
-        <div className="mt-6 flex flex-col gap-2">
+        <div className="flex flex-col gap-inset"><Filters f={f} set={set} months={months} /></div>
+        <div className="mt-group flex flex-col gap-header">
           <Button block onClick={() => setSheet(false)}>Xem {filtered.length} giao dịch</Button>
           {active.length ? <Button variant="secondary" block onClick={() => clear()}>Xóa bộ lọc</Button> : null}
         </div>

@@ -68,7 +68,7 @@ export default function LinkSourceFlow() {
             })}
           </ul>
         ) : (
-          <p role="status" className="py-8 text-center text-muted">Không tìm thấy ngân hàng.</p>
+          <p role="status" className="py-section text-center text-muted">Không tìm thấy ngân hàng.</p>
         )}
       </FlowFrame>
     )
@@ -91,8 +91,8 @@ export default function LinkSourceFlow() {
     return (
       <FlowFrame title={bank.name} onBack={back('bank')} onClose={close}
         footer={<Button block loading={checking} disabled={!valid} onClick={submit}>Tiếp tục</Button>}>
-        <Card className="p-5">
-          <div className="mb-5">
+        <Card className="p-inset">
+          <div className="mb-group">
             <Segmented label="Loại nguồn tiền" value={draft.kind} onChange={(k) => { setError(undefined); setDraft({ kind: k }) }}
               options={[{ value: 'account', label: 'Tài khoản' }, { value: 'debit_card', label: 'Thẻ ghi nợ' }]} />
           </div>
@@ -115,11 +115,11 @@ export default function LinkSourceFlow() {
     return (
       <FlowFrame title="Cho phép Wallet" onBack={back('account')} onClose={close}
         footer={<Button block onClick={() => { setSheetOpen(true); go('bank-app') }}>Đồng ý liên kết</Button>}>
-        <Card className="p-5">
-          <p className="mb-4 text-muted">{bank.name} · {draft.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản'} <span className="tnum">{mask4(draft.number.slice(-4))}</span></p>
+        <Card className="p-inset">
+          <p className="mb-stack text-muted">{bank.name} · {draft.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản'} <span className="tnum">{mask4(draft.number.slice(-4))}</span></p>
           <ul className="flex flex-col gap-3">
             {['Nạp tiền vào ví từ tài khoản này', 'Rút tiền từ ví về tài khoản này'].map((l) => (
-              <li key={l} className="flex items-start gap-3"><Check size={20} strokeWidth={2} aria-hidden className="mt-0.5 shrink-0 text-success" />{l}</li>
+              <li key={l} className="flex items-start gap-3"><Check size={20} strokeWidth={2} aria-hidden className="mt-1 shrink-0 text-success" />{l}</li>
             ))}
           </ul>
         </Card>
@@ -141,13 +141,13 @@ export default function LinkSourceFlow() {
     return (
       <FlowFrame title="Xác nhận trên ứng dụng ngân hàng" onBack={back('consent')} onClose={close}
         footer={!sheetOpen ? <Button block onClick={() => setSheetOpen(true)}>Mở ứng dụng {bank.name}</Button> : undefined}>
-        {layout === 'web' ? <p className="mb-3 font-medium">Mở ứng dụng ngân hàng trên điện thoại để xác nhận</p> : null}
+        {layout === 'web' ? <p className="mb-stack font-medium">Mở ứng dụng ngân hàng trên điện thoại để xác nhận</p> : null}
         <p role="status" className="flex items-center gap-2 text-muted">
           <span aria-hidden className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" />
           Đang chờ xác nhận từ ngân hàng…
         </p>
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen} title={`Mô phỏng ứng dụng ${bank.name}`} description="Đây là màn hình mô phỏng của ngân hàng, không phải của Wallet.">
-          <dl className="mb-5 divide-y divide-line-soft rounded-[12px] bg-surface-2 px-4">
+          <dl className="mb-group divide-y divide-line-soft rounded-[12px] bg-surface-2 px-4">
             {[['Yêu cầu', 'Liên kết với ví Wallet'], ['Nguồn tiền', `${draft.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản'} ${mask4(draft.number.slice(-4))}`], ['Chủ tài khoản', holder], ['Số ví', w.customer.walletNumber]].map(([k, v]) => (
               <div key={k} className="flex justify-between gap-4 py-2.5"><dt className="text-muted">{k}</dt><dd className="text-right font-medium break-words">{v}</dd></div>
             ))}

@@ -46,7 +46,7 @@ function SideLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
       to={item.route!}
       aria-current={active ? 'page' : undefined}
       title={collapsed ? item.label : undefined}
-      className={cx('flex h-9 shrink-0 items-center gap-2.5 rounded-[10px] text-[15px] no-underline', collapsed ? 'w-9 justify-center self-center' : 'px-2.5', active ? 'bg-surface-2 font-semibold text-tint' : 'text-ink hover:bg-surface-2')}
+      className={cx('flex h-9 shrink-0 items-center gap-3 rounded-[10px] text-[15px] no-underline', collapsed ? 'w-9 justify-center self-center' : 'px-2.5', active ? 'bg-surface-2 font-semibold text-tint' : 'text-ink hover:bg-surface-2')}
     >
       <Icon size={18} strokeWidth={1.75} aria-hidden className={cx('shrink-0', !active && 'text-tint')} />
       <span className={cx('truncate', collapsed && 'sr-only')}>{item.label}</span>
@@ -63,7 +63,7 @@ function AccountMenu({ expanded }: { expanded: boolean }) {
     <>
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
-          <button type="button" title={expanded ? undefined : 'Tài khoản'} className={cx('flex min-w-0 items-center gap-2.5 rounded-[12px] text-left hover:bg-surface-2', expanded ? 'h-9 flex-1 px-1' : 'size-9 justify-center')}>
+          <button type="button" title={expanded ? undefined : 'Tài khoản'} className={cx('flex min-w-0 items-center gap-3 rounded-[12px] text-left hover:bg-surface-2', expanded ? 'h-9 flex-1 px-1' : 'size-9 justify-center')}>
             {w.customer.photo ? <Avatar name={w.customer.name} src={w.customer.photo} size={28} /> : <span aria-hidden className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-surface-2 text-[11px] font-semibold text-ink">{initials}</span>}
             {expanded ? <span className="min-w-0 truncate text-[13px] font-semibold">{w.customer.name.split(' ').slice(-2).join(' ')}</span> : null}
             <span className="sr-only">Tài khoản</span>
@@ -116,7 +116,7 @@ function WebShell({ children }: { children: ReactNode }) {
           onKeyDown={(e) => { if (e.key === 'Escape') setPeek(false) }}
           className={cx('glass absolute inset-y-0 left-0 flex flex-col rounded-[24px] px-2.5 py-3 transition-[width] duration-200 motion-reduce:transition-none', rail ? 'w-14' : 'w-[224px]')}
         >
-          <div className={cx('mb-3 flex h-9 shrink-0 items-center', rail ? 'justify-center' : 'justify-between pl-1')}>
+          <div className={cx('mb-stack flex h-9 shrink-0 items-center', rail ? 'justify-center' : 'justify-between pl-1')}>
             {rail ? (
               <button type="button" onMouseEnter={() => setPeek(true)} onClick={pin} aria-expanded={false} aria-label="Mở rộng thanh bên" title="Mở rộng thanh bên" className="inline-flex size-9 items-center justify-center rounded-[10px] hover:bg-surface-2">
                 <img src="/icon.svg" alt="" width={28} height={28} className="size-7" />
@@ -136,7 +136,7 @@ function WebShell({ children }: { children: ReactNode }) {
           <nav aria-label="Điều hướng chính" className="flex flex-1 flex-col gap-px overflow-x-hidden overflow-y-auto">
             {sidebar.map((x) =>
               'group' in x ? (
-                <div key={x.group} className="mt-3 flex flex-col gap-px">
+                <div key={x.group} className="mt-stack flex flex-col gap-px">
                   {rail
                     ? <><p className="sr-only">{x.group}</p><span aria-hidden className="mx-auto mb-1 h-px w-6 bg-line" /></>
                     : <p className="truncate px-2.5 pb-0.5 text-[12px] leading-6 font-semibold text-muted">{x.group}</p>}
@@ -148,7 +148,7 @@ function WebShell({ children }: { children: ReactNode }) {
             )}
           </nav>
           {/* Footer: account, notifications and demo controls live with navigation, so the content column has no toolbar. */}
-          <div className={cx('mt-2 flex shrink-0', rail ? 'flex-col items-center gap-px' : 'items-center gap-0.5')}>
+          <div className={cx('mt-header flex shrink-0', rail ? 'flex-col items-center gap-px' : 'items-center gap-1')}>
             <AccountMenu expanded={!rail} />
             <Link to="/notifications" title={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} aria-label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} className={cx('relative inline-flex size-9 shrink-0 items-center justify-center rounded-full text-tint hover:bg-surface-2', rail && 'order-first')}>
               <Bell size={18} strokeWidth={1.75} aria-hidden />
@@ -188,7 +188,7 @@ function TabBar() {
             )
           return (
             <li key={t.id} className="h-full py-1.5">
-              <Link to={t.route!} aria-current={active ? 'page' : undefined} className={cx('relative flex h-full flex-col items-center justify-center gap-0.5 rounded-full no-underline', active ? 'bg-surface-2 text-tint' : 'text-ink')}>
+              <Link to={t.route!} aria-current={active ? 'page' : undefined} className={cx('relative flex h-full flex-col items-center justify-center gap-1 rounded-full no-underline', active ? 'bg-surface-2 text-tint' : 'text-ink')}>
                 <Icon size={22} strokeWidth={active ? 2.25 : 1.75} aria-hidden />
                 <span className={cx('text-[10px] leading-3', active ? 'font-semibold' : 'font-medium')}>{t.label}{t.badge && unread ? <span className="sr-only">, {unread} chưa đọc</span> : null}</span>
                 {t.badge && unread ? <span className="absolute top-1 left-1/2 ml-1 min-w-[18px] rounded-full bg-badge px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum" aria-hidden>{unread > 9 ? '9+' : unread}</span> : null}
@@ -216,15 +216,15 @@ function AppShell({ children }: { children: ReactNode }) {
         title={<p aria-hidden>{title}</p>}
         titleVisible={!root}
         left={root ? <span className="w-3" /> : <BackButton onClick={() => nav(-1)} />}
-        right={<div className="flex items-center gap-0.5"><SampleBadge compact /><DemoControlsButton compact /></div>}
+        right={<div className="flex items-center gap-1"><SampleBadge compact /><DemoControlsButton compact /></div>}
       />
       {root ? (
-        <p aria-hidden className={cx('large-title mx-auto flex max-w-[560px] items-center gap-2.5 px-5 pb-1 transition-opacity duration-200', scrolled && 'opacity-0')}>
+        <p aria-hidden className={cx('large-title mx-auto flex max-w-[560px] items-center gap-3 px-inset pb-1 transition-opacity duration-200', scrolled && 'opacity-0')}>
           {pathname === '/home' ? <img src="/icon.svg" alt="" width={34} height={34} className="size-[34px] rounded-[9px]" /> : null}
           {title}
         </p>
       ) : null}
-      <main id="main" className="relative mx-auto w-full max-w-[560px] px-4 pt-3 pb-32">{children}</main>
+      <main id="main" className="relative mx-auto w-full max-w-[560px] px-inset pt-3 pb-32">{children}</main>
       {/* Scroll-edge effect: content fades out before it reaches the glass tab bar. */}
       <div aria-hidden className="pointer-events-none fixed inset-x-0 bottom-0 z-20 h-28 bg-gradient-to-t from-ground from-35% to-transparent" />
       <TabBar />

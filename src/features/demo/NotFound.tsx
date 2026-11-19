@@ -3,7 +3,7 @@ import { ButtonLink, EmptyState } from '@/components/ui'
 
 export function NotFound() {
   return (
-    <div className="pt-8">
+    <div className="pt-section">
       <h1 tabIndex={-1} data-page-title className="sr-only">Không tìm thấy trang</h1>
       <EmptyState icon={<Compass size={22} strokeWidth={1.75} />} title="Không tìm thấy trang" body="Đường dẫn này không tồn tại hoặc đã được chuyển." action={<ButtonLink to="/home">Về trang chủ</ButtonLink>} />
     </div>

@@ -27,11 +27,11 @@ export default function MeHub() {
   return (
     <div>
       <ScreenTitle>Tôi</ScreenTitle>
-      <Card className="p-4">
+      <Card className="p-inset">
         {!loaded ? (
           <div className="flex items-center gap-3" aria-hidden>
             <Skeleton className="size-14 rounded-full" />
-            <span className="flex-1 space-y-2"><Skeleton className="h-5 w-1/2" /><Skeleton className="h-4 w-1/3" /></span>
+            <span className="flex-1 space-y-header"><Skeleton className="h-5 w-1/2" /><Skeleton className="h-4 w-1/3" /></span>
           </div>
         ) : (
           <div className="flex items-start gap-3">
@@ -39,7 +39,7 @@ export default function MeHub() {
             <div className="min-w-0 flex-1">
               <p className="text-[17px] leading-[26px] font-bold break-words">{w.customer.name}</p>
               <p className="tnum text-muted">Số ví {formatPhone(w.customer.walletNumber)}</p>
-              <div className="mt-2">
+              <div className="mt-header">
                 {kyc === 'unverified' ? (
                   <Link to="/onboarding?step=id-method" aria-label="Chưa xác thực. Xác thực ngay" className="inline-flex min-h-11 items-center no-underline">{badge}</Link>
                 ) : badge}
@@ -49,8 +49,8 @@ export default function MeHub() {
         )}
       </Card>
 
-      <nav aria-label="Tài khoản" className="mt-4">
-        <ul className="card divide-y divide-line-soft px-4">
+      <nav aria-label="Tài khoản" className="mt-group">
+        <ul className="card divide-y divide-line-soft px-inset">
           {links.map((l) => (
             <li key={l.to}>
               <Link to={l.to} className="-mx-2 flex min-h-14 items-center gap-3 rounded-xl px-2 py-2 text-ink no-underline hover:bg-surface-2">
@@ -66,7 +66,7 @@ export default function MeHub() {
         </ul>
       </nav>
 
-      <button type="button" onClick={() => setConfirm(true)} className="card mt-8 flex h-12 w-full items-center justify-center text-danger hover:bg-danger-soft">Đăng xuất</button>
+      <button type="button" onClick={() => setConfirm(true)} className="card mt-section flex h-12 w-full items-center justify-center text-danger hover:bg-danger-soft">Đăng xuất</button>
       <Confirm
         open={confirm} onOpenChange={setConfirm} title="Đăng xuất khỏi Wallet?" confirmLabel="Đăng xuất" danger
         onConfirm={() => { signOut(); nav('/onboarding') }}

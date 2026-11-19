@@ -51,6 +51,6 @@ export function useGuard(allow: GateId[] = []) {
 export function GatedRoute({ children, allow = [] }: { children: ReactNode; allow?: GateId[] }) {
   const w = useWorld()
   const g = gateOf(w)
-  if (g && !allow.includes(g)) return <div className="pt-4"><GateCallout gate={g} /></div>
+  if (g && !allow.includes(g)) return <div className="pt-stack"><GateCallout gate={g} /></div>
   return <>{children}</>
 }

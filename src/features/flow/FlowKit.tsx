@@ -73,15 +73,15 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
   if (layout === 'web')
     return (
       <div>
-        {onBack ? <button type="button" onClick={onBack} className="-ml-2 mb-1 inline-flex h-9 items-center gap-0.5 rounded-full pr-3 pl-1 text-[15px] text-tint hover:bg-surface-2"><ChevronLeft size={22} strokeWidth={2.25} aria-hidden />Quay lại</button> : null}
-        <div className="mb-6 flex items-start gap-2">
+        {onBack ? <button type="button" onClick={onBack} className="-ml-2 mb-1 inline-flex h-9 items-center gap-1 rounded-full pr-3 pl-1 text-[15px] text-tint hover:bg-surface-2"><ChevronLeft size={22} strokeWidth={2.25} aria-hidden />Quay lại</button> : null}
+        <div className="mb-group flex items-start gap-2">
           <h1 tabIndex={-1} data-page-title className="large-title flex-1 outline-none">{title}</h1>
           {onClose ? <CloseButton onClick={onClose} /> : null}
         </div>
-        {description ? <p className="-mt-4 mb-6 text-muted">{description}</p> : null}
+        {description ? <p className="-mt-header mb-group text-muted">{description}</p> : null}
         {/* One inset group for a plain step; a step that brings its own sections sits on the grouped background. */}
-        <div className="[&:not(:has(.card))]:card [&:not(:has(.card))]:p-6">{children}</div>
-        {footer ? <div className="mt-8 flex flex-col gap-2">{footer}</div> : null}
+        <div className="[&:not(:has(.card))]:card [&:not(:has(.card))]:p-inset">{children}</div>
+        {footer ? <div className="mt-group flex flex-col gap-2">{footer}</div> : null}
       </div>
     )
   return (
@@ -92,13 +92,13 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
         left={onBack ? <BackButton onClick={onBack} /> : <span className="w-11" />}
         right={onClose ? <CloseButton onClick={onClose} /> : <span className="w-11" />}
       />
-      <main id="main" className="relative mx-auto w-full max-w-[560px] flex-1 px-4 pt-2 pb-6">
-        {description ? <p className="mb-4 px-1 text-muted">{description}</p> : null}
-        <div className="[&:not(:has(.card))]:card [&:not(:has(.card))]:p-5">{children}</div>
+      <main id="main" className="relative mx-auto w-full max-w-[560px] flex-1 px-inset pt-2 pb-group">
+        {description ? <p className="mb-stack text-muted">{description}</p> : null}
+        <div className="[&:not(:has(.card))]:card [&:not(:has(.card))]:p-inset">{children}</div>
         {/* The app keypad portals here so it stands on its own below the card, like the system number pad. */}
         <div id="flow-keypad-slot" />
       </main>
-      {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 border-t border-line/60 bg-ground/85 px-4 pt-3 pb-[max(16px,env(safe-area-inset-bottom))] backdrop-blur-xl">{footer}</div> : null}
+      {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 border-t border-line/60 bg-ground/85 px-inset pt-stack pb-[max(16px,env(safe-area-inset-bottom))] backdrop-blur-xl">{footer}</div> : null}
     </div>
   )
 }
@@ -142,7 +142,7 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
   const set = (n: number) => { if (n <= 9_999_999_999) onChange(n) }
   return (
     <div>
-      <label htmlFor="amount" className="mb-2 block text-center text-[15px] text-muted">{label}</label>
+      <label htmlFor="amount" className="mb-header block text-center text-[15px] text-muted">{label}</label>
       <div className={cx('flex items-start justify-center border-b-2 pb-2', error ? 'border-danger' : 'border-line')}>
         <input
           id="amount" autoFocus={autoFocus && layout === 'web'} autoComplete="off" placeholder="0"
@@ -155,11 +155,11 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
           style={{ width: `${Math.max(1, shown.length || 1) * 0.62 + 0.2}em` }}
           className="amount-display max-w-full min-w-0 bg-transparent text-center outline-none placeholder:text-muted"
         />
-        <span className="mt-1 ml-0.5 text-[17px] leading-6 font-semibold text-muted" aria-hidden>₫</span>
+        <span className="mt-1 ml-1 text-[17px] leading-6 font-semibold text-muted" aria-hidden>₫</span>
       </div>
-      <p id="amount-msg" role={error ? 'alert' : undefined} className={cx('mt-2 min-h-5 text-center text-[13px] leading-5', error ? 'text-danger' : 'text-muted')}>{error ?? hint}</p>
+      <p id="amount-msg" role={error ? 'alert' : undefined} className={cx('mt-header min-h-5 text-center text-[13px] leading-5', error ? 'text-danger' : 'text-muted')}>{error ?? hint}</p>
       {quick.length ? (
-        <div className="mt-3 flex flex-wrap justify-center gap-2">
+        <div className="mt-stack flex flex-wrap justify-center gap-2">
           {quick.map((q) => (
             <button key={q} type="button" onClick={() => onChange(q)} className="h-9 rounded-full bg-surface-2 px-3.5 text-[13px] font-semibold text-primary-ink tnum hover:bg-primary-soft">{formatVnd(q).replace(' ₫', '')}</button>
           ))}
@@ -186,7 +186,7 @@ export function Keypad({ value, onChange }: { value: number; onChange: (n: numbe
   }
   const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '000', '0', 'del']
   return (
-    <div className="mt-4 px-1">
+    <div className="mt-stack px-1">
       <div className="grid grid-cols-3 gap-2" role="group" aria-label="Bàn phím số">
         {KEYS.map((k) => (
           <button
@@ -309,12 +309,12 @@ export function ResultView({ txId, onRetry, extra, successHeading = 'Thành côn
   if (!t) return <p className="py-10 text-center text-muted">Không tìm thấy giao dịch.</p>
   const heading = t.status === 'success' ? successHeading : t.status === 'pending' ? 'Đang xử lý' : t.status === 'failed' ? 'Không thành công' : 'Đã hoàn tiền'
   return (
-    <div className="flex flex-col items-center pt-6 text-center">
+    <div className="flex flex-col items-center pt-group text-center">
       <StatusMark status={t.status} />
-      <p role="status" className="mt-4 text-[17px] font-bold">{heading}</p>
-      <p className="mt-2"><Money amount={t.amount + (t.status === 'failed' ? 0 : t.fee)} sign={t.direction} className="amount-display" /></p>
-      <p className="mt-2 max-w-[40ch] text-muted">{counterpartyName(t.counterparty, w)}{t.sourceId && t.type !== 'topup' ? ` · từ ${sourceLabel(w, t.sourceId)}` : ''}</p>
-      <div className="mt-6 w-full text-left">
+      <p role="status" className="mt-stack text-[17px] font-bold">{heading}</p>
+      <p className="mt-header"><Money amount={t.amount + (t.status === 'failed' ? 0 : t.fee)} sign={t.direction} className="amount-display" /></p>
+      <p className="mt-header max-w-[40ch] text-muted">{counterpartyName(t.counterparty, w)}{t.sourceId && t.type !== 'topup' ? ` · từ ${sourceLabel(w, t.sourceId)}` : ''}</p>
+      <div className="mt-group w-full text-left">
         <ConfirmRows rows={[
           ['Trạng thái', truthLine(t)],
           ...(t.status === 'failed' && t.failureReason ? [['Lý do', FAILURE_COPY[t.failureReason]] as [string, ReactNode]] : []),
@@ -325,7 +325,7 @@ export function ResultView({ txId, onRetry, extra, successHeading = 'Thành côn
         ]} />
       </div>
       {extra}
-      <div className="mt-6 flex w-full flex-col gap-2">
+      <div className="mt-group flex w-full flex-col gap-2">
         {t.status === 'failed' && onRetry ? <Button block onClick={onRetry}>Thử lại</Button> : null}
         <ButtonLink to={`/history/${t.id}`} variant={t.status === 'failed' && onRetry ? 'secondary' : 'primary'} block>Xem chi tiết</ButtonLink>
         {t.status === 'failed' ? <ButtonLink to={`/support/new?tx=${t.id}`} variant="secondary" block>Liên hệ hỗ trợ</ButtonLink> : null}

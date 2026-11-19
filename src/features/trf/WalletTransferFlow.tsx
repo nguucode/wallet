@@ -67,7 +67,7 @@ export default function WalletTransferFlow() {
   let body: ReactNode
   if (reading)
     body = (
-      <div aria-busy className="space-y-3">
+      <div aria-busy className="space-y-stack">
         <p role="status" className="text-muted">Đang đọc mã…</p>
         <Skeleton className="h-16" />
       </div>
@@ -151,8 +151,8 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
 
   return (
     <div>
-      {banner ? <div className="mb-5"><Callout tone="danger" title={banner} /></div> : null}
-      <label htmlFor="recipient-search" className="mb-1.5 block text-[13px] font-medium">Người nhận</label>
+      {banner ? <div className="mb-group"><Callout tone="danger" title={banner} /></div> : null}
+      <label htmlFor="recipient-search" className="mb-header block text-[13px] font-medium">Người nhận</label>
       <div className="relative">
         <Search size={18} strokeWidth={1.75} aria-hidden className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted" />
         <TextInput
@@ -162,17 +162,17 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
           onChange={(e) => { setHelper(undefined); setQuery(/^[\d\s]+$/.test(e.target.value) ? e.target.value.replace(/\D/g, '').slice(0, 10) : e.target.value) }}
         />
       </div>
-      <p id="no-wallet-help" role="status" aria-live="polite" className="mt-2 min-h-5 text-[13px] leading-5 text-muted">{helper}</p>
+      <p id="no-wallet-help" role="status" aria-live="polite" className="mt-header min-h-5 text-[13px] leading-5 text-muted">{helper}</p>
       {single}
       {!single && !fRecent.length && !fAll.length ? <p className="py-3 text-muted">Không tìm thấy người nhận.</p> : null}
       {!single && fRecent.length ? (
-        <section aria-labelledby="g-recent" className="mt-2">
+        <section aria-labelledby="g-recent" className="mt-header">
           <h2 id="g-recent" className="sticky top-14 z-10 bg-surface py-2 text-[13px] font-semibold text-muted lg:top-16">Gần đây</h2>
           <ul>{fRecent.map((c) => row(c, 'r'))}</ul>
         </section>
       ) : null}
       {!single && fAll.length ? (
-        <section aria-labelledby="g-all" className="mt-4">
+        <section aria-labelledby="g-all" className="mt-stack">
           <h2 id="g-all" className="sticky top-14 z-10 bg-surface py-2 text-[13px] font-semibold text-muted lg:top-16">Danh bạ</h2>
           <ul>{fAll.map((c) => row(c, 'a'))}</ul>
         </section>
@@ -195,7 +195,7 @@ function AmountStep({ draft, setDraft, onNext, onChange }: { draft: Draft; setDr
         ? <LockedAmount amount={draft.amount} note="Số tiền theo mã QR" error={error} />
         : <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={error} hint={<>Số dư khả dụng: <span className="tnum">{formatVnd(w.balance)}</span></>} />}
       <MessageField value={draft.message} onChange={(message) => setDraft({ message })} placeholder={`${w.customer.name} chuyển tiền`} />
-      <div className="mt-8">
+      <div className="mt-section">
         {draft.locked && error
           ? <ButtonLink to="/pay/scan" variant="secondary" block>Đổi mã</ButtonLink>
           : <Button block disabled={!check?.ok} onClick={onNext}>Tiếp tục</Button>}
@@ -214,14 +214,14 @@ function ConfirmStep({ draft, defaultMessage, toAmount, onDone }: { draft: Draft
     return (
       <div role="status" aria-live="polite" className="flex flex-col items-center py-16 text-center">
         <span className="size-8 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden />
-        <p className="mt-4 font-semibold">Đang chuyển tiền…</p>
+        <p className="mt-stack font-semibold">Đang chuyển tiền…</p>
         <p className="mt-1"><Money amount={draft.amount} className="amount-display" /></p>
       </div>
     )
   return (
     <>
-      <h2 className="mb-4 text-[17px] leading-[26px] font-bold">Xác nhận</h2>
-      <p className="mb-4 text-center"><Money amount={draft.amount} className="amount-display" /></p>
+      <h2 className="mb-stack text-[17px] leading-[26px] font-bold">Xác nhận</h2>
+      <p className="mb-stack text-center"><Money amount={draft.amount} className="amount-display" /></p>
       <ConfirmRows rows={[
         ['Người nhận', <><span className="block break-words">{r.name}</span><span className="block text-[13px] font-normal text-muted tnum">{maskPhone(r.phone)}</span></>],
         ['Số tiền', <Money amount={draft.amount} />],
@@ -231,8 +231,8 @@ function ConfirmStep({ draft, defaultMessage, toAmount, onDone }: { draft: Draft
         ['Lời nhắn', message],
       ]} />
       <AuthNote type="p2p_out" amount={draft.amount} />
-      {commit.error ? <p role="alert" className="mt-3 text-[13px] text-danger">{commit.error}</p> : null}
-      <div className="mt-8 flex flex-col gap-2">
+      {commit.error ? <p role="alert" className="mt-stack text-[13px] text-danger">{commit.error}</p> : null}
+      <div className="mt-section flex flex-col gap-2">
         <Button block onClick={() => (checkAmount('p2p_out', draft.amount).ok ? commit.start() : toAmount())}>Xác nhận</Button>
         <Button block variant="ghost" onClick={toAmount}>Quay lại</Button>
       </div>

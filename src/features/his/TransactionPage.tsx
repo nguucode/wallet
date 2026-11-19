@@ -68,11 +68,11 @@ export function timelineSteps(t: Transaction, refundTx?: Transaction): Step[] {
 function Timeline({ steps }: { steps: Step[] }) {
   const dot = { done: 'bg-ink', current: 'bg-pending', failed: 'bg-danger', upcoming: 'border-2 border-line bg-surface' }
   return (
-    <ol className="card p-4" aria-label="Trạng thái giao dịch">
+    <ol className="card p-inset" aria-label="Trạng thái giao dịch">
       {steps.map((s, i) => (
-        <li key={i} className="relative flex gap-3 pb-4 last:pb-0">
+        <li key={i} className="relative flex gap-3 pb-stack last:pb-0">
           {i < steps.length - 1 ? <span aria-hidden className="absolute top-4 left-[5px] h-full w-0.5 bg-line" /> : null}
-          <span aria-hidden className={cx('relative mt-1.5 size-3 shrink-0 rounded-full', dot[s.tone])} />
+          <span aria-hidden className={cx('relative mt-header size-3 shrink-0 rounded-full', dot[s.tone])} />
           <div className="min-w-0">
             <p className={cx('font-semibold', s.tone === 'current' && 'text-pending', s.tone === 'failed' && 'text-danger', s.tone === 'upcoming' && 'font-normal text-muted')}>
               {s.label}{s.tone === 'upcoming' ? <span className="sr-only"> (chưa đến)</span> : null}
@@ -107,11 +107,11 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
   return (
     <div className="pt-2">
       <style>{PRINT_CSS}</style>
-      <div className="mb-4 flex items-center justify-between gap-2 print:hidden">
+      <div className="mb-stack flex items-center justify-between gap-2 print:hidden">
         <h1 tabIndex={-1} data-page-title className="text-[22px] leading-[28px] font-bold outline-none">Biên lai</h1>
         {layout === 'app' ? <button type="button" onClick={close} aria-label="Đóng" className="inline-flex size-11 items-center justify-center rounded-full hover:bg-surface-2"><X size={22} strokeWidth={1.75} aria-hidden /></button> : null}
       </div>
-      <article id="receipt" aria-label="Biên lai giao dịch" className="mx-auto max-w-[420px] card p-5">
+      <article id="receipt" aria-label="Biên lai giao dịch" className="mx-auto max-w-[420px] card p-inset">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-[17px] font-bold">Biên lai giao dịch</p>
@@ -119,9 +119,9 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
           </div>
           <SampleBadge />
         </div>
-        <div className="my-5 text-center">
+        <div className="my-group text-center">
           <p className="amount-display">{formatVnd(rowAmount(t))}</p>
-          <p className="mt-1 inline-flex items-center gap-1.5 font-semibold">
+          <p className="mt-1 inline-flex items-center gap-2 font-semibold">
             <span aria-hidden className={cx('size-2 rounded-full', t.status === 'pending' ? 'bg-pending' : t.status === 'success' ? 'bg-success' : 'bg-ink')} />
             {STATUS_LABEL[t.status]}
           </p>
@@ -137,7 +137,7 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
           ['Tổng tiền', formatVnd(rowAmount(t))],
         ]} />
       </article>
-      <div className="mx-auto mt-6 flex max-w-[420px] flex-col gap-2 print:hidden">
+      <div className="mx-auto mt-group flex max-w-[420px] flex-col gap-2 print:hidden">
         {layout === 'web' ? (
           <div className="flex gap-2">
             <Button onClick={() => window.print()}><Printer size={18} strokeWidth={1.75} aria-hidden />In biên lai</Button>
@@ -163,7 +163,7 @@ function Action({ label, icon, onClick, to }: { label: string; icon: ReactNode; 
       <span className="text-[12px] leading-4 font-semibold whitespace-nowrap">{label}</span>
     </>
   )
-  const cls = 'flex min-w-20 flex-col items-center gap-1.5 text-ink no-underline'
+  const cls = 'flex min-w-20 flex-col items-center gap-2 text-ink no-underline'
   return to ? <Link to={to} className={cls}>{inner}</Link> : <button type="button" onClick={onClick} className={cls}>{inner}</button>
 }
 
@@ -200,7 +200,7 @@ export default function TransactionPage() {
   const ic = { size: 20, strokeWidth: 1.75, 'aria-hidden': true } as const
 
   const actions = (
-    <div className={cx('flex gap-2', layout === 'web' ? 'flex-wrap' : 'card justify-around px-2 py-4')}>
+    <div className={cx('flex gap-2', layout === 'web' ? 'flex-wrap' : 'card justify-around px-header py-inset')}>
       {t.status !== 'failed' ? <Action label="Biên lai" icon={<FileText {...ic} />} to={`/history/${t.id}?view=receipt`} /> : null}
       {!request ? <Action label="Liên hệ hỗ trợ" icon={<LifeBuoy {...ic} />} to={supportTo} /> : null}
       {resendTo ? <Action label="Chuyển lại" icon={<Repeat {...ic} />} onClick={() => guard(resendTo)} /> : null}
@@ -208,10 +208,10 @@ export default function TransactionPage() {
   )
 
   const wrongRecipient = t.type === 'p2p_out' && t.status === 'success' ? (
-    <section aria-labelledby="wr-title" className="rounded-[16px] bg-surface-2 p-4">
+    <section aria-labelledby="wr-title" className="rounded-[16px] bg-surface-2 p-inset">
       <h2 id="wr-title" className="font-semibold">Chuyển nhầm người nhận?</h2>
       <p className="mt-1 text-[15px] leading-5">Giao dịch chuyển tiền đã thành công không thể hủy hoặc thu hồi. Hãy nhắn người nhận để đề nghị chuyển trả.</p>
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-stack flex flex-wrap gap-2">
         {/* Placeholder deep link (rules.md#history-and-support): no chat in P0. */}
         <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-4 text-[15px] font-semibold text-on-ink no-underline"><MessageCircle size={18} strokeWidth={1.75} aria-hidden />Nhắn người nhận</a>
         {!request ? <ButtonLink to={supportTo} variant="secondary" className="h-11">Liên hệ hỗ trợ</ButtonLink> : null}
@@ -221,9 +221,9 @@ export default function TransactionPage() {
 
   return (
     <div className="max-w-[560px]">
-      {layout === 'web' ? <Link to="/history" className="-ml-2 mb-2 inline-flex h-9 items-center gap-0.5 rounded-full pr-3 pl-1 text-tint no-underline hover:bg-surface-2"><ChevronLeft size={22} strokeWidth={2.25} aria-hidden />Lịch sử</Link> : null}
+      {layout === 'web' ? <Link to="/history" className="-ml-2 mb-header inline-flex h-9 items-center gap-1 rounded-full pr-3 pl-1 text-tint no-underline hover:bg-surface-2"><ChevronLeft size={22} strokeWidth={2.25} aria-hidden />Lịch sử</Link> : null}
 
-      <header className="card flex flex-col items-center gap-2 px-5 pt-6 pb-5 text-center">
+      <header className="card flex flex-col items-center gap-2 px-inset py-group text-center">
         <TxIcon type={t.type} size={56} />
         <h1 tabIndex={-1} data-page-title className="mt-1 line-clamp-2 text-[17px] leading-[24px] font-bold break-words outline-none">{name}</h1>
         <p className="-mt-1 text-[13px] text-muted">{typeLabel(t.type)}</p>
@@ -234,17 +234,17 @@ export default function TransactionPage() {
         <span className="text-[15px] text-muted">{t.status === 'success' ? fmtDateTime(t.updatedAt) : truthLine(t)}</span>
       </header>
 
-      <div className="mt-6 flex flex-col gap-4">
+      <div className="mt-group flex flex-col gap-4">
         {timelineSteps(t, refundTx).length > 1 ? <Timeline steps={timelineSteps(t, refundTx)} /> : null}
 
         {refundTx ? (
-          <Link to={`/history/${refundTx.id}`} className="flex min-h-12 items-center justify-between gap-3 card px-4 py-3 text-ink no-underline hover:bg-surface-2">
+          <Link to={`/history/${refundTx.id}`} className="flex min-h-12 items-center justify-between gap-3 card px-inset py-stack text-ink no-underline hover:bg-surface-2">
             <span>Hoàn tiền · <span className="tnum text-success">{formatVnd(refundTx.amount, { sign: 'in' })}</span> · {fmtDateTime(refundTx.createdAt).split(' · ')[1]}</span>
             <span aria-hidden className="text-muted">›</span>
           </Link>
         ) : null}
         {original ? (
-          <Link to={`/history/${original.id}`} className="flex min-h-12 items-center justify-between gap-3 card px-4 py-3 text-ink no-underline hover:bg-surface-2">
+          <Link to={`/history/${original.id}`} className="flex min-h-12 items-center justify-between gap-3 card px-inset py-stack text-ink no-underline hover:bg-surface-2">
             <span>Hoàn tiền cho giao dịch <span className="tnum">{original.id}</span></span>
             <span aria-hidden className="text-muted">›</span>
           </Link>

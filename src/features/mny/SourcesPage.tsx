@@ -65,11 +65,11 @@ export default function SourcesPage() {
         />
       ) : (
         <>
-          <p className="mb-4 text-muted">{NOTE}</p>
+          <p className="mb-stack text-muted">{NOTE}</p>
           <ul className="flex flex-col gap-3">
             {sources.map((s) => (
               <li key={s.id}>
-                <Card className="flex min-h-[72px] items-center gap-3 py-3 pr-2 pl-4">
+                <Card className="flex min-h-[72px] items-center gap-3 py-stack pr-header pl-inset">
                   <SourceLine s={s} sub={<span className="block break-words">{holder}</span>} />
                   {s.isDefault ? <DefaultBadge /> : null}
                   {layout === 'web' ? (
@@ -84,7 +84,7 @@ export default function SourcesPage() {
                           {!s.isDefault ? <DropdownMenu.Item onSelect={() => makeDefault(s)} className={itemCls}>Đặt làm mặc định</DropdownMenu.Item> : null}
                           <DropdownMenu.Item disabled={!unlinkable} onSelect={() => askUnlink(s)} className={cx(itemCls, unlinkable ? 'text-danger' : 'text-muted')}>
                             Hủy liên kết
-                            {!unlinkable ? <span className="mt-0.5 block text-[13px] leading-[18px]">{LAST_REASON}</span> : null}
+                            {!unlinkable ? <span className="mt-1 block text-[13px] leading-[18px]">{LAST_REASON}</span> : null}
                           </DropdownMenu.Item>
                         </DropdownMenu.Content>
                       </DropdownMenu.Portal>
@@ -98,7 +98,7 @@ export default function SourcesPage() {
               </li>
             ))}
           </ul>
-          {layout === 'app' ? <div className="sticky bottom-[calc(80px+env(safe-area-inset-bottom))] mt-6">{linkBtn}</div> : null}
+          {layout === 'app' ? <div className="sticky bottom-[calc(80px+env(safe-area-inset-bottom))] mt-group">{linkBtn}</div> : null}
         </>
       )}
 
@@ -118,7 +118,7 @@ export default function SourcesPage() {
         title={unlinkFor ? `Hủy liên kết ${sourceName(unlinkFor)}?` : ''}
         description="Bạn sẽ không nạp tiền từ hoặc rút tiền về nguồn này nữa. Giao dịch đang xử lý với nguồn này vẫn tiếp tục."
       >
-        <div className="mt-2 flex flex-col gap-2">
+        <div className="mt-header flex flex-col gap-2">
           <Button variant="danger" block onClick={() => { setPinError(undefined); setPinFor(unlinkFor); setUnlinkFor(null) }}>Hủy liên kết</Button>
           <Button variant="ghost" block onClick={() => setUnlinkFor(null)}>Giữ lại</Button>
         </div>

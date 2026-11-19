@@ -26,12 +26,12 @@ export default function ProfilePage() {
     ['Ngày hết hạn CCCD', hasId ? <span className="tnum">{fmtYmd(c.idExpiry)}</span> : none],
     ['Phương thức xác thực', c.kycMethod ? (c.kycMethod === 'nfc' ? 'Chip CCCD (NFC)' : 'VNeID') : none],
     ['Trạng thái xác thực', (
-      <span className={cx('inline-flex items-center gap-1.5', tone === 'success' ? 'text-ink' : tone === 'pending' ? 'text-pending' : 'text-danger')}>
+      <span className={cx('inline-flex items-center gap-2', tone === 'success' ? 'text-ink' : tone === 'pending' ? 'text-pending' : 'text-danger')}>
         <KycIcon size={16} strokeWidth={2.25} aria-hidden />{KYC_LABEL[c.kycStatus]}
       </span>
     )],
     ['Trạng thái ví', (
-      <span className={cx('inline-flex items-center gap-1.5', w.walletStatus === 'active' ? 'text-ink' : 'text-danger')}>
+      <span className={cx('inline-flex items-center gap-2', w.walletStatus === 'active' ? 'text-ink' : 'text-danger')}>
         <span aria-hidden className={cx('size-2 rounded-full', w.walletStatus === 'active' ? 'bg-success' : 'bg-danger')} />{WALLET_LABEL[w.walletStatus]}
       </span>
     )],
@@ -40,7 +40,7 @@ export default function ProfilePage() {
   return (
     <div>
       <ScreenTitle>Hồ sơ và xác thực</ScreenTitle>
-      <div className="card flex items-center gap-4 p-5">
+      <div className="card flex items-center gap-4 p-inset">
         <Avatar name={c.name} src={c.photo} size={64} />
         <div className="min-w-0 flex-1 pt-1">
           <p className="text-[17px] leading-[26px] font-bold break-words">{c.name}</p>
@@ -49,11 +49,11 @@ export default function ProfilePage() {
       </div>
 
       {c.kycStatus === 'id_expiring' ? (
-        <div className="mt-6"><Callout tone="pending" title={`CCCD của bạn hết hạn vào ${fmtYmd(c.idExpiry)}. Sau ngày này ví sẽ tạm ngừng giao dịch.`} /></div>
+        <div className="mt-group"><Callout tone="pending" title={`CCCD của bạn hết hạn vào ${fmtYmd(c.idExpiry)}. Sau ngày này ví sẽ tạm ngừng giao dịch.`} /></div>
       ) : null}
-      {gate ? <div className="mt-6"><GateCallout gate={gate} /></div> : null}
+      {gate ? <div className="mt-group"><GateCallout gate={gate} /></div> : null}
 
-      <Card className="mt-6 px-4">
+      <Card className="mt-group px-inset">
         <dl className="divide-y divide-line-soft">
           {rows.map(([k, v]) => (
             <div key={k} className="flex min-h-12 items-start justify-between gap-4 py-3">

@@ -43,7 +43,18 @@
   --shadow-card: 0 0 #0000;                   /* grouped sections carry no shadow */
   --shadow-thumb: 0 3px 8px rgb(0 0 0 / 0.12), 0 3px 1px rgb(0 0 0 / 0.04);
   --radius-card: 24px;
+  /* Spacing by role on a 4pt grid (DESIGN.md "Spacing"). Web values below. Use these, not raw numbers, for layout rhythm. */
+  --spacing-inset: 16px;   /* padding inside a section; left/right of rows */
+  --spacing-hero: 20px;    /* padding of the money card */
+  --spacing-header: 8px;   /* group or section header to its content */
+  --spacing-stack: 12px;   /* sibling blocks in one group */
+  --spacing-group: 24px;   /* page title to content; groups inside a section */
+  --spacing-section: 32px; /* between titled sections */
   --radius-input: 12px;
+}
+
+@media (min-width: 1024px) {
+  :root { --spacing-inset: 20px; --spacing-hero: 28px; --spacing-section: 40px; }
 }
 
 @media (prefers-color-scheme: dark) {

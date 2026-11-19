@@ -11,7 +11,7 @@ export function IdentitySummary({ title }: { title: string }) {
   const c = useWorld().customer
   return (
     <section aria-label={title}>
-      <h2 className="mb-2 text-[17px] leading-[26px] font-bold">{title}</h2>
+      <h2 className="mb-header text-[17px] leading-[26px] font-bold">{title}</h2>
       <DataList rows={[
         ['Họ và tên', c.name.toUpperCase()],
         ['Số CCCD', <span className="tnum">{maskIdNumber(c.idNumber)}</span>],
@@ -68,7 +68,7 @@ export function NfcStep() {
         : <Button block onClick={start}>{phase === 'stalled' ? 'Đọc lại' : 'Bắt đầu đọc'}</Button>
     }>
       <p>Áp CCCD vào mặt lưng điện thoại, gần camera, giữ yên khoảng 30 giây.</p>
-      <div className="relative mx-auto my-8 size-44">
+      <div className="relative mx-auto my-section size-44">
         <svg viewBox="0 0 100 100" className="absolute inset-0" aria-hidden>
           <circle cx="50" cy="50" r={r} fill="none" stroke="var(--color-line)" strokeWidth="4" />
           <circle cx="50" cy="50" r={r} fill="none" stroke="var(--color-tint)" strokeWidth="4" strokeLinecap="round" strokeDasharray={len} strokeDashoffset={len * (1 - pct / 100)} transform="rotate(-90 50 50)" className="transition-[stroke-dashoffset] duration-150" />

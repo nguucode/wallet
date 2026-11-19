@@ -38,9 +38,9 @@ export function VerifyingStep() {
   if (!result)
     return (
       <StepShell title="Đang đối chiếu thông tin…">
-        <div role="status" className="flex flex-col items-center py-8 text-center">
+        <div role="status" className="flex flex-col items-center py-section text-center">
           <span aria-hidden className="size-12 animate-spin rounded-full border-4 border-current border-r-transparent" />
-          <p className="mt-4 text-muted">Thường mất vài giây.</p>
+          <p className="mt-stack text-muted">Thường mất vài giây.</p>
         </div>
       </StepShell>
     )
@@ -48,7 +48,7 @@ export function VerifyingStep() {
   if (result === 'verified')
     return (
       <StepShell title="Xác thực thành công">
-        <div role="status" className="flex flex-col items-center py-8"><StatusMark tone="primary" /><p className="sr-only">Xác thực thành công</p></div>
+        <div role="status" className="flex flex-col items-center py-section"><StatusMark tone="primary" /><p className="sr-only">Xác thực thành công</p></div>
       </StepShell>
     )
 
@@ -57,7 +57,7 @@ export function VerifyingStep() {
       <StepShell title="Hồ sơ đang được kiểm tra" footer={<Button block onClick={() => go('warning', { replace: true })}>Tiếp tục</Button>}>
         <div role="status" className="flex flex-col items-center text-center">
           <StatusMark tone="pending" />
-          <p className="mt-4 max-w-[44ch]">Thường xong trong 24 giờ. Bạn vẫn có thể hoàn tất mở ví, nhưng chưa giao dịch được cho đến khi có kết quả.</p>
+          <p className="mt-stack max-w-[44ch]">Thường xong trong 24 giờ. Bạn vẫn có thể hoàn tất mở ví, nhưng chưa giao dịch được cho đến khi có kết quả.</p>
         </div>
       </StepShell>
     )
@@ -73,7 +73,7 @@ export function VerifyingStep() {
     </>}>
       <div role="alert" className="flex flex-col items-center text-center">
         <StatusMark tone="danger" />
-        <p className="mt-4 max-w-[44ch]">{f.body}</p>
+        <p className="mt-stack max-w-[44ch]">{f.body}</p>
       </div>
     </StepShell>
   )

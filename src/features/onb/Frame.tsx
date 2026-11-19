@@ -24,7 +24,7 @@ function Stages({ step }: { step: Step }) {
         {STAGES.map((s, i) => (
           <li key={s} className="min-w-0">
             <span className={cx('block h-1 rounded-full', i <= cur ? 'bg-primary' : 'bg-surface-2')} />
-            <span className={cx('mt-1.5 block text-[12px] leading-4', i === cur ? 'font-semibold text-ink' : 'text-muted')}>{s}</span>
+            <span className={cx('mt-header block text-[12px] leading-4', i === cur ? 'font-semibold text-ink' : 'text-muted')}>{s}</span>
           </li>
         ))}
       </ol>
@@ -60,18 +60,18 @@ export function StepShell({ title, children, footer, description }: { title: str
           </span>
           <span className="flex items-center gap-2"><DemoControlsButton /><SampleBadge />{skip}</span>
         </header>
-        <main id="main" className="relative mx-auto max-w-[560px] px-4 pt-6 pb-16">
-          <div className="mb-4"><Stages step={step} /></div>
-          <div className="card p-8">
+        <main id="main" className="relative mx-auto max-w-[560px] px-inset pt-group pb-16">
+          <div className="mb-stack"><Stages step={step} /></div>
+          <div className="card p-hero">
             {back ? (
-              <button type="button" onClick={() => go(back)} className="-ml-2 mb-3 inline-flex h-9 items-center gap-0.5 rounded-full pr-3 pl-1 text-[15px] text-tint hover:bg-surface-2">
+              <button type="button" onClick={() => go(back)} className="-ml-2 mb-stack inline-flex h-9 items-center gap-1 rounded-full pr-3 pl-1 text-[15px] text-tint hover:bg-surface-2">
                 <ChevronLeft size={22} strokeWidth={2.25} aria-hidden />Quay lại
               </button>
             ) : null}
             {heading}
-            {description ? <p className="mt-2 text-muted">{description}</p> : null}
-            <div className="mt-6">{children}</div>
-            {footer ? <div className="mt-8 flex flex-col gap-2">{footer}</div> : null}
+            {description ? <p className="mt-header text-muted">{description}</p> : null}
+            <div className="mt-group">{children}</div>
+            {footer ? <div className="mt-section flex flex-col gap-2">{footer}</div> : null}
           </div>
         </main>
       </div>
@@ -88,10 +88,10 @@ export function StepShell({ title, children, footer, description }: { title: str
         </div>
         <div className="px-4"><Stages step={step} /></div>
       </header>
-      <main id="main" className="mx-auto w-full max-w-[560px] flex-1 px-5 pt-4 pb-6">
+      <main id="main" className="mx-auto w-full max-w-[560px] flex-1 px-inset pt-stack pb-group">
         {heading}
-        {description ? <p className="mt-2 text-muted">{description}</p> : null}
-        <div className="mt-5">{children}</div>
+        {description ? <p className="mt-header text-muted">{description}</p> : null}
+        <div className="mt-group">{children}</div>
       </main>
       {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 bg-surface/85 backdrop-blur-xl px-5 pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</div> : null}
     </div>
@@ -121,5 +121,5 @@ export function DataList({ rows }: { rows: [string, ReactNode][] }) {
 
 /** Simulated hand-off panel header, so it never reads as Wallet UI. */
 export function SimLabel({ children }: { children: ReactNode }) {
-  return <p className="mb-3 inline-flex h-6 items-center rounded-full border border-dashed border-line px-2.5 text-[12px] font-medium text-muted">{children}</p>
+  return <p className="mb-stack inline-flex h-6 items-center rounded-full border border-dashed border-line px-2.5 text-[12px] font-medium text-muted">{children}</p>
 }

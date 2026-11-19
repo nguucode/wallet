@@ -30,7 +30,7 @@ export default function SecurityPage() {
   return (
     <div>
       <ScreenTitle>Bảo mật</ScreenTitle>
-      <Card className="px-4">
+      <Card className="px-inset">
         <ul className="divide-y divide-line-soft">
           <SettingRow
             icon={<KeyRound size={22} strokeWidth={1.75} />}
@@ -92,7 +92,7 @@ function SettingRow({ icon, title, desc, descId, control }: { icon: ReactNode; t
 }
 
 function LockedNote({ until }: { until: string }) {
-  return <p role="alert" className="py-6 text-center text-danger">Mã PIN đang tạm khóa do nhập sai nhiều lần. Thử lại sau {fmtTime(until)}.</p>
+  return <p role="alert" className="py-group text-center text-danger">Mã PIN đang tạm khóa do nhập sai nhiều lần. Thử lại sau {fmtTime(until)}.</p>
 }
 
 function VerifyPin({ onOk }: { onOk: () => void }) {
@@ -123,12 +123,12 @@ function ChangePinSheet({ open, onClose, onDone }: { open: boolean; onClose: () 
   const idx = ['current', 'new', 'confirm'].indexOf(s.step)
   return (
     <Sheet open={open} onOpenChange={(o) => !o && onClose()} title="Đổi mã PIN">
-      <ol className="mb-4 flex justify-center gap-2" aria-label={`Bước ${idx + 1} trên 3`}>
+      <ol className="mb-stack flex justify-center gap-2" aria-label={`Bước ${idx + 1} trên 3`}>
         {[0, 1, 2].map((i) => <li key={i} aria-hidden className={cx('size-2 rounded-full', i <= idx ? 'bg-ink' : 'bg-line')} />)}
       </ol>
       {s.step === 'current' && until ? <LockedNote until={until} /> : s.step === 'done' ? null : (
         <>
-          <p className="mb-2 text-center font-semibold" aria-live="polite">{STEP_LABEL[s.step]}</p>
+          <p className="mb-header text-center font-semibold" aria-live="polite">{STEP_LABEL[s.step]}</p>
           <PinPad key={s.n} label={STEP_LABEL[s.step]} error={s.error} onComplete={(pin) => setS(changePinStep(s, pin, verifyPin))} />
         </>
       )}

@@ -39,7 +39,7 @@ export function IdMethodStep() {
         ))}
       </div>
       {!chip ? (
-        <div className="mt-6 flex items-start gap-3 rounded-[12px] border border-line p-4">
+        <div className="mt-group flex items-start gap-3 rounded-[12px] border border-line p-inset">
           <Disc><Smartphone size={22} strokeWidth={1.75} /></Disc>
           <div>
             <p className="font-semibold">Mở ví trên điện thoại</p>
@@ -57,7 +57,7 @@ export function SampleCard() {
   return (
     <div className="aspect-[85.6/54] w-full rounded-[12px] bg-gradient-to-br from-[#e9eef5] to-[#cfd9e6] p-3 text-[#1d2a3a]" role="img" aria-label="Ảnh mặt trước CCCD mẫu">
       <p className="text-center text-[10px] font-bold tracking-wide">CĂN CƯỚC CÔNG DÂN</p>
-      <div className="mt-2 flex gap-3">
+      <div className="mt-header flex gap-3">
         <span className="aspect-[3/4] w-[24%] rounded bg-[#9fb0c4]" />
         <div className="min-w-0 text-[10px] leading-[14px]">
           <p>Số: {maskIdNumber(w.customer.idNumber)}</p>
@@ -82,21 +82,21 @@ export function IdCaptureStep() {
         <Button variant="secondary" block disabled={busy} onClick={() => setShot(false)}>Chụp lại</Button>
       </>}>
         <SampleCard />
-        <p className="mt-4">Kiểm tra ảnh: chữ và ảnh chân dung phải rõ nét.</p>
-        <p role="status" className="mt-2 min-h-5 text-[15px] text-muted">{busy ? 'Đang xử lý ảnh…' : ''}</p>
+        <p className="mt-stack">Kiểm tra ảnh: chữ và ảnh chân dung phải rõ nét.</p>
+        <p role="status" className="mt-header min-h-5 text-[15px] text-muted">{busy ? 'Đang xử lý ảnh…' : ''}</p>
       </StepShell>
     )
   return (
     <StepShell title="Chụp mặt trước CCCD">
-      <div className="flex flex-col items-center rounded-[16px] bg-black px-5 py-8 text-white">
+      <div className="flex flex-col items-center rounded-[16px] bg-black px-inset py-section text-white">
         <div aria-hidden className="aspect-[85.6/54] w-full max-w-[340px] rounded-[12px] border-2 border-white/90" />
-        <p className="mt-4 text-center text-[15px] leading-5">Đặt CCCD nằm gọn trong khung, đủ sáng, không bị lóa.</p>
-        <button type="button" onClick={() => setShot(true)} aria-label="Chụp" className="mt-6 inline-flex size-[72px] items-center justify-center rounded-full border-4 border-white focus-visible:outline-white">
+        <p className="mt-stack text-center text-[15px] leading-5">Đặt CCCD nằm gọn trong khung, đủ sáng, không bị lóa.</p>
+        <button type="button" onClick={() => setShot(true)} aria-label="Chụp" className="mt-group inline-flex size-[72px] items-center justify-center rounded-full border-4 border-white focus-visible:outline-white">
           <span aria-hidden className="size-14 rounded-full bg-white" />
         </button>
-        <span aria-hidden className="mt-2 text-[13px]">Chụp</span>
+        <span aria-hidden className="mt-header text-[13px]">Chụp</span>
       </div>
-      <p className="mt-3 text-[13px] text-muted">Mô phỏng: camera dùng ảnh CCCD mẫu.</p>
+      <p className="mt-stack text-[13px] text-muted">Mô phỏng: camera dùng ảnh CCCD mẫu.</p>
     </StepShell>
   )
 }

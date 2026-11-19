@@ -53,7 +53,7 @@ function SampleGrid({ onPick, cols }: { onPick: (payload: string) => void; cols:
     <ul className={cx('grid gap-3', cols)}>
       {sampleQrs(w).map((q) => (
         <li key={q.id}>
-          <button type="button" onClick={() => onPick(q.payload)} className="flex h-full w-full flex-col items-center gap-2 card p-3 text-center text-ink hover:bg-surface-2">
+          <button type="button" onClick={() => onPick(q.payload)} className="flex h-full w-full flex-col items-center gap-2 card p-inset text-center text-ink hover:bg-surface-2">
             <QrImage payload={q.payload} size={88} label="" />
             <span className="line-clamp-2 text-[13px] leading-[18px] font-medium" title={q.label}>{q.label}</span>
             <span className="text-[12px] leading-4 text-muted">{q.hint}</span>
@@ -83,7 +83,7 @@ function WebScan() {
   return (
     <>
       <PayTabs active="scan" />
-      <h2 className="mb-3 text-[17px] leading-[26px] font-bold">Tải ảnh mã QR</h2>
+      <h2 className="mb-stack text-[17px] leading-[26px] font-bold">Tải ảnh mã QR</h2>
       <label
         onDragOver={(e) => { e.preventDefault(); setOver(true) }} onDragLeave={() => setOver(false)} onDrop={onDrop}
         className={cx('flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[12px] border border-dashed p-6 text-center focus-within:outline-2 focus-within:outline-tint', over ? 'border-tint bg-primary-soft' : 'border-line hover:bg-surface-2')}
@@ -94,14 +94,14 @@ function WebScan() {
         <input ref={fileRef} type="file" accept="image/png,image/jpeg" className="sr-only" onChange={(e) => { void take(e.target.files?.[0]); e.target.value = '' }} />
       </label>
       {problem ? (
-        <div className="mt-4">
+        <div className="mt-stack">
           <Callout tone="danger" title={problem.title} action={<Button size="sm" variant="secondary" onClick={() => (problem.action === 'other-image' ? fileRef.current?.click() : setProblem(null))}>{problem.action === 'other-image' ? 'Chọn ảnh khác' : 'Quét lại'}</Button>}>
             {problem.body}
           </Callout>
         </div>
       ) : null}
       <h2 className="mt-12 mb-1 text-[17px] leading-[26px] font-bold">Mã mẫu</h2>
-      <p className="mb-3 text-[13px] text-muted">Mã dựng sẵn cho bản demo. Chọn một mã để đi tiếp như khi quét thật.</p>
+      <p className="mb-stack text-[13px] text-muted">Mã dựng sẵn cho bản demo. Chọn một mã để đi tiếp như khi quét thật.</p>
       <SampleGrid onPick={(p) => { setProblem(null); handle(p) }} cols="grid-cols-2 sm:grid-cols-4" />
     </>
   )
@@ -183,7 +183,7 @@ function AppScan() {
   else message = 'Bật camera để quét mã của cửa hàng, ngân hàng hoặc ví.'
 
   const tool = (label: string, icon: ReactNode, onClick: () => void, pressed?: boolean) => (
-    <button type="button" onClick={onClick} aria-pressed={pressed} className="flex min-w-[64px] flex-col items-center gap-1.5 rounded-xl py-1 text-white">
+    <button type="button" onClick={onClick} aria-pressed={pressed} className="flex min-w-[64px] flex-col items-center gap-2 rounded-xl py-1 text-white">
       <span aria-hidden className={cx('inline-flex size-12 items-center justify-center rounded-full', pressed ? 'bg-white text-ink' : 'bg-white/15')}>{icon}</span>
       <span className="text-[13px] leading-[18px]">{label}</span>
     </button>
@@ -198,14 +198,14 @@ function AppScan() {
         <span className="w-11" />
       </div>
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4">
-        <p role="status" aria-live="polite" className="mb-5 max-w-[32ch] text-center text-[15px] leading-[22px]">{message}</p>
+        <p role="status" aria-live="polite" className="mb-group max-w-[32ch] text-center text-[15px] leading-[22px]">{message}</p>
         <div className="relative aspect-square w-[min(240px,calc(100vw-32px))]" aria-hidden>
           {['top-0 left-0 border-t-4 border-l-4 rounded-tl-[20px]', 'top-0 right-0 border-t-4 border-r-4 rounded-tr-[20px]', 'bottom-0 left-0 border-b-4 border-l-4 rounded-bl-[20px]', 'bottom-0 right-0 border-r-4 border-b-4 rounded-br-[20px]'].map((c) => (
             <span key={c} className={cx('absolute size-12 border-white', c)} />
           ))}
         </div>
         {cam !== 'live' && cam !== 'starting' ? (
-          <Button className="mt-6" onClick={() => void start()}>{cam === 'error' ? 'Thử lại' : cam === 'denied' ? 'Thử lại' : 'Bật camera'}</Button>
+          <Button className="mt-group" onClick={() => void start()}>{cam === 'error' ? 'Thử lại' : cam === 'denied' ? 'Thử lại' : 'Bật camera'}</Button>
         ) : null}
       </div>
       <div className="relative z-10 flex justify-center gap-6 px-4 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">

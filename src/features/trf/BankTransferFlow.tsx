@@ -75,7 +75,7 @@ export default function BankTransferFlow() {
 
 function FailedFeeNote({ txId }: { txId: string }) {
   const t = useWorld().transactions.find((x) => x.id === txId)
-  return t?.status === 'failed' ? <p className="mt-3 text-[15px] text-muted">Phí đã được hoàn cùng số tiền.</p> : null
+  return t?.status === 'failed' ? <p className="mt-stack text-[15px] text-muted">Phí đã được hoàn cùng số tiền.</p> : null
 }
 
 /* ── recipient (US-TRF-005, US-TRF-008) ───────────────────────────── */
@@ -118,10 +118,10 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
 
   return (
     <>
-      {prefill?.invalid ? <div className="mb-5"><Callout tone="danger" title="Mã QR không hợp lệ. Hãy quét lại hoặc nhập người nhận." /></div> : null}
+      {prefill?.invalid ? <div className="mb-group"><Callout tone="danger" title="Mã QR không hợp lệ. Hãy quét lại hoặc nhập người nhận." /></div> : null}
       {w.bankRecipients.length ? (
         <Section title="Người nhận đã lưu" className="mt-0 lg:mt-0">
-          <Card className="px-4">
+          <Card className="px-inset">
             <ul className="divide-y divide-line-soft">
               {w.bankRecipients.slice(0, 6).map((r) => (
                 <li key={r.id}>
@@ -138,10 +138,10 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
         </Section>
       ) : null}
 
-      <Section title="Tài khoản nhận" className="mt-8 lg:mt-8">
-        <Card className="p-5">
-        <div className="mb-5">
-          <p id="bank-label" className="mb-1.5 text-[13px] font-medium">Ngân hàng</p>
+      <Section title="Tài khoản nhận" className="mt-section">
+        <Card className="p-inset">
+        <div className="mb-group">
+          <p id="bank-label" className="mb-header text-[13px] font-medium">Ngân hàng</p>
           <button
             type="button" aria-labelledby="bank-label bank-value" aria-haspopup="dialog" onClick={() => setPicker(true)}
             className="flex h-12 w-full items-center gap-3 rounded-[var(--radius-input)] bg-surface-2 px-4 text-left lg:h-11"
@@ -151,7 +151,7 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
             <ChevronDown size={18} strokeWidth={1.75} aria-hidden className="text-muted" />
           </button>
         </div>
-        <label htmlFor="account" className="mb-1.5 block text-[13px] font-medium">Số tài khoản</label>
+        <label htmlFor="account" className="mb-header block text-[13px] font-medium">Số tài khoản</label>
         <div className="flex gap-2">
           <TextInput
             id="account" inputMode="numeric" autoComplete="off" maxLength={19} value={account} invalid={!!formatError || !!lookupError}
@@ -162,7 +162,8 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
           />
           <Button variant="secondary" disabled={!bank || !account} onClick={() => void run()}>Kiểm tra</Button>
         </div>
-        <div id="lookup-msg" aria-live="polite" className="mt-2 min-h-5 text-[13px] leading-5">
+        {/* The live region stays mounted for announcements but takes no space when empty, so the card's bottom inset matches its top. */}
+        <div id="lookup-msg" aria-live="polite" className={cx('text-[13px] leading-5', (formatError || lookup.status === 'loading' || lookupError) && 'mt-header')}>
           {formatError ? <span className="text-danger">{formatError}</span> : null}
           {lookup.status === 'loading' ? <span className="flex items-center gap-2 text-muted"><span className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden />Đang kiểm tra tên chủ tài khoản…</span> : null}
           {lookupError === 'not_found' ? <span className="text-danger">Không tìm thấy tài khoản. Kiểm tra lại ngân hàng và số tài khoản.</span> : null}
@@ -171,8 +172,8 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
           ) : null}
         </div>
         {found ? (
-          <div className="mt-3 flex items-start gap-3 rounded-[12px] border border-line bg-success-soft/40 p-4">
-            <Check size={20} strokeWidth={2} aria-hidden className="mt-0.5 shrink-0 text-success" />
+          <div className="mt-stack flex items-start gap-3 rounded-[12px] border border-line bg-success-soft/40 p-inset">
+            <Check size={20} strokeWidth={2} aria-hidden className="mt-1 shrink-0 text-success" />
             <div className="min-w-0">
               <p className="text-[13px] text-muted">Tên chủ tài khoản</p>
               <p className="text-[16px] font-bold break-words">{found}</p>
@@ -181,7 +182,7 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
         ) : null}
         </Card>
       </Section>
-      <div className="mt-8">
+      <div className="mt-section">
         <Button block disabled={!found || !bankId} onClick={() => onNext(bankId!, account, found!, false)}>Tiếp tục</Button>
       </div>
 
@@ -195,7 +196,7 @@ function BankPicker({ open, onOpenChange, onPick }: { open: boolean; onOpenChang
   const list = BANKS.filter((b) => fold(b.name).includes(fold(q)))
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title="Chọn ngân hàng">
-      <div className="relative mb-3">
+      <div className="relative mb-stack">
         <Search size={18} strokeWidth={1.75} aria-hidden className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted" />
         <TextInput aria-label="Tìm ngân hàng" placeholder="Tìm ngân hàng" value={q} onChange={(e) => setQ(e.target.value)} className="pl-11" />
       </div>
@@ -203,7 +204,7 @@ function BankPicker({ open, onOpenChange, onPick }: { open: boolean; onOpenChang
         {list.map((b) => (
           <li key={b.id}><Row onClick={() => onPick(b.id)} left={<BankMark short={b.short} />} title={b.name} /></li>
         ))}
-        {!list.length ? <li className="py-4 text-muted">Không tìm thấy ngân hàng.</li> : null}
+        {!list.length ? <li className="py-stack text-muted">Không tìm thấy ngân hàng.</li> : null}
       </ul>
     </Sheet>
   )
@@ -223,9 +224,9 @@ function AmountStep({ draft, setDraft, onNext, onChange }: { draft: Draft; setDr
       {draft.locked
         ? <LockedAmount amount={draft.amount} note="Số tiền theo mã QR" error={error} />
         : <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={error} hint={hint} />}
-      {draft.amount > 0 ? <p className="mt-3 text-[15px]"><span className="text-muted">Phí: </span>{feeLabel('bank_transfer', draft.amount)}</p> : null}
+      {draft.amount > 0 ? <p className="mt-stack text-[15px]"><span className="text-muted">Phí: </span>{feeLabel('bank_transfer', draft.amount)}</p> : null}
       <MessageField value={draft.message} onChange={(message) => setDraft({ message })} />
-      <div className="mt-8">
+      <div className="mt-section">
         {draft.locked && error
           ? <ButtonLink to="/pay/scan" variant="secondary" block>Đổi mã</ButtonLink>
           : <Button block disabled={!check?.ok} onClick={onNext}>Tiếp tục</Button>}
@@ -246,15 +247,15 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
     return (
       <div role="status" aria-live="polite" className="flex flex-col items-center py-16 text-center">
         <span className="size-8 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden />
-        <p className="mt-4 font-semibold">Đang chuyển tiền…</p>
+        <p className="mt-stack font-semibold">Đang chuyển tiền…</p>
         <p className="mt-1"><Money amount={draft.amount} className="amount-display" /></p>
         <p className="mt-1 text-muted break-words">{draft.holder}</p>
       </div>
     )
   return (
     <>
-      <h2 className="mb-4 text-[17px] leading-[26px] font-bold">Xác nhận</h2>
-      <p className="mb-4 text-center"><Money amount={draft.amount} className="amount-display" /></p>
+      <h2 className="mb-stack text-[17px] leading-[26px] font-bold">Xác nhận</h2>
+      <p className="mb-stack text-center"><Money amount={draft.amount} className="amount-display" /></p>
       <ConfirmRows rows={[
         ['Người nhận', <span className="break-words">{draft.holder}</span>],
         ['Ngân hàng', bank.name],
@@ -266,8 +267,8 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
         ['Lời nhắn', draft.message.trim() || 'Chuyển tiền'],
       ]} />
       <AuthNote type="bank_transfer" amount={draft.amount} />
-      {commit.error ? <p role="alert" className="mt-3 text-[13px] text-danger">{commit.error}</p> : null}
-      <div className="mt-8 flex flex-col gap-2">
+      {commit.error ? <p role="alert" className="mt-stack text-[13px] text-danger">{commit.error}</p> : null}
+      <div className="mt-section flex flex-col gap-2">
         <Button block onClick={() => (checkAmount('bank_transfer', draft.amount).ok ? commit.start() : toAmount())}>Xác nhận</Button>
         <Button block variant="ghost" onClick={toAmount}>Quay lại</Button>
       </div>

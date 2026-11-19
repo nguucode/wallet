@@ -151,10 +151,15 @@ spacing:
   gutter-app: "16px"
   gutter-web: "48px"
   sidebar-inset: "12px"
-  card-pad-app: "20px"
-  card-pad-web: "24px"
-  section-gap-app: "32px"
-  section-gap-web: "40px"
+  inset-app: "16px"
+  inset-web: "20px"
+  hero-app: "20px"
+  hero-web: "28px"
+  header: "8px"
+  stack: "12px"
+  group: "24px"
+  section-app: "32px"
+  section-web: "40px"
 components:
   button-primary:
     backgroundColor: "{colors.primary}"
@@ -325,6 +330,23 @@ The web layout (1024px and up) puts a floating glass sidebar inset 12px from the
 Sections stack with 32px (app) or 40px (web) between them, each preceded by a Title 3 header with an optional tint link on the right. Section padding is 20px on app, 24px on web. List rows are at least 64px tall with a 12px gap between leading disc and text.
 
 Flows use the same rhythm. On web: a tint "‹ Quay lại" link, a large title with a CloseButton beside it, then the step. On app: a nav bar with BackButton and CloseButton. A step's content is wrapped in one inset section only when it has no sections of its own. The footer is sticky on a blurred ground with a hairline above. The number keypad stands outside the section on the grouped background, as the system number pad does.
+
+### Spacing system
+
+Spacing is named by role on a 4pt grid and lives in `src/index.css` as Tailwind spacing keys (`p-inset`, `mt-section`, `gap-stack`…). Web values switch at 1024px. A raw number in layout code is a bug unless it is a component's own internal dimension (a chip's 10px side padding, a button's height).
+
+| Token | App / Web | Role |
+|---|---|---|
+| `inset` | 16 / 20 | Padding inside a section; left and right of every row; caps group headers align to it. |
+| `hero` | 20 / 28 | Padding of the money card. |
+| `header` | 8 | A header to the content it labels (section title → section, group caps → section, field label → input). |
+| `stack` | 12 | Sibling blocks of one group (money card → shortcuts, filters → active chips, row vertical padding). |
+| `group` | 24 | Page title → first content; groups inside a section; centred display blocks' vertical padding. |
+| `section` | 32 / 40 | Between titled sections. |
+
+Rhythm: tight inside (header 8, stack 12), generous between (group 24, section 32/40), so grouping reads from proximity before any container. Tables put `inset` on the first and last cells and `group` between columns. Equal-column grids (shortcuts) replace hand-tuned gaps. Menus keep 8px and the QR plate keeps an 8px quiet zone by exception.
+
+**The Named Spacing Rule.** Layout spacing uses a role token, never a number. If no role fits, the layout is wrong before the token is.
 
 ## Elevation & Depth
 
