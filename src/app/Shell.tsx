@@ -79,10 +79,11 @@ function SideLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
       aria-current={active ? 'page' : undefined}
       aria-label={collapsed ? item.label : undefined}
       // On the backdrop the current page is the panel's own surface: bg-background with a hairline, icon in primary.
-      className={cx('h-9 justify-start gap-3 data-[hover=true]:bg-background/70', collapsed ? 'w-9 justify-center self-center px-0' : 'px-2.5', active && 'border border-border bg-background')}
+      className={cx('h-10 justify-start gap-3 data-[hover=true]:bg-background/70', collapsed ? 'w-10 justify-center self-center px-0' : 'px-2.5', active && 'border border-border bg-background')}
     >
-      <Ico as={I} size="sm" className={cx('shrink-0', active ? 'text-primary' : 'text-foreground')} />
-      {collapsed ? null : <ButtonText className={cx('truncate', active && 'font-semibold')}>{item.label}</ButtonText>}
+      <Ico as={I} size="md" className={cx('shrink-0', active ? 'text-primary' : 'text-foreground')} />
+      {/* Same size as page content (text-base): the sm button's text-xs read smaller than the content beside it. */}
+      {collapsed ? null : <ButtonText className={cx('truncate text-base', active && 'font-semibold')}>{item.label}</ButtonText>}
     </Button>
   )
 }
@@ -99,7 +100,7 @@ function AccountMenu({ expanded }: { expanded: boolean }) {
         trigger={(props) => (
           <Button {...props} variant="ghost" size="sm" aria-label="Tài khoản" className={cx('h-9 gap-2 px-1', expanded ? 'min-w-0 flex-1 justify-start' : 'w-9 justify-center px-0')}>
             <Avatar name={w.customer.name} src={w.customer.photo} size={28} />
-            {expanded ? <ButtonText className="min-w-0 truncate">{w.customer.name.split(' ').slice(-2).join(' ')}</ButtonText> : null}
+            {expanded ? <ButtonText className="min-w-0 truncate text-base">{w.customer.name.split(' ').slice(-2).join(' ')}</ButtonText> : null}
           </Button>
         )}
       >
@@ -183,7 +184,7 @@ function WebShell({ children }: { children: ReactNode }) {
               <VStack key={x.group} className="mt-3 gap-px">
                 {collapsed
                   ? <><Text className="sr-only">{x.group}</Text><Divider className="mx-auto mb-1 w-6" /></>
-                  : <Text size="xs" bold isTruncated className="px-2.5 pb-0.5 text-foreground/70">{x.group}</Text>}
+                  : <Text size="sm" bold isTruncated className="px-2.5 pb-1 text-foreground/70">{x.group}</Text>}
                 {x.items.map((i) => <SideLink key={i.id} item={i} collapsed={collapsed} />)}
               </VStack>
             ) : (
@@ -208,8 +209,8 @@ function WebShell({ children }: { children: ReactNode }) {
       {/* The white panel IS the content column (sketch): centred on the backdrop, which shows on both sides; the area
           around it scrolls, so the panel grows with its content. */}
       <Box id="main-scroll" className="min-w-0 flex-1 overflow-y-auto px-6 py-2 print:overflow-visible">
-        <Box role="main" id="main" className="mx-auto min-h-[calc(100dvh-16px)] w-full max-w-[768px] shrink-0 rounded-2xl border border-border bg-background px-12 pb-16 pt-10">
-          {/* 672px of content: everything inside is flat (no nested cards). */}
+        <Box role="main" id="main" className="mx-auto min-h-[calc(100dvh-16px)] w-full max-w-[672px] shrink-0 rounded-2xl border border-border bg-background px-8 pb-16 pt-10">
+          {/* The panel is 672px wide; everything inside is flat (no nested cards). */}
           <FlatContext.Provider value>{children}</FlatContext.Provider>
         </Box>
       </Box>
