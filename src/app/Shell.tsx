@@ -106,7 +106,7 @@ function WebShell({ children }: { children: ReactNode }) {
       <aside className={cx('glass sticky top-3 z-40 m-3 mr-0 flex h-[calc(100dvh-24px)] shrink-0 flex-col rounded-[28px] py-5 transition-[width] duration-200 motion-reduce:transition-none', collapsed ? 'w-[76px] px-2' : 'w-[240px] px-3')}>
         <div className={cx('mb-6 flex items-center', collapsed ? 'flex-col gap-3' : 'justify-between pr-1 pl-4')}>
           <Link to="/home" className="flex items-center gap-2 text-[20px] font-extrabold tracking-tight text-ink no-underline" aria-label="Wallet, về Trang chủ">
-            <span aria-hidden className="sky inline-flex size-8 shrink-0 items-center justify-center rounded-[10px] text-white"><Wallet size={18} strokeWidth={2} /></span>
+            <img src="/icon.svg" alt="" width={32} height={32} className="size-8 shrink-0" />
             {collapsed ? null : <span aria-hidden>Wallet</span>}
           </Link>
           <IconButton label={collapsed ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'} aria-expanded={!collapsed} className="text-muted hover:bg-surface/70 hover:text-ink" onClick={toggleCollapsed}>
@@ -197,7 +197,13 @@ export function AppHeader({ title, back, right, centered }: { title: string; bac
       {back ? (
         <IconButton label="Quay lại" className="text-white hover:bg-white/15" onClick={() => (typeof back === 'string' ? nav(back) : nav(-1))}><ArrowLeft size={22} strokeWidth={1.75} /></IconButton>
       ) : <span className="w-3" />}
-      {centered ? <p className={cx('pointer-events-none absolute inset-x-[100px] truncate text-center font-bold tracking-tight', title === 'Wallet' ? 'text-[22px]' : 'text-[17px]')}>{title}</p> : null}
+      {centered ? (
+        title === 'Wallet' ? (
+          <p className="pointer-events-none absolute inset-x-[100px] flex items-center justify-center gap-2 text-[22px] font-bold tracking-tight">
+            <img src="/mark-on-sky.svg" alt="" width={34} height={19} className="h-[19px] w-auto" />{title}
+          </p>
+        ) : <p className="pointer-events-none absolute inset-x-[100px] truncate text-center text-[17px] font-bold tracking-tight">{title}</p>
+      ) : null}
       <p className={cx('flex-1 truncate text-[17px] font-bold', centered && 'invisible')} aria-hidden={centered || undefined}>{centered ? '' : title}</p>
       {right}
     </header>

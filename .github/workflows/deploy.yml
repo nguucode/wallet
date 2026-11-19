@@ -1,9 +1,11 @@
 name: CI & deploy
 
 on:
+  # push to main = test + deploy to production; PRs into main = test + build only
   push:
     branches: [main]
   pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:

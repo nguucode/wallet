@@ -20,6 +20,24 @@
         ],
         "createdAt": "2026-11-17T14:35:09.252Z",
         "reason": "Claude triage: L205 is the 4 corner brackets of the QR scan viewfinder, not a card accent border"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "brand/logo/final/board.html"
+        ],
+        "createdAt": "2026-11-17T14:58:43.446Z",
+        "reason": "Claude: board.html is generated output of the logo-design skill's presentation_board.py (a slide deck rendered to PNG), not app UI; edits would be overwritten on regeneration"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "brand/logo/final/board.html"
+        ],
+        "createdAt": "2026-11-17T14:58:43.468Z",
+        "reason": "Claude: board.html is generated output of the logo-design skill's presentation_board.py (a slide deck rendered to PNG), not app UI; edits would be overwritten on regeneration"
       }
     ]
   }
