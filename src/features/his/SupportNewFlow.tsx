@@ -56,14 +56,14 @@ export default function SupportNewFlow() {
     )
 
   const locked = !!t && !isWithinSupportWindow(t, now(), config.supportWindowDays)
-  const lockedNote = locked ? <p role="status" className="mb-stack rounded-[16px] bg-surface-2 p-inset text-[15px] leading-5">Giao dịch đã quá {config.supportWindowDays} ngày nên không thể gửi yêu cầu hỗ trợ trực tuyến</p> : null
+  const lockedNote = locked ? <p role="status" className="mb-stack rounded-[var(--radius-input)] bg-surface-2 p-inset text-[15px] leading-5">Giao dịch đã quá {config.supportWindowDays} ngày nên không thể gửi yêu cầu hỗ trợ trực tuyến</p> : null
 
   /* sent */
   if (flow.step === 'sent' && draft.sent)
     return (
       <FlowFrame title="Liên hệ hỗ trợ" footer={<ButtonLink to={backTo} block>{t ? 'Về giao dịch' : 'Về Trợ giúp'}</ButtonLink>}>
         <div className="flex flex-col items-center pt-group text-center">
-          <p role="status" className="text-[17px] font-bold">Đã gửi yêu cầu hỗ trợ</p>
+          <p role="status" className="headline">Đã gửi yêu cầu hỗ trợ</p>
           <p className="mt-header">Mã yêu cầu <span className="tnum font-semibold">{draft.sent.id}</span></p>
           <p className="mt-1 text-muted">Thời gian xử lý tối đa 30 ngày làm việc</p>
         </div>
@@ -91,7 +91,7 @@ export default function SupportNewFlow() {
         {t ? <Summary t={t} /> : null}
         {lockedNote}
         {draft.reason === 'wrong_recipient' && t?.type === 'p2p_out' && t.status === 'success' ? (
-          <div className="mb-group rounded-[16px] bg-surface-2 p-inset">
+          <div className="mb-group rounded-[var(--radius-input)] bg-surface-2 p-inset">
             <p className="font-semibold">Ví không thể tự hủy giao dịch đã thành công</p>
             <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="mt-header inline-flex min-h-11 items-center font-semibold text-tint">Nhắn người nhận</a>
           </div>
@@ -101,7 +101,7 @@ export default function SupportNewFlow() {
           <textarea
             id="sp-details" disabled={locked} rows={5} maxLength={600} aria-required aria-describedby="sp-count"
             value={draft.details} onChange={(e) => flow.setDraft({ ...draft, details: e.target.value })}
-            className="field-sizing-content min-h-32 w-full rounded-[12px] border border-line bg-surface px-4 py-3 text-[15px] disabled:bg-surface-2"
+            className="field-sizing-content min-h-32 w-full rounded-[var(--radius-input)] border border-transparent bg-surface-2 px-4 py-3 text-[15px] disabled:bg-surface-2"
           />
           <p id="sp-count" className={cx('mt-header text-right text-[13px] tnum', n > 500 ? 'text-danger' : 'text-muted')}>{n}/500 · tối thiểu 20 ký tự</p>
         </Field>
@@ -134,7 +134,7 @@ export default function SupportNewFlow() {
         </div>
       </fieldset>
       {needsTx ? (
-        <p role="status" className="mt-stack rounded-[16px] bg-surface-2 p-inset text-[15px] leading-5">
+        <p role="status" className="mt-stack rounded-[var(--radius-input)] bg-surface-2 p-inset text-[15px] leading-5">
           Hãy mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ để gửi yêu cầu về giao dịch đó. <Link to="/history" className="font-semibold text-tint">Mở Lịch sử</Link>
         </p>
       ) : null}

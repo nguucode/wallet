@@ -1,9 +1,9 @@
-import { Check, ChevronLeft, Clock, X } from 'lucide-react'
+import { Check, Clock, X } from 'lucide-react'
 import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { SampleBadge } from '@/app/Shell'
-import { BackButton, cx } from '@/components/ui'
+import { BackButton, cx, WebBackLink } from '@/components/ui'
 import { DemoControlsButton } from '@/features/demo/DemoControls'
 import { backTarget, stageOf, STAGES, type IdPath, type Step } from './steps'
 
@@ -64,9 +64,7 @@ export function StepShell({ title, children, footer, description }: { title: str
           <div className="mb-stack"><Stages step={step} /></div>
           <div className="card p-hero">
             {back ? (
-              <button type="button" onClick={() => go(back)} className="-ml-2 mb-stack inline-flex h-9 items-center gap-1 rounded-full pr-3 pl-1 text-[15px] text-tint hover:bg-surface-2">
-                <ChevronLeft size={22} strokeWidth={2.25} aria-hidden />Quay lại
-              </button>
+              <WebBackLink onClick={() => go(back)} />
             ) : null}
             {heading}
             {description ? <p className="mt-header text-muted">{description}</p> : null}

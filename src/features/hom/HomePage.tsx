@@ -1,17 +1,17 @@
 import {
-  ArrowDownToLine, ArrowDownLeft, ArrowUpFromLine, ArrowUpRight, Clock, Eye, EyeOff, FileText, QrCode, RotateCcw, ScanLine, Send,
+  ArrowDownToLine, ArrowUpFromLine, Clock, Eye, EyeOff, FileText, Inbox, QrCode, ScanLine, Send,
 } from 'lucide-react'
 import type { MouseEvent, ReactNode } from 'react'
 import { Link } from 'react-router'
 import { useLayout } from '@/app/layout'
 import {
-  bankById, counterpartyName, gateOf, getState, now, pendingOut, setBalanceHidden, typeLabel, useWorld,
+  bankById, gateOf, getState, now, pendingOut, setBalanceHidden, useWorld,
 } from '@/app/store'
 import { formatVnd } from '@/domain/money'
-import type { Transaction } from '@/mock/seed'
-import { Avatar, Button, Card, cx, Disc, Dong, IconButton, Section, Skeleton } from '@/components/ui'
+import { Avatar, BankMark, Card, cx, Dong, EmptyState, IconButton, RailTile, Row, RowSkeleton, Section, Skeleton } from '@/components/ui'
+import { TxIcon, TxRow } from '@/features/his/parts'
 import { LineChart } from '@/components/charts'
-import { fmtDate, fmtTime, maskAccount, maskPhone } from '@/features/flow/FlowKit'
+import { maskAccount, maskPhone } from '@/features/flow/FlowKit'
 import { GateCallout, useGuard } from '@/features/sec/Gate'
 import { useLoaded } from '@/features/sec/kit'
 import { useReminders } from '@/features/ntf/useReminders'
@@ -80,7 +80,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
         </p>
       )}
       {loaded && held > 0 ? (
-        <Link to="/history?tab=dang-xu-ly" className="mt-stack inline-flex min-h-8 items-center gap-2 rounded-full bg-[var(--color-pending-soft-on-card)] px-3 text-[13px] font-semibold text-[color:var(--color-pending-on-card)] no-underline ring-1 ring-[#ffc46b]/30 ring-inset focus-visible:outline-white">
+        <Link to="/history?tab=dang-xu-ly" className="mt-stack inline-flex min-h-8 items-center gap-2 rounded-full bg-[var(--color-pending-soft-on-card)] px-3 text-[13px] font-semibold text-[color:var(--color-pending-on-card)] no-underline ring-1 ring-[color-mix(in_oklab,var(--color-pending-on-card)_30%,transparent)] ring-inset focus-visible:outline-white">
           <Clock size={15} strokeWidth={2.25} aria-hidden />
           Đang xử lý{' '}
           {hidden ? <><span aria-hidden>••••••</span><span className="sr-only">số tiền đang ẩn</span></> : <span className="tnum">{formatVnd(held)}</span>}
@@ -107,8 +107,8 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
  *  and masked so they fade out before reaching the balance text. Decorative only. */
 const GUILLOCHE = [[60, 0], [48, 0.21], [36, 0.42]].map(([d, rot]) => {
   const R = 100, r = 37, k = (R - r) / r, pts: string[] = []
-  for (let i = 0; i <= 2220; i++) {
-    const t = (i / 2220) * 2 * Math.PI * 37
+  for (let i = 0; i <= 1480; i++) {
+    const t = (i / 1480) * 2 * Math.PI * 37
     const x = (R - r) * Math.cos(t) + d * Math.cos(k * t), y = (R - r) * Math.sin(t) - d * Math.sin(k * t)
     const c = Math.cos(rot), sn = Math.sin(rot)
     pts.push(`${(x * c - y * sn).toFixed(1)},${(x * sn + y * c).toFixed(1)}`)
@@ -148,12 +148,13 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
             <Link
               to={s.to}
               onClick={s.ungated ? undefined : guardedClick(guard, s.to)}
-              className="group flex flex-col items-center gap-header rounded-xl py-1 text-center text-ink no-underline focus-visible:outline-none"
+              className="group flex flex-col items-center gap-header rounded-xl py-1 text-center text-ink no-underline transition-colors hover:bg-surface-2 active:bg-surface-2 focus-visible:outline-none"
             >
-              <span className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-tint group-hover:bg-primary-soft group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-tint">
+              <span className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-tint group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-tint">
                 <s.icon size={24} strokeWidth={1.75} aria-hidden />
               </span>
-              <span className="px-0.5 text-[11px] leading-[14px] font-semibold lg:text-[12px] lg:leading-4 lg:whitespace-nowrap">{s.label}</span>
+              {/* Six tiles in ~342px on the app layout: the dense-row label (11/14, tab-bar size) keeps a gutter and two lines. */}
+              <span className="px-0.5 text-[11px] leading-[14px] font-semibold text-balance lg:px-0 lg:text-[12px] lg:leading-4 lg:whitespace-nowrap">{s.label}</span>
             </Link>
           </li>
         ))}
@@ -166,42 +167,26 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
 
 function BillsDue({ loaded, guard }: { loaded: boolean; guard: Guard }) {
   const w = useWorld()
-  const layout = useLayout()
   const due = selectBillsDue(w.bills, now())
   if (loaded && !due.length) return null
   return (
-    <Section title="Hóa đơn sắp đến hạn" action={loaded ? <Link to="/bills" className="text-[15px] font-semibold text-tint">Xem tất cả</Link> : undefined}>
-      <Card className="px-inset">
-        {!loaded ? <SkeletonRow /> : (
-          <ul className="divide-y divide-line-soft">
+    <Section title="Hóa đơn sắp đến hạn" action={loaded ? <Link to="/bills">Xem tất cả</Link> : undefined}>
+      <Card className="overflow-hidden">
+        {!loaded ? <RowSkeleton /> : (
+          <ul>
             {due.slice(0, 3).map(({ bill, days, overdue }) => {
               const biller = w.billers.find((b) => b.id === bill.billerId)?.name ?? 'Hóa đơn'
               const dueLine = overdue
                 ? <span className="font-medium text-danger">Quá hạn {Math.max(1, -days)} ngày</span>
-                : <span>Hạn {fmtYmd(bill.dueDate)}</span>
-              const left = <Disc size={40}><span className="text-[13px] font-semibold">{biller.split(' ').slice(-1)[0][0]}</span></Disc>
+                : <>Hạn {fmtYmd(bill.dueDate)}</>
               return (
                 <li key={bill.id}>
-                  {layout === 'app' ? (
-                    <Link to={`/bills/${bill.id}`} className="-mx-2 flex min-h-[64px] items-center gap-3 rounded-xl px-2 py-2 text-ink no-underline hover:bg-surface-2">
-                      {left}
-                      <span className="min-w-0 flex-1">
-                        <span className="block font-medium">{biller}</span>
-                        <span className="block text-[13px] leading-[18px] text-muted">{bill.customerCode}</span>
-                        <span className="block text-[13px] leading-[18px]"><span className="tnum font-semibold">{formatVnd(bill.amount)}</span> · {dueLine}</span>
-                      </span>
-                    </Link>
-                  ) : (
-                    <div className="flex min-h-[64px] items-center gap-3 py-2">
-                      {left}
-                      <span className="min-w-0 flex-1">
-                        <span className="block font-medium">{biller}</span>
-                        <span className="block text-[13px] leading-[18px] text-muted">{bill.customerCode} · {dueLine}</span>
-                      </span>
-                      <span className="tnum font-semibold">{formatVnd(bill.amount)}</span>
-                      <Button size="sm" onClick={() => guard(`/bills/${bill.id}`)} className="min-h-11">Thanh toán</Button>
-                    </div>
-                  )}
+                  <Row
+                    to={`/bills/${bill.id}`} onClick={guardedClick(guard, `/bills/${bill.id}`)}
+                    left={<TxIcon type="bill" />} title={biller}
+                    subtitle={<>{dueLine} · <span className="tnum">{bill.customerCode}</span></>}
+                    right={formatVnd(bill.amount)} chevron
+                  />
                 </li>
               )
             })}
@@ -219,7 +204,7 @@ function RecentRecipients({ loaded, guard }: { loaded: boolean; guard: Guard }) 
   const list = selectRecentRecipients(w.transactions, 8)
   if (loaded && !list.length) return null
   return (
-    <Section title="Người nhận gần đây" action={<Link to="/transfer" className="text-[15px] font-semibold text-tint">Chuyển tiền</Link>}>
+    <Section title="Người nhận gần đây" action={<Link to="/transfer">Chuyển tiền</Link>}>
       {/* The 56px avatar sits centred in a 72px item, so the rail is pulled 8px left to put the first avatar on the title edge. */}
       <ul className="-mx-inset flex gap-header overflow-x-auto pr-inset pb-1 pl-2 lg:mr-0 lg:-ml-2 lg:overflow-visible lg:pr-0 lg:pl-0">
         {!loaded
@@ -237,11 +222,10 @@ function RecentRecipients({ loaded, guard }: { loaded: boolean; guard: Guard }) 
               }
               return (
                 <li key={r.key} className="w-[72px] shrink-0">
-                  <Link to={to} onClick={guardedClick(guard, to)} title={label} className="flex flex-col items-center gap-1 rounded-xl py-1 text-center text-ink no-underline">
-                    <Avatar name={r.name} size={56} />
-                    <span className="block w-full truncate text-[12px] leading-4 font-medium">{shortName(r.name)}</span>
-                    {sub ? <span className="block w-full truncate text-[11px] leading-[14px] text-muted">{sub}</span> : null}
-                  </Link>
+                  <RailTile
+                    to={to} onClick={guardedClick(guard, to)} label={label} name={shortName(r.name)} sub={sub}
+                    leading={r.kind === 'contact' ? <Avatar name={r.name} size={56} /> : <BankMark short={bankById(r.bankId).short} size={56} />}
+                  />
                 </li>
               )
             })}
@@ -252,69 +236,19 @@ function RecentRecipients({ loaded, guard }: { loaded: boolean; guard: Guard }) 
 
 /* ── US-HOM-006 ───────────────────────────────────────────────────── */
 
-const STATUS_LINE: Partial<Record<Transaction['status'], { text: string; cls: string }>> = {
-  pending: { text: 'Đang xử lý', cls: 'text-pending' },
-  failed: { text: 'Không thành công', cls: 'text-danger' },
-  refunded: { text: 'Đã hoàn tiền', cls: 'text-muted' },
-}
-
-function TxIcon({ t }: { t: Transaction }) {
-  if (t.counterparty.kind === 'contact') return <Avatar name={t.counterparty.name} size={40} />
-  const Icon = t.type === 'refund' ? RotateCcw : t.direction === 'in' ? ArrowDownLeft : ArrowUpRight
-  return <Disc size={40}><Icon size={20} strokeWidth={1.75} /></Disc>
-}
-
 function RecentActivity({ loaded, guard }: { loaded: boolean; guard: Guard }) {
   const w = useWorld()
   const recent = [...w.transactions].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5)
   let body: ReactNode
-  if (!loaded) body = <div className="px-inset">{Array.from({ length: 5 }, (_, i) => <SkeletonRow key={i} />)}</div>
+  if (!loaded) body = <div>{Array.from({ length: 5 }, (_, i) => <RowSkeleton key={i} />)}</div>
   else if (!recent.length)
-    body = (
-      <p className="px-inset py-group text-center text-muted">
-        Chưa có giao dịch nào.{' '}
-        <Link to="/topup" onClick={guardedClick(guard, '/topup')} className="font-semibold text-tint">Nạp tiền</Link>
-      </p>
-    )
-  else
-    body = (
-      <ul className="divide-y divide-line-soft px-inset">
-        {recent.map((t) => {
-          const name = t.counterparty.kind === 'source' ? typeLabel(t.type) : counterpartyName(t.counterparty, w)
-          const st = STATUS_LINE[t.status]
-          const total = t.direction === 'out' && t.status !== 'failed' ? t.amount + t.fee : t.amount
-          return (
-            <li key={t.id}>
-              <Link to={`/history/${t.id}`} className="-mx-2 flex min-h-[64px] items-center gap-3 rounded-xl px-2 py-2 text-ink no-underline hover:bg-surface-2">
-                <TxIcon t={t} />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate font-medium">{name}</span>
-                  <span className="block text-[13px] leading-[18px] text-muted tnum">{fmtDate(t.createdAt)} · {fmtTime(t.createdAt)}</span>
-                </span>
-                <span className="shrink-0 text-right">
-                  <span className={cx('block tnum font-semibold whitespace-nowrap', t.status === 'failed' && 'line-through')}>{formatVnd(total, { sign: t.direction })}</span>
-                  {st ? <span className={cx('block text-[13px] leading-[18px] font-medium', st.cls)}>{st.text}</span> : null}
-                </span>
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-    )
+    body = <EmptyState icon={<Inbox size={22} strokeWidth={1.75} />} title="Chưa có giao dịch nào" action={<Link to="/topup" onClick={guardedClick(guard, '/topup')} className="font-semibold text-tint">Nạp tiền vào ví</Link>} />
+  else body = <ul>{recent.map((t) => <li key={t.id}><TxRow t={t} withDate /></li>)}</ul>
   return (
-    <Section title="Hoạt động gần đây" action={recent.length ? <Link to="/history" className="text-[15px] font-semibold text-tint">Xem tất cả</Link> : undefined}>
-      <Card>{body}</Card>
+    <Section title="Hoạt động gần đây" action={recent.length ? <Link to="/history">Xem tất cả</Link> : undefined}>
+      <Card className="overflow-hidden">{body}</Card>
     </Section>
   )
 }
 
-function SkeletonRow() {
-  return (
-    <div className="flex min-h-[64px] items-center gap-3 py-2" aria-hidden>
-      <Skeleton className="size-10 rounded-full" />
-      <span className="flex-1 space-y-header"><Skeleton className="h-4 w-2/5" /><Skeleton className="h-3 w-1/4" /></span>
-      <Skeleton className="h-4 w-20" />
-    </div>
-  )
-}
 

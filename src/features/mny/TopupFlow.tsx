@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { formatVnd } from '@/domain/money'
 import { bankById, defaultSource, gateOf, getState, useWorld } from '@/app/store'
-import { Button, ButtonLink, Money } from '@/components/ui'
+import { Button, ButtonLink, cx, Money } from '@/components/ui'
 import { authLine, AmountInput, checkAmount, ConfirmRows, feeLabel, FlowFrame, formatPhone, useCloseFlow, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
 import { GateCallout } from '@/features/sec/Gate'
 import { kindLabel, mask4 } from './logic'
@@ -41,7 +41,7 @@ export default function TopupFlow() {
         <Button block onClick={() => go('confirm')}>Thử lại</Button>
         <ButtonLink to={`/history/${t.id}`} variant="secondary" block>Xem chi tiết</ButtonLink>
       </>}>
-        <ResultBlock tone={ok ? 'success' : 'failed'} heading={ok ? 'Nạp tiền thành công' : 'Nạp tiền không thành công'} amount={<Money amount={t.amount} className="amount-display" />}>
+        <ResultBlock tone={ok ? 'success' : 'failed'} heading={ok ? 'Nạp tiền thành công' : 'Nạp tiền không thành công'} amount={<Money amount={t.amount} sign="in" tone={ok} className={cx('amount-display', !ok && 'text-muted line-through')} />}>
           {ok ? <p>Số dư khả dụng: <span className="tnum">{formatVnd(w.balance)}</span></p> : <p>{bankName} đã từ chối giao dịch. Ví không bị trừ tiền.</p>}
         </ResultBlock>
       </FlowFrame>

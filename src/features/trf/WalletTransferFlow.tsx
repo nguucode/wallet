@@ -9,7 +9,7 @@ import { GatedRoute } from '@/features/sec/Gate'
 import {
   AmountInput, checkAmount, ConfirmRows, FlowFrame, formatPhone, maskPhone, ResultView, useCloseFlow, useFlow, useMoneyCommit,
 } from '@/features/flow/FlowKit'
-import { Avatar, Badge, Button, ButtonLink, Callout, cx, Money, Skeleton, TextInput } from '@/components/ui'
+import { Avatar, Badge, Button, ButtonLink, Callout, cx, Money, Row, Skeleton, TextInput } from '@/components/ui'
 import { filterContacts, isFullPhone, recentRecipients, resolvePhone, type PhoneLookup } from './logic'
 import { AuthNote, LockedAmount, MessageField, RecipientChip } from './shared'
 
@@ -119,20 +119,15 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
     const disabled = !c.hasWallet
     return (
       <li key={group + c.id}>
-        <button
-          type="button"
-          aria-disabled={disabled || undefined}
+        <Row
+          disabled={disabled}
           aria-describedby={disabled ? 'no-wallet-help' : undefined}
           onClick={() => (disabled ? setHelper(`${c.name}: Người này chưa dùng ví nên chưa nhận được tiền qua ví.`) : onPick({ kind: 'contact', id: c.id, name: c.name, phone: c.phone }))}
-          className={cx('-mx-2 flex min-h-[56px] w-[calc(100%+16px)] items-center gap-3 rounded-xl px-2 py-2 text-left', disabled ? 'cursor-not-allowed' : 'hover:bg-surface-2')}
-        >
-          <span className={cx(disabled && 'opacity-60')}><Avatar name={c.name} /></span>
-          <span className="min-w-0 flex-1">
-            <span title={c.name} className={cx('block truncate font-medium', disabled && 'text-muted')}>{c.name}</span>
-            <span className="block text-[13px] leading-[18px] text-muted tnum">{formatPhone(c.phone)}</span>
-          </span>
-          {disabled ? <span className="shrink-0"><Badge>Chưa dùng ví</Badge></span> : null}
-        </button>
+          left={<span className={cx(disabled && 'opacity-60')}><Avatar name={c.name} size={40} /></span>}
+          title={<span title={c.name} className={cx(disabled && 'text-muted')}>{c.name}</span>}
+          subtitle={<span className="tnum">{formatPhone(c.phone)}</span>}
+          right={disabled ? <Badge>Chưa dùng ví</Badge> : undefined}
+        />
       </li>
     )
   }
@@ -143,7 +138,7 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
     const res = lookup.res
     if (!res) single = <p role="status" className="flex items-center gap-2 py-3 text-muted"><span className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden />Đang tìm…</p>
     else if (res.status === 'wallet')
-      single = <ul>{row({ ...res.contact, hasWallet: true }, 'lookup')}</ul>
+      single = <ul className="-mx-inset">{row({ ...res.contact, hasWallet: true }, 'lookup')}</ul>
     else if (res.status === 'error')
       single = <div role="alert" className="flex items-center justify-between gap-3 py-3"><span className="text-danger">Không kiểm tra được số điện thoại. Thử lại.</span><Button size="sm" variant="secondary" onClick={() => setRetry((n) => n + 1)}>Thử lại</Button></div>
     else single = <p role="status" className="py-3 text-muted">Số điện thoại này chưa dùng ví.</p>
@@ -167,14 +162,14 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
       {!single && !fRecent.length && !fAll.length ? <p className="py-3 text-muted">Không tìm thấy người nhận.</p> : null}
       {!single && fRecent.length ? (
         <section aria-labelledby="g-recent" className="mt-header">
-          <h2 id="g-recent" className="sticky top-14 z-10 bg-surface py-2 text-[13px] font-semibold text-muted lg:top-16">Gần đây</h2>
-          <ul>{fRecent.map((c) => row(c, 'r'))}</ul>
+          <h2 id="g-recent" className="label-caps sticky top-14 z-10 bg-surface py-header lg:top-0">Gần đây</h2>
+          <ul className="-mx-inset">{fRecent.map((c) => row(c, 'r'))}</ul>
         </section>
       ) : null}
       {!single && fAll.length ? (
         <section aria-labelledby="g-all" className="mt-stack">
-          <h2 id="g-all" className="sticky top-14 z-10 bg-surface py-2 text-[13px] font-semibold text-muted lg:top-16">Danh bạ</h2>
-          <ul>{fAll.map((c) => row(c, 'a'))}</ul>
+          <h2 id="g-all" className="label-caps sticky top-14 z-10 bg-surface py-header lg:top-0">Danh bạ</h2>
+          <ul className="-mx-inset">{fAll.map((c) => row(c, 'a'))}</ul>
         </section>
       ) : null}
     </div>
@@ -220,7 +215,7 @@ function ConfirmStep({ draft, defaultMessage, toAmount, onDone }: { draft: Draft
     )
   return (
     <>
-      <h2 className="mb-stack text-[17px] leading-[26px] font-bold">Xác nhận</h2>
+      <h2 className="mb-stack headline">Xác nhận</h2>
       <p className="mb-stack text-center"><Money amount={draft.amount} className="amount-display" /></p>
       <ConfirmRows rows={[
         ['Người nhận', <><span className="block break-words">{r.name}</span><span className="block text-[13px] font-normal text-muted tnum">{maskPhone(r.phone)}</span></>],

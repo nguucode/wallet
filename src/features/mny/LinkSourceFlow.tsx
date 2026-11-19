@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { BANKS, bankById, linkSource, useWorld } from '@/app/store'
-import { BankMark, Button, Card, Field, Segmented, Sheet, TextInput } from '@/components/ui'
+import { BankMark, Button, Card, Field, Row, Segmented, Sheet, TextInput } from '@/components/ui'
 import { FlowFrame, useFlow } from '@/features/flow/FlowKit'
 import { groupDigits, isOwnAccount, lookupHolder, mask4 } from './logic'
 import { ResultBlock } from './parts'
@@ -47,22 +47,18 @@ export default function LinkSourceFlow() {
           </div>
         </Field>
         {banks.length ? (
-          <ul className="flex flex-col">
+          <ul className="-mx-inset">
             {banks.map((b) => {
               const linked = w.sources.find((s) => s.bankId === b.id)
               return (
                 <li key={b.id}>
-                  <button
-                    type="button"
+                  <Row
                     onClick={() => { setDraft({ bankId: b.id, number: draft.bankId === b.id ? draft.number : '' }); go('account') }}
-                    className="-mx-2 flex min-h-14 w-[calc(100%+16px)] items-center gap-3 rounded-xl px-2 py-2 text-left hover:bg-surface-2"
-                  >
-                    <BankMark short={b.short} size={40} />
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-medium">{b.name}</span>
-                      {linked ? <span className="block text-[13px] leading-[18px] text-muted">Đã liên kết <span className="tnum">{mask4(linked.last4)}</span></span> : null}
-                    </span>
-                  </button>
+                    left={<BankMark short={b.short} size={40} />}
+                    title={b.name}
+                    subtitle={linked ? <>Đã liên kết <span className="tnum">{mask4(linked.last4)}</span></> : undefined}
+                    chevron
+                  />
                 </li>
               )
             })}

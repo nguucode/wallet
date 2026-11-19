@@ -28,7 +28,7 @@ export function FaceStep() {
         <div className="relative h-[200px] w-[156px]">
           <svg viewBox="0 0 156 200" className="absolute inset-0" aria-hidden>
             <ellipse cx="78" cy="100" rx="74" ry="96" fill="none" stroke="rgb(255 255 255 / 0.35)" strokeWidth="3" />
-            {scanning ? <ellipse cx="78" cy="100" rx="74" ry="96" fill="none" stroke="#a48bff" strokeWidth="3" pathLength={100} strokeDasharray="100" strokeDashoffset={100 * (1 - progress)} className="transition-[stroke-dashoffset] duration-700" /> : null}
+            {scanning ? <ellipse cx="78" cy="100" rx="74" ry="96" fill="none" stroke="var(--color-card-violet)" strokeWidth="3" pathLength={100} strokeDasharray="100" strokeDashoffset={100 * (1 - progress)} className="transition-[stroke-dashoffset] duration-700" /> : null}
           </svg>
           <span className="absolute inset-0 flex items-center justify-center"><ScanFace size={72} strokeWidth={1} aria-hidden className="text-white/70" /></span>
         </div>

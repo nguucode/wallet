@@ -1,4 +1,4 @@
-import { ChevronLeft, Copy, FileText, LifeBuoy, MessageCircle, Printer, Repeat, Share2, X } from 'lucide-react'
+import { Copy, FileText, LifeBuoy, MessageCircle, Printer, Repeat, Share2, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
 import { config } from '@/domain/config'
@@ -10,7 +10,7 @@ import type { Transaction, World } from '@/mock/seed'
 import { NotFound } from '@/features/demo/NotFound'
 import { ConfirmRows, FAILURE_COPY, fmtDateTime, fmtTime, maskAccount, maskPhone, truthLine } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
-import { Button, ButtonLink, cx, Money, STATUS_LABEL, StatusPill } from '@/components/ui'
+import { Button, ButtonLink, cx, Money, STATUS_LABEL, StatusPill, WebBackLink } from '@/components/ui'
 import { maskCode } from '@/features/bil/bills'
 import { isWithinSupportWindow, receiptShareText, rowAmount, SUPPORT_STATUS_LABEL } from './history'
 import { TxIcon, useToast } from './parts'
@@ -114,7 +114,7 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
       <article id="receipt" aria-label="Biên lai giao dịch" className="mx-auto max-w-[420px] card p-inset">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-[17px] font-bold">Biên lai giao dịch</p>
+            <p className="headline">Biên lai giao dịch</p>
             <p className="text-[15px] font-extrabold tracking-tight">Wallet</p>
           </div>
           <SampleBadge />
@@ -159,11 +159,11 @@ function Action({ label, icon, onClick, to }: { label: string; icon: ReactNode; 
   if (layout === 'web') return to ? <ButtonLink to={to} variant="secondary">{icon}{label}</ButtonLink> : <Button variant="secondary" onClick={onClick}>{icon}{label}</Button>
   const inner = (
     <>
-      <span aria-hidden className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-primary-ink">{icon}</span>
+      <span aria-hidden className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-tint">{icon}</span>
       <span className="text-[12px] leading-4 font-semibold whitespace-nowrap">{label}</span>
     </>
   )
-  const cls = 'flex min-w-20 flex-col items-center gap-2 text-ink no-underline'
+  const cls = 'flex min-w-20 flex-col items-center gap-header rounded-xl py-1 text-ink no-underline transition-colors hover:bg-surface-2 active:bg-surface-2'
   return to ? <Link to={to} className={cls}>{inner}</Link> : <button type="button" onClick={onClick} className={cls}>{inner}</button>
 }
 
@@ -197,7 +197,7 @@ export default function TransactionPage() {
   })()
 
   const copyId = async () => { try { await navigator.clipboard.writeText(t.id); toast.show('Đã sao chép mã giao dịch') } catch { toast.show('Không sao chép được') } }
-  const ic = { size: 20, strokeWidth: 1.75, 'aria-hidden': true } as const
+  const ic = { size: layout === 'app' ? 24 : 20, strokeWidth: 1.75, 'aria-hidden': true } as const // app tiles match Home shortcuts (48 disc, 24 glyph); web buttons keep 20
 
   const actions = (
     <div className={cx('flex gap-2', layout === 'web' ? 'flex-wrap' : 'card justify-around px-header py-inset')}>
@@ -208,7 +208,7 @@ export default function TransactionPage() {
   )
 
   const wrongRecipient = t.type === 'p2p_out' && t.status === 'success' ? (
-    <section aria-labelledby="wr-title" className="rounded-[16px] bg-surface-2 p-inset">
+    <section aria-labelledby="wr-title" className="rounded-[var(--radius-input)] bg-surface-2 p-inset">
       <h2 id="wr-title" className="font-semibold">Chuyển nhầm người nhận?</h2>
       <p className="mt-1 text-[15px] leading-5">Giao dịch chuyển tiền đã thành công không thể hủy hoặc thu hồi. Hãy nhắn người nhận để đề nghị chuyển trả.</p>
       <div className="mt-stack flex flex-wrap gap-2">
@@ -221,11 +221,11 @@ export default function TransactionPage() {
 
   return (
     <div className="max-w-[560px]">
-      {layout === 'web' ? <Link to="/history" className="-ml-2 mb-header inline-flex h-9 items-center gap-1 rounded-full pr-3 pl-1 text-tint no-underline hover:bg-surface-2"><ChevronLeft size={22} strokeWidth={2.25} aria-hidden />Lịch sử</Link> : null}
+      {layout === 'web' ? <WebBackLink to="/history">Lịch sử</WebBackLink> : null}
 
       <header className="card flex flex-col items-center gap-2 px-inset py-group text-center">
         <TxIcon type={t.type} size={56} />
-        <h1 tabIndex={-1} data-page-title className="mt-1 line-clamp-2 text-[17px] leading-[24px] font-bold break-words outline-none">{name}</h1>
+        <h1 tabIndex={-1} data-page-title className="mt-1 line-clamp-2 headline break-words outline-none">{name}</h1>
         <p className="-mt-1 text-[13px] text-muted">{typeLabel(t.type)}</p>
         <p className={cx('amount-display mt-1 break-all', t.status === 'failed' ? 'text-muted line-through' : t.direction === 'in' && 'text-success')}>
           <Money amount={rowAmount(t)} sign={t.direction} />

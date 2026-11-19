@@ -1,4 +1,3 @@
-import { ChevronRight } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { formatVnd } from '@/domain/money'
@@ -45,14 +44,14 @@ function Flow() {
     return (
       <FlowFrame title="Chọn nhà cung cấp" onClose={close}>
         <h2 className="label-caps mb-header px-4">Điện</h2>
-        <ul className="card divide-y divide-line-soft px-inset">
+        <ul className="card overflow-hidden">
           {billers.map((b) => (
             <li key={b.id}>
               <Row
                 onClick={() => { setDraft({ billerId: b.id, found: undefined, noDebt: false }); setError(undefined); go('customer-code') }}
                 left={<BankMark short={monogram(b.name)} size={40} />}
                 title={b.name}
-                right={<ChevronRight size={18} strokeWidth={1.75} aria-hidden className="text-muted" />}
+                chevron
               />
             </li>
           ))}
@@ -130,7 +129,7 @@ function Flow() {
           />
         </Field>
       </form>
-      <div className="rounded-[16px] bg-surface-2 p-inset">
+      <div className="rounded-[var(--radius-input)] bg-surface-2 p-inset">
         <p className="mb-header flex items-center gap-2 text-[13px] font-semibold">Mã mẫu <SampleBadge /></p>
         <ul className="text-[13px]">
           {SAMPLES.map((s) => (

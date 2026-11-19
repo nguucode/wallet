@@ -1,7 +1,7 @@
 import { Check, ChevronDown, Clock, X } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { bankById, useWorld } from '@/app/store'
-import { BankMark, Badge, cx, Sheet } from '@/components/ui'
+import { BankMark, Badge, cx, Row, Sheet } from '@/components/ui'
 import type { FundingSource } from '@/mock/seed'
 import { kindLabel, mask4, sortSources } from './logic'
 
@@ -10,7 +10,7 @@ export function SourceLine({ s, sub }: { s: FundingSource; sub?: ReactNode }) {
   const bank = bankById(s.bankId)
   return (
     <span className="flex min-w-0 flex-1 items-center gap-3">
-      <BankMark short={bank.short} />
+      <BankMark short={bank.short} size={40} />
       <span className="min-w-0 flex-1 text-left">
         <span className="block font-medium">{bank.name}</span>
         <span className="block text-[13px] leading-[18px] text-muted">{kindLabel(s.kind)} <span className="tnum">{mask4(s.last4)}</span>{sub}</span>
@@ -28,23 +28,27 @@ export function SourcePicker({ label, value, onChange }: { label: string; value?
   return (
     <div className="mb-group">
       <p id="source-label" className="mb-header text-[13px] font-medium">{label}</p>
-      <button type="button" aria-describedby="source-label" onClick={() => setOpen(true)} className="flex min-h-[64px] w-full items-center gap-3 rounded-[16px] bg-surface-2 px-4 py-2 hover:bg-primary-soft">
+      <button type="button" aria-describedby="source-label" onClick={() => setOpen(true)} className="flex min-h-[60px] w-full items-center gap-stack rounded-[var(--radius-input)] bg-surface-2 px-inset py-header">
         <span id="source-current" className="contents"><SourceLine s={current} /></span>
         <ChevronDown size={20} strokeWidth={1.75} aria-hidden className="text-muted" />
       </button>
       <Sheet open={open} onOpenChange={setOpen} title={label}>
-        <div role="radiogroup" aria-label={label} className="flex flex-col gap-1">
-          {sortSources(w.sources).map((s) => (
-            <button
-              key={s.id} type="button" role="radio" aria-checked={s.id === current.id}
-              onClick={() => { onChange(s.id); setOpen(false) }}
-              className={cx('flex min-h-[64px] items-center gap-3 rounded-[12px] px-3 py-2', s.id === current.id ? 'bg-primary-soft' : 'hover:bg-surface-2')}
-            >
-              <SourceLine s={s} sub={s.isDefault ? ' · Mặc định' : null} />
-              {s.id === current.id ? <Check size={20} strokeWidth={2} aria-hidden className="text-tint" /> : null}
-            </button>
-          ))}
-        </div>
+        <ul aria-label={label} className="-mx-inset">
+          {sortSources(w.sources).map((s) => {
+            const bank = bankById(s.bankId)
+            return (
+              <li key={s.id}>
+                <Row
+                  onClick={() => { onChange(s.id); setOpen(false) }}
+                  selected={s.id === current.id}
+                  left={<BankMark short={bank.short} size={40} />}
+                  title={bank.name}
+                  subtitle={<>{kindLabel(s.kind)} <span className="tnum">{mask4(s.last4)}</span>{s.isDefault ? ' · Mặc định' : null}</>}
+                />
+              </li>
+            )
+          })}
+        </ul>
       </Sheet>
     </div>
   )
@@ -64,7 +68,7 @@ export function ResultBlock({ tone, heading, amount, children, actions }: {
     <div className="flex flex-col items-center pt-group text-center">
       <span aria-hidden className={cx('inline-flex size-16 items-center justify-center rounded-full animate-[fade-in_200ms_ease-out]', cls)}><Icon size={32} strokeWidth={2.25} /></span>
       <div role="status" aria-live="polite" className="w-full">
-        <p className="mt-stack text-[17px] leading-[26px] font-bold">{heading}</p>
+        <p className="mt-stack headline">{heading}</p>
         {amount ? <p className="mt-header break-words">{amount}</p> : null}
         {children ? <div className="mx-auto mt-stack flex max-w-[44ch] flex-col gap-1 text-muted">{children}</div> : null}
       </div>

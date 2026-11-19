@@ -392,8 +392,47 @@ Calm, platform capsules.
 - **Corner Style:** 24px.
 - **Background:** Section colour, opaque.
 - **Shadow Strategy:** none (see Elevation).
-- **Internal Padding:** 20px app, 24px web; list rows inside are separated by soft separators.
-- **Header:** Title 3 outside and above the section, with an optional tint link ("Xem tất cả").
+- **Internal Padding:** `inset` (16 app / 20 web) for content blocks; lists carry no padding of their own (rows do).
+- **Header:** Title 3 outside and above the section, with an optional tint link ("Xem tất cả", semibold, set once by `Section`).
+- **Titles inside a section:** `headline` (17/22 semibold), never another size or weight.
+
+### List rows (`Row`)
+The only way to draw a row in a list. Hand-built rows are a defect.
+- **Container:** `card overflow-hidden` with the rows as direct `<li>` children; no `divide-y`, no list padding. Inside a sheet or a padded card, the list bleeds edge to edge with `-mx-inset`.
+- **Geometry:** row padding-left `inset`; content padding-right `inset`; min-height 60; `gap-stack` between leading, text and trailing.
+- **Leading:** 40px disc (`Disc`, `Avatar`, `BankMark`, `TxIcon`) with a 20px / 1.75 glyph.
+- **Text:** title body `font-medium`, wraps to two lines at most (it is the row's identity); subtitle 13/18 secondary label, one line, with the essential fact first (time, due date) so truncation only drops the least important part.
+- **Trailing:** amount `font-semibold tnum` with an optional capsule under it; navigation rows end in `chevron` (ChevronRight 20 / 1.75, secondary); picker rows end in a tint check (`selected`), never a coloured fill or a text marker.
+- **Separator:** a hairline (`line-soft`) from the text edge to the card edge; none above the first row.
+- **States:** hover and press fill the whole row with tertiary fill, no rounding; disabled rows stay focusable (`aria-disabled`), dim their leading and title, and take no fill; focus ring drawn inside the row.
+- **Multi-line content** (notifications, settings with a control) keeps the same geometry with its own body.
+
+### Transaction rows (`TxRow`, `TxAmount`)
+Every transaction, wherever it appears (Home activity, History, results), uses one representation:
+- **Leading:** `TxIcon` by type (top-up, withdraw, wallet out, wallet in, bank, merchant, bill, refund). Never initials, never a generic arrow.
+- **Title / subtitle:** counterparty; "type · time" (with the date where the list is not grouped by day).
+- **Amount (`rowAmount`):** signed, fee included on outgoing, incoming in success green, failed in secondary label and struck through. Result screens use the same rule.
+- **Status:** a `StatusPill` under the amount only when the status is not success.
+
+### Detail rows (`ConfirmRows`)
+Key/value rows for confirm steps, results, receipts and the profile: key in secondary label, value right-aligned medium, 12 vertical padding, separator from the text edge to the card edge (the list bleeds right with `-mr-inset`), none above the first row.
+
+### Group headers vs section titles
+- **Section title** (`Section`, Title 3, outside the card, optional action at the right edge): a named top-level block of a page ("Hóa đơn của tôi", "Gần đây" on Transfer).
+- **Group header** (`label-caps`, aligned with row text): a group *inside* one list, such as date groups in History and Notifications or "Gần đây / Danh bạ" inside the wallet-transfer picker.
+
+### Rails and tiles
+- **Recipient rail** (`RailTile`): 72px item, 56px Avatar or BankMark, short name 12/16 semibold on one line, bank on a second line 11/14 secondary; the first item sits on the title edge; the accessible name starts with the visible text.
+- **Action tiles** (Home shortcuts, add-bill, receipt actions): 48px disc with a 24px tint glyph, label 12/16 semibold; hover and press fill the tile. A dense row of six or more tiles (Home shortcuts on the app layout) uses the tab-bar label size 11/14 so labels keep a gutter and break into two balanced lines; Scan and Payment Code stay first (PRODUCT.md).
+
+### Interaction states
+- Rows, rail tiles, ghost controls, chips on the ground: hover and press = tertiary fill (`surface-2`); tiles and chips keep their own rounding.
+- Tinted fills (secondary button, quick amounts): hover = `primary-soft`.
+- Text links: tint, semibold, underline on hover only.
+- Every tappable element has a press state; nothing removes the focus outline without a visible replacement (the amount entry's underline turns tint on focus).
+- Web back navigation above a large title is `WebBackLink` (tint chevron + label), the same on every page.
+- Section actions keep their text size but get a 44px hit area (vertical padding cancelled by a negative margin).
+- Reduced motion is designed per element, never a global kill: sheets fade instead of sliding, the sidebar rail does not animate its width; fades, spinners, colour changes and progress strokes stay because they report state.
 
 ### Inputs / Fields
 - **Style:** filled, borderless, 12px radius, 48px tall (44px web), 17px text (15px web), tertiary fill, secondary-label placeholder.

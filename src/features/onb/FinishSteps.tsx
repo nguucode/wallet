@@ -62,7 +62,7 @@ export function ReadyStep() {
       <Button variant="ghost" block onClick={leave('/home')}>Để sau</Button>
     </>}>
       <div className="mb-group"><StatusMark tone="primary" /></div>
-      <p className="mb-header text-[17px] leading-[26px] font-bold">{w.customer.name}</p>
+      <p className="mb-header headline">{w.customer.name}</p>
       <DataList rows={[['Số ví', <span className="tnum whitespace-nowrap">{formatPhone(w.customer.walletNumber)}</span>]]} />
       <h2 className="mt-group mb-1 font-semibold">Hạn mức giao dịch</h2>
       <DataList rows={[

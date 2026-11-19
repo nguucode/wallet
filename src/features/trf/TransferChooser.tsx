@@ -1,10 +1,10 @@
-import { ChevronRight, Landmark, ScanLine, Wallet } from 'lucide-react'
-import { Link } from 'react-router'
+import { shortName } from '@/features/hom/selectors'
+import { Landmark, ScanLine, Wallet } from 'lucide-react'
 import { useLayout } from '@/app/layout'
 import { bankById, useWorld } from '@/app/store'
 import { GatedRoute } from '@/features/sec/Gate'
 import { formatPhone, maskAccount } from '@/features/flow/FlowKit'
-import { Avatar, BankMark, Card, Disc, Row, Section } from '@/components/ui'
+import { Avatar, BankMark, Card, Disc, RailTile, Row, Section } from '@/components/ui'
 import { recentRecipients, type Recent } from './logic'
 import { PageHeading } from './shared'
 
@@ -27,11 +27,11 @@ export default function TransferChooser() {
   const name = (r: Recent) => (r.kind === 'wallet' ? r.name : r.holder)
 
   const options = (
-    <Card className="px-inset">
-      <ul className="divide-y divide-line-soft">
+    <Card className="overflow-hidden">
+      <ul>
         {OPTIONS.map(({ to, icon: Icon, title, sub }) => (
           <li key={to}>
-            <Row to={to} left={<Disc><Icon size={22} strokeWidth={1.75} /></Disc>} title={title} subtitle={sub} right={<ChevronRight size={20} strokeWidth={1.75} aria-hidden className="text-muted" />} />
+            <Row to={to} left={<Disc size={40}><Icon size={20} strokeWidth={1.75} /></Disc>} title={title} subtitle={sub} chevron />
           </li>
         ))}
       </ul>
@@ -40,13 +40,13 @@ export default function TransferChooser() {
   const empty = <p className="text-muted">Chưa có người nhận gần đây.</p>
 
   const recentWeb = recent.length ? (
-    <Card className="px-inset">
-      <ul className="divide-y divide-line-soft">
+    <Card className="overflow-hidden">
+      <ul>
         {recent.map((r) => (
           <li key={r.key}>
             <Row
               to={recentLink(r, w.bankRecipients)}
-              left={r.kind === 'wallet' ? <Avatar name={r.name} /> : <BankMark short={bankById(r.bankId).short} />}
+              left={r.kind === 'wallet' ? <Avatar name={r.name} size={40} /> : <BankMark short={bankById(r.bankId).short} size={40} />}
               title={<span title={name(r)}>{name(r)}</span>}
               subtitle={r.kind === 'wallet' ? formatPhone(r.phone) : <span className="whitespace-nowrap">{bankById(r.bankId).name} · {maskAccount(r.account)}</span>}
             />
@@ -61,10 +61,10 @@ export default function TransferChooser() {
     <ul className="-mx-inset flex gap-header overflow-x-auto pr-inset pb-1 pl-2">
       {recent.map((r) => (
         <li key={r.key} className="w-[72px] shrink-0">
-          <Link to={recentLink(r, w.bankRecipients)} title={name(r)} className="flex flex-col items-center gap-header rounded-xl py-1 text-center text-ink no-underline hover:bg-surface-2">
-            {r.kind === 'wallet' ? <Avatar name={r.name} size={56} /> : <BankMark short={bankById(r.bankId).short} size={56} />}
-            <span className="line-clamp-2 text-[12px] leading-4">{name(r)}</span>
-          </Link>
+          <RailTile
+            to={recentLink(r, w.bankRecipients)} label={name(r)} name={shortName(name(r))} sub={r.kind === 'wallet' ? undefined : bankById(r.bankId).name}
+            leading={r.kind === 'wallet' ? <Avatar name={r.name} size={56} /> : <BankMark short={bankById(r.bankId).short} size={56} />}
+          />
         </li>
       ))}
     </ul>

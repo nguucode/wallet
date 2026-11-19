@@ -1,14 +1,13 @@
 import { Droplet, FileText, Wifi, Zap } from 'lucide-react'
 import { useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { formatVnd } from '@/domain/money'
-import { useLayout } from '@/app/layout'
 import { now, useWorld } from '@/app/store'
 import type { SavedBill, World } from '@/mock/seed'
 import { fmtDate } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
-import { ScreenTitle, useToast } from '@/features/his/parts'
-import { Badge, Button, Card, cx, EmptyState, Section } from '@/components/ui'
+import { ScreenTitle, TxIcon, useToast } from '@/features/his/parts'
+import { Badge, Card, cx, EmptyState, Row, Section } from '@/components/ui'
 import { billStatusOn, isPayable, maskCode, overdueDays, periodLabel, sortBills, type BillStatus } from './bills'
 
 const CHIP: Record<BillStatus, { label: string; tone: 'danger' | 'secondary' | 'pending' | 'neutral' }> = {
@@ -18,24 +17,24 @@ const CHIP: Record<BillStatus, { label: string; tone: 'danger' | 'secondary' | '
 
 export function BillChip({ status }: { status: BillStatus }) {
   const c = CHIP[status]
-  const dot = { danger: 'bg-danger', secondary: 'bg-secondary-ink', pending: 'bg-pending', neutral: 'bg-muted' }[c.tone]
-  return <Badge tone={c.tone}><span aria-hidden className={cx('mr-2 size-1.5 rounded-full', dot)} />{c.label}</Badge>
+  // Same capsule spec as StatusPill (no dot): one status chip across the product.
+  return <Badge tone={c.tone}>{c.label}</Badge>
 }
 
 /** Latest transaction that paid this saved bill (for "Đã thanh toán dd/mm" and "Xem giao dịch"). */
 export const billTx = (w: World, billId: string) => w.transactions.find((t) => t.counterparty.kind === 'biller' && t.counterparty.billId === billId && t.status !== 'failed')
 
-function dueLine(b: SavedBill, w: World, at: number) {
+/** The one fact a list row must keep when it truncates: when it is due, or when it was paid. */
+function keyFact(b: SavedBill, w: World, at: number) {
   const s = billStatusOn(b, at)
   if (s === 'overdue') return <span className="text-danger">Quá hạn {overdueDays(b, at)} ngày</span>
   if (s === 'due') return <>Hạn {fmtDate(b.dueDate + 'T12:00:00+07:00')}</>
-  if (s === 'settling') return <span className="text-pending">Nhà cung cấp đang xác nhận thanh toán</span>
+  if (s === 'settling') return <>{periodLabel(b.period)}</>
   const tx = billTx(w, b.id)
-  return <>Đã thanh toán{tx ? ' ' + fmtDate(tx.updatedAt) : ''}</>
+  return <>Đã trả{tx ? ' ' + fmtDate(tx.updatedAt) : ''}</>
 }
 
 export default function BillsPage() {
-  const layout = useLayout()
   const w = useWorld()
   const nav = useNavigate()
   const loc = useLocation()
@@ -63,59 +62,45 @@ export default function BillsPage() {
     <div>
       <ScreenTitle description={payable.length ? <span className="tnum">{payable.length} hóa đơn cần thanh toán · {formatVnd(total)}</span> : undefined}>Hóa đơn</ScreenTitle>
 
-      <section aria-labelledby="my-bills">
-        {/* Group header outside the section, aligned with the row content; the action's text meets the right inset. */}
-        <div className="mb-header flex items-baseline justify-between gap-stack px-inset">
-          <h2 id="my-bills" className="label-caps">Hóa đơn của tôi</h2>
-          {bills.length ? <button type="button" onClick={() => guard('/bills/new')} className="-my-3 py-3 text-[15px] text-tint hover:underline">Thêm hóa đơn</button> : null}
-        </div>
+      <Section title="Hóa đơn của tôi" className="mt-0" action={bills.length ? <button type="button" onClick={() => guard('/bills/new')}>Thêm hóa đơn</button> : undefined}>
         {!bills.length ? (
           <Card>
             <EmptyState icon={<FileText size={22} strokeWidth={1.75} />} title="Chưa có hóa đơn nào được lưu"
               action={<button type="button" onClick={() => guard('/bills/new')} className="min-h-11 font-semibold text-tint">Thêm hóa đơn điện</button>} />
           </Card>
         ) : (
-          <Card>
-            <ul className="divide-y divide-line-soft">
+          <Card className="overflow-hidden">
+            <ul>
               {bills.map((b) => {
                 const s = billStatusOn(b, at)
-                const name = billerName(b.billerId)
                 return (
-                  <li key={b.id} className={cx('flex gap-stack px-inset py-stack', layout === 'app' ? 'flex-col' : 'items-center')}>
-                    <Link to={`/bills/${b.id}`}
-                      className="-mx-2 -my-1 flex min-w-0 flex-1 items-start gap-stack rounded-xl px-2 py-1 text-ink no-underline hover:bg-surface-2">
-                      <span className="min-w-0 flex-1">
-                        <span className="block font-semibold">{name}</span>
-                        {b.holder ? <span className="line-clamp-2 block text-[15px] leading-5">{b.holder}</span> : null}
-                        <span className="block text-[13px] leading-[18px] text-muted">
-                          <span className="tnum">{maskCode(b.customerCode)}</span> · {periodLabel(b.period)}
-                        </span>
-                        <span className="block text-[13px] leading-[18px] text-muted">{dueLine(b, w, at)}</span>
-                      </span>
-                      <span className="flex shrink-0 flex-col items-end gap-header">
-                        <span className="tnum font-semibold whitespace-nowrap">{formatVnd(b.amount)}</span>
-                        <BillChip status={s} />
-                      </span>
-                    </Link>
-                    {s === 'due' || s === 'overdue' ? (
-                      <Button size={layout === 'app' ? 'md' : 'sm'} variant="secondary" block={layout === 'app'} className={cx('border-tint text-tint', layout === 'web' && 'w-[112px]')} onClick={() => guard(`/bills/${b.id}`)}>Thanh toán</Button>
-                    ) : layout === 'web' ? <span aria-hidden className="w-[112px] shrink-0" /> : null}
+                  <li key={b.id}>
+                    <Row
+                      to={`/bills/${b.id}`}
+                      onClick={isPayable(b, at) ? (e) => { e.preventDefault(); guard(`/bills/${b.id}`) } : undefined}
+                      left={<TxIcon type="bill" />}
+                      title={billerName(b.billerId)}
+                      subtitle={<>{keyFact(b, w, at)}{b.holder ? ` · ${b.holder}` : ''} · <span className="tnum">{maskCode(b.customerCode)}</span></>}
+                      right={formatVnd(b.amount)}
+                      rightSub={<BillChip status={s} />}
+                      chevron
+                    />
                   </li>
                 )
               })}
             </ul>
           </Card>
         )}
-      </section>
+      </Section>
 
       <Section title="Thêm hóa đơn">
         {/* Same pitch as Home's recipient rail (72px items, 8px gap); pulled 12px left so the first circle meets the title edge. */}
         <ul className="-ml-3 flex gap-header">
           {tiles.map((t) => (
             <li key={t.label}>
-              <button type="button" disabled={!t.enabled} onClick={() => guard('/bills/new')} className="flex w-[72px] flex-col items-center gap-header disabled:cursor-not-allowed">
-                <span aria-hidden className={cx('inline-flex size-12 items-center justify-center rounded-full', t.enabled ? 'bg-surface-2 text-ink' : 'bg-surface-2 text-muted')}><t.icon size={22} strokeWidth={1.75} /></span>
-                <span className={cx('text-[13px] leading-[18px] font-medium', !t.enabled && 'text-muted')}>{t.label}</span>
+              <button type="button" disabled={!t.enabled} onClick={() => guard('/bills/new')} className="flex w-[72px] flex-col items-center gap-header rounded-xl py-1 transition-colors enabled:hover:bg-surface-2 enabled:active:bg-surface-2 disabled:cursor-not-allowed">
+                <span aria-hidden className={cx('inline-flex size-12 items-center justify-center rounded-full', t.enabled ? 'bg-surface-2 text-tint' : 'bg-surface-2 text-muted')}><t.icon size={24} strokeWidth={1.75} /></span>
+                <span className={cx('text-[12px] leading-4 font-semibold text-balance', !t.enabled && 'text-muted')}>{t.label}</span>
                 {!t.enabled ? <span className="text-[12px] leading-4 text-muted">Sắp có</span> : null}
               </button>
             </li>

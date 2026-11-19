@@ -43,7 +43,7 @@ export default function SourcesPage() {
     toast.show(`Đã hủy liên kết ${sourceName(s)}.${next ? ` ${sourceName(next)} giờ là nguồn mặc định.` : ''}`)
   }
 
-  const linkBtn = <ButtonLink to="/me/sources/link" variant={layout === 'web' ? 'ink' : 'primary'} block={layout === 'app'}>Liên kết ngân hàng</ButtonLink>
+  const linkBtn = <ButtonLink to="/me/sources/link" variant="primary" block={layout === 'app'}>Liên kết ngân hàng</ButtonLink>
 
   return (
     <div>

@@ -15,7 +15,7 @@ const ICONS: Record<string, typeof Home> = {
 
 export function SampleBadge({ className, compact }: { className?: string; compact?: boolean }) {
   return (
-    <span title="Dữ liệu mẫu" className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[12px] font-semibold whitespace-nowrap bg-surface text-muted', className)}>
+    <span title="Dữ liệu mẫu" className={cx('inline-flex h-6 items-center rounded-full px-2.5 text-[13px] font-semibold whitespace-nowrap bg-surface text-muted', className)}>
       {compact ? <><span aria-hidden>Mẫu</span><span className="sr-only">Dữ liệu mẫu</span></> : 'Dữ liệu mẫu'}
     </span>
   )

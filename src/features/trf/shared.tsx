@@ -48,7 +48,7 @@ export function MessageField({ value, onChange, placeholder }: { value: string; 
         id="message" rows={2} maxLength={config.messageMax} value={value} placeholder={placeholder}
         onChange={(e) => onChange(e.target.value.slice(0, config.messageMax))}
         aria-describedby="message-count"
-        className="w-full resize-none rounded-[12px] border border-line bg-surface px-4 py-3 text-[15px] leading-[22px] focus:outline-none focus-visible:outline-2 focus-visible:outline-tint"
+        className="w-full resize-none rounded-[var(--radius-input)] border border-transparent bg-surface-2 px-inset py-stack text-[15px] leading-[22px] focus:outline-none focus-visible:outline-2 focus-visible:outline-tint"
       />
       <span id="message-count" className="sr-only">Tối đa {config.messageMax} ký tự</span>
     </div>

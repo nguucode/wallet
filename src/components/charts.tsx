@@ -28,10 +28,10 @@ export function LineChart({ values, label, className, endTag, wide, inverse }: {
         </defs>
         <path d={`${d} L${ex},${H} L${pts[0][0]},${H} Z`} fill={`url(#${id})`} />
         <path d={d} fill="none" stroke={inverse ? `url(#${id}-line)` : ink} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-        <circle cx={ex} cy={ey} r="5" fill={inverse ? '#14121c' : 'var(--color-surface)'} stroke={ink} strokeWidth="2.5" />
+        <circle cx={ex} cy={ey} r="5" fill={inverse ? 'var(--color-card-base)' : 'var(--color-surface)'} stroke={ink} strokeWidth="2.5" />
       </svg>
       {endTag ? (
-        <span aria-hidden className={cx('absolute -translate-x-full -translate-y-[130%] rounded-[8px] px-2 py-0.5 text-[12px] font-bold whitespace-nowrap', inverse ? 'bg-[var(--color-card-accent)] text-[#0f0d16]' : 'bg-primary text-white')} style={{ left: `${(ex / W) * 100}%`, top: `${(ey / H) * 100}%` }}>{endTag}</span>
+        <span aria-hidden className={cx('absolute -translate-x-full -translate-y-[130%] rounded-[8px] px-2 py-0.5 text-[12px] font-bold whitespace-nowrap', inverse ? 'bg-[var(--color-card-accent)] text-[color:var(--color-card-base)]' : 'bg-primary text-white')} style={{ left: `${(ex / W) * 100}%`, top: `${(ey / H) * 100}%` }}>{endTag}</span>
       ) : null}
     </div>
   )

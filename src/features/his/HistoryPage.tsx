@@ -9,10 +9,10 @@ import type { Transaction, World } from '@/mock/seed'
 import { fmtDate, fmtTime, truthLine } from '@/features/flow/FlowKit'
 import { Button, cx, EmptyState, Segmented, Sheet, STATUS_LABEL, StatusPill } from '@/components/ui'
 import {
-  filterTransactions, groupByDay, groupByMonth, monthLabel, monthsOf, monthTotals, rowAmount, TABS,
+  filterTransactions, groupByDay, groupByMonth, monthLabel, monthsOf, monthTotals, TABS,
   type Group, type HistoryFilter, type Tab,
 } from './history'
-import { ScreenTitle, TxIcon } from './parts'
+import { ScreenTitle, TxAmount, TxIcon, TxRow } from './parts'
 
 const PAGE = 50
 const TYPES: TxType[] = ['topup', 'withdraw', 'p2p_out', 'p2p_in', 'bank_transfer', 'qr_merchant', 'bill', 'refund']
@@ -41,17 +41,6 @@ function useHistoryParams() {
   return { f, set, clear, key: params.toString() }
 }
 
-/** Amount cell: signed, tabular, failed struck through in muted because no money moved. */
-function RowAmount({ t }: { t: Transaction }) {
-  const failed = t.status === 'failed'
-  return (
-    <span className={cx('tnum font-semibold whitespace-nowrap', failed ? 'text-muted line-through' : t.direction === 'in' && 'text-success')}>
-      {formatVnd(rowAmount(t), { sign: t.direction })}
-      {failed ? <span className="sr-only"> (không có tiền dịch chuyển)</span> : null}
-    </span>
-  )
-}
-
 /** Status: chip only when not success; pending also carries its ETA so the row says what happens next. */
 function RowStatus({ t, web }: { t: Transaction; web?: boolean }) {
   if (t.status === 'success') return web ? <span className="text-[13px] text-muted">{STATUS_LABEL.success}</span> : null
@@ -73,21 +62,21 @@ function Filters({ f, set, months, onGround }: { f: HistoryFilter; set: (k: keyo
         <span className="relative block"><select className={sel} value={f.month ?? ''} onChange={(e) => set('month', e.target.value)}>
           <option value="">Tất cả các tháng</option>
           {months.map((m) => <option key={m} value={m}>{monthLabel(m)}</option>)}
-        </select><ChevronDown size={16} strokeWidth={2} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
+        </select><ChevronDown size={16} strokeWidth={1.75} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
       </label>
       <label className="flex flex-col gap-header text-[13px] font-semibold">
         Loại giao dịch
         <span className="relative block"><select className={sel} value={f.type ?? ''} onChange={(e) => set('type', e.target.value)}>
           <option value="">Tất cả loại</option>
           {TYPES.map((t) => <option key={t} value={t}>{typeLabel(t)}</option>)}
-        </select><ChevronDown size={16} strokeWidth={2} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
+        </select><ChevronDown size={16} strokeWidth={1.75} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
       </label>
       <label className="flex flex-col gap-header text-[13px] font-semibold">
         Trạng thái
         <span className="relative block"><select className={sel} value={f.status ?? ''} onChange={(e) => set('status', e.target.value)}>
           <option value="">Tất cả trạng thái</option>
           {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
-        </select><ChevronDown size={16} strokeWidth={2} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
+        </select><ChevronDown size={16} strokeWidth={1.75} aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-muted" /></span>
       </label>
     </>
   )
@@ -130,7 +119,7 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
             {g.rows.map((t) => {
               const name = counterpartyName(t.counterparty, w)
               return (
-                <tr key={t.id} onClick={() => onOpen(t.id)} className="cursor-pointer border-b border-line-soft last:border-0 hover:bg-surface-2/70">
+                <tr key={t.id} onClick={() => onOpen(t.id)} className="cursor-pointer border-b border-line-soft transition-colors last:border-0 hover:bg-surface-2 active:bg-surface-2">
                   <td className="py-stack pr-group pl-inset align-middle text-[13px] tnum">
                     <span className="block">{fmtDate(t.createdAt)}</span>
                     <span className="block text-muted">{fmtTime(t.createdAt)}</span>
@@ -139,13 +128,13 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
                     <span className="flex items-center gap-3">
                       <TxIcon type={t.type} />
                       <span className="min-w-0">
-                        <Link to={`/history/${t.id}`} onClick={(e) => { e.preventDefault(); onOpen(t.id) }} aria-label={`${name}, ${typeLabel(t.type)}`} className="block truncate font-medium text-ink no-underline hover:underline">{name}</Link>
+                        <Link to={`/history/${t.id}`} onClick={(e) => { e.preventDefault(); onOpen(t.id) }} aria-label={`${name}, ${typeLabel(t.type)}`} className="block truncate font-medium text-ink no-underline">{name}</Link>
                         <span className="block truncate text-[13px] text-muted">{typeLabel(t.type)}</span>
                       </span>
                     </span>
                   </td>
                   <td className="py-stack pr-group align-middle"><RowStatus t={t} web /></td>
-                  <td className="py-stack pr-inset text-right align-middle"><RowAmount t={t} /></td>
+                  <td className="py-stack pr-inset text-right align-middle"><TxAmount t={t} /></td>
                 </tr>
               )
             })}
@@ -157,34 +146,14 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
   )
 }
 
-function AppList({ groups, w, onOpen }: { groups: Group[]; w: World; onOpen: (id: string) => void }) {
+function AppList({ groups, onOpen }: { groups: Group[]; onOpen: (id: string) => void }) {
   return (
     <div>
       {groups.map((g) => (
         <section key={g.key} aria-label={g.label} className="mt-group first:mt-stack">
           <h2 className="label-caps mb-header px-inset">{g.label}</h2>
-          <ul className="card divide-y divide-line-soft px-inset">
-            {g.rows.map((t) => {
-              const name = counterpartyName(t.counterparty, w)
-              return (
-                <li key={t.id}>
-                  <Link
-                    to={`/history/${t.id}`} onClick={(e) => { e.preventDefault(); onOpen(t.id) }}
-                    className="flex min-h-16 items-center gap-3 py-2 text-ink no-underline"
-                  >
-                    <TxIcon type={t.type} />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate font-medium">{name}</span>
-                      <span className="block truncate text-[13px] text-muted">{typeLabel(t.type)} · {fmtTime(t.createdAt)}</span>
-                    </span>
-                    <span className="flex shrink-0 flex-col items-end gap-1">
-                      <RowAmount t={t} />
-                      {t.status !== 'success' ? <StatusPill status={t.status} /> : null}
-                    </span>
-                  </Link>
-                </li>
-              )
-            })}
+          <ul className="card overflow-hidden">
+            {g.rows.map((t) => <li key={t.id}><TxRow t={t} onOpen={onOpen} /></li>)}
           </ul>
         </section>
       ))}
@@ -242,7 +211,7 @@ export default function HistoryPage() {
         {layout === 'web' ? (
           <div className="grid grid-cols-3 gap-stack"><Filters f={f} set={set} months={months} onGround /></div>
         ) : (
-          <button type="button" onClick={() => setSheet(true)} className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full bg-surface px-3 text-[15px] text-tint">
+          <button type="button" onClick={() => setSheet(true)} className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full bg-surface px-3 text-[15px] font-semibold text-tint transition-colors hover:bg-surface-2 active:bg-surface-2">
             <SlidersHorizontal size={16} strokeWidth={1.75} aria-hidden />Bộ lọc
             {active.length ? <span className="min-w-5 rounded-full bg-primary px-1.5 text-[12px] leading-5 text-white tnum" aria-label={`${active.length} bộ lọc đang bật`}>{active.length}</span> : null}
           </button>
@@ -252,7 +221,7 @@ export default function HistoryPage() {
       {active.length ? (
         <div className="mt-stack flex flex-wrap items-center gap-header">
           {active.map(([k, v]) => (
-            <span key={k} className="inline-flex h-9 items-center gap-1 rounded-full bg-primary-soft pr-1 pl-3 text-[13px] font-medium text-primary-ink">
+            <span key={k} className="inline-flex h-9 items-center gap-1 rounded-full bg-primary-soft pr-1 pl-3 text-[13px] font-semibold text-primary-ink">
               {v}
               <button type="button" aria-label={`Bỏ lọc ${v}`} onClick={() => set(k)} className="inline-flex size-8 items-center justify-center rounded-full hover:bg-primary/10"><X size={14} strokeWidth={2} aria-hidden /></button>
             </span>
@@ -267,7 +236,7 @@ export default function HistoryPage() {
         ) : layout === 'web' ? (
           <WebTable groups={shown} all={groups} w={w} onOpen={open} />
         ) : (
-          <AppList groups={shown} w={w} onOpen={open} />
+          <AppList groups={shown} onOpen={open} />
         )}
         {filtered.length ? (
           <div className="mt-group flex flex-col items-center gap-header text-[13px] text-muted">

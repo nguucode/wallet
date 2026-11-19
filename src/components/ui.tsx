@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import { ChevronLeft, X } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { forwardRef, useEffect, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { useLayout } from '@/app/layout'
@@ -68,7 +68,8 @@ export function Section({ title, action, children, className }: { title: string;
     <section className={cx('mt-section', className)} aria-label={title}>
       <div className="mb-header flex items-baseline justify-between gap-4">
         <h2 className="title-3">{title}</h2>
-        <span className="text-[15px] text-tint [&_a]:text-tint [&_a]:no-underline [&_a:hover]:underline [&_button]:text-tint">{action}</span>
+        {/* 44px hit area without moving the layout: vertical padding cancelled by a negative margin. */}
+        <span className="text-[15px] font-semibold text-tint [&>a]:-my-3 [&>a]:inline-block [&>a]:py-3 [&>button]:-my-3 [&>button]:py-3 [&_a]:text-tint [&_a]:no-underline [&_a:hover]:underline [&_button]:text-tint [&_button:hover]:underline">{action}</span>
       </div>
       {children}
     </section>
@@ -108,6 +109,13 @@ export function NavBar({ title, titleVisible = true, left, right, className }: {
   )
 }
 
+/** Web back link above a large title: tint chevron + label, one spec everywhere. */
+export function WebBackLink({ to, onClick, children = 'Quay lại' }: { to?: string; onClick?: () => void; children?: ReactNode }) {
+  const cls = 'mb-header -ml-2 inline-flex h-9 items-center gap-1 rounded-full pr-3 pl-1 text-[15px] text-tint no-underline transition-colors hover:bg-surface-2 active:bg-surface-2'
+  const inner = <><ChevronLeft size={22} strokeWidth={2.25} aria-hidden />{children}</>
+  return to ? <Link to={to} className={cls}>{inner}</Link> : <button type="button" onClick={onClick} className={cls}>{inner}</button>
+}
+
 /** Back: tint chevron, 44pt target. */
 export function BackButton({ onClick, label = 'Quay lại' }: { onClick: () => void; label?: string }) {
   return <IconButton label={label} className="text-tint hover:bg-surface-2" onClick={onClick}><ChevronLeft size={28} strokeWidth={2.25} /></IconButton>
@@ -122,28 +130,71 @@ export const CloseButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HT
   )
 })
 
-export function Row({ left, title, subtitle, right, rightSub, to, onClick, className }: {
-  left?: ReactNode; title: ReactNode; subtitle?: ReactNode; right?: ReactNode; rightSub?: ReactNode; to?: string; onClick?: () => void; className?: string
+/**
+ * The one list row (DESIGN.md "List rows"). Full-bleed inside its card (the card clips the corners), padding by the
+ * `inset` role, hover/press fill the whole row, and the separator starts where the text starts, as on iOS.
+ * Put rows directly in a `card overflow-hidden` list (no divide-y, no padding on the list).
+ */
+export function Row({ left, title, subtitle, right, rightSub, chevron, selected, disabled, to, onClick, className, ...aria }: {
+  left?: ReactNode; title: ReactNode; subtitle?: ReactNode; right?: ReactNode; rightSub?: ReactNode; chevron?: boolean
+  /** Picker rows: the chosen one carries a tint checkmark (iOS), never a coloured fill or a text marker. */
+  selected?: boolean
+  /** Still focusable and announced (aria-disabled) so it can explain itself; no hover or press fill. */
+  disabled?: boolean
+  to?: string; onClick?: (e: React.MouseEvent) => void; className?: string; 'aria-label'?: string; 'aria-current'?: 'page' | undefined; 'aria-describedby'?: string
 }) {
   const body = (
     <>
-      {left}
-      <span className="min-w-0 flex-1">
-        <span className="block truncate font-medium">{title}</span>
-        {subtitle ? <span className="block truncate text-[13px] leading-[18px] text-muted">{subtitle}</span> : null}
-      </span>
-      {right !== undefined ? (
-        <span className="shrink-0 text-right">
-          <span className="block tnum font-semibold">{right}</span>
-          {rightSub ? <span className="block text-[13px] leading-[18px]">{rightSub}</span> : null}
+      {left ? <span className="flex shrink-0 items-center py-header">{left}</span> : null}
+      <span className="row-sep flex min-h-[60px] min-w-0 flex-1 items-center gap-stack py-header pr-inset">
+        <span className="min-w-0 flex-1">
+          {/* The title is the identity of the row, so it wraps (two lines max) instead of truncating; the subtitle stays one line. */}
+          <span className="line-clamp-2 block font-medium text-balance break-words">{title}</span>
+          {subtitle ? <span className="block truncate text-[13px] leading-[18px] text-muted">{subtitle}</span> : null}
         </span>
-      ) : null}
+        {right !== undefined ? (
+          <span className="flex shrink-0 flex-col items-end gap-1 text-right">
+            <span className="tnum font-semibold">{right}</span>
+            {rightSub ? <span className="text-[13px] leading-[18px]">{rightSub}</span> : null}
+          </span>
+        ) : null}
+        {chevron ? <ChevronRight size={20} strokeWidth={1.75} aria-hidden className="-mr-1 shrink-0 text-muted" /> : null}
+        {selected !== undefined ? <Check size={20} strokeWidth={2.25} aria-hidden className={cx('shrink-0 text-tint', !selected && 'invisible')} /> : null}
+      </span>
     </>
   )
-  const cls = cx('flex min-h-[64px] w-full items-center gap-3 py-2 text-left', (to || onClick) && 'rounded-xl hover:bg-surface-2 active:bg-surface-2 -mx-2 px-2 w-[calc(100%+16px)]', className)
-  if (to) return <Link to={to} className={cx(cls, 'no-underline text-ink')}>{body}</Link>
-  if (onClick) return <button type="button" onClick={onClick} className={cls}>{body}</button>
+  const cls = cx('row flex w-full items-stretch gap-stack pl-inset text-left text-ink', (to || onClick) && 'focus-visible:outline-offset-[-2px]', (to || onClick) && !disabled && 'transition-colors hover:bg-surface-2 active:bg-surface-2', disabled && 'cursor-not-allowed', className)
+  if (to) return <Link to={to} onClick={onClick} className={cx(cls, 'no-underline')} {...aria}>{body}</Link>
+  if (onClick) return <button type="button" onClick={onClick} aria-pressed={selected} aria-disabled={disabled || undefined} className={cls} {...aria}>{body}</button>
   return <div className={cls}>{body}</div>
+}
+
+/** One tile in a horizontal recipient rail (Home, Transfer): 72px item, 56px leading, short name + optional second line. */
+export function RailTile({ to, onClick, label, leading, name, sub }: { to: string; onClick?: (e: React.MouseEvent) => void; label: string; leading: ReactNode; name: string; sub?: string }) {
+  return (
+    // Accessible name = the visible text first (WCAG 2.5.3), then the full identity for screen readers.
+    <Link to={to} onClick={onClick} title={label} className="flex flex-col items-center gap-header rounded-xl py-1 text-center text-ink no-underline transition-colors hover:bg-surface-2 active:bg-surface-2">
+      {leading}
+      <span className="block w-full">
+        <span className="block truncate text-[12px] leading-4 font-semibold">{name}</span>
+        {sub ? <span className="block truncate text-[11px] leading-[14px] text-muted">{sub}</span> : null}
+        <span className="sr-only">, {label}</span>
+      </span>
+    </Link>
+  )
+}
+
+/** Loading placeholder with Row's geometry. */
+export function RowSkeleton() {
+  return (
+    <div className="flex items-stretch gap-stack pl-inset" aria-hidden>
+      <span className="flex items-center py-header"><Skeleton className="size-10 rounded-full" /></span>
+      <span className="row-sep flex min-h-[60px] flex-1 items-center gap-stack py-header pr-inset">
+        <span className="flex-1 space-y-header"><Skeleton className="h-4 w-2/5" /><Skeleton className="h-3 w-1/4" /></span>
+        <Skeleton className="h-4 w-20" />
+      </span>
+    </div>
+  )
 }
 
 export function Disc({ children, tone = 'neutral', size = 48 }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'secondary' | 'success' | 'pending' | 'danger'; size?: number }) {
@@ -274,7 +325,7 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
             // Header stays put; only the body scrolls, so the scrollbar runs inside the body, clear of the rounded corners.
             'fixed z-50 flex flex-col overflow-hidden bg-surface shadow-[var(--shadow-float)] focus:outline-none',
             layout === 'app'
-              ? 'inset-x-0 bottom-0 max-h-[92dvh] rounded-t-[34px] animate-[sheet-up_240ms_cubic-bezier(0.16,1,0.3,1)]'
+              ? 'inset-x-0 bottom-0 max-h-[92dvh] rounded-t-[34px] motion-safe:animate-[sheet-up_240ms_cubic-bezier(0.16,1,0.3,1)] motion-reduce:animate-[fade-in_150ms_ease-out]'
               : 'top-1/2 left-1/2 max-h-[88vh] w-[440px] -translate-x-1/2 -translate-y-1/2 rounded-[24px] animate-[fade-in_150ms_ease-out]',
           )}
         >

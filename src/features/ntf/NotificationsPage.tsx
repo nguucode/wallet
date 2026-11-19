@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { markRead, now, useWorld } from '@/app/store'
 import type { Notification, NotificationKind } from '@/mock/seed'
-import { cx, Disc, EmptyState, IconButton, Segmented, Skeleton } from '@/components/ui'
+import { cx, Disc, EmptyState, IconButton, RowSkeleton, Segmented } from '@/components/ui'
 import { fmtTime } from '@/features/flow/FlowKit'
 import { ScreenTitle, useLoaded } from '@/features/sec/kit'
 import { useReminders } from './useReminders'
@@ -33,7 +33,7 @@ export default function NotificationsPage() {
   }
   const markAll = unreadIds.length && loaded ? (
     layout === 'web'
-      ? <button type="button" onClick={() => markRead(unreadIds)} className="h-11 shrink-0 rounded-full px-3 text-[17px] text-tint hover:bg-surface-2 lg:text-[15px]">Đánh dấu tất cả đã đọc</button>
+      ? <button type="button" onClick={() => markRead(unreadIds)} className="h-11 shrink-0 text-[15px] font-semibold text-tint hover:underline">Đánh dấu tất cả đã đọc</button>
       : <IconButton label="Đánh dấu tất cả đã đọc" onClick={() => markRead(unreadIds)} className="shrink-0 text-tint"><CheckCheck size={22} strokeWidth={1.75} /></IconButton>
   ) : null
 
@@ -64,23 +64,26 @@ export default function NotificationsPage() {
           groups.map((g) => (
             <section key={g.label} aria-label={g.label} className="mt-group first:mt-stack">
               <h2 className="label-caps mb-header px-inset">{g.label}</h2>
-              <ul className="card divide-y divide-line-soft px-inset">
+              <ul className="card overflow-hidden">
                 {g.items.map((n) => {
                   const Icon = ICON[n.kind]
                   return (
                     <li key={n.id}>
-                      <button type="button" onClick={() => open(n)} className="-mx-2 flex min-h-[72px] w-[calc(100%+16px)] items-start gap-3 rounded-xl px-2 py-3 text-left hover:bg-surface-2">
-                        <Disc size={48}><Icon size={22} strokeWidth={1.75} /></Disc>
+                      {/* Row geometry (DESIGN.md "List rows") with a two-line body, so the icon tops-aligns instead of centring. */}
+                      <button type="button" onClick={() => open(n)} className="row flex w-full items-stretch gap-stack pl-inset text-left transition-colors hover:bg-surface-2 active:bg-surface-2 focus-visible:outline-offset-[-2px]">
+                        <span className="flex shrink-0 py-stack"><Disc size={40}><Icon size={20} strokeWidth={1.75} /></Disc></span>
+                        <span className="row-sep flex min-w-0 flex-1 items-start gap-stack py-stack pr-inset">
                         <span className="min-w-0 flex-1">
                           <span className="flex items-baseline gap-2">
-                            <span className={cx('min-w-0 flex-1 tnum', n.read ? 'font-medium' : 'font-bold')}>{n.title}</span>
+                            <span className={cx('min-w-0 flex-1', n.read ? 'font-medium' : 'font-semibold')}>{n.title}</span>
                             <span className="shrink-0 text-[13px] leading-[18px] text-muted tnum">{fmtTime(n.createdAt)}</span>
                           </span>
-                          {n.body ? <span className="mt-1 line-clamp-2 block text-[15px] leading-5 text-muted">{n.body}</span> : null}
+                          {n.body ? <span className="mt-1 line-clamp-2 block text-[13px] leading-[18px] text-muted">{n.body}</span> : null}
                         </span>
                         {n.read ? <span className="w-2 shrink-0" /> : (
-                          <span className="mt-header size-2 shrink-0 rounded-full bg-ink"><span className="sr-only">Chưa đọc</span></span>
+                          <span className="mt-header size-2 shrink-0 rounded-full bg-tint"><span className="sr-only">Chưa đọc</span></span>
                         )}
+                        </span>
                       </button>
                     </li>
                   )
@@ -94,11 +97,3 @@ export default function NotificationsPage() {
   )
 }
 
-function RowSkeleton() {
-  return (
-    <div className="flex min-h-[72px] items-start gap-3 py-3" aria-hidden>
-      <Skeleton className="size-12 rounded-full" />
-      <span className="flex-1 space-y-header"><Skeleton className="h-4 w-1/2" /><Skeleton className="h-3 w-4/5" /></span>
-    </div>
-  )
-}

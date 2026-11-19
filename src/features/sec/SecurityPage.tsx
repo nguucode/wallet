@@ -30,16 +30,16 @@ export default function SecurityPage() {
   return (
     <div>
       <ScreenTitle>Bảo mật</ScreenTitle>
-      <Card className="px-inset">
-        <ul className="divide-y divide-line-soft">
+      <Card className="overflow-hidden">
+        <ul>
           <SettingRow
-            icon={<KeyRound size={22} strokeWidth={1.75} />}
+            icon={<KeyRound size={20} strokeWidth={1.75} />}
             title="Mã PIN"
             desc={lockedUntil ? <span className="text-danger">Mã PIN đang tạm khóa đến {fmtTime(lockedUntil)}</span> : 'Dùng để xác thực giao dịch. Không chia sẻ cho bất kỳ ai.'}
-            control={<Button variant="secondary" size="sm" className="min-h-11" onClick={() => setPinFor('change')}>Đổi mã PIN</Button>}
+            control={<Button variant="secondary" size="sm" onClick={() => setPinFor('change')}>Đổi mã PIN</Button>}
           />
           <SettingRow
-            icon={<Fingerprint size={22} strokeWidth={1.75} />}
+            icon={<Fingerprint size={20} strokeWidth={1.75} />}
             title="Sinh trắc học thiết bị"
             descId="bio-desc"
             desc={layout === 'web'
@@ -80,13 +80,15 @@ export default function SecurityPage() {
 
 function SettingRow({ icon, title, desc, descId, control }: { icon: ReactNode; title: string; desc: ReactNode; descId?: string; control: ReactNode }) {
   return (
-    <li className="flex min-h-16 items-center gap-3 py-3">
-      <Disc size={48}>{icon}</Disc>
-      <div className="min-w-0 flex-1">
-        <p className="text-[15px] leading-5 font-bold">{title}</p>
-        <p id={descId} className="text-[13px] leading-[18px] text-muted">{desc}</p>
+    <li className="row flex items-stretch gap-stack pl-inset">
+      <span className="flex shrink-0 items-center py-header"><Disc size={40}>{icon}</Disc></span>
+      <div className="row-sep flex min-h-[60px] min-w-0 flex-1 items-center gap-stack py-stack pr-inset">
+        <div className="min-w-0 flex-1">
+          <p className="font-medium">{title}</p>
+          <p id={descId} className="text-[13px] leading-[18px] text-muted">{desc}</p>
+        </div>
+        {control}
       </div>
-      {control}
     </li>
   )
 }

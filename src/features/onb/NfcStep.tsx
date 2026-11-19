@@ -11,7 +11,7 @@ export function IdentitySummary({ title }: { title: string }) {
   const c = useWorld().customer
   return (
     <section aria-label={title}>
-      <h2 className="mb-header text-[17px] leading-[26px] font-bold">{title}</h2>
+      <h2 className="mb-header headline">{title}</h2>
       <DataList rows={[
         ['Họ và tên', c.name.toUpperCase()],
         ['Số CCCD', <span className="tnum">{maskIdNumber(c.idNumber)}</span>],

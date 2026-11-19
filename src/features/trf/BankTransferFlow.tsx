@@ -121,13 +121,13 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
       {prefill?.invalid ? <div className="mb-group"><Callout tone="danger" title="Mã QR không hợp lệ. Hãy quét lại hoặc nhập người nhận." /></div> : null}
       {w.bankRecipients.length ? (
         <Section title="Người nhận đã lưu" className="mt-0 lg:mt-0">
-          <Card className="px-inset">
-            <ul className="divide-y divide-line-soft">
+          <Card className="overflow-hidden">
+            <ul>
               {w.bankRecipients.slice(0, 6).map((r) => (
                 <li key={r.id}>
                   <Row
                     onClick={() => { setBankId(r.bankId); setAccount(r.account); void run(r.bankId, r.account) }}
-                    left={<BankMark short={bankById(r.bankId).short} />}
+                    left={<BankMark short={bankById(r.bankId).short} size={40} />}
                     title={<span title={r.holder}>{r.holder}</span>}
                     subtitle={<span className="whitespace-nowrap">{bankById(r.bankId).name} · {maskAccount(r.account)}</span>}
                   />
@@ -200,11 +200,12 @@ function BankPicker({ open, onOpenChange, onPick }: { open: boolean; onOpenChang
         <Search size={18} strokeWidth={1.75} aria-hidden className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted" />
         <TextInput aria-label="Tìm ngân hàng" placeholder="Tìm ngân hàng" value={q} onChange={(e) => setQ(e.target.value)} className="pl-11" />
       </div>
-      <ul>
+      {/* Rows run edge to edge in the sheet, like a grouped list. */}
+      <ul className="-mx-inset">
         {list.map((b) => (
-          <li key={b.id}><Row onClick={() => onPick(b.id)} left={<BankMark short={b.short} />} title={b.name} /></li>
+          <li key={b.id}><Row onClick={() => onPick(b.id)} left={<BankMark short={b.short} size={40} />} title={b.name} /></li>
         ))}
-        {!list.length ? <li className="py-stack text-muted">Không tìm thấy ngân hàng.</li> : null}
+        {!list.length ? <li className="px-inset py-group text-center text-muted">Không tìm thấy ngân hàng.</li> : null}
       </ul>
     </Sheet>
   )
@@ -254,7 +255,7 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
     )
   return (
     <>
-      <h2 className="mb-stack text-[17px] leading-[26px] font-bold">Xác nhận</h2>
+      <h2 className="mb-stack headline">Xác nhận</h2>
       <p className="mb-stack text-center"><Money amount={draft.amount} className="amount-display" /></p>
       <ConfirmRows rows={[
         ['Người nhận', <span className="break-words">{draft.holder}</span>],

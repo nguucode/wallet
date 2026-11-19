@@ -1,4 +1,4 @@
-import { ChevronRight, RefreshCw } from 'lucide-react'
+import { RefreshCw } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
@@ -153,7 +153,7 @@ function PayCode() {
         <>
           {banner}
           <Card className="relative flex flex-col items-center px-inset py-group text-center">
-            {app ? null : <h2 className="mb-stack text-[17px] leading-[26px] font-bold">Mã thanh toán</h2>}
+            {app ? null : <h2 className="mb-stack headline">Mã thanh toán</h2>}
             <div className="rounded-[12px] bg-white p-2">
               <QrImage payload={code.value} size={240} label="Mã thanh toán, đưa thu ngân quét" />
             </div>
@@ -178,12 +178,12 @@ function PayCode() {
               </div>
             ) : null}
           </Card>
-          <Card className="mt-group px-inset">
+          <Card className="mt-group overflow-hidden">
             <Row
               onClick={sources.length ? () => setPicker(true) : undefined}
               title="Nguồn tiền"
               subtitle={<span className="whitespace-nowrap text-ink">{label}</span>}
-              right={sources.length ? <ChevronRight size={20} strokeWidth={1.75} aria-hidden className="text-muted" /> : undefined}
+              chevron={sources.length > 0}
             />
           </Card>
           <p className="mt-stack text-[13px] text-muted">Thu ngân quét mã này để trừ tiền. Không chia sẻ mã với người khác. <Link to="/pay/scan" className="font-medium text-tint">Quét mã thay vì đưa mã</Link></p>
@@ -207,12 +207,13 @@ function PayCode() {
         />
       ) : null}
       <Sheet open={picker} onOpenChange={setPicker} title="Nguồn tiền">
-        <ul className="divide-y divide-line-soft">
+        <ul className="-mx-inset">
           {[{ id: WALLET, title: 'Ví', sub: `Số dư khả dụng: ${formatVnd(w.balance)}` }, ...sources.map((s) => ({ id: s.id, title: srcLabel(s) + (s.isDefault ? ' (mặc định)' : ''), sub: s.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản ngân hàng' }))].map((o) => (
             <li key={o.id}>
               <Row
                 onClick={() => { setSourceId(o.id); setPicker(false); setBlocked(null); issue(true) }}
-                title={<span className="flex items-center gap-2">{o.title}{o.id === sourceId ? <span className="text-[12px] font-semibold text-primary-ink">· Đang chọn</span> : null}</span>}
+                title={o.title}
+                selected={o.id === sourceId}
                 subtitle={o.sub}
               />
             </li>

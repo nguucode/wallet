@@ -109,7 +109,7 @@ function WithdrawResult({ t }: { t: Transaction }) {
   const w = useWorld()
   const src = w.sources.find((s) => s.id === t.sourceId)
   const name = src ? `${bankById(src.bankId).name} ${mask4(src.last4)}` : 'tài khoản của bạn'
-  const amount = <Money amount={t.amount} className={t.amount >= 100_000_000 ? 'text-[28px] leading-[34px] font-bold' : 'amount-display'} />
+  const amount = <Money amount={t.amount + t.fee} sign="out" className={cx('amount-display', t.status === 'failed' && 'text-muted line-through')} />
   if (t.status === 'pending')
     return (
       <ResultBlock tone="pending" heading="Đang xử lý" amount={amount}>

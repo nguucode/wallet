@@ -1,4 +1,4 @@
-import { Check, ChevronLeft, Clock, Delete, X } from 'lucide-react'
+import { Check, Clock, Delete, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate, useSearchParams } from 'react-router'
@@ -9,6 +9,7 @@ import { checkLimit } from '@/domain/limits'
 import { formatVnd, parseVndInput } from '@/domain/money'
 import type { AuthMethod, TxType } from '@/domain/types'
 import { useLayout } from '@/app/layout'
+import { rowAmount } from '@/features/his/history'
 import {
   counterpartyName, dayCounter, executeMoney, freeUsed, gateOf, getState, pendingEta, sourceLabel, usage, useWorld,
   type MoneyRequest,
@@ -16,7 +17,7 @@ import {
 import type { FailureReason, Transaction } from '@/mock/seed'
 import { AuthSheet } from '@/features/sec/AuthSheet'
 import { GATE_COPY } from '@/features/sec/Gate'
-import { Button, ButtonLink, Confirm, cx, BackButton, CloseButton, NavBar, Money } from '@/components/ui'
+import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, Money, NavBar, WebBackLink } from '@/components/ui'
 
 export { fmtTime, fmtDate, fmtDateTime, maskPhone, formatPhone, maskAccount } from '@/app/format'
 import { fmtTime, fmtDateTime } from '@/app/format'
@@ -73,10 +74,10 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
   if (layout === 'web')
     return (
       <div>
-        {onBack ? <button type="button" onClick={onBack} className="-ml-2 mb-1 inline-flex h-9 items-center gap-1 rounded-full pr-3 pl-1 text-[15px] text-tint hover:bg-surface-2"><ChevronLeft size={22} strokeWidth={2.25} aria-hidden />Quay lại</button> : null}
+        {onBack ? <WebBackLink onClick={onBack} /> : null}
         <div className="mb-group flex items-start gap-2">
           <h1 tabIndex={-1} data-page-title className="large-title flex-1 outline-none">{title}</h1>
-          {onClose ? <CloseButton onClick={onClose} /> : null}
+          {onClose ? <CloseButton onClick={onClose} className="-mr-[7px]" /> : null}
         </div>
         {description ? <p className="-mt-header mb-group text-muted">{description}</p> : null}
         {/* One inset group for a plain step; a step that brings its own sections sits on the grouped background. */}
@@ -143,7 +144,7 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
   return (
     <div>
       <label htmlFor="amount" className="mb-header block text-center text-[15px] text-muted">{label}</label>
-      <div className={cx('flex items-start justify-center border-b-2 pb-2', error ? 'border-danger' : 'border-line')}>
+      <div className={cx('flex items-start justify-center border-b-2 pb-2 transition-colors', error ? 'border-danger' : 'border-line focus-within:border-tint')}>
         <input
           id="amount" autoFocus={autoFocus && layout === 'web'} autoComplete="off" placeholder="0"
           // App: the wallet keypad below types; the system keyboard stays down. Web: the physical keyboard.
@@ -204,11 +205,13 @@ export function Keypad({ value, onChange }: { value: number; onChange: (n: numbe
 
 /* ── Confirm (US-FND-007) ─────────────────────────────────────────── */
 
+/** Key/value detail rows (confirm, result, profile). Put inside a section with left `inset`; the separator runs from the
+ *  text edge to the card edge, like Row. */
 export function ConfirmRows({ rows }: { rows: [string, ReactNode][] }) {
   return (
-    <dl className="divide-y divide-line-soft">
+    <dl className="-mr-inset">
       {rows.map(([k, v]) => (
-        <div key={k} className="flex items-start justify-between gap-4 py-3">
+        <div key={k} className="flex min-h-12 items-start justify-between gap-group border-t border-line-soft py-stack pr-inset first:border-t-0">
           <dt className="shrink-0 text-muted">{k}</dt>
           <dd className="min-w-0 text-right font-medium break-words">{v}</dd>
         </div>
@@ -311,8 +314,9 @@ export function ResultView({ txId, onRetry, extra, successHeading = 'Thành côn
   return (
     <div className="flex flex-col items-center pt-group text-center">
       <StatusMark status={t.status} />
-      <p role="status" className="mt-stack text-[17px] font-bold">{heading}</p>
-      <p className="mt-header"><Money amount={t.amount + (t.status === 'failed' ? 0 : t.fee)} sign={t.direction} className="amount-display" /></p>
+      <p role="status" className="mt-stack headline">{heading}</p>
+      {/* Same amount rule as every transaction row (rowAmount): signed, fee on outgoing, incoming green, failed muted and struck. */}
+      <p className="mt-header"><Money amount={rowAmount(t)} sign={t.direction} tone={t.status !== 'failed'} className={cx('amount-display', t.status === 'failed' && 'text-muted line-through')} /></p>
       <p className="mt-header max-w-[40ch] text-muted">{counterpartyName(t.counterparty, w)}{t.sourceId && t.type !== 'topup' ? ` · từ ${sourceLabel(w, t.sourceId)}` : ''}</p>
       <div className="mt-group w-full text-left">
         <ConfirmRows rows={[

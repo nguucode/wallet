@@ -93,7 +93,7 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
   return (
     <>
       <MerchantHeader name={draft.name!} category={draft.category} />
-      <h2 className="mb-stack text-[17px] leading-[26px] font-bold">Xác nhận</h2>
+      <h2 className="mb-stack headline">Xác nhận</h2>
       <p className="text-center"><Money amount={draft.amount} className="amount-display" /></p>
       {draft.fixed ? <p className="mt-1 mb-stack text-center text-[13px] text-muted">Số tiền do cửa hàng đặt</p> : <div className="mb-stack" />}
       <ConfirmRows rows={[

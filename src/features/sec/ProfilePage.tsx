@@ -1,6 +1,7 @@
 import { Check, Clock, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { gateOf, useWorld } from '@/app/store'
+import { ConfirmRows } from '@/features/flow/FlowKit'
 import { Avatar, Badge, Callout, Card, cx, Skeleton } from '@/components/ui'
 import { formatPhone } from '@/features/flow/FlowKit'
 import { fmtYmd } from '@/features/hom/selectors'
@@ -43,7 +44,7 @@ export default function ProfilePage() {
       <div className="card flex items-center gap-4 p-inset">
         <Avatar name={c.name} src={c.photo} size={64} />
         <div className="min-w-0 flex-1 pt-1">
-          <p className="text-[17px] leading-[26px] font-bold break-words">{c.name}</p>
+          <p className="headline break-words">{c.name}</p>
           <div className="mt-1"><Badge tone={tone}>{KYC_LABEL[c.kycStatus]}</Badge></div>
         </div>
       </div>
@@ -53,15 +54,8 @@ export default function ProfilePage() {
       ) : null}
       {gate ? <div className="mt-group"><GateCallout gate={gate} /></div> : null}
 
-      <Card className="mt-group px-inset">
-        <dl className="divide-y divide-line-soft">
-          {rows.map(([k, v]) => (
-            <div key={k} className="flex min-h-12 items-start justify-between gap-4 py-3">
-              <dt className="shrink-0 text-muted">{k}</dt>
-              <dd className="min-w-0 text-right font-medium break-words">{loaded ? v : <Skeleton className="ml-auto h-4 w-28" />}</dd>
-            </div>
-          ))}
-        </dl>
+      <Card className="mt-group overflow-hidden px-inset">
+        <ConfirmRows rows={rows.map(([k, v]) => [k, loaded ? v : <Skeleton className="ml-auto h-4 w-28" />] as [string, React.ReactNode])} />
       </Card>
     </div>
   )

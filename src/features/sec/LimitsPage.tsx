@@ -35,7 +35,7 @@ export default function LimitsPage() {
             <p className="mt-stack text-center text-[13px] text-muted tnum">{reset}</p>
           </Card>
           <Card as="section" className="p-inset">
-            <h2 className="text-[17px] leading-[22px] font-semibold">Hạn mức chung theo tháng</h2>
+            <h2 className="headline">Hạn mức chung theo tháng</h2>
             <p className="mt-1 mb-group text-[15px] text-muted">Cột đỏ là tháng vượt mức {formatVnd(config.limits.generalMonth)}</p>
             <BarsWithLimit
               bars={monthlyGeneral(w.transactions, at)}
@@ -50,7 +50,7 @@ export default function LimitsPage() {
           />
           <Meter title="Hạn mức thiết yếu trong tháng" counter={c.essential} reset={reset} note="Dành cho hóa đơn điện. Không trừ vào hạn mức chung." />
           <Card as="section" className="p-inset">
-            <h2 className="text-[17px] leading-[24px] font-bold">Xác thực giao dịch</h2>
+            <h2 className="headline">Xác thực giao dịch</h2>
             <p className="mt-header">Hôm nay đã giao dịch <span className="tnum font-semibold">{formatVnd(dayCounter(w))}</span> bằng mã PIN</p>
             <ul className="mt-stack space-y-header border-t border-line-soft pt-stack text-[15px] leading-5">
               <li>Nạp, rút, chuyển tiền đến {formatVnd(s.perTransaction)} mỗi giao dịch và tổng {formatVnd(s.perDay)} mỗi ngày: mã PIN</li>
@@ -85,7 +85,7 @@ function Meter({ title, counter, note, reset }: { title: string; counter: Counte
   return (
     <Card as="section" className="p-inset">
       <div className="flex items-start justify-between gap-3">
-        <h2 className="text-[17px] leading-[24px] font-bold">{title}</h2>
+        <h2 className="headline">{title}</h2>
         {warn ? <Badge tone="pending">Sắp hết hạn mức</Badge> : null}
       </div>
       <p className="mt-stack tnum">Đã dùng {formatVnd(counter.used)} /<wbr /> {formatVnd(counter.limit)}</p>

@@ -83,7 +83,7 @@ function WebScan() {
   return (
     <>
       <PayTabs active="scan" />
-      <h2 className="mb-stack text-[17px] leading-[26px] font-bold">Tải ảnh mã QR</h2>
+      <h2 className="mb-stack headline">Tải ảnh mã QR</h2>
       <label
         onDragOver={(e) => { e.preventDefault(); setOver(true) }} onDragLeave={() => setOver(false)} onDrop={onDrop}
         className={cx('flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[12px] border border-dashed p-6 text-center focus-within:outline-2 focus-within:outline-tint', over ? 'border-tint bg-primary-soft' : 'border-line hover:bg-surface-2')}
@@ -100,7 +100,7 @@ function WebScan() {
           </Callout>
         </div>
       ) : null}
-      <h2 className="mt-12 mb-1 text-[17px] leading-[26px] font-bold">Mã mẫu</h2>
+      <h2 className="mt-12 mb-1 headline">Mã mẫu</h2>
       <p className="mb-stack text-[13px] text-muted">Mã dựng sẵn cho bản demo. Chọn một mã để đi tiếp như khi quét thật.</p>
       <SampleGrid onPick={(p) => { setProblem(null); handle(p) }} cols="grid-cols-2 sm:grid-cols-4" />
     </>

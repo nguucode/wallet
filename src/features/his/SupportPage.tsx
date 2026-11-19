@@ -33,7 +33,7 @@ export default function SupportPage() {
       <ScreenTitle>Trợ giúp</ScreenTitle>
 
       <Card className="p-inset">
-        <h2 className="text-[17px] leading-[26px] font-bold">Có vấn đề với một giao dịch?</h2>
+        <h2 className="headline">Có vấn đề với một giao dịch?</h2>
         <p className="mt-1 text-muted">Mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ.</p>
         <ButtonLink to="/history" block={layout === 'app'} className="mt-stack">Mở Lịch sử</ButtonLink>
       </Card>

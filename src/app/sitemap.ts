@@ -1,12 +1,11 @@
-import { parse } from 'yaml'
-import raw from '../../spec/ia/sitemap.yaml?raw'
+import data from '../../spec/ia/sitemap.yaml?json'
 
 export type NavItem = { id: string; label: string; route?: string; priority?: string; demo?: boolean; badge?: string; emphasis?: string; menu?: string[]; note?: string }
 export type NavGroup = { group: string; items: NavItem[] }
 export type Screen = { id: string; route: string; title: string; steps?: string[]; priority?: string; shell?: string; demo?: boolean }
 type Sitemap = { sidebarFooter: NavItem[]; tabBar: NavItem[]; sidebar: (NavItem | NavGroup)[]; screens: Screen[] }
 
-export const sitemap = parse(raw) as Sitemap
+export const sitemap = data as Sitemap
 
 const p0 = (i: { priority?: string }) => i.priority !== 'P1'
 export const sidebar = sitemap.sidebar
