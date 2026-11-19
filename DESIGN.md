@@ -423,10 +423,11 @@ Key/value rows for confirm steps, results, receipts and the profile: key in seco
 
 ### Rails and tiles
 - **Recipient rail** (`RailTile`): 72px item, 56px Avatar or BankMark, short name 12/16 semibold on one line, bank on a second line 11/14 secondary; the first item sits on the title edge; the accessible name starts with the visible text.
-- **Action tiles** (Home shortcuts, add-bill, receipt actions): 48px disc with a 24px tint glyph, label 12/16 semibold; hover and press fill the tile. A dense row of six or more tiles (Home shortcuts on the app layout) uses the tab-bar label size 11/14 so labels keep a gutter and break into two balanced lines; Scan and Payment Code stay first (PRODUCT.md).
+- **Action tiles** (Home shortcuts, add-bill, receipt actions): 48px disc with a 24px tint glyph, label 12/16 semibold. The disc reacts, never the tile: hover turns the disc `primary-soft`, press `primary-soft-hover`; no fill behind the tile (a grey block behind a grey disc swallows the disc). A dense row of six or more tiles (Home shortcuts on the app layout) uses the tab-bar label size 11/14 so labels keep a gutter and break into two balanced lines; Scan and Payment Code stay first (PRODUCT.md).
 
 ### Interaction states
-- Rows, rail tiles, ghost controls, chips on the ground: hover and press = tertiary fill (`surface-2`); tiles and chips keep their own rounding.
+- Rows, ghost controls, chips on the ground: hover and press = tertiary fill (`surface-2`).
+- Icon tiles and rail tiles: the disc or face reacts (disc `primary-soft`, avatar dims to 80% / 60%), never a fill behind the tile.
 - Tinted fills (secondary button, quick amounts): hover = `primary-soft`.
 - Text links: tint, semibold, underline on hover only.
 - Every tappable element has a press state; nothing removes the focus outline without a visible replacement (the amount entry's underline turns tint on focus).

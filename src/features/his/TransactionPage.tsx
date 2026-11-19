@@ -159,11 +159,11 @@ function Action({ label, icon, onClick, to }: { label: string; icon: ReactNode; 
   if (layout === 'web') return to ? <ButtonLink to={to} variant="secondary">{icon}{label}</ButtonLink> : <Button variant="secondary" onClick={onClick}>{icon}{label}</Button>
   const inner = (
     <>
-      <span aria-hidden className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-tint">{icon}</span>
+      <span aria-hidden className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-tint transition-colors group-hover:bg-primary-soft group-active:bg-primary-soft-hover">{icon}</span>
       <span className="text-[12px] leading-4 font-semibold whitespace-nowrap">{label}</span>
     </>
   )
-  const cls = 'flex min-w-20 flex-col items-center gap-header rounded-xl py-1 text-ink no-underline transition-colors hover:bg-surface-2 active:bg-surface-2'
+  const cls = 'group flex min-w-20 flex-col items-center gap-header rounded-xl text-ink no-underline'
   return to ? <Link to={to} className={cls}>{inner}</Link> : <button type="button" onClick={onClick} className={cls}>{inner}</button>
 }
 

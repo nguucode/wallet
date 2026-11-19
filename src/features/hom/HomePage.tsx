@@ -140,7 +140,7 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
   const layout = useLayout()
   const items = SHORTCUTS.filter((s) => layout === 'app' || !s.app)
   return (
-    <nav aria-label="Lối tắt" className="mt-stack card px-header py-header lg:py-stack">
+    <nav aria-label="Lối tắt" className="mt-stack card px-header py-stack lg:py-inset">
       {/* Equal columns: every shortcut gets the same width, so the gaps between icons and to the edges are one rhythm. */}
       <ul className={cx('grid', layout === 'app' ? 'grid-cols-6' : 'grid-cols-5')}>
         {items.map((s) => (
@@ -148,9 +148,9 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
             <Link
               to={s.to}
               onClick={s.ungated ? undefined : guardedClick(guard, s.to)}
-              className="group flex flex-col items-center gap-header rounded-xl py-1 text-center text-ink no-underline transition-colors hover:bg-surface-2 active:bg-surface-2 focus-visible:outline-none"
+              className="group flex flex-col items-center gap-header text-center text-ink no-underline focus-visible:outline-none"
             >
-              <span className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-tint group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-tint">
+              <span className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-tint group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-tint transition-colors group-hover:bg-primary-soft group-active:bg-primary-soft-hover">
                 <s.icon size={24} strokeWidth={1.75} aria-hidden />
               </span>
               {/* Six tiles in ~342px on the app layout: the dense-row label (11/14, tab-bar size) keeps a gutter and two lines. */}

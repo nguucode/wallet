@@ -173,8 +173,9 @@ export function Row({ left, title, subtitle, right, rightSub, chevron, selected,
 export function RailTile({ to, onClick, label, leading, name, sub }: { to: string; onClick?: (e: React.MouseEvent) => void; label: string; leading: ReactNode; name: string; sub?: string }) {
   return (
     // Accessible name = the visible text first (WCAG 2.5.3), then the full identity for screen readers.
-    <Link to={to} onClick={onClick} title={label} className="flex flex-col items-center gap-header rounded-xl py-1 text-center text-ink no-underline transition-colors hover:bg-surface-2 active:bg-surface-2">
-      {leading}
+    <Link to={to} onClick={onClick} title={label} className="group flex flex-col items-center gap-header rounded-xl text-center text-ink no-underline">
+      {/* The face reacts, not the tile: no fill behind grey discs. */}
+      <span className="transition-opacity group-hover:opacity-80 group-active:opacity-60">{leading}</span>
       <span className="block w-full">
         <span className="block truncate text-[12px] leading-4 font-semibold">{name}</span>
         {sub ? <span className="block truncate text-[11px] leading-[14px] text-muted">{sub}</span> : null}

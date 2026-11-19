@@ -98,8 +98,8 @@ export default function BillsPage() {
         <ul className="-ml-3 flex gap-header">
           {tiles.map((t) => (
             <li key={t.label}>
-              <button type="button" disabled={!t.enabled} onClick={() => guard('/bills/new')} className="flex w-[72px] flex-col items-center gap-header rounded-xl py-1 transition-colors enabled:hover:bg-surface-2 enabled:active:bg-surface-2 disabled:cursor-not-allowed">
-                <span aria-hidden className={cx('inline-flex size-12 items-center justify-center rounded-full', t.enabled ? 'bg-surface-2 text-tint' : 'bg-surface-2 text-muted')}><t.icon size={24} strokeWidth={1.75} /></span>
+              <button type="button" disabled={!t.enabled} onClick={() => guard('/bills/new')} className="group flex w-[72px] flex-col items-center gap-header rounded-xl disabled:cursor-not-allowed">
+                <span aria-hidden className={cx('inline-flex size-12 items-center justify-center rounded-full', t.enabled ? 'bg-surface-2 text-tint transition-colors group-hover:bg-primary-soft group-active:bg-primary-soft-hover' : 'bg-surface-2 text-muted')}><t.icon size={24} strokeWidth={1.75} /></span>
                 <span className={cx('text-[12px] leading-4 font-semibold text-balance', !t.enabled && 'text-muted')}>{t.label}</span>
                 {!t.enabled ? <span className="text-[12px] leading-4 text-muted">Sắp có</span> : null}
               </button>
