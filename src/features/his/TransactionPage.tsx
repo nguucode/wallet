@@ -130,7 +130,7 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
             <SampleBadge />
           </HStack>
           <VStack className="my-6 items-center gap-2">
-            <Money amount={rowAmount(t)} sign={t.direction} className="text-3xl font-bold" />
+            <Money amount={rowAmount(t)} sign={t.direction} className="text-4xl font-bold" />
             <StatusPill status={t.status} />
             {t.status === 'pending' ? <Text size="sm" className="text-center font-medium">Biên lai này chưa phải xác nhận cuối cùng</Text> : null}
             {t.status === 'refunded' && refundTx ? <Text size="sm" className="text-center">Đã hoàn {formatVnd(refundTx.amount)} lúc {fmtDateTime(refundTx.createdAt)}</Text> : null}
@@ -171,7 +171,7 @@ function Action({ label, icon, onClick, to }: { label: string; icon: LucideIcon;
     <Pressable onPress={press} {...(to ? { href: to, role: 'link' } : { role: 'button' })}
       className="min-w-20 items-center gap-2 rounded-xl data-[hover=true]:opacity-80 data-[active=true]:opacity-60">
       <Disc><Ico as={icon} size="xl" className="text-primary" /></Disc>
-      <Text size="xs" bold className="whitespace-nowrap">{label}</Text>
+      <Text size="sm" className="whitespace-nowrap font-medium">{label}</Text>
     </Pressable>
   )
 }
@@ -245,7 +245,7 @@ export default function TransactionPage() {
         <TxIcon type={t.type} size={56} />
         <Heading size="3xl" tabIndex={-1} data-page-title className="mt-1 line-clamp-2 text-center text-lg break-words outline-none">{name}</Heading>
         <Text size="sm" className="-mt-1 text-muted-foreground">{typeLabel(t.type)}</Text>
-        <Money amount={rowAmount(t)} sign={t.direction} struck={t.status === 'failed'} className="mt-1 text-3xl font-bold break-all" />
+        <Money amount={rowAmount(t)} sign={t.direction} struck={t.status === 'failed'} className="mt-1 text-4xl font-bold break-all" />
         <StatusPill status={t.status} />
         <Text size="sm" className="text-center text-muted-foreground">{t.status === 'success' ? fmtDateTime(t.updatedAt) : truthLine(t)}</Text>
       </Card>

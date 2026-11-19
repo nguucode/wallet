@@ -42,7 +42,7 @@ export default function TopupFlow() {
         <Button block onClick={() => go('confirm')}>Thử lại</Button>
         <ButtonLink to={`/history/${t.id}`} variant="secondary" block>Xem chi tiết</ButtonLink>
       </>}>
-        <ResultBlock tone={ok ? 'success' : 'failed'} heading={ok ? 'Nạp tiền thành công' : 'Nạp tiền không thành công'} amount={<Money amount={t.amount} sign="in" struck={!ok} className="text-3xl font-bold" />}>
+        <ResultBlock tone={ok ? 'success' : 'failed'} heading={ok ? 'Nạp tiền thành công' : 'Nạp tiền không thành công'} amount={<Money amount={t.amount} sign="in" struck={!ok} className="text-4xl font-bold" />}>
           {ok ? <Text className="text-muted-foreground">Số dư khả dụng: <Text className="tabular-nums text-muted-foreground">{formatVnd(w.balance)}</Text></Text> : <Text className="text-muted-foreground">{bankName} đã từ chối giao dịch. Ví không bị trừ tiền.</Text>}
         </ResultBlock>
       </FlowFrame>

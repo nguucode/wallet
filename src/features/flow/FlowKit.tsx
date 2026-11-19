@@ -168,7 +168,7 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
       {quick.length ? (
         <HStack className="mt-3 flex-wrap justify-center gap-2">
           {quick.map((q) => (
-            <GButton key={q} variant="secondary" size="sm" className="rounded-full" onPress={() => onChange(q)}><ButtonText className="tabular-nums">{formatVnd(q).replace(' ₫', '')}</ButtonText></GButton>
+            <GButton key={q} variant="secondary" size="sm" className="rounded-full" onPress={() => onChange(q)}><ButtonText className="text-sm tabular-nums">{formatVnd(q).replace(' ₫', '')}</ButtonText></GButton>
           ))}
         </HStack>
       ) : null}
@@ -311,7 +311,7 @@ export function ResultView({ txId, onRetry, extra, successHeading = 'Thành côn
       <StatusMark status={t.status} />
       <Heading as="h2" size="lg" role="status" className="mt-3 text-center">{heading}</Heading>
       {/* Same amount rule as every transaction row (rowAmount): signed, fee on outgoing, failed struck through. */}
-      <Money amount={rowAmount(t)} sign={t.direction} struck={t.status === 'failed'} className="mt-2 text-3xl font-bold" />
+      <Money amount={rowAmount(t)} sign={t.direction} struck={t.status === 'failed'} className="mt-2 text-4xl font-bold" />
       <Text className="mt-2 max-w-[40ch] text-center text-muted-foreground">{counterpartyName(t.counterparty, w)}{t.sourceId && t.type !== 'topup' ? ` · từ ${sourceLabel(w, t.sourceId)}` : ''}</Text>
       <Box className="mt-6 w-full">
         <ConfirmRows rows={[

@@ -3,9 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { markRead, now, useWorld } from '@/app/store'
 import type { Notification, NotificationKind } from '@/mock/seed'
-import { Button, Card, cx, Disc, EmptyState, Ico, IconButton, RowSkeleton, Segmented } from '@/components/app-ui'
+import { Button, Card, cx, Disc, EmptyState, Ico, IconButton, RowSkeleton, Segmented, GroupLabel } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
-import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
 import { Pressable } from '@/components/ui/pressable'
 import { Text } from '@/components/ui/text'
@@ -69,7 +68,7 @@ export default function NotificationsPage() {
         ) : (
           groups.map((g) => (
             <VStack key={g.label} role="region" aria-label={g.label} className="gap-2">
-              <Heading as="h2" size="xs" className="px-4 font-semibold tracking-wide text-muted-foreground uppercase">{g.label}</Heading>
+              <GroupLabel className="px-4">{g.label}</GroupLabel>
               <Card className="overflow-hidden p-0">
                 <VStack role="list" className="divide-y divide-border">
                   {g.items.map((n) => (

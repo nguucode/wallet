@@ -72,7 +72,8 @@ export function Button({ variant = 'primary', size = 'md', block, loading, disab
       {...rest}
     >
       {loading ? <ButtonSpinner /> : null}
-      {parts.map((c, i) => (typeof c === 'string' || typeof c === 'number' ? <ButtonText key={i}>{c}</ButtonText> : c))}
+      {/* Label role: 14px for every size (gluestack's sm button would drop to 12px). */}
+      {parts.map((c, i) => (typeof c === 'string' || typeof c === 'number' ? <ButtonText key={i} className="text-sm">{c}</ButtonText> : c))}
     </GButton>
   )
 }
@@ -120,6 +121,16 @@ export function Section({ title, action, children, className }: { title: string;
       {children}
     </VStack>
   )
+}
+
+/**
+ * Type roles (impeccable typeset, 2026-11-19): display 48 bold (balance) · amount 36 bold · page title 36 bold ·
+ * section 20 bold · group 14 semibold muted (sentence case) · body/row 16 · label 14 medium (every button, chip, tile) ·
+ * meta 14 muted · caption 12 (status, axis, tile second line).
+ */
+/** Group heading over a list (date, category): one style everywhere. Sentence case: Vietnamese capitals stack diacritics. */
+export function GroupLabel({ children, as = 'h2', id, className }: { children: ReactNode; as?: 'h2' | 'h3'; id?: string; className?: string }) {
+  return <Heading as={as} id={id} size="xs" className={cx('text-sm font-semibold text-muted-foreground', className)}>{children}</Heading>
 }
 
 export function PageTitle({ children, description }: { children: ReactNode; description?: ReactNode }) {
@@ -223,7 +234,7 @@ export function RailTile({ to, onClick, label, leading, name, sub }: { to: strin
       <VStack className="items-center gap-2">
         {leading}
         <VStack className="w-full items-center">
-          <Text size="xs" bold isTruncated className="w-full text-center">{name}</Text>
+          <Text size="sm" isTruncated className="w-full text-center font-medium">{name}</Text>
           {sub ? <Text size="xs" isTruncated className="w-full text-center text-muted-foreground">{sub}</Text> : null}
         </VStack>
       </VStack>
@@ -381,7 +392,7 @@ export function Segmented<T extends string>({ value, options, onChange, label }:
     <HStack role="tablist" aria-label={label} className="gap-2 overflow-x-auto pb-1">
       {options.map((o) => (
         <GButton key={o.value} role="tab" aria-selected={o.value === value} size="sm" variant={o.value === value ? 'default' : 'outline'} className="rounded-full" onPress={() => onChange(o.value)}>
-          <ButtonText>{o.label}{o.count !== undefined ? ` ${o.count}` : ''}</ButtonText>
+          <ButtonText className="text-sm">{o.label}{o.count !== undefined ? ` ${o.count}` : ''}</ButtonText>
         </GButton>
       ))}
     </HStack>

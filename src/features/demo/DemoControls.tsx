@@ -29,7 +29,7 @@ function Chip<T extends string>({ value, current, onPick, children }: { value: T
   const on = value === current
   return (
     <GButton size="sm" variant={on ? 'default' : 'secondary'} aria-pressed={on} onPress={() => onPick(value)} className="rounded-full">
-      <ButtonText>{children}</ButtonText>
+      <ButtonText className="text-sm">{children}</ButtonText>
     </GButton>
   )
 }
@@ -38,7 +38,7 @@ function Act({ onClick, children, disabled }: { onClick: () => void; children: s
   return (
     <VStack>
       <GButton size="sm" variant={disabled ? 'outline' : 'secondary'} isDisabled={!!disabled} onPress={onClick} className="rounded-full">
-        <ButtonText>{children}</ButtonText>
+        <ButtonText className="text-sm">{children}</ButtonText>
       </GButton>
       {disabled ? <Text size="xs" className="mt-1 px-1 text-muted-foreground">{disabled}</Text> : null}
     </VStack>

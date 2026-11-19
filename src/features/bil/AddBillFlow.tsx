@@ -5,9 +5,8 @@ import { SampleBadge } from '@/app/Shell'
 import { lookupBill, mutate, now, saveBill, useWorld } from '@/app/store'
 import { ConfirmRows, FlowFrame, fmtDate, useCloseFlow, useFlow } from '@/features/flow/FlowKit'
 import { GatedRoute } from '@/features/sec/Gate'
-import { BankMark, Button, Card, Field, Row, TextInput, TextLink } from '@/components/app-ui'
+import { BankMark, Button, Card, Field, Row, TextInput, TextLink, GroupLabel } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
-import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
 import { Link, LinkText } from '@/components/ui/link'
 import { Pressable } from '@/components/ui/pressable'
@@ -50,7 +49,7 @@ function Flow() {
   if (flow.step === 'biller' || !biller)
     return (
       <FlowFrame title="Chọn nhà cung cấp" onClose={close}>
-        <Heading size="xs" as="h2" className="mb-2 px-4 uppercase text-muted-foreground">Điện</Heading>
+        <GroupLabel className="mb-2 px-4">Điện</GroupLabel>
         <Card className="overflow-hidden p-0">
           <VStack role="list" className="divide-y divide-border">
           {billers.map((b) => (

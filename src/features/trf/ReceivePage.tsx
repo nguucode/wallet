@@ -7,9 +7,8 @@ import { formatVnd } from '@/domain/money'
 import { buildQr } from '@/domain/qr'
 import { GatedRoute } from '@/features/sec/Gate'
 import { AmountInput, formatPhone } from '@/features/flow/FlowKit'
-import { Button, Card, Disc, Ico, Segmented, Sheet, TextLink } from '@/components/app-ui'
+import { Button, Card, Disc, Ico, Segmented, Sheet, TextLink, GroupLabel } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
-import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
 import { Pressable } from '@/components/ui/pressable'
 import { Text } from '@/components/ui/text'
@@ -102,7 +101,7 @@ function Receive() {
     <>
       <Card className="items-center px-4 py-6 text-center">
         <Segmented label="Loại mã" value={kind} onChange={setKind} options={[{ value: 'wallet', label: 'Mã ví' }, { value: 'vietqr', label: 'VietQR' }]} />
-        <Heading as="h2" size="xs" className="mt-6 font-medium text-muted-foreground">Mã nhận tiền</Heading>
+        <GroupLabel className="mt-6">Mã nhận tiền</GroupLabel>
         <Card className="mt-3 p-2">
           <QrImage payload={payload} size={size} label={`Mã nhận tiền của ${w.customer.name}${amount ? `, số tiền ${formatVnd(amount)}` : ''}`} />
         </Card>

@@ -43,7 +43,7 @@ export default function HomePage() {
   return (
     <Box>
       <Heading size="3xl" tabIndex={-1} data-page-title className="sr-only">Trang chủ</Heading>
-      {layout === 'web' ? <Text size="3xl" bold className="mb-6" aria-hidden>Chào {shortName(w.customer.name)}</Text> : null}
+      {layout === 'web' ? <Heading as="p" size="3xl" className="mb-6" aria-hidden>Chào {shortName(w.customer.name)}</Heading> : null}
       <BalanceSection loaded={loaded} />
       <ShortcutsRow guard={guard} />
       {gate ? <Box role="region" aria-label="Trạng thái ví" className="mt-8"><GateCallout gate={gate} /></Box> : null}
@@ -139,7 +139,7 @@ function ShortcutTile({ s, guard }: { s: (typeof SHORTCUTS)[number]; guard: Guar
       <Center className="size-12 rounded-full bg-muted">
         <Ico as={s.icon} size="lg" className="text-primary" />
       </Center>
-      <Text size="xs" bold className="px-0.5 text-center text-balance">{s.label}</Text>
+      <Text size="sm" className="px-0.5 text-center font-medium text-balance">{s.label}</Text>
     </Pressable>
   )
 }
@@ -150,7 +150,8 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
   return (
     <Card role="navigation" aria-label="Lối tắt" className="mt-3 gap-0 px-2 py-3 lg:py-4">
       {/* Equal columns: every shortcut gets the same width, so the gaps between icons and to the edges are one rhythm. */}
-      <Grid role="list" _extra={{ className: layout === 'app' ? 'grid-cols-6' : 'grid-cols-5' }}>
+      {/* App: 3 × 2 so the 14px labels fit on one line (6 across wrapped "Mã thanh toán" to three lines). */}
+      <Grid role="list" className={layout === 'app' ? 'gap-y-4' : undefined} _extra={{ className: layout === 'app' ? 'grid-cols-3' : 'grid-cols-5' }}>
         {items.map((s) => (
           <GridItem key={s.to} role="listitem" className="min-w-0" _extra={{ className: 'col-span-1' }}>
             <ShortcutTile s={s} guard={guard} />

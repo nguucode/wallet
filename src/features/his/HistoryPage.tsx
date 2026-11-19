@@ -7,11 +7,10 @@ import { useLayout, pageScroller } from '@/app/layout'
 import { counterpartyName, now, typeLabel, useWorld } from '@/app/store'
 import type { Transaction, World } from '@/mock/seed'
 import { fmtDate, fmtTime, truthLine } from '@/features/flow/FlowKit'
-import { Button, Card, cx, EmptyState, Ico, IconButton, Segmented, Sheet, STATUS_LABEL, StatusPill, TextLink } from '@/components/app-ui'
+import { Button, Card, cx, EmptyState, Ico, IconButton, Segmented, Sheet, STATUS_LABEL, StatusPill, TextLink, GroupLabel } from '@/components/app-ui'
 import { Badge, BadgeText } from '@/components/ui/badge'
 import { Box } from '@/components/ui/box'
 import { Button as GButton, ButtonText } from '@/components/ui/button'
-import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
 import { Link, LinkText } from '@/components/ui/link'
 import { Menu, MenuItem, MenuItemLabel } from '@/components/ui/menu'
@@ -70,7 +69,7 @@ function Pick({ label, value, options, onChange, className }: { label: string; v
       <Text size="sm" bold>{label}</Text>
       <Menu placement="bottom left" offset={4} className="max-h-80" trigger={(p) => (
         <GButton {...p} variant="outline" aria-label={`${label}: ${current}`} className="h-11 w-full justify-between">
-          <ButtonText className="truncate font-normal">{current}</ButtonText>
+          <ButtonText className="truncate text-sm font-normal">{current}</ButtonText>
           <Ico as={ChevronDown} className="text-muted-foreground" />
         </GButton>
       )}>
@@ -169,7 +168,7 @@ function AppList({ groups, onOpen }: { groups: Group[]; onOpen: (id: string) => 
     <VStack>
       {groups.map((g, gi) => (
         <VStack key={g.key} role="region" aria-label={g.label} className={gi === 0 ? 'mt-3' : 'mt-6'}>
-          <Heading as="h2" size="xs" className="mb-2 px-4 uppercase tracking-wide text-muted-foreground">{g.label}</Heading>
+          <GroupLabel className="mb-2 px-4">{g.label}</GroupLabel>
           <Card className="overflow-hidden p-0">
             <VStack role="list" className="divide-y divide-border">
               {g.rows.map((t) => <Box key={t.id} role="listitem"><TxRow t={t} onOpen={onOpen} /></Box>)}
@@ -233,7 +232,7 @@ export default function HistoryPage() {
         ) : (
           <GButton variant="secondary" size="sm" onPress={() => setSheet(true)} className="shrink-0 rounded-full">
             <Ico as={SlidersHorizontal} />
-            <ButtonText>Bộ lọc</ButtonText>
+            <ButtonText className="text-sm">Bộ lọc</ButtonText>
             {active.length ? <Badge aria-label={`${active.length} bộ lọc đang bật`} className="rounded-full"><BadgeText className="tabular-nums">{active.length}</BadgeText></Badge> : null}
           </GButton>
         )}

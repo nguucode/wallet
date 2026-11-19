@@ -108,7 +108,7 @@ export default function BillsPage() {
                 <Center aria-hidden className="size-12 rounded-full bg-muted">
                   <Ico as={t.icon} size="lg" className={t.enabled ? 'text-primary' : 'text-muted-foreground'} />
                 </Center>
-                <Text size="xs" className={cx('text-center font-semibold', !t.enabled && 'text-muted-foreground')}>{t.label}</Text>
+                <Text size="sm" className={cx('text-center font-medium', !t.enabled && 'text-muted-foreground')}>{t.label}</Text>
                 {!t.enabled ? <Text size="xs" className="text-muted-foreground">Sắp có</Text> : null}
               </Pressable>
             </Box>

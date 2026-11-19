@@ -9,7 +9,7 @@ import { GatedRoute } from '@/features/sec/Gate'
 import {
   AmountInput, checkAmount, ConfirmRows, FlowFrame, formatPhone, maskPhone, ResultView, useCloseFlow, useFlow, useMoneyCommit,
 } from '@/features/flow/FlowKit'
-import { Avatar, Badge, Button, ButtonLink, Callout, cx, Fee, Money, Row, Skeleton } from '@/components/app-ui'
+import { Avatar, Badge, Button, ButtonLink, Callout, cx, Fee, Money, Row, Skeleton, GroupLabel } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
@@ -170,13 +170,13 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
       {!single && !fRecent.length && !fAll.length ? <Text className="block py-3 text-muted-foreground">Không tìm thấy người nhận.</Text> : null}
       {!single && fRecent.length ? (
         <VStack role="region" aria-labelledby="g-recent" className="mt-2">
-          <Heading as="h2" id="g-recent" size="xs" className="sticky top-14 z-10 bg-background py-2 text-muted-foreground uppercase lg:top-0">Gần đây</Heading>
+          <GroupLabel id="g-recent" className="sticky top-14 z-10 bg-background py-2 lg:top-0">Gần đây</GroupLabel>
           <VStack role="list" className="-mx-4">{fRecent.map((c) => row(c, 'r'))}</VStack>
         </VStack>
       ) : null}
       {!single && fAll.length ? (
         <VStack role="region" aria-labelledby="g-all" className="mt-3">
-          <Heading as="h2" id="g-all" size="xs" className="sticky top-14 z-10 bg-background py-2 text-muted-foreground uppercase lg:top-0">Danh bạ</Heading>
+          <GroupLabel id="g-all" className="sticky top-14 z-10 bg-background py-2 lg:top-0">Danh bạ</GroupLabel>
           <VStack role="list" className="-mx-4">{fAll.map((c) => row(c, 'a'))}</VStack>
         </VStack>
       ) : null}

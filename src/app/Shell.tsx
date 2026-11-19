@@ -184,7 +184,7 @@ function WebShell({ children }: { children: ReactNode }) {
               <VStack key={x.group} className="mt-3 gap-px">
                 {collapsed
                   ? <><Text className="sr-only">{x.group}</Text><Divider className="mx-auto mb-1 w-6" /></>
-                  : <Text size="sm" bold isTruncated className="px-2.5 pb-1 text-foreground/70">{x.group}</Text>}
+                  : <Text size="sm" isTruncated className="px-2.5 pb-1 font-semibold text-foreground/70">{x.group}</Text>}
                 {x.items.map((i) => <SideLink key={i.id} item={i} collapsed={collapsed} />)}
               </VStack>
             ) : (
