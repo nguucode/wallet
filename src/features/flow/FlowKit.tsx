@@ -17,7 +17,7 @@ import {
 import type { FailureReason, Transaction } from '@/mock/seed'
 import { AuthSheet } from '@/features/sec/AuthSheet'
 import { GATE_COPY } from '@/features/sec/Gate'
-import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, DetailRows, Ico, Money, NavBar, TextLink, WebBackLink } from '@/components/app-ui'
+import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, DetailRows, Fee, Ico, Money, NavBar, TextLink, WebBackLink } from '@/components/app-ui'
 import { Avatar } from '@/components/ui/avatar'
 import { Box } from '@/components/ui/box'
 import { Button as GButton, ButtonText } from '@/components/ui/button'
@@ -217,6 +217,12 @@ export function feeLabel(type: TxType, amount: number) {
   return f.freeLeft === null ? 'Miễn phí' : `Miễn phí (còn ${f.freeLeft} lượt trong tháng)`
 }
 
+/** The fee for a confirm row: red when charged, green when free (with the free transfers left, if counted). */
+export function FeeValue({ type, amount }: { type: TxType; amount: number }) {
+  const f = fee(type, amount, freeUsed(getState().world))
+  return <Fee amount={f.amount} label={f.freeLeft === null ? 'Miễn phí' : `Miễn phí (còn ${f.freeLeft} lượt trong tháng)`} />
+}
+
 export function authFor(type: TxType, amount: number) {
   const w = getState().world
   return requiredAuth({ type, amount, dayCounter: dayCounter(w), deviceBiometric: w.security.deviceBiometric, layout: window.matchMedia?.('(min-width: 1024px)').matches ? 'web' : 'app' })
@@ -290,8 +296,8 @@ export function truthLine(t: Transaction): string {
 function StatusMark({ status }: { status: Transaction['status'] }) {
   const I = status === 'pending' ? Clock : status === 'failed' ? X : Check
   return (
-    <Avatar aria-hidden className={"h-16 w-16 " + (status === 'failed' ? 'bg-destructive' : status === 'pending' ? 'bg-muted' : 'bg-primary')}>
-      <Ico as={I} size="xl" className={status === 'pending' ? 'text-foreground' : 'text-primary-foreground'} />
+    <Avatar aria-hidden className={"h-16 w-16 " + (status === 'failed' ? 'bg-destructive' : status === 'pending' ? 'bg-muted' : 'bg-success')}>
+      <Ico as={I} size="xl" className={status === 'pending' ? 'text-foreground' : status === 'failed' ? 'text-primary-foreground' : 'text-success-foreground'} />
     </Avatar>
   )
 }
@@ -306,7 +312,7 @@ export function ResultView({ txId, onRetry, extra, successHeading = 'Thành côn
       <StatusMark status={t.status} />
       <Heading as="h2" size="lg" role="status" className="mt-3 text-center">{heading}</Heading>
       {/* Same amount rule as every transaction row (rowAmount): signed, fee on outgoing, failed struck through. */}
-      <Money amount={rowAmount(t)} sign={t.direction} className={cx('mt-2 text-3xl font-bold', t.status === 'failed' && 'text-muted-foreground line-through')} />
+      <Money amount={rowAmount(t)} sign={t.direction} struck={t.status === 'failed'} className="mt-2 text-3xl font-bold" />
       <Text className="mt-2 max-w-[40ch] text-center text-muted-foreground">{counterpartyName(t.counterparty, w)}{t.sourceId && t.type !== 'topup' ? ` · từ ${sourceLabel(w, t.sourceId)}` : ''}</Text>
       <Box className="mt-6 w-full">
         <ConfirmRows rows={[
@@ -314,7 +320,7 @@ export function ResultView({ txId, onRetry, extra, successHeading = 'Thành côn
           ...(t.status === 'failed' && t.failureReason ? [['Lý do', FAILURE_COPY[t.failureReason]] as [string, ReactNode]] : []),
           ...(t.status === 'pending' ? [['Nếu không thành công', 'Tiền sẽ hoàn về ví.'] as [string, ReactNode]] : []),
           ['Thời gian', fmtDateTime(t.createdAt)],
-          ...(t.fee ? [['Phí', formatVnd(t.fee)] as [string, ReactNode]] : []),
+          ...(t.fee ? [['Phí', <Fee amount={t.fee} />] as [string, ReactNode]] : []),
           ['Mã giao dịch', <Text className="tabular-nums">{t.id}</Text>],
         ]} />
       </Box>

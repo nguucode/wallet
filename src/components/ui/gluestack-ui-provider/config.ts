@@ -15,6 +15,9 @@ export const colors = {
     '--muted': '245 245 245',
     '--muted-foreground': '115 115 115',
     '--destructive': '231 0 11',
+    // Wallet: green for money in / positive states (green-700, 5.0:1 on white); destructive stays the red.
+    '--success': '21 128 61',
+    '--success-foreground': '255 255 255',
     '--foreground': '10 10 10',
     '--border': '229 229 229',
     '--input': '229 229 229',
@@ -34,6 +37,8 @@ export const colors = {
     '--muted': '38 38 38',
     '--muted-foreground': '161 161 161',
     '--destructive': '255 100 103',
+    '--success': '74 222 128',
+    '--success-foreground': '5 46 22',
     '--foreground': '250 250 250',
     '--border': '46 46 46',
     '--input': '46 46 46',

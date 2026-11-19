@@ -21,7 +21,7 @@ export default function ProfilePage() {
   const none = <Text className="text-muted-foreground">Chưa có</Text>
   const tone = KYC_TONE[c.kycStatus]
   const KycIcon = tone === 'success' ? Check : tone === 'pending' ? Clock : X
-  const kycColor = tone === 'success' ? 'text-foreground' : tone === 'pending' ? 'text-muted-foreground' : 'text-destructive'
+  const kycColor = tone === 'success' ? 'text-success' : tone === 'pending' ? 'text-muted-foreground' : 'text-destructive'
 
   const rows: [string, ReactNode][] = [
     ['Họ và tên', c.name],
@@ -35,8 +35,8 @@ export default function ProfilePage() {
       <Text className={cx('font-medium', kycColor)}><Ico as={KycIcon} size="sm" className={cx('mr-2 inline-block align-middle', kycColor)} />{KYC_LABEL[c.kycStatus]}</Text>
     )],
     ['Trạng thái ví', (
-      <Text className={cx('font-medium', w.walletStatus === 'active' ? 'text-foreground' : 'text-destructive')}>
-        <Text aria-hidden className={cx('mr-2 inline-block size-2 rounded-full align-middle', w.walletStatus === 'active' ? 'bg-primary' : 'bg-destructive')} />{WALLET_LABEL[w.walletStatus]}
+      <Text className={cx('font-medium', w.walletStatus === 'active' ? 'text-success' : 'text-destructive')}>
+        <Text aria-hidden className={cx('mr-2 inline-block size-2 rounded-full align-middle', w.walletStatus === 'active' ? 'bg-success' : 'bg-destructive')} />{WALLET_LABEL[w.walletStatus]}
       </Text>
     )],
   ]

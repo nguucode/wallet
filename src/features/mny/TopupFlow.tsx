@@ -2,9 +2,9 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { formatVnd } from '@/domain/money'
 import { bankById, defaultSource, gateOf, getState, useWorld } from '@/app/store'
-import { Button, ButtonLink, cx, Money } from '@/components/app-ui'
+import { Button, ButtonLink, Money } from '@/components/app-ui'
 import { Text } from '@/components/ui/text'
-import { authLine, AmountInput, checkAmount, ConfirmRows, feeLabel, FlowFrame, formatPhone, useCloseFlow, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
+import { authLine, AmountInput, checkAmount, ConfirmRows, FeeValue, FlowFrame, formatPhone, useCloseFlow, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
 import { GateCallout } from '@/features/sec/Gate'
 import { kindLabel, mask4 } from './logic'
 import { ResultBlock, SourcePicker } from './parts'
@@ -42,7 +42,7 @@ export default function TopupFlow() {
         <Button block onClick={() => go('confirm')}>Thử lại</Button>
         <ButtonLink to={`/history/${t.id}`} variant="secondary" block>Xem chi tiết</ButtonLink>
       </>}>
-        <ResultBlock tone={ok ? 'success' : 'failed'} heading={ok ? 'Nạp tiền thành công' : 'Nạp tiền không thành công'} amount={<Money amount={t.amount} sign="in" tone={ok} className={cx('text-3xl font-bold', !ok && 'text-muted-foreground line-through')} />}>
+        <ResultBlock tone={ok ? 'success' : 'failed'} heading={ok ? 'Nạp tiền thành công' : 'Nạp tiền không thành công'} amount={<Money amount={t.amount} sign="in" struck={!ok} className="text-3xl font-bold" />}>
           {ok ? <Text className="text-muted-foreground">Số dư khả dụng: <Text className="tabular-nums text-muted-foreground">{formatVnd(w.balance)}</Text></Text> : <Text className="text-muted-foreground">{bankName} đã từ chối giao dịch. Ví không bị trừ tiền.</Text>}
         </ResultBlock>
       </FlowFrame>
@@ -63,7 +63,7 @@ export default function TopupFlow() {
           </>}>
           <ConfirmRows rows={[
             ['Số tiền', <Money amount={draft.amount} />],
-            ['Phí', feeLabel('topup', draft.amount)],
+            ['Phí', <FeeValue type="topup" amount={draft.amount} />],
             ['Tổng tiền', <Money amount={draft.amount} className="font-bold" />],
             ['Từ', <>{bankById(source.bankId).name}{'\n'}<Text size="sm" className="text-muted-foreground">{kindLabel(source.kind)} <Text size="sm" className="tabular-nums text-muted-foreground">{mask4(source.last4)}</Text></Text></>],
             ['Đến', `Ví của bạn · ${formatPhone(w.customer.walletNumber)}`],

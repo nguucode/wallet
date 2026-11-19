@@ -106,10 +106,10 @@ export function StepShell({ title, children, footer, description }: { title: str
   )
 }
 
-/** Status mark in a soft circle: tick (primary), clock (muted), cross (destructive). */
+/** Status mark in a soft circle: tick (success green), clock (neutral), cross (destructive). */
 export function StatusMark({ tone }: { tone: 'primary' | 'pending' | 'danger' }) {
   const icon = tone === 'pending' ? Clock : tone === 'danger' ? X : Check
-  const cls = { primary: 'bg-primary/10 text-primary', pending: 'border border-border bg-card text-foreground', danger: 'bg-destructive/10 text-destructive' }[tone]
+  const cls = { primary: 'bg-success/10 text-success', pending: 'border border-border bg-card text-foreground', danger: 'bg-destructive/10 text-destructive' }[tone]
   return <Center aria-hidden className={cx('size-16 rounded-full', cls)}><Ico as={icon} size="xl" className="text-current" /></Center>
 }
 

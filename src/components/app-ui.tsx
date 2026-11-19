@@ -231,8 +231,8 @@ export function RowSkeleton() {
 
 /** Round icon holder: gluestack Avatar with an icon inside. Tone maps to default theme tokens only. */
 export function Disc({ children, tone = 'neutral', size = 48 }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'secondary' | 'success' | 'pending' | 'danger'; size?: number }) {
-  const t = tone === 'primary' ? 'bg-primary' : tone === 'danger' ? 'bg-destructive/10' : 'bg-muted'
-  const fg = tone === 'primary' ? 'text-primary-foreground' : tone === 'danger' ? 'text-destructive' : 'text-foreground'
+  const t = tone === 'primary' ? 'bg-primary' : tone === 'success' ? 'bg-success/10' : tone === 'danger' ? 'bg-destructive/10' : 'bg-muted'
+  const fg = tone === 'primary' ? 'text-primary-foreground' : tone === 'success' ? 'text-success' : tone === 'danger' ? 'text-destructive' : 'text-foreground'
   return <GAvatar aria-hidden className={cx(t, fg)} style={{ width: size, height: size }}>{children}</GAvatar>
 }
 
@@ -253,14 +253,38 @@ export function BankMark({ short, size = 44 }: { short: string; size?: number })
 /* ── Status & money ───────────────────────────────────────────────── */
 
 export const STATUS_LABEL: Record<TxStatus, string> = { pending: 'Đang xử lý', success: 'Thành công', failed: 'Không thành công', refunded: 'Đã hoàn tiền' }
-export function StatusPill({ status }: { status: TxStatus; className?: string }) {
-  const variant = status === 'failed' ? 'destructive' : status === 'success' ? 'default' : status === 'pending' ? 'outline' : 'secondary'
-  return <GBadge variant={variant} className={variant === 'destructive' ? 'dark:bg-destructive' : undefined}><BadgeText>{STATUS_LABEL[status]}</BadgeText></GBadge>
+/**
+ * Money meaning (fintech rule, sếp 2026-11-19): green = positive / money gained (success token), red = negative / a cost
+ * (destructive token). Pending stays neutral. Badges: success green, failed red, pending outline, refunded neutral.
+ */
+type Tone = 'neutral' | 'primary' | 'secondary' | 'success' | 'pending' | 'danger'
+function ToneBadge({ tone, children }: { tone: Tone; children: ReactNode }) {
+  // Success is the normal outcome: outline in green, so it reads calmly next to amounts; failure is the solid one.
+  if (tone === 'success')
+    return <GBadge variant="outline" className="border-success/50"><BadgeText className="text-success">{children}</BadgeText></GBadge>
+  const variant = tone === 'danger' ? 'destructive' : tone === 'primary' ? 'default' : tone === 'pending' ? 'outline' : 'secondary'
+  // Dark theme's destructive is a light red: white text fails (2.9:1), so it takes the background colour there.
+  return <GBadge variant={variant} className={variant === 'destructive' ? 'dark:bg-destructive' : undefined}><BadgeText className={variant === 'destructive' ? 'dark:text-background' : undefined}>{children}</BadgeText></GBadge>
 }
 
-export function Money({ amount, sign, hidden, className }: { amount: number; sign?: 'in' | 'out'; hidden?: boolean; className?: string; tone?: boolean }) {
+const STATUS_TONE: Record<TxStatus, Tone> = { success: 'success', failed: 'danger', pending: 'pending', refunded: 'neutral' }
+export function StatusPill({ status }: { status: TxStatus; className?: string }) {
+  return <ToneBadge tone={STATUS_TONE[status]}>{STATUS_LABEL[status]}</ToneBadge>
+}
+
+/**
+ * A signed amount is coloured by direction: `in` green, `out` red. `struck` = a failed transaction (no money moved):
+ * muted and struck through, no colour. `tone={false}` keeps a signed amount neutral.
+ */
+export function Money({ amount, sign, hidden, className, tone = true, struck }: { amount: number; sign?: 'in' | 'out'; hidden?: boolean; className?: string; tone?: boolean; struck?: boolean }) {
   if (hidden) return <Text className={cx('tabular-nums', className)} role="img" aria-label="Số dư đang ẩn">•••••• ₫</Text>
-  return <Text className={cx('whitespace-nowrap tabular-nums', className)}>{formatVnd(amount, { sign })}</Text>
+  const color = struck ? 'text-muted-foreground line-through' : tone && sign === 'in' ? 'text-success' : tone && sign === 'out' ? 'text-destructive' : undefined
+  return <Text className={cx('whitespace-nowrap tabular-nums', color, className)}>{formatVnd(amount, { sign })}</Text>
+}
+
+/** A fee is a cost (red); no fee is good news (green). `label` overrides the free text (e.g. remaining free transfers). */
+export function Fee({ amount, label = 'Miễn phí' }: { amount: number; label?: string }) {
+  return amount ? <Text className="tabular-nums text-destructive">{formatVnd(amount)}</Text> : <Text className="text-success">{label}</Text>
 }
 
 /** Kept for call sites that render the currency mark on its own. */
@@ -268,9 +292,8 @@ export function Dong() {
   return <Text> ₫</Text>
 }
 
-export function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'secondary' | 'success' | 'pending' | 'danger' }) {
-  const variant = tone === 'danger' ? 'destructive' : tone === 'primary' ? 'default' : tone === 'pending' ? 'outline' : 'secondary'
-  return <GBadge variant={variant} className={variant === 'destructive' ? 'dark:bg-destructive' : undefined}><BadgeText>{children}</BadgeText></GBadge>
+export function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: Tone }) {
+  return <ToneBadge tone={tone}>{children}</ToneBadge>
 }
 
 export function Skeleton({ className }: { className?: string }) {

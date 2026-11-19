@@ -6,7 +6,7 @@ import { formatVnd } from '@/domain/money'
 import { parseQr } from '@/domain/qr'
 import { GatedRoute } from '@/features/sec/Gate'
 import { AmountInput, checkAmount, ConfirmRows, FlowFrame, ResultView, useCloseFlow, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
-import { Button, ButtonLink, Callout, Card, Disc, Money } from '@/components/app-ui'
+import { Button, ButtonLink, Callout, Card, Disc, Fee, Money } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
@@ -109,7 +109,7 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
       <ConfirmRows rows={[
         ['Cửa hàng', <Text className="break-words">{draft.name}</Text>],
         ['Số tiền', <Money amount={draft.amount} />],
-        ['Phí', 'Miễn phí'],
+        ['Phí', <Fee amount={0} />],
         ['Tổng tiền', <Money amount={draft.amount} className="font-bold" />],
         ['Nguồn tiền', 'Ví'],
       ]} />

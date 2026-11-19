@@ -2,7 +2,7 @@ import { ArrowDownLeft, ArrowDownToLine, ArrowUpFromLine, Landmark, RotateCcw, S
 import type { TxType } from '@/domain/types'
 import { counterpartyName, typeLabel, useWorld } from '@/app/store'
 import type { Transaction } from '@/mock/seed'
-import { cx, Disc, Ico, Money, Row, StatusPill } from '@/components/app-ui'
+import { Disc, Ico, Money, Row, StatusPill } from '@/components/app-ui'
 import { Text } from '@/components/ui/text'
 import { fmtDate, fmtTime } from '@/features/flow/FlowKit'
 import { rowAmount } from './history'
@@ -21,7 +21,7 @@ export function TxAmount({ t }: { t: Transaction }) {
   const failed = t.status === 'failed'
   return (
     <Text className="whitespace-nowrap">
-      <Money amount={rowAmount(t)} sign={t.direction} className={cx('font-semibold', failed && 'text-muted-foreground line-through')} />
+      <Money amount={rowAmount(t)} sign={t.direction} struck={failed} className="font-semibold" />
       {failed ? <Text className="sr-only"> (không có tiền dịch chuyển)</Text> : null}
     </Text>
   )

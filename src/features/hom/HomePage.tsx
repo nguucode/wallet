@@ -106,6 +106,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
           <LineChart
             values={series}
             label={`Số dư 30 ngày qua, từ ${formatVnd(series[0])} đến ${formatVnd(series[series.length - 1])}`}
+            endTone={delta > 0 ? 'up' : delta < 0 ? 'down' : undefined}
             endTag={delta ? `${delta > 0 ? '+' : '−'}${(Math.abs(delta) / 1_000_000).toLocaleString('vi-VN', { maximumFractionDigits: 2 })}tr · 30 ngày` : undefined}
             className="px-1 pt-2"
             wide={layout === 'web'}

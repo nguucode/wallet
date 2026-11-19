@@ -53,7 +53,7 @@ function useHistoryParams() {
 
 /** Status: chip only when not success; pending also carries its ETA so the row says what happens next. */
 function RowStatus({ t, web }: { t: Transaction; web?: boolean }) {
-  if (t.status === 'success') return web ? <Text size="sm" className="text-muted-foreground">{STATUS_LABEL.success}</Text> : null
+  if (t.status === 'success') return web ? <StatusPill status="success" /> : null
   return (
     <VStack className="items-start gap-1">
       <StatusPill status={t.status} />
@@ -127,7 +127,7 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
               <HStack role="row">
                 <Box role="columnheader" aria-colspan={4} className={cx('px-4 pb-2', gi === 0 ? 'pt-3' : 'pt-6')}>
                   <Text size="sm" className="font-semibold text-muted-foreground">
-                    {g.label} · Vào <Text size="sm" className="tabular-nums">{formatVnd(tot.in, { sign: 'in' })}</Text> · Ra <Text size="sm" className="tabular-nums">{formatVnd(tot.out, { sign: 'out' })}</Text>
+                    {g.label} · Vào <Text size="sm" className="tabular-nums text-success">{formatVnd(tot.in, { sign: 'in' })}</Text> · Ra <Text size="sm" className="tabular-nums text-destructive">{formatVnd(tot.out, { sign: 'out' })}</Text>
                   </Text>
                 </Box>
               </HStack>

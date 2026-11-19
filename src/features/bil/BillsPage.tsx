@@ -16,9 +16,9 @@ import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
 import { billStatusOn, isPayable, maskCode, overdueDays, periodLabel, sortBills, type BillStatus } from './bills'
 
-const CHIP: Record<BillStatus, { label: string; tone: 'danger' | 'secondary' | 'pending' | 'neutral' }> = {
+const CHIP: Record<BillStatus, { label: string; tone: 'danger' | 'secondary' | 'pending' | 'neutral' | 'success' }> = {
   overdue: { label: 'Quá hạn', tone: 'danger' }, due: { label: 'Sắp đến hạn', tone: 'secondary' },
-  settling: { label: 'Đang xử lý', tone: 'pending' }, paid: { label: 'Đã thanh toán', tone: 'neutral' },
+  settling: { label: 'Đang xử lý', tone: 'pending' }, paid: { label: 'Đã thanh toán', tone: 'success' },
 }
 
 export function BillChip({ status }: { status: BillStatus }) {

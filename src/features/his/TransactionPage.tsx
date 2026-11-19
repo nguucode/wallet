@@ -10,7 +10,7 @@ import type { Transaction, World } from '@/mock/seed'
 import { NotFound } from '@/features/demo/NotFound'
 import { ConfirmRows, FAILURE_COPY, fmtDateTime, fmtTime, maskAccount, maskPhone, truthLine } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
-import { Button, ButtonLink, Card, CloseButton, cx, Disc, Ico, IconButton, Money, Row, STATUS_LABEL, StatusPill, useLinkPress, WebBackLink } from '@/components/app-ui'
+import { Button, ButtonLink, Card, CloseButton, cx, Disc, Fee, Ico, IconButton, Money, Row, STATUS_LABEL, StatusPill, useLinkPress, WebBackLink } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Button as GButton, ButtonText } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
@@ -48,8 +48,8 @@ function detailRows(t: Transaction, w: World): [string, ReactNode][] {
     ...(cp ? [cp] : []),
     ...(t.message ? [['Lời nhắn', t.message] as [string, ReactNode]] : []),
     ['Nguồn tiền', t.sourceId ? sourceLabel(w, t.sourceId).replace(' •••• ', ' ••••') : 'Số dư ví'],
-    ['Phí', t.fee ? formatVnd(t.fee) : 'Miễn phí'],
-    ['Tổng tiền', formatVnd(rowAmount(t))],
+    ['Phí', <Fee amount={t.fee} />],
+    ['Tổng tiền', <Money amount={rowAmount(t)} sign={t.direction} struck={t.status === 'failed'} />],
   ]
 }
 
@@ -130,7 +130,7 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
             <SampleBadge />
           </HStack>
           <VStack className="my-6 items-center gap-2">
-            <Money amount={rowAmount(t)} className="text-3xl font-bold" />
+            <Money amount={rowAmount(t)} sign={t.direction} className="text-3xl font-bold" />
             <StatusPill status={t.status} />
             {t.status === 'pending' ? <Text size="sm" className="text-center font-medium">Biên lai này chưa phải xác nhận cuối cùng</Text> : null}
             {t.status === 'refunded' && refundTx ? <Text size="sm" className="text-center">Đã hoàn {formatVnd(refundTx.amount)} lúc {fmtDateTime(refundTx.createdAt)}</Text> : null}
@@ -140,8 +140,8 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
             ['Thời gian', fmtDateTime(t.createdAt)],
             ...(cp ? [cp] : []),
             ['Lời nhắn', t.message ?? '—'],
-            ['Phí', t.fee ? formatVnd(t.fee) : 'Miễn phí'],
-            ['Tổng tiền', formatVnd(rowAmount(t))],
+            ['Phí', <Fee amount={t.fee} />],
+            ['Tổng tiền', <Money amount={rowAmount(t)} sign={t.direction} />],
           ]} />
         </Card>
       </Box>
@@ -245,7 +245,7 @@ export default function TransactionPage() {
         <TxIcon type={t.type} size={56} />
         <Heading size="3xl" tabIndex={-1} data-page-title className="mt-1 line-clamp-2 text-center text-lg break-words outline-none">{name}</Heading>
         <Text size="sm" className="-mt-1 text-muted-foreground">{typeLabel(t.type)}</Text>
-        <Money amount={rowAmount(t)} sign={t.direction} className={cx('mt-1 text-3xl font-bold break-all', t.status === 'failed' && 'text-muted-foreground line-through')} />
+        <Money amount={rowAmount(t)} sign={t.direction} struck={t.status === 'failed'} className="mt-1 text-3xl font-bold break-all" />
         <StatusPill status={t.status} />
         <Text size="sm" className="text-center text-muted-foreground">{t.status === 'success' ? fmtDateTime(t.updatedAt) : truthLine(t)}</Text>
       </Card>
@@ -255,7 +255,7 @@ export default function TransactionPage() {
 
         {refundTx ? (
           <LinkCard to={`/history/${refundTx.id}`}>
-            Hoàn tiền · <Text className="tabular-nums">{formatVnd(refundTx.amount, { sign: 'in' })}</Text> · {fmtDateTime(refundTx.createdAt).split(' · ')[1]}
+            Hoàn tiền · <Money amount={refundTx.amount} sign="in" /> · {fmtDateTime(refundTx.createdAt).split(' · ')[1]}
           </LinkCard>
         ) : null}
         {original ? (

@@ -9,7 +9,7 @@ import { GatedRoute } from '@/features/sec/Gate'
 import {
   AmountInput, checkAmount, ConfirmRows, FlowFrame, formatPhone, maskPhone, ResultView, useCloseFlow, useFlow, useMoneyCommit,
 } from '@/features/flow/FlowKit'
-import { Avatar, Badge, Button, ButtonLink, Callout, cx, Money, Row, Skeleton } from '@/components/app-ui'
+import { Avatar, Badge, Button, ButtonLink, Callout, cx, Fee, Money, Row, Skeleton } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
@@ -228,7 +228,7 @@ function ConfirmStep({ draft, defaultMessage, toAmount, onDone }: { draft: Draft
       <ConfirmRows rows={[
         ['Người nhận', <><Text className="block break-words">{r.name}</Text><Text size="sm" className="block font-normal text-muted-foreground tabular-nums">{maskPhone(r.phone)}</Text></>],
         ['Số tiền', <Money amount={draft.amount} />],
-        ['Phí', 'Miễn phí'],
+        ['Phí', <Fee amount={0} />],
         ['Tổng tiền', <Money amount={draft.amount} className="font-bold" />],
         ['Nguồn tiền', 'Ví'],
         ['Lời nhắn', message],

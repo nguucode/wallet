@@ -56,7 +56,7 @@ function SkipLink() {
 }
 
 function UnreadBadge({ n }: { n: number }) {
-  return <Badge variant="destructive" className="absolute -top-1 -right-1 min-w-[18px] rounded-full px-1 dark:bg-destructive" aria-hidden><BadgeText>{n > 9 ? '9+' : n}</BadgeText></Badge>
+  return <Badge variant="destructive" className="absolute -top-1 -right-1 min-w-[18px] rounded-full px-1 dark:bg-destructive" aria-hidden><BadgeText className="dark:text-background">{n > 9 ? '9+' : n}</BadgeText></Badge>
 }
 
 /* ── Web layout ───────────────────────────────────────────────────── */

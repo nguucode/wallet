@@ -8,7 +8,7 @@ import { parseQr } from '@/domain/qr'
 import { BANKS, bankById, bankByBin, freeUsed, getState, lookupBankAccount, useWorld, type LookupResult } from '@/app/store'
 import { GatedRoute } from '@/features/sec/Gate'
 import {
-  AmountInput, checkAmount, ConfirmRows, FlowFrame, feeLabel, maskAccount, ResultView, useCloseFlow, useFlow, useMoneyCommit,
+  AmountInput, checkAmount, ConfirmRows, FeeValue, FlowFrame, maskAccount, ResultView, useCloseFlow, useFlow, useMoneyCommit,
 } from '@/features/flow/FlowKit'
 import { BankMark, Button, ButtonLink, Callout, Card, cx, Ico, Money, Row, Section, Sheet } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
@@ -235,7 +235,7 @@ function AmountStep({ draft, setDraft, onNext, onChange }: { draft: Draft; setDr
       {draft.locked
         ? <LockedAmount amount={draft.amount} note="Số tiền theo mã QR" error={error} />
         : <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={error} hint={hint} />}
-      {draft.amount > 0 ? <Text className="mt-3 block"><Text className="text-muted-foreground">Phí: </Text>{feeLabel('bank_transfer', draft.amount)}</Text> : null}
+      {draft.amount > 0 ? <Text className="mt-3 block"><Text className="text-muted-foreground">Phí: </Text><FeeValue type="bank_transfer" amount={draft.amount} /></Text> : null}
       <MessageField value={draft.message} onChange={(message) => setDraft({ message })} />
       <Box className="mt-8">
         {draft.locked && error
@@ -272,7 +272,7 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
         ['Ngân hàng', bank.name],
         ['Số tài khoản', <Text className="tabular-nums whitespace-nowrap">{maskAccount(draft.account)}</Text>],
         ['Số tiền', <Money amount={draft.amount} />],
-        ['Phí', <>{feeLabel('bank_transfer', draft.amount)}{f ? <Text size="sm" className="block font-normal text-muted-foreground">Đã dùng hết {config.fees.freeWithdrawPerMonth} lượt miễn phí trong tháng</Text> : null}</>],
+        ['Phí', <><FeeValue type="bank_transfer" amount={draft.amount} />{f ? <Text size="sm" className="block font-normal text-muted-foreground">Đã dùng hết {config.fees.freeWithdrawPerMonth} lượt miễn phí trong tháng</Text> : null}</>],
         ['Tổng tiền', <Money amount={draft.amount + f} className="font-bold" />],
         ['Nguồn tiền', 'Ví'],
         ['Lời nhắn', draft.message.trim() || 'Chuyển tiền'],

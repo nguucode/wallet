@@ -58,7 +58,7 @@ Simple, with every state always clear. Wallet does only the core jobs, and it sh
   - Step-up thresholds (10M VND per transaction, 20M VND cumulative per day, as MoMo publishes them) live in config.
 - **Currency:** VND, no decimals, formatted `1.250.000 ₫`. The balance can be hidden or shown.
 - **Language:** UI in Vietnamese. Spec, User Stories and code identifiers in English.
-- **Visual system:** gluestack-ui v4 with its default theme, unmodified (decided 2026-11-19, replacing the Apple HIG "Inset Grouped" build). Neutral palette, no brand tint; Inter for Vietnamese diacritics; light and dark follow the system setting. See DESIGN.md.
+- **Visual system:** gluestack-ui v4 with its default theme (decided 2026-11-19, replacing the Apple HIG "Inset Grouped" build), plus one `success` green token so money reads green (gained) and red (cost). Neutral palette otherwise, no brand tint; Inter for Vietnamese diacritics; light and dark follow the system setting. See DESIGN.md.
 
 ## Brand Commitments
 

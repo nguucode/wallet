@@ -9,7 +9,7 @@ import { VStack } from '@/components/ui/vstack'
 // gluestack has no chart component; charts are SVG painted only with gluestack theme tokens (stroke-/fill- classes).
 
 /** Daily line (e.g. balance over 30 days). Decorative shape; the summary lives in aria-label. */
-export function LineChart({ values, label, className, endTag, wide }: { values: number[]; label: string; className?: string; endTag?: string; wide?: boolean; inverse?: boolean }) {
+export function LineChart({ values, label, className, endTag, endTone, wide }: { values: number[]; label: string; className?: string; endTag?: string; /** up = gained (green), down = spent (red). */ endTone?: 'up' | 'down'; wide?: boolean; inverse?: boolean }) {
   const id = useId()
   const W = wide ? 560 : 320, H = 96, pad = 8
   if (values.length < 2) return null
@@ -33,7 +33,7 @@ export function LineChart({ values, label, className, endTag, wide }: { values: 
       </svg>
       {endTag ? (
         <Box aria-hidden className="absolute -translate-x-full -translate-y-[130%]" style={{ left: `${(ex / W) * 100}%`, top: `${(ey / H) * 100}%` }}>
-          <Badge><BadgeText className="whitespace-nowrap">{endTag}</BadgeText></Badge>
+          <Badge className={endTone === 'up' ? 'bg-success' : endTone === 'down' ? 'bg-destructive dark:bg-destructive' : undefined}><BadgeText className={cx('whitespace-nowrap', endTone === 'up' ? 'text-success-foreground' : endTone === 'down' ? 'text-white dark:text-background' : undefined)}>{endTag}</BadgeText></Badge>
         </Box>
       ) : null}
     </Box>
@@ -41,7 +41,7 @@ export function LineChart({ values, label, className, endTag, wide }: { values: 
 }
 
 export type RingTone = 'ok' | 'warn' | 'over'
-const RING: Record<RingTone, string> = { ok: 'stroke-primary', warn: 'stroke-muted-foreground', over: 'stroke-destructive' }
+const RING: Record<RingTone, string> = { ok: 'stroke-success', warn: 'stroke-muted-foreground', over: 'stroke-destructive' }
 
 /** Progress ring for a limit pool: used share drawn, tone by how close to the limit. */
 export function Ring({ used, size = 96, tone, children }: { used: number; size?: number; tone: RingTone; children?: React.ReactNode }) {

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router'
 import { formatVnd } from '@/domain/money'
 import { now, usage, useWorld } from '@/app/store'
 import { NotFound } from '@/features/demo/NotFound'
-import { authLine, ConfirmRows, FlowFrame, fmtDate, feeLabel, ResultView, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
+import { authLine, ConfirmRows, FlowFrame, fmtDate, FeeValue, ResultView, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
 import { Button, ButtonLink, Callout, TextLink } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
@@ -55,7 +55,7 @@ export default function PayBillFlow() {
         <Text size="sm" className="font-medium text-muted-foreground">Số tiền</Text>
         <Text size="4xl" bold className="mb-6 tabular-nums">{formatVnd(bill.amount)}</Text>
         <ConfirmRows rows={[
-          ['Phí', feeLabel('bill', bill.amount)],
+          ['Phí', <FeeValue type="bill" amount={bill.amount} />],
           ['Tổng tiền', <Text className="tabular-nums">{formatVnd(bill.amount)}</Text>],
           ['Nguồn tiền', 'Số dư ví'],
           ['Nhà cung cấp', <Text className="break-words">{biller.name} · <Text className="tabular-nums">{maskCode(bill.customerCode)}</Text></Text>],

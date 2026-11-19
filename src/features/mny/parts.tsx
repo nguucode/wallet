@@ -72,11 +72,10 @@ export function ResultBlock({ tone, heading, amount, children, actions }: {
   tone: 'success' | 'pending' | 'failed'; heading: string; amount?: ReactNode; children?: ReactNode; actions?: ReactNode
 }) {
   const icon = tone === 'pending' ? Clock : tone === 'failed' ? X : Check
-  // No success/pending colour in the default theme: success uses primary, pending neutral, failed destructive.
-  const disc = tone === 'success' ? 'primary' : tone === 'failed' ? 'danger' : 'neutral'
+  const disc = tone === 'success' ? 'success' : tone === 'failed' ? 'danger' : 'neutral'
   return (
     <VStack className="items-center pt-6 text-center">
-      <Disc tone={disc} size={64}><Ico as={icon} size="xl" className={tone === 'success' ? 'text-primary-foreground' : tone === 'failed' ? 'text-destructive' : 'text-foreground'} /></Disc>
+      <Disc tone={disc} size={64}><Ico as={icon} size="xl" className={tone === 'success' ? 'text-success' : tone === 'failed' ? 'text-destructive' : 'text-foreground'} /></Disc>
       <VStack role="status" aria-live="polite" className="w-full items-center">
         <Text size="lg" bold className="mt-3 text-center">{heading}</Text>
         {amount ? <Box className="mt-2 items-center break-words">{amount}</Box> : null}

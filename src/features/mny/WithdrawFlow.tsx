@@ -10,7 +10,7 @@ import { HStack } from '@/components/ui/hstack'
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
 import {
-  authLine, AmountInput, checkAmount, ConfirmRows, FAILURE_COPY, feeLabel, FlowFrame, fmtTime, useCloseFlow, useFlow, useMoneyCommit,
+  authLine, AmountInput, checkAmount, ConfirmRows, FAILURE_COPY, feeLabel, FeeValue, FlowFrame, fmtTime, useCloseFlow, useFlow, useMoneyCommit,
 } from '@/features/flow/FlowKit'
 import { GateCallout } from '@/features/sec/Gate'
 import type { Transaction } from '@/mock/seed'
@@ -65,7 +65,7 @@ export default function WithdrawFlow() {
           </>}>
           <ConfirmRows rows={[
             ['Số tiền', <Money amount={draft.amount} />],
-            ['Phí', feeText(draft.amount)],
+            ['Phí', <FeeValue type="withdraw" amount={draft.amount} />],
             ['Về', <>{bankById(source.bankId).name}{'\n'}<Text size="sm" className="text-muted-foreground">{kindLabel(source.kind)} <Text size="sm" className="tabular-nums text-muted-foreground">{mask4(source.last4)}</Text></Text></>],
             ['Chủ tài khoản', w.customer.name.toUpperCase()],
           ]} />
@@ -89,7 +89,8 @@ export default function WithdrawFlow() {
   const check = draft.amount && !over ? checkAmount('withdraw', draft.amount) : null
   const error = over ? `Số dư khả dụng không đủ. Bạn rút được tối đa ${formatVnd(maxWithdrawable(w.balance, used))}.` : check && !check.ok ? check.message : undefined
   // Emphasised only when a fee applies for the first time this month (the last free slot is gone); no amber in the default theme.
-  const feeTone = f > 0 && used === config.fees.freeWithdrawPerMonth ? 'font-semibold text-foreground' : 'text-muted-foreground'
+  // A fee is a cost (red, bold the first time it applies this month); free withdrawals read green.
+  const feeTone = f > 0 ? cx('text-destructive', used === config.fees.freeWithdrawPerMonth && 'font-semibold') : 'text-success'
   return (
     <>
       <FlowFrame title="Rút tiền" onClose={close} footer={<>
@@ -113,7 +114,7 @@ function WithdrawResult({ t }: { t: Transaction }) {
   const w = useWorld()
   const src = w.sources.find((s) => s.id === t.sourceId)
   const name = src ? `${bankById(src.bankId).name} ${mask4(src.last4)}` : 'tài khoản của bạn'
-  const amount = <Money amount={t.amount + t.fee} sign="out" className={cx('text-3xl font-bold', t.status === 'failed' && 'text-muted-foreground line-through')} />
+  const amount = <Money amount={t.amount + t.fee} sign="out" struck={t.status === 'failed'} className="text-3xl font-bold" />
   if (t.status === 'pending')
     return (
       <ResultBlock tone="pending" heading="Đang xử lý" amount={amount}>
