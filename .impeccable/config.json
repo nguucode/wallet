@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/features/pay/ScanPage.tsx"
+        ],
+        "createdAt": "2026-11-17T14:35:09.224Z",
+        "reason": "Claude triage: L205 is the 4 corner brackets of the QR scan viewfinder, not a card accent border"
+      },
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "src/features/pay/ScanPage.tsx"
+        ],
+        "createdAt": "2026-11-17T14:35:09.252Z",
+        "reason": "Claude triage: L205 is the 4 corner brackets of the QR scan viewfinder, not a card accent border"
+      }
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import { ArrowLeft, Bell, CreditCard, FileText, Gauge, HelpCircle, History, Home, Landmark, Monitor, QrCode, ScanLine, Send, ShieldCheck, Smartphone, User, Wallet } from 'lucide-react'
+import { ArrowLeft, Bell, CreditCard, FileText, Gauge, HelpCircle, History, Home, Landmark, Monitor, PanelLeftClose, PanelLeftOpen, QrCode, ScanLine, Send, ShieldCheck, Smartphone, User, Wallet } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { inFrame, useLayout } from '@/app/layout'
@@ -37,7 +37,7 @@ const isActive = (pathname: string, route?: string) => !!route && (pathname === 
 
 /* ── Web layout ───────────────────────────────────────────────────── */
 
-function SideLink({ item }: { item: NavItem }) {
+function SideLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
   const Icon = ICONS[item.id] ?? Wallet
   const { pathname } = useLocation()
   const active = isActive(pathname, item.route) || (item.id === 'pay' && pathname.startsWith('/pay'))
@@ -45,10 +45,11 @@ function SideLink({ item }: { item: NavItem }) {
     <NavLink
       to={item.route!}
       aria-current={active ? 'page' : undefined}
-      className={cx('flex h-11 items-center gap-3 rounded-full px-4 text-[15px] no-underline', active ? 'bg-surface font-semibold text-primary-ink shadow-[var(--shadow-card)]' : 'text-ink hover:bg-surface/70')}
+      title={collapsed ? item.label : undefined}
+      className={cx('flex h-11 shrink-0 items-center gap-3 rounded-full text-[15px] no-underline', collapsed ? 'w-11 justify-center self-center' : 'px-4', active ? 'bg-surface font-semibold text-primary-ink shadow-[var(--shadow-card)]' : 'text-ink hover:bg-surface/70')}
     >
-      <Icon size={20} strokeWidth={1.75} aria-hidden />
-      {item.label}
+      <Icon size={20} strokeWidth={1.75} aria-hidden className="shrink-0" />
+      <span className={cx('truncate', collapsed && 'sr-only')}>{item.label}</span>
     </NavLink>
   )
 }
@@ -85,33 +86,51 @@ function AccountMenu() {
   )
 }
 
+const COLLAPSE_KEY = 'wallet.sidebar.collapsed'
+
+/** Per-viewer preference; storage may be unavailable (private mode), so default to expanded. */
+function useSidebarCollapsed() {
+  const [collapsed, setCollapsed] = useState(() => { try { return localStorage.getItem(COLLAPSE_KEY) === '1' } catch { return false } })
+  const toggle = () => setCollapsed((c) => { try { localStorage.setItem(COLLAPSE_KEY, c ? '0' : '1') } catch { /* ignore */ } return !c })
+  return [collapsed, toggle] as const
+}
+
 function WebShell({ children }: { children: ReactNode }) {
+  const [collapsed, toggleCollapsed] = useSidebarCollapsed()
   const w = useWorld()
   const unread = unreadCount(w)
   return (
-    <div className="flex min-h-dvh">
+    <div className="relative flex min-h-dvh">
+      <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[300px]" />
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white">Bỏ qua điều hướng</a>
-      <aside className="sticky top-0 z-40 flex h-dvh w-[240px] shrink-0 flex-col bg-surface-2 px-3 py-5">
-        <Link to="/home" className="mb-6 flex items-center gap-2 px-4 text-[20px] font-extrabold tracking-tight text-ink no-underline" aria-label="Wallet, về Trang chủ">
-          <span aria-hidden className="sky inline-flex size-8 items-center justify-center rounded-[10px] text-white"><Wallet size={18} strokeWidth={2} /></span>
-          Wallet
-        </Link>
-        <nav aria-label="Điều hướng chính" className="flex flex-1 flex-col gap-1 overflow-y-auto">
+      <aside className={cx('glass sticky top-3 z-40 m-3 mr-0 flex h-[calc(100dvh-24px)] shrink-0 flex-col rounded-[28px] py-5 transition-[width] duration-200 motion-reduce:transition-none', collapsed ? 'w-[76px] px-2' : 'w-[240px] px-3')}>
+        <div className={cx('mb-6 flex items-center', collapsed ? 'flex-col gap-3' : 'justify-between pr-1 pl-4')}>
+          <Link to="/home" className="flex items-center gap-2 text-[20px] font-extrabold tracking-tight text-ink no-underline" aria-label="Wallet, về Trang chủ">
+            <span aria-hidden className="sky inline-flex size-8 shrink-0 items-center justify-center rounded-[10px] text-white"><Wallet size={18} strokeWidth={2} /></span>
+            {collapsed ? null : <span aria-hidden>Wallet</span>}
+          </Link>
+          <IconButton label={collapsed ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'} aria-expanded={!collapsed} className="text-muted hover:bg-surface/70 hover:text-ink" onClick={toggleCollapsed}>
+            {collapsed ? <PanelLeftOpen size={20} strokeWidth={1.75} /> : <PanelLeftClose size={20} strokeWidth={1.75} />}
+          </IconButton>
+        </div>
+        <nav aria-label="Điều hướng chính" className="flex flex-1 flex-col gap-1 overflow-x-hidden overflow-y-auto">
           {sidebar.map((x) =>
             'group' in x ? (
-              <div key={x.group} className="mt-4">
-                <p className="mb-1 px-4 text-[11px] font-bold tracking-[0.06em] text-muted uppercase">{x.group}</p>
-                {x.items.map((i) => <SideLink key={i.id} item={i} />)}
+              <div key={x.group} className="mt-4 flex flex-col gap-1">
+                {collapsed
+                  ? <p className="sr-only">{x.group}</p>
+                  : <p className="mb-1 truncate px-4 text-[11px] font-bold tracking-[0.06em] text-primary-ink uppercase">{x.group}</p>}
+                {collapsed ? <span aria-hidden className="mx-auto mb-1 h-px w-8 bg-line" /> : null}
+                {x.items.map((i) => <SideLink key={i.id} item={i} collapsed={collapsed} />)}
               </div>
             ) : (
-              <SideLink key={x.id} item={x} />
+              <SideLink key={x.id} item={x} collapsed={collapsed} />
             ),
           )}
         </nav>
-        <SampleBadge className="mx-4 mt-4 self-start" />
+        <SampleBadge compact={collapsed} className={cx('mt-4', collapsed ? 'self-center' : 'mx-4 self-start')} />
       </aside>
       <div className="relative flex min-w-0 flex-1 flex-col">
-        <div aria-hidden className="sky pointer-events-none absolute inset-x-0 top-0 h-[300px]" />
         <header className="relative z-30 flex h-16 items-center justify-end gap-2 px-8 text-white">
           <Link to="/notifications" aria-label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} className="relative inline-flex size-11 items-center justify-center rounded-full text-white hover:bg-white/15">
             <Bell size={20} strokeWidth={1.75} aria-hidden />

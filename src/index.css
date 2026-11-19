@@ -56,6 +56,15 @@
 /* Violet sky band that fades into the ground. */
 @utility sky { background: linear-gradient(180deg, var(--color-sky-from) 0%, var(--color-sky-to) 58%, color-mix(in oklab, var(--color-sky-to) 18%, var(--color-ground)) 86%, var(--color-ground) 100%); }
 /* Uppercase section label. */
+/* Glass panel (Apple Liquid Glass feel): translucent white, blur + saturation, specular rim. Solid fallback when unsupported or reduced transparency. */
+@utility glass {
+  background: rgb(255 255 255 / 0.72);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 1px 2px rgb(28 24 64 / 0.06), 0 18px 40px -16px rgb(74 31 196 / 0.3);
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { background: var(--color-surface-2); }
+  @media (prefers-reduced-transparency: reduce) { background: var(--color-surface-2); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
 @utility label-caps { font-size: 13px; line-height: 18px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-muted); }
 @utility tnum { font-variant-numeric: tabular-nums; }
 @utility balance { font-size: 48px; line-height: 58px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
