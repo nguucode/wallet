@@ -24,7 +24,7 @@ export function PinStep() {
       {/* Remount between phases so the dots start empty. */}
       <PinPad key={first ? 'confirm' : 'create'} label={first ? 'Nhập lại mã PIN 6 số' : 'Tạo mã PIN 6 số'} error={error} disabled={saving} onComplete={onComplete} />
       <p role="status" className="mt-2 min-h-5 text-center text-[13px] text-muted">{saving ? 'Đang lưu mã PIN…' : ''}</p>
-      <p className="mt-6 rounded-[12px] bg-surface-2 p-4 text-[14px] leading-5">Không chia sẻ mã PIN với bất kỳ ai, kể cả nhân viên Wallet.</p>
+      <p className="mt-6 rounded-[12px] bg-surface-2 p-4 text-[15px] leading-5">Không chia sẻ mã PIN với bất kỳ ai, kể cả nhân viên Wallet.</p>
     </StepShell>
   )
 }

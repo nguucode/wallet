@@ -52,7 +52,7 @@ export default function LimitsPage() {
           <Card as="section" className="p-5">
             <h2 className="text-[17px] leading-[24px] font-bold">Xác thực giao dịch</h2>
             <p className="mt-2">Hôm nay đã giao dịch <span className="tnum font-semibold">{formatVnd(dayCounter(w))}</span> bằng mã PIN</p>
-            <ul className="mt-4 space-y-2 border-t border-line-soft pt-4 text-[14px] leading-5">
+            <ul className="mt-4 space-y-2 border-t border-line-soft pt-4 text-[15px] leading-5">
               <li>Nạp, rút, chuyển tiền đến {formatVnd(s.perTransaction)} mỗi giao dịch và tổng {formatVnd(s.perDay)} mỗi ngày: mã PIN</li>
               <li>Vượt một trong hai mức trên: xác thực khuôn mặt</li>
               <li>Thanh toán QR và hóa đơn đến {formatVnd(s.paymentFace)}: mã PIN; trên mức này: xác thực khuôn mặt</li>
@@ -73,8 +73,8 @@ function RingStat({ title, counter }: { title: string; counter: Counter }) {
         <span className="block text-[22px] leading-7 font-bold tnum">{Math.round(share * 100)}%</span>
         <span className="block text-[12px] text-muted">đã dùng</span>
       </Ring>
-      <p className="mt-3 text-[18px] leading-6 font-bold tnum">{formatVnd(counter.remaining).replace(' ₫', '')}<Dong /></p>
-      <p className="text-[14px] text-muted">còn lại · {title}</p>
+      <p className="mt-3 text-[17px] leading-6 font-bold tnum">{formatVnd(counter.remaining).replace(' ₫', '')}<Dong /></p>
+      <p className="text-[15px] text-muted">còn lại · {title}</p>
     </div>
   )
 }
@@ -90,8 +90,8 @@ function Meter({ title, counter, note, reset }: { title: string; counter: Counte
       </div>
       <p className="mt-3 tnum">Đã dùng {formatVnd(counter.used)} /<wbr /> {formatVnd(counter.limit)}</p>
       <p className={cx('mt-2 font-semibold tnum', warn && 'text-pending')}>Còn lại {formatVnd(counter.remaining)}</p>
-      {counter.pending ? <p className="mt-1 text-[14px] leading-5 text-muted">Gồm {formatVnd(counter.pending)} đang xử lý</p> : null}
-      <p className="mt-3 text-[14px] leading-5 text-muted">{note}</p>
+      {counter.pending ? <p className="mt-1 text-[15px] leading-5 text-muted">Gồm {formatVnd(counter.pending)} đang xử lý</p> : null}
+      <p className="mt-3 text-[15px] leading-5 text-muted">{note}</p>
       <p className="mt-1 text-[13px] leading-[18px] text-muted tnum">{reset}</p>
     </Card>
   )

@@ -33,7 +33,7 @@ export function IdMethodStep() {
             <Disc size={44}>{o.icon}</Disc>
             <span className="min-w-0 flex-1">
               <span className="block font-semibold">{o.title}</span>
-              <span className="block text-[14px] leading-5 text-muted">{o.body}</span>
+              <span className="block text-[15px] leading-5 text-muted">{o.body}</span>
               {o.disabled ? <span id="chip-reason" className="mt-1 block text-[13px] leading-[18px] font-medium text-ink">Máy tính không đọc được chip CCCD.</span> : null}
             </span>
           </button>
@@ -44,7 +44,7 @@ export function IdMethodStep() {
           <Disc><Smartphone size={22} strokeWidth={1.75} /></Disc>
           <div>
             <p className="font-semibold">Mở ví trên điện thoại</p>
-            <p className="text-[14px] leading-5 text-muted">Đọc chip CCCD cần điện thoại có NFC. Bạn cũng có thể dùng VNeID ngay trên máy tính.</p>
+            <p className="text-[15px] leading-5 text-muted">Đọc chip CCCD cần điện thoại có NFC. Bạn cũng có thể dùng VNeID ngay trên máy tính.</p>
             <Link to={`/device?path=${encodeURIComponent('/onboarding?step=id-method')}`} className="mt-2 inline-flex min-h-11 items-center font-semibold text-tint">Xem trên điện thoại</Link>
           </div>
         </div>
@@ -85,14 +85,14 @@ export function IdCaptureStep() {
       </>}>
         <SampleCard />
         <p className="mt-4">Kiểm tra ảnh: chữ và ảnh chân dung phải rõ nét.</p>
-        <p role="status" className="mt-2 min-h-5 text-[14px] text-muted">{busy ? 'Đang xử lý ảnh…' : ''}</p>
+        <p role="status" className="mt-2 min-h-5 text-[15px] text-muted">{busy ? 'Đang xử lý ảnh…' : ''}</p>
       </StepShell>
     )
   return (
     <StepShell title="Chụp mặt trước CCCD">
       <div className="flex flex-col items-center rounded-[16px] bg-black px-5 py-8 text-white">
         <div aria-hidden className="aspect-[85.6/54] w-full max-w-[340px] rounded-[12px] border-2 border-white/90" />
-        <p className="mt-4 text-center text-[14px] leading-5">Đặt CCCD nằm gọn trong khung, đủ sáng, không bị lóa.</p>
+        <p className="mt-4 text-center text-[15px] leading-5">Đặt CCCD nằm gọn trong khung, đủ sáng, không bị lóa.</p>
         <button type="button" onClick={() => setShot(true)} aria-label="Chụp" className="mt-6 inline-flex size-[72px] items-center justify-center rounded-full border-4 border-white focus-visible:outline-white">
           <span aria-hidden className="size-14 rounded-full bg-white" />
         </button>

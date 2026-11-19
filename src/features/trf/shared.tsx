@@ -28,7 +28,7 @@ export function QrImage({ payload, size, label }: { payload: string; size: numbe
   if (state.error && state.payload === payload)
     return (
       <div role="alert" className="flex flex-col items-center justify-center gap-3 rounded-[12px] border border-line bg-surface p-4 text-center" style={{ width: size, height: size }}>
-        <p className="text-[14px]">Không tạo được mã. Thử lại.</p>
+        <p className="text-[15px]">Không tạo được mã. Thử lại.</p>
         <Button size="sm" variant="secondary" onClick={() => setRetry((r) => r + 1)}>Thử lại</Button>
       </div>
     )
@@ -102,7 +102,7 @@ export function RecipientChip({ name, sub, note, onChange }: { name: string; sub
 export function AuthNote({ type, amount }: { type: Parameters<typeof authLine>[0]; amount: number }) {
   const face = authFor(type, amount) === 'face_match'
   return (
-    <p className="mt-4 flex items-start gap-2 rounded-[12px] bg-surface-2 px-4 py-3 text-[14px]">
+    <p className="mt-4 flex items-start gap-2 rounded-[12px] bg-surface-2 px-4 py-3 text-[15px]">
       {face ? <ScanFace size={18} strokeWidth={1.75} aria-hidden className="mt-0.5 shrink-0" /> : <Lock size={18} strokeWidth={1.75} aria-hidden className="mt-0.5 shrink-0" />}
       {authLine(type, amount)}
     </p>

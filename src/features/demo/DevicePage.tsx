@@ -64,7 +64,7 @@ export default function DevicePage() {
         </div>
       </main>
       <aside aria-label="Demo controls" className="h-dvh w-[380px] shrink-0 overflow-y-auto border-l border-line bg-surface p-6">
-        <h2 className="mb-3 text-[18px] font-bold">Demo controls</h2>
+        <h2 className="mb-3 text-[17px] font-bold">Demo controls</h2>
         <DemoControlsPanel onAction={setMsg} />
         <p role="status" aria-live="polite" className="min-h-5 text-[13px] text-success">{msg}</p>
         <Card className="mt-2 p-4 text-[13px] leading-[18px] text-muted">Thay đổi ở đây hiện ngay trong khung điện thoại. Dùng nút “Xem bản web” để quay lại giao diện máy tính tại đúng màn đang xem.</Card>

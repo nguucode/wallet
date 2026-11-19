@@ -153,7 +153,7 @@ function PayCode() {
         <>
           {banner}
           <Card className="relative flex flex-col items-center px-4 py-6 text-center">
-            {app ? null : <h2 className="mb-4 text-[18px] leading-[26px] font-bold">Mã thanh toán</h2>}
+            {app ? null : <h2 className="mb-4 text-[17px] leading-[26px] font-bold">Mã thanh toán</h2>}
             <div className="rounded-[12px] bg-white p-2">
               <QrImage payload={code.value} size={240} label="Mã thanh toán, đưa thu ngân quét" />
             </div>
@@ -163,7 +163,7 @@ function PayCode() {
               {revealed ? null : <Button variant="ghost" size="sm" onClick={() => setRevealUntil(now() + 10_000)}>Hiện số</Button>}
             </p>
             <div className="mt-4 w-full max-w-[360px]">
-              <p className={cx('text-[14px] tnum', urgent ? 'font-semibold text-pending' : 'text-muted')} aria-hidden>Mã tự đổi sau {fmtCountdown(remaining)}</p>
+              <p className={cx('text-[15px] tnum', urgent ? 'font-semibold text-pending' : 'text-muted')} aria-hidden>Mã tự đổi sau {fmtCountdown(remaining)}</p>
               <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-line-soft" aria-hidden>
                 <div className={cx('h-full rounded-full transition-[width] duration-1000 ease-linear', urgent ? 'bg-pending' : 'bg-ink')} style={{ width: `${(remaining / PAY_CODE_TTL_S) * 100}%` }} />
               </div>

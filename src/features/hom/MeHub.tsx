@@ -37,7 +37,7 @@ export default function MeHub() {
           <div className="flex items-start gap-3">
             <Avatar name={w.customer.name} size={56} />
             <div className="min-w-0 flex-1">
-              <p className="text-[18px] leading-[26px] font-bold break-words">{w.customer.name}</p>
+              <p className="text-[17px] leading-[26px] font-bold break-words">{w.customer.name}</p>
               <p className="tnum text-muted">Số ví {formatPhone(w.customer.walletNumber)}</p>
               <div className="mt-2">
                 {kyc === 'unverified' ? (

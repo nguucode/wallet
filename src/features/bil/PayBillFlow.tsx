@@ -58,7 +58,7 @@ export default function PayBillFlow() {
           ['Nhà cung cấp', <span className="break-words">{biller.name} · <span className="tnum">{maskCode(bill.customerCode)}</span></span>],
           ['Chủ hộ', <span className="break-words">{bill.holder || '—'}</span>],
         ]} />
-        <p className="mt-4 text-[14px] text-muted">{authLine('bill', bill.amount)}</p>
+        <p className="mt-4 text-[15px] text-muted">{authLine('bill', bill.amount)}</p>
         {commit.error ? <p role="alert" className="mt-3 text-danger">{commit.error}</p> : null}
         {commit.sheet}
       </FlowFrame>
@@ -70,7 +70,7 @@ export default function PayBillFlow() {
   return (
     <FlowFrame title="Chi tiết hóa đơn" onBack={() => nav('/bills')}
       footer={status === 'due' || status === 'overdue' ? <Button block disabled={!check.ok} onClick={() => guard(() => flow.go('confirm'))}>Thanh toán</Button> : undefined}>
-      <div className="flex items-center gap-2"><BillChip status={status} />{status === 'overdue' ? <span className="text-[14px] text-danger">Quá hạn {overdueDays(bill, at)} ngày</span> : null}</div>
+      <div className="flex items-center gap-2"><BillChip status={status} />{status === 'overdue' ? <span className="text-[15px] text-danger">Quá hạn {overdueDays(bill, at)} ngày</span> : null}</div>
       <p className="amount-display mt-2 mb-6">{formatVnd(bill.amount)}</p>
       <ConfirmRows rows={detailRows()} />
 
@@ -82,7 +82,7 @@ export default function PayBillFlow() {
           <p role="alert" className="text-danger">Số dư không đủ, cần thêm {formatVnd(check.short)}. <Link to="/topup" className="font-semibold text-tint">Nạp tiền</Link></p>
         ) : !check.ok && check.reason === 'essential_limit' ? (
           <p role="alert" className="text-danger">Vượt hạn mức thanh toán thiết yếu tháng này, còn lại {formatVnd(check.remaining)}. <Link to="/me/limits" className="font-semibold text-tint">Xem hạn mức</Link></p>
-        ) : <p className="text-[14px] text-muted">Thanh toán từ số dư ví · Miễn phí</p>}
+        ) : <p className="text-[15px] text-muted">Thanh toán từ số dư ví · Miễn phí</p>}
       </div>
       {gateSheet}
     </FlowFrame>

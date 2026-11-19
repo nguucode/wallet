@@ -67,8 +67,8 @@ export default function TopupFlow() {
             ['Từ', <>{bankById(source.bankId).name}<br /><span className="text-[13px] text-muted">{kindLabel(source.kind)} <span className="tnum">{mask4(source.last4)}</span></span></>],
             ['Đến', `Ví của bạn · ${formatPhone(w.customer.walletNumber)}`],
           ]} />
-          <p className="mt-4 text-[14px] text-muted">{authLine('topup', draft.amount)}</p>
-          {commit.busy ? <p role="status" className="mt-2 text-[14px] text-muted">Đang gửi yêu cầu…</p> : null}
+          <p className="mt-4 text-[15px] text-muted">{authLine('topup', draft.amount)}</p>
+          {commit.busy ? <p role="status" className="mt-2 text-[15px] text-muted">Đang gửi yêu cầu…</p> : null}
         </FlowFrame>
       ) : (
         <AmountStep draft={draft} setDraft={setDraft} onNext={() => go('confirm')} onClose={close} balance={w.balance} />

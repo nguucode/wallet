@@ -56,14 +56,14 @@ export default function SupportNewFlow() {
     )
 
   const locked = !!t && !isWithinSupportWindow(t, now(), config.supportWindowDays)
-  const lockedNote = locked ? <p role="status" className="mb-4 rounded-[16px] bg-surface-2 p-4 text-[14px] leading-5">Giao dịch đã quá {config.supportWindowDays} ngày nên không thể gửi yêu cầu hỗ trợ trực tuyến</p> : null
+  const lockedNote = locked ? <p role="status" className="mb-4 rounded-[16px] bg-surface-2 p-4 text-[15px] leading-5">Giao dịch đã quá {config.supportWindowDays} ngày nên không thể gửi yêu cầu hỗ trợ trực tuyến</p> : null
 
   /* sent */
   if (flow.step === 'sent' && draft.sent)
     return (
       <FlowFrame title="Liên hệ hỗ trợ" footer={<ButtonLink to={backTo} block>{t ? 'Về giao dịch' : 'Về Trợ giúp'}</ButtonLink>}>
         <div className="flex flex-col items-center pt-6 text-center">
-          <p role="status" className="text-[18px] font-bold">Đã gửi yêu cầu hỗ trợ</p>
+          <p role="status" className="text-[17px] font-bold">Đã gửi yêu cầu hỗ trợ</p>
           <p className="mt-2">Mã yêu cầu <span className="tnum font-semibold">{draft.sent.id}</span></p>
           <p className="mt-1 text-muted">Thời gian xử lý tối đa 30 ngày làm việc</p>
         </div>
@@ -96,7 +96,7 @@ export default function SupportNewFlow() {
             <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="mt-2 inline-flex min-h-11 items-center font-semibold text-tint">Nhắn người nhận</a>
           </div>
         ) : null}
-        <p className="mb-4 text-[14px] text-muted">Lý do: <span className="font-medium text-ink">{REASON_LABEL[draft.reason]}</span></p>
+        <p className="mb-4 text-[15px] text-muted">Lý do: <span className="font-medium text-ink">{REASON_LABEL[draft.reason]}</span></p>
         <Field label="Mô tả vấn đề" htmlFor="sp-details">
           <textarea
             id="sp-details" disabled={locked} rows={5} maxLength={600} aria-required aria-describedby="sp-count"
@@ -134,7 +134,7 @@ export default function SupportNewFlow() {
         </div>
       </fieldset>
       {needsTx ? (
-        <p role="status" className="mt-4 rounded-[16px] bg-surface-2 p-4 text-[14px] leading-5">
+        <p role="status" className="mt-4 rounded-[16px] bg-surface-2 p-4 text-[15px] leading-5">
           Hãy mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ để gửi yêu cầu về giao dịch đó. <Link to="/history" className="font-semibold text-tint">Mở Lịch sử</Link>
         </p>
       ) : null}

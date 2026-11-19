@@ -11,7 +11,7 @@ export function IdentitySummary({ title }: { title: string }) {
   const c = useWorld().customer
   return (
     <section aria-label={title}>
-      <h2 className="mb-2 text-[18px] leading-[26px] font-bold">{title}</h2>
+      <h2 className="mb-2 text-[17px] leading-[26px] font-bold">{title}</h2>
       <DataList rows={[
         ['Họ và tên', c.name.toUpperCase()],
         ['Số CCCD', <span className="tnum">{maskIdNumber(c.idNumber)}</span>],
@@ -52,7 +52,7 @@ export function NfcStep() {
     const expired = idExpired()
     return (
       <StepShell title="Đọc chip CCCD" footer={<>
-        {expired ? <p role="alert" className="text-[14px] text-danger">{EXPIRED}</p> : null}
+        {expired ? <p role="alert" className="text-[15px] text-danger">{EXPIRED}</p> : null}
         <Button block disabled={expired} onClick={() => go('face')}>Xác nhận</Button>
         <Button variant="ghost" block onClick={() => go('id-method')}>Thông tin không đúng?</Button>
       </>}>
@@ -76,7 +76,7 @@ export function NfcStep() {
         <span className="absolute inset-5 flex items-center justify-center rounded-full bg-surface-2"><Nfc size={56} strokeWidth={1.25} aria-hidden className="text-muted" /></span>
       </div>
       <div aria-live="polite" className="min-h-12 text-center">
-        {phase === 'reading' ? <><p className="font-semibold tnum">Đang đọc chip… {pct}%</p><p className="text-[14px] text-muted">Giữ yên thẻ, đừng nhấc ra.</p></> : null}
+        {phase === 'reading' ? <><p className="font-semibold tnum">Đang đọc chip… {pct}%</p><p className="text-[15px] text-muted">Giữ yên thẻ, đừng nhấc ra.</p></> : null}
         {phase === 'stalled' ? <p role="alert" className="text-danger">Chưa đọc được chip. Tháo ốp lưng và giữ thẻ sát mặt lưng điện thoại.</p> : null}
       </div>
     </StepShell>

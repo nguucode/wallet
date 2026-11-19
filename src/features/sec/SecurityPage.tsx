@@ -84,7 +84,7 @@ function SettingRow({ icon, title, desc, descId, control }: { icon: ReactNode; t
     <li className="flex min-h-16 items-center gap-3 py-3">
       <Disc size={48}>{icon}</Disc>
       <div className="min-w-0 flex-1">
-        <p className="text-[14px] leading-5 font-bold">{title}</p>
+        <p className="text-[15px] leading-5 font-bold">{title}</p>
         <p id={descId} className="text-[13px] leading-[18px] text-muted">{desc}</p>
       </div>
       {control}

@@ -28,6 +28,7 @@
   --color-chart-warn: #ff9500;
   --color-chart-over: #ff3b30;
   --color-on-ink: #ffffff;                    /* text on an ink (label-coloured) fill */
+  --color-badge: #c00012;                     /* count badge: one red in both modes, white text 6:1 */
   --shadow-float: 0 10px 30px -8px rgb(0 0 0 / 0.18), 0 1px 3px rgb(0 0 0 / 0.06);
   --shadow-card: 0 0 #0000;                   /* grouped sections carry no shadow */
   --shadow-thumb: 0 3px 8px rgb(0 0 0 / 0.12), 0 3px 1px rgb(0 0 0 / 0.04);

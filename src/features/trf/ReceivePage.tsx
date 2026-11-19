@@ -105,7 +105,7 @@ function Receive() {
         {kind === 'vietqr' ? <p className="mt-3 text-[13px] text-muted">Quét bằng app ngân hàng bất kỳ</p> : null}
         {amount ? <p className="mt-3 amount-display tnum">{formatVnd(amount)}</p> : null}
         <p className="mt-3 text-[16px] font-bold break-words">{w.customer.name}</p>
-        <p className="text-[14px] text-muted tnum">{formatPhone(phone)}</p>
+        <p className="text-[15px] text-muted tnum">{formatPhone(phone)}</p>
 
         {layout === 'web' ? (
           <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -124,7 +124,7 @@ function Receive() {
           </ul>
         )}
       </Card>
-      <p role="status" aria-live="polite" className="mt-4 min-h-6 text-center text-[14px]">{toast}</p>
+      <p role="status" aria-live="polite" className="mt-4 min-h-6 text-center text-[15px]">{toast}</p>
 
       <Sheet open={sheet} onOpenChange={setSheet} title="Thêm số tiền" description="Người quét mã sẽ thấy sẵn số tiền này.">
         <AmountInput value={entry} onChange={setEntry} quick={[50_000, 100_000, 200_000, 500_000]} />

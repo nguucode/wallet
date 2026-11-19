@@ -75,7 +75,7 @@ export default function BankTransferFlow() {
 
 function FailedFeeNote({ txId }: { txId: string }) {
   const t = useWorld().transactions.find((x) => x.id === txId)
-  return t?.status === 'failed' ? <p className="mt-3 text-[14px] text-muted">Phí đã được hoàn cùng số tiền.</p> : null
+  return t?.status === 'failed' ? <p className="mt-3 text-[15px] text-muted">Phí đã được hoàn cùng số tiền.</p> : null
 }
 
 /* ── recipient (US-TRF-005, US-TRF-008) ───────────────────────────── */
@@ -223,7 +223,7 @@ function AmountStep({ draft, setDraft, onNext, onChange }: { draft: Draft; setDr
       {draft.locked
         ? <LockedAmount amount={draft.amount} note="Số tiền theo mã QR" error={error} />
         : <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={error} hint={hint} />}
-      {draft.amount > 0 ? <p className="mt-3 text-[14px]"><span className="text-muted">Phí: </span>{feeLabel('bank_transfer', draft.amount)}</p> : null}
+      {draft.amount > 0 ? <p className="mt-3 text-[15px]"><span className="text-muted">Phí: </span>{feeLabel('bank_transfer', draft.amount)}</p> : null}
       <MessageField value={draft.message} onChange={(message) => setDraft({ message })} />
       <div className="mt-8">
         {draft.locked && error
@@ -253,7 +253,7 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
     )
   return (
     <>
-      <h2 className="mb-4 text-[18px] leading-[26px] font-bold">Xác nhận</h2>
+      <h2 className="mb-4 text-[17px] leading-[26px] font-bold">Xác nhận</h2>
       <p className="mb-4 text-center"><Money amount={draft.amount} className="amount-display" /></p>
       <ConfirmRows rows={[
         ['Người nhận', <span className="break-words">{draft.holder}</span>],

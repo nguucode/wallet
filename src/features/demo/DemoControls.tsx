@@ -45,7 +45,7 @@ export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => vo
   const set = <K extends keyof Settings>(k: K) => (v: Settings[K]) => setSetting(k, v)
   const pending = w.transactions.filter((t) => t.status === 'pending').length
   return (
-    <div className="text-[14px]">
+    <div className="text-[15px]">
       <p className="mb-4 text-[13px] leading-[18px] text-muted">Công cụ cho người xem demo. Mọi thao tác ở đây là mô phỏng. Mã PIN và OTP mẫu: <b className="tnum text-ink">123456</b>.</p>
       <Group title="Kịch bản" note={SCENARIOS.find((x) => x.id === s.scenario)?.hint}>
         <label className="sr-only" htmlFor="demo-scenario">Kịch bản</label>

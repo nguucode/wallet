@@ -28,7 +28,7 @@ export function VneidStep() {
   const decide = (ok: boolean) => setPhase(ok ? 'approved' : 'declined')
   const sim = (
     <div className="flex flex-col gap-2">
-      <p className="mb-2 text-[14px] leading-5">Wallet yêu cầu: họ và tên, số CCCD, ngày sinh, ngày hết hạn, ảnh chân dung.</p>
+      <p className="mb-2 text-[15px] leading-5">Wallet yêu cầu: họ và tên, số CCCD, ngày sinh, ngày hết hạn, ảnh chân dung.</p>
       <Button variant="ink" block onClick={() => decide(true)}>Đồng ý chia sẻ</Button>
       <Button variant="secondary" block onClick={() => decide(false)}>Từ chối</Button>
     </div>
@@ -58,7 +58,7 @@ export function VneidStep() {
             <>
               {qr ? <img src={qr} alt="Mã QR để quét bằng ứng dụng VNeID" width={200} height={200} className="size-[200px]" /> : <span className="size-[200px] rounded-[12px] bg-surface-2" />}
               <p className="mt-3 font-medium">Quét mã bằng ứng dụng VNeID trên điện thoại</p>
-              <p className="text-[14px] text-muted">Mã hết hạn sau <span className="tnum">{mmss(left)}</span></p>
+              <p className="text-[15px] text-muted">Mã hết hạn sau <span className="tnum">{mmss(left)}</span></p>
             </>
           ) : (
             <div role="status" className="py-6">

@@ -86,7 +86,7 @@ export default function BillsPage() {
                       className="-mx-2 -my-1 flex min-w-0 flex-1 items-start gap-3 rounded-xl px-2 py-1 text-ink no-underline hover:bg-surface-2">
                       <span className="min-w-0 flex-1">
                         <span className="block font-semibold">{name}</span>
-                        {b.holder ? <span className="line-clamp-2 block text-[14px] leading-5">{b.holder}</span> : null}
+                        {b.holder ? <span className="line-clamp-2 block text-[15px] leading-5">{b.holder}</span> : null}
                         <span className="block text-[13px] leading-[18px] text-muted">
                           <span className="tnum">{maskCode(b.customerCode)}</span> · {periodLabel(b.period)}
                         </span>

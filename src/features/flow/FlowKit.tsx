@@ -154,7 +154,7 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
           style={{ width: `${Math.max(1, shown.length || 1) * 0.62 + 0.2}em` }}
           className="amount-display max-w-full min-w-0 bg-transparent text-center outline-none placeholder:text-muted"
         />
-        <span className="mt-1 ml-0.5 text-[18px] leading-6 font-semibold text-muted" aria-hidden>₫</span>
+        <span className="mt-1 ml-0.5 text-[17px] leading-6 font-semibold text-muted" aria-hidden>₫</span>
       </div>
       <p id="amount-msg" role={error ? 'alert' : undefined} className={cx('mt-2 min-h-5 text-center text-[13px] leading-5', error ? 'text-danger' : 'text-muted')}>{error ?? hint}</p>
       {quick.length ? (
@@ -193,7 +193,7 @@ export function Keypad({ value, onChange }: { value: number; onChange: (n: numbe
             aria-label={k === 'del' ? 'Xóa một chữ số' : undefined}
             className="flex h-14 items-center justify-center rounded-[14px] bg-surface text-ink shadow-[0_1px_0_rgb(0_0_0/0.12)] active:bg-surface-2"
           >
-            {k === 'del' ? <Delete size={24} strokeWidth={1.75} aria-hidden /> : <span className="text-[24px] leading-7 font-medium tnum">{k}</span>}
+            {k === 'del' ? <Delete size={24} strokeWidth={1.75} aria-hidden /> : <span className="text-[28px] leading-8 font-normal tnum">{k}</span>}
           </button>
         ))}
       </div>
@@ -310,7 +310,7 @@ export function ResultView({ txId, onRetry, extra, successHeading = 'Thành côn
   return (
     <div className="flex flex-col items-center pt-6 text-center">
       <StatusMark status={t.status} />
-      <p role="status" className="mt-4 text-[18px] font-bold">{heading}</p>
+      <p role="status" className="mt-4 text-[17px] font-bold">{heading}</p>
       <p className="mt-2"><Money amount={t.amount + (t.status === 'failed' ? 0 : t.fee)} sign={t.direction} className="amount-display" /></p>
       <p className="mt-2 max-w-[40ch] text-muted">{counterpartyName(t.counterparty, w)}{t.sourceId && t.type !== 'topup' ? ` · từ ${sourceLabel(w, t.sourceId)}` : ''}</p>
       <div className="mt-6 w-full text-left">

@@ -93,7 +93,7 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
   return (
     <>
       <MerchantHeader name={draft.name!} category={draft.category} />
-      <h2 className="mb-4 text-[18px] leading-[26px] font-bold">Xác nhận</h2>
+      <h2 className="mb-4 text-[17px] leading-[26px] font-bold">Xác nhận</h2>
       <p className="text-center"><Money amount={draft.amount} className="amount-display" /></p>
       {draft.fixed ? <p className="mt-1 mb-4 text-center text-[13px] text-muted">Số tiền do cửa hàng đặt</p> : <div className="mb-4" />}
       <ConfirmRows rows={[
@@ -122,7 +122,7 @@ export function Result({ txId, onRetry }: { txId: string; onRetry?: () => void }
   const t = useWorld().transactions.find((x) => x.id === txId)
   useWakeLock(app && t?.status === 'success')
   const secs = t && app && t.status === 'success'
-    ? <p className="mt-3 text-[14px] text-muted tnum">Lúc {new Date(t.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' })}</p>
+    ? <p className="mt-3 text-[15px] text-muted tnum">Lúc {new Date(t.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' })}</p>
     : null
   return <ResultView successHeading="Thanh toán thành công" txId={txId} onRetry={onRetry} extra={secs} />
 }

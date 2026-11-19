@@ -220,7 +220,7 @@ function ConfirmStep({ draft, defaultMessage, toAmount, onDone }: { draft: Draft
     )
   return (
     <>
-      <h2 className="mb-4 text-[18px] leading-[26px] font-bold">Xác nhận</h2>
+      <h2 className="mb-4 text-[17px] leading-[26px] font-bold">Xác nhận</h2>
       <p className="mb-4 text-center"><Money amount={draft.amount} className="amount-display" /></p>
       <ConfirmRows rows={[
         ['Người nhận', <><span className="block break-words">{r.name}</span><span className="block text-[13px] font-normal text-muted tnum">{maskPhone(r.phone)}</span></>],

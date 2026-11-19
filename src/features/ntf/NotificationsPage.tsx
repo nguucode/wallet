@@ -76,7 +76,7 @@ export default function NotificationsPage() {
                             <span className={cx('min-w-0 flex-1 tnum', n.read ? 'font-medium' : 'font-bold')}>{n.title}</span>
                             <span className="shrink-0 text-[13px] leading-[18px] text-muted tnum">{fmtTime(n.createdAt)}</span>
                           </span>
-                          {n.body ? <span className="mt-0.5 line-clamp-2 block text-[14px] leading-5 text-muted">{n.body}</span> : null}
+                          {n.body ? <span className="mt-0.5 line-clamp-2 block text-[15px] leading-5 text-muted">{n.body}</span> : null}
                         </span>
                         {n.read ? <span className="w-2 shrink-0" /> : (
                           <span className="mt-2 size-2 shrink-0 rounded-full bg-ink"><span className="sr-only">Chưa đọc</span></span>

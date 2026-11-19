@@ -1,343 +1,398 @@
 ---
-name: Violet Sky
-description: Wallet's money world. White cards lifted out of a violet sky over calm lavender ground.
+name: Inset Grouped
+description: Wallet as a first-party Apple app. Neutral grouped ground, content in inset sections, violet only where you can act.
 colors:
   primary: "#5b2be0"
   primary-hover: "#4a1fc4"
-  primary-soft: "#ece6ff"
+  tint: "#5b2be0"
+  primary-soft: "#eee9fd"
+  primary-soft-hover: "#e3dbfc"
   primary-ink: "#3d1a9e"
-  primary-soft-hover: "#e0d7ff"
-  danger-soft-hover: "#fbdcd9"
-  sky-from: "#4a1fc4"
-  sky-to: "#7655f2"
-  ink: "#1c1840"
-  muted: "#625d7d"
+  ink: "#000000"
+  on-ink: "#ffffff"
+  muted: "#6c6c70"
   surface: "#ffffff"
-  surface-2: "#f1eefc"
-  ground: "#f6f4fd"
-  line: "#dfdaf0"
-  line-soft: "#edeaf7"
-  success: "#0b7a47"
-  success-soft: "#e3f5ea"
-  pending: "#8a5200"
-  pending-soft: "#fff0da"
-  danger: "#b3261e"
-  danger-soft: "#fdeceb"
-  chart-up: "#1f9d55"
-  chart-warn: "#e8891c"
-  chart-over: "#d93a2b"
+  surface-2: "rgb(118 118 128 / 0.12)"
+  ground: "#f2f2f7"
+  line: "#c6c6c8"
+  line-soft: "#e5e5ea"
+  success: "#1a7a35"
+  success-soft: "#e4f5e8"
+  pending: "#a05a00"
+  pending-soft: "#fff1dc"
+  danger: "#c00012"
+  danger-soft: "#fde8ea"
+  danger-soft-hover: "#fbd7db"
+  badge: "#c00012"
+  chart-up: "#34c759"
+  chart-warn: "#ff9500"
+  chart-over: "#ff3b30"
 typography:
+  large-title:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "34px"
+    fontWeight: 700
+    lineHeight: "41px"
+    letterSpacing: "0.01em"
   balance:
-    fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
     fontSize: "48px"
     fontWeight: 700
     lineHeight: "58px"
-    letterSpacing: "-0.02em"
+    letterSpacing: "-0.01em"
     fontFeature: "tnum"
   balance-app:
-    fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
     fontSize: "40px"
     fontWeight: 700
     lineHeight: "50px"
-    letterSpacing: "-0.02em"
+    letterSpacing: "-0.01em"
     fontFeature: "tnum"
   amount-display:
-    fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
     fontSize: "32px"
     fontWeight: 700
     lineHeight: "40px"
-    letterSpacing: "-0.02em"
+    letterSpacing: "-0.01em"
     fontFeature: "tnum"
-  headline:
-    fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "28px"
-    fontWeight: 700
-    lineHeight: "36px"
-    letterSpacing: "-0.025em"
-  title:
-    fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "17px"
-    fontWeight: 700
-    lineHeight: "24px"
+  title-3:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "20px"
+    fontWeight: 600
+    lineHeight: "25px"
+    letterSpacing: "-0.01em"
   body:
-    fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "15px"
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "17px"
     fontWeight: 400
     lineHeight: "22px"
-  small:
-    fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
+  body-web:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "15px"
+    fontWeight: 400
+    lineHeight: "20px"
+  title-1:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "28px"
+    fontWeight: 700
+    lineHeight: "34px"
+  title-2:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "22px"
+    fontWeight: 700
+    lineHeight: "28px"
+  headline:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "17px"
+    fontWeight: 600
+    lineHeight: "22px"
+  callout:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "16px"
+    fontWeight: 400
+    lineHeight: "21px"
+  subheadline:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "15px"
+    fontWeight: 400
+    lineHeight: "20px"
+  caption-1:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "12px"
+    fontWeight: 400
+    lineHeight: "16px"
+  caption-2:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "11px"
+    fontWeight: 400
+    lineHeight: "13px"
+  keypad-digit:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "28px"
+    fontWeight: 400
+    lineHeight: "32px"
+  footnote:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
     fontSize: "13px"
     fontWeight: 400
     lineHeight: "18px"
-  label:
-    fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
+  label-caps:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
     fontSize: "13px"
-    fontWeight: 700
+    fontWeight: 400
     lineHeight: "18px"
-    letterSpacing: "0.06em"
-  chip:
-    fontFamily: "Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "11px"
-    fontWeight: 700
-    lineHeight: "16px"
-    letterSpacing: "0.04em"
+    letterSpacing: "0"
+  tab-label:
+    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
+    fontSize: "10px"
+    fontWeight: 500
+    lineHeight: "12px"
 rounded:
-  row: "12px"
+  focus-ring: "4px"
+  input: "12px"
+  nav-item: "12px"
   key: "14px"
-  input: "14px"
-  callout: "20px"
   card: "24px"
-  sheet: "28px"
-  pill: "9999px"
+  sidebar: "28px"
+  sheet-app: "34px"
+  full: "9999px"
 spacing:
-  xs: "8px"
-  sm: "12px"
-  md: "16px"
-  card: "20px"
-  card-lg: "24px"
-  section: "32px"
-  section-lg: "48px"
+  gutter-app: "16px"
+  gutter-web: "48px"
+  sidebar-inset: "12px"
+  card-pad-app: "20px"
+  card-pad-web: "24px"
+  section-gap-app: "32px"
+  section-gap-web: "40px"
 components:
   button-primary:
     backgroundColor: "{colors.primary}"
-    textColor: "{colors.surface}"
-    rounded: "{rounded.pill}"
+    textColor: "#ffffff"
+    rounded: "{rounded.full}"
+    height: "50px"
     padding: "0 24px"
-    height: "48px"
+    typography: "{typography.body}"
   button-primary-hover:
     backgroundColor: "{colors.primary-hover}"
   button-secondary:
+    backgroundColor: "{colors.surface-2}"
+    textColor: "{colors.tint}"
+    rounded: "{rounded.full}"
+    height: "50px"
+  button-secondary-hover:
     backgroundColor: "{colors.primary-soft}"
-    textColor: "{colors.primary-ink}"
-    rounded: "{rounded.pill}"
-    padding: "0 24px"
-    height: "48px"
   button-ghost:
-    textColor: "{colors.primary}"
-    rounded: "{rounded.pill}"
-    padding: "0 24px"
-    height: "48px"
+    textColor: "{colors.tint}"
+    rounded: "{rounded.full}"
+    height: "50px"
+  button-danger:
+    backgroundColor: "{colors.danger-soft}"
+    textColor: "{colors.danger}"
+    rounded: "{rounded.full}"
+    height: "50px"
   button-ink:
     backgroundColor: "{colors.ink}"
-    textColor: "{colors.surface}"
-    rounded: "{rounded.pill}"
-    padding: "0 24px"
-    height: "48px"
-  button-sm:
-    rounded: "{rounded.pill}"
-    padding: "0 16px"
-    height: "36px"
-  card:
+    textColor: "{colors.on-ink}"
+    rounded: "{rounded.full}"
+    height: "50px"
+  section:
     backgroundColor: "{colors.surface}"
     rounded: "{rounded.card}"
     padding: "20px"
-  text-input:
-    backgroundColor: "{colors.surface}"
+  input:
+    backgroundColor: "{colors.surface-2}"
     textColor: "{colors.ink}"
     rounded: "{rounded.input}"
-    padding: "0 16px"
     height: "48px"
-  status-pill-pending:
-    backgroundColor: "{colors.pending-soft}"
-    textColor: "{colors.pending}"
-    typography: "{typography.chip}"
-    rounded: "{rounded.pill}"
-    padding: "0 10px"
-    height: "24px"
-  status-pill-success:
+    padding: "0 16px"
+  status-success:
     backgroundColor: "{colors.success-soft}"
     textColor: "{colors.success}"
-    typography: "{typography.chip}"
-    rounded: "{rounded.pill}"
-    padding: "0 10px"
+    rounded: "{rounded.full}"
     height: "24px"
-  status-pill-failed:
+  status-pending:
+    backgroundColor: "{colors.pending-soft}"
+    textColor: "{colors.pending}"
+    rounded: "{rounded.full}"
+    height: "24px"
+  status-failed:
     backgroundColor: "{colors.danger-soft}"
     textColor: "{colors.danger}"
-    typography: "{typography.chip}"
-    rounded: "{rounded.pill}"
-    padding: "0 10px"
+    rounded: "{rounded.full}"
     height: "24px"
   segment-selected:
     backgroundColor: "{colors.primary}"
-    textColor: "{colors.surface}"
-    rounded: "{rounded.pill}"
-    padding: "0 16px"
+    textColor: "#ffffff"
+    rounded: "{rounded.full}"
     height: "36px"
   segment:
     backgroundColor: "{colors.surface}"
-    textColor: "{colors.muted}"
-    rounded: "{rounded.pill}"
-    padding: "0 16px"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.full}"
     height: "36px"
+  nav-item-active:
+    backgroundColor: "{colors.surface-2}"
+    textColor: "{colors.tint}"
+    rounded: "{rounded.nav-item}"
+    height: "40px"
+  tab-bar:
+    rounded: "{rounded.full}"
+    height: "64px"
   keypad-key:
-    backgroundColor: "{colors.primary-soft}"
+    backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
     rounded: "{rounded.key}"
     height: "56px"
-  sheet:
-    backgroundColor: "{colors.surface}"
-    rounded: "{rounded.sheet}"
-    padding: "24px"
 ---
 
-# Design System: Violet Sky
+# Design System: Inset Grouped
+
+History: replaces "Violet Sky" (2026-11-17). Direction pinned by the owner 2026-11-19: follow Apple's design system, keep violet #5B2BE0 as the app tint, system font stack, light and dark following `prefers-color-scheme`. Values above are the light appearance; the dark appearance is listed in each colour entry below and lives in the `prefers-color-scheme: dark` block of `src/index.css`.
 
 ## Overview
 
-**Creative North Star: "Money on a card, under a violet sky"**
+**Creative North Star: "The First-Party App"**
 
-Every screen is built from two layers. Above, a violet gradient band (the sky) carries the header, the page title and white chrome. Below, calm lavender ground. Between them, white cards with soft violet-tinted lift hold the money: the balance, the confirm rows, the result. The card overlaps the band, so the eye lands on it first. The grammar is the Copilot money app's (dashboard, sheet, keypad), rebuilt in Wallet's own purple; it replaced the black-and-white "Clear Ledger" world.
+Wallet should read as if Apple shipped it. The reviewer recognises the platform in the first second, stops looking at the styling, and spends their attention on the balance, the states and the rules. Everything sits on a neutral grouped ground; content lives in white (dark: near-black) inset sections with generous 24px corners and no shadow. Colour is rationed: the violet tint marks only what you can act on, and green, orange and red appear only where a money state needs naming.
 
-The mood is calm and soft, never loud. Density is moderate: one card per idea, generous section gaps, 64px list rows, 48px controls. Colour is rationed. Violet means you can act, it is selected, or it is the sky; green, amber and red appear only to state where money is.
+Depth comes from material, not from shadow. Navigation chrome (the web sidebar, the app tab bar, the nav bar once content scrolls under it) is translucent glass; content is opaque and flat. Type is the system face at Apple's sizes, so large titles, section headers and list rows carry the hierarchy without decoration.
 
-The layout has two shapes from one system. On the web (1024px and up) a floating glass sidebar sits beside a content column, and the sky band runs behind both. On the app (below 1024px) a transparent header floats over the sky with a centred title, and a white tab bar sits at the bottom with a raised violet Scan disc.
+The signature is the money itself: big tabular numerals with the ₫ set small and raised beside them. The world rejects the old violet sky band, lifted shadow cards, uppercase chips, and any brand chrome around the balance.
 
 **Key Characteristics:**
-- Lifted white cards over a violet sky band that fades into lavender ground.
-- One violet: action, selection, focus, the sky, and the balance line.
-- Status colour only for transaction states, rings and bars.
-- The đồng sign set small and raised beside the numerals.
-- Uppercase muted section labels with a quiet "Xem tất cả ›".
-- A violet keypad panel with lavender keys for every amount entry.
-- Every transaction outcome reads as one plain truth line.
+- Neutral grouped background, content in inset grouped sections (radius 24, no shadow).
+- One accent: violet tint for buttons, links, selection, focus, and the balance line.
+- Status as sentence-case tinted capsules, never uppercase chips.
+- Glass only on navigation chrome; content surfaces stay opaque.
+- System font at Apple's type ramp: 34 large title, 20 title 3, 17 body (15 on web).
+- Light and dark are both first-class and follow the OS.
 
 ## Colors
 
-One violet, a navy ink, a lavender neutral family, and three status pairs that never decorate.
+A neutral Apple grouped palette with a single violet voice and three accessible state colours.
 
 ### Primary
-- **Wallet Violet** (primary): primary buttons, links, active segments, focus outline, PIN dots, the 30-day balance line and its end tag, caret colour. White on it passes AA for all text sizes.
-- **Deep Violet** (primary-hover): hover and pressed state of primary; also the sky's top stop and the solid app header once content scrolls under it.
-- **Lavender Wash** (primary-soft): secondary buttons, hover on discs and quick-amount chips, selection highlight, keypad key face.
-- **Violet Ink** (primary-ink): text and icons on Lavender Wash and on neutral discs (shortcut icons, monograms, initials).
-- **Sky Gradient** (sky-from to sky-to): the band at the top of every screen, the keypad panel, the raised Scan disc and the logo tile. Fades through a ground-tinted mix to the ground at 86 to 100%.
+- **App Tint Violet** (`primary`, light #5b2be0 / dark #6e48f5): the tint as a fill. Primary buttons, the selected segment, the Scan button in the tab bar, the chart's change badge. White text on it (7.3:1 light, 5.4:1 dark).
+- **Tint as Ink** (`tint`, light #5b2be0 / dark #b19dff): the tint as text, icon, border and focus ring: links, "Xem tất cả", back chevrons, sidebar icons, secondary-button labels, the 30-day line chart. It splits from `primary` because no single dark value can carry white text on a fill and also read as text on #1c1c1e; the dark tint is 7.4:1 on the section surface.
+- **Pressed Violet** (`primary-hover`, light #4a1fc4 / dark #7d5bf7): hover on primary fills.
+- **Violet Wash** (`primary-soft`, light #eee9fd / dark violet at 26%): primary-toned badges, discs and callouts; hover for secondary buttons. `primary-soft-hover` steps it once.
+- **Deep Violet Text** (`primary-ink`, light #3d1a9e / dark #cbbcff): text on the violet wash and on quick-amount chips.
+
+### Tertiary (states)
+- **Settled Green** (`success`, light #1a7a35 / dark #30d158) on `success-soft` (light #e4f5e8 / dark green at 18%): "Thành công", incoming amounts.
+- **Pending Amber** (`pending`, light #a05a00 / dark #ffb340) on `pending-soft` (light #fff1dc / dark orange at 18%): "Đang xử lý", the pending balance capsule.
+- **Failure Red** (`danger`, light #c00012 / dark #ff6961) on `danger-soft` (light #fde8ea / dark red at 20%): failures, destructive actions, field errors.
+- **Badge Red** (`badge`, #c00012 in both modes): the unread count badge only, white text 6:1. It stays one red in dark mode because white on Failure Red's dark value fails contrast.
+- **Chart greens, oranges, reds** (`chart-up` #34c759 / #30d158, `chart-warn` #ff9500 / #ff9f0a, `chart-over` #ff3b30 / #ff453a): Apple's system colours, used only as large chart marks (limit rings, spending bars), never as text.
 
 ### Neutral
-- **Night Navy** (ink): all primary text, the balance, the limit line and its flag on bar charts, the ink button, toasts.
-- **Dusk Grey** (muted): secondary text, section labels, sublines, inactive segments.
-- **White** (surface): cards, sheets, inputs, the tab bar, the active sidebar item.
-- **Mist** (surface-2): the glass sidebar's fallback when blur is unsupported or transparency is reduced, icon and monogram discs, row hover, skeletons, confirm-row panels.
-- **Lavender Ground** (ground): the page under everything.
-- **Heather Line** (line): input borders, the amount underline, disabled button fill, the sheet grabber.
-- **Faint Line** (line-soft): row dividers inside cards, ring tracks.
-
-### Status
-- **Success** (success / success-soft), **Pending** (pending / pending-soft), **Danger** (danger / danger-soft): text-on-tint pairs for status pills, result marks, callouts, the pending-balance chip, errors.
-- **Chart Green / Amber / Red** (chart-up / chart-warn / chart-over): brighter fills used only in limit rings and monthly bars, where a stroke or bar carries the state rather than text.
+- **Label** (`ink`, #000000 / #ffffff): primary text; also the fill of the ink button, toast and the device-preview pill, with **On Label** (`on-ink`, #ffffff / #000000) on top.
+- **Secondary Label** (`muted`, #6c6c70 / #aeaeb2): subtitles, captions, group headers, placeholders. The accessible variant, at least 4.5:1 on ground and on sections.
+- **Section** (`surface`, #ffffff / #1c1c1e): inset grouped sections, sheets, keypad keys, unselected segments.
+- **Tertiary Fill** (`surface-2`, grey 118/118/128 at 12% / 24%): discs, avatars, bank marks, inputs, secondary buttons, hover and active rows, selected nav items, skeletons.
+- **Grouped Ground** (`ground`, #f2f2f7 / #000000): the page background behind everything.
+- **Separator** (`line`, #c6c6c8 / #38383a) and **Soft Separator** (`line-soft`, #e5e5ea / #2c2c2e): hairlines, the amount underline, ring tracks, list dividers.
 
 ### Named Rules
-**The One Violet Rule.** Violet is action, selection, focus, the sky, or the balance line. It never fills a status, a chart of limits, or a decoration.
+**The Tint Means Tap Rule.** Violet appears only on things you can act on (and the one balance line chart). A violet heading, border or decorative wash is a bug.
 
-**The Status Is Truth Rule.** Green, amber and red appear only to state where money or a limit is: transaction states, rings, bars, errors. Never as brand colour, never as category colour.
+**The Fill Versus Tint Rule.** Use `primary` when violet is a background with white text on it; use `tint` when violet is the text, icon, outline or focus ring. Never swap them; dark mode breaks the moment you do.
+
+**The Fixed Plate Rule.** QR codes and barcodes always sit black on a white plate (#ffffff, radius 12), and camera and scan surfaces are always black, in both appearances. They are physical-world surfaces, not themed ones.
 
 ## Typography
 
-**Display Font:** Be Vietnam Pro (with ui-sans-serif, system-ui)
-**Body Font:** Be Vietnam Pro, weights 400 to 800 bundled locally
+**Display Font:** System UI: SF Pro on Apple devices (`-apple-system, BlinkMacSystemFont`), Be Vietnam Pro elsewhere for full Vietnamese diacritics, then `system-ui`.
+**Body Font:** the same stack.
 
-**Character:** One humanist sans drawn for Vietnamese, so stacked diacritics never clip. Weight and size carry hierarchy; there is no second family.
+**Character:** one family at Apple's sizes and weights. Hierarchy comes from size steps and weight, not from a second face, colour or case.
 
 ### Hierarchy
-- **Balance** (700, 48px/58px web, 40px/50px app, -0.02em, tabular): the available balance on the hero card only. Steps down to Amount when the formatted figure exceeds 11 characters on the app.
-- **Amount** (700, 32px/40px, -0.02em, tabular): the amount input and the result amount.
-- **Headline** (700, 28px/36px, tight): page titles in white on the sky (web); on the app the centred header title (17px, 22px for "Wallet") replaces it.
-- **Title** (700, 17px to 18px): card titles and sheet titles.
-- **Body** (400 to 500, 15px/22px): everything else; list titles at 500, amounts in rows at 600 tabular.
-- **Small** (13px/18px): sublines, hints, field labels (500), errors.
-- **Label** (700, 13px/18px, 0.06em, uppercase, muted): section labels and the amount-field label.
-- **Chip** (700, 11px/16px, 0.04em, uppercase): status pills, badges, the sample-data badge.
+- **Balance** (700, 48/58 web; 40/50 app as `balance-app`; tabular): the available balance on Home.
+- **Amount Display** (700, 32/40, tabular): amounts in flows and on result screens.
+- **Large Title** (700, 34/41): the title of every tab root and web page. On the app, Home pairs it with the app icon and "Wallet".
+- **Title 3** (600, 20/25): section headers above inset sections, sheet titles.
+- **Body** (400, 17/22 on app below 1024px; 15/20 on web): everything else. Row titles take 500, amounts in rows take 600 tabular.
+- **Footnote** (400, 13/18): row subtitles, field hints and errors, field labels (500).
+- **Status Capsule** (600, 13/16): pills and badges, sentence case.
+- **Group Header** (`label-caps`, 400, 13/18, uppercase, secondary label): the group header above an inset section, outside it, left-aligned with the section's content inset (16px), Apple's footnote caps. The web sidebar's group names use 12px semibold sentence case instead.
+- **Tab Label** (500, 10/12; 600 when active): the app tab bar.
 
 ### Named Rules
-**The Tabular Money Rule.** Every money figure uses tabular numerals; columns of amounts never jitter.
+**The Raised Dong Rule.** Beside display numerals the ₫ sits at 0.55em, raised 0.42em, semibold, with a 0.12em gap; screen readers hear "đồng". Inline in running text the plain "₫" stays.
 
-**The Raised Dong Rule.** The đồng sign sits beside the figure at 55% size, raised 0.42em, weight 600, aria-hidden with "đồng" read to screen readers. In the amount input it is a smaller muted sign top-aligned to the digits.
+**The One Uppercase Rule.** The group header is the only uppercase text in the system. Capsules, buttons, segments and section titles are sentence case.
 
 ## Layout
 
-App (below 1024px): a single column, max 560px, 20px side gutter, a sky band 276px tall (240px in flows) behind a 56px transparent header that turns solid Deep Violet on scroll. Tab-root screens end above a 64px tab bar; flow screens hide the tab bar and pin their footer actions to a white sheet-topped bar.
+The app layout (below 1024px) is a single 560px-max column with 16px gutters. Tab roots show a large title in the content; pushed screens show an inline title in a sticky nav bar that is transparent at rest and gains the bar material once content scrolls. A floating glass tab bar (64px tall, 12px from the sides and bottom, 536px max) carries five items; a gradient of the ground fades content out beneath it, and pages reserve 128px of bottom padding.
 
-Web (1024px and up): a glass sidebar inset 12px from the window (240px, or a 76px icon rail when collapsed), then a content column (max 768px, 48px side padding) under a 300px sky band and a 64px header carrying notifications and the account menu. Flows sit in a 560px column inside it.
+The web layout (1024px and up) puts a floating glass sidebar inset 12px from the window, 240px wide, collapsible to a 76px icon rail that is remembered per viewer. Its footer holds the account (avatar and short name, menu opening upward), notifications with a red count badge, and demo controls. There is no toolbar above web content. Content sits in a 768px main column with 48px gutters and 56px top padding; pages inside it cap at 560px.
 
-Rhythm: sections are 32px apart (48px on web), section label 12px above its card. Cards pad 20px (24px in flows, 32px horizontal on web). List rows are at least 64px tall; tap targets at least 44px.
+Sections stack with 32px (app) or 40px (web) between them, each preceded by a Title 3 header with an optional tint link on the right. Section padding is 20px on app, 24px on web. List rows are at least 64px tall with a 12px gap between leading disc and text.
 
-**The Card Over Sky Rule.** The first card on a screen overlaps the sky band; the band never holds content of its own beyond titles, short white descriptions and header chrome.
+Flows use the same rhythm. On web: a tint "‹ Quay lại" link, a large title with a CloseButton beside it, then the step. On app: a nav bar with BackButton and CloseButton. A step's content is wrapped in one inset section only when it has no sections of its own. The footer is sticky on a blurred ground with a hairline above. The number keypad stands outside the section on the grouped background, as the system number pad does.
 
 ## Elevation & Depth
 
-Lifted, soft and violet-tinted. Cards and inactive segments share one shadow; floating things (sheets, menus, toasts, the Scan disc) take a deeper one. The tab bar and flow footers cast upward.
+Flat by default, with material for chrome. Content surfaces carry no shadow; they separate from the ground by tone alone (white on #f2f2f7, #1c1c1e on black). Depth is reserved for things that float over content.
 
 ### Shadow Vocabulary
-- **Card** (`0 1px 2px rgb(28 24 64 / 0.04), 0 14px 36px -14px rgb(74 31 196 / 0.22)`): every card, neutral callout, inactive segment and active sidebar item.
-- **Float** (`0 12px 32px -10px rgb(28 24 64 / 0.28)`): sheets, dialogs, dropdowns, toasts, the raised Scan disc.
-- **Bar** (`0 -8px 24px -12px rgb(28 24 64 / 0.18)`): the tab bar and sticky flow footers.
-- **Keycap** (`0 1px 0 rgb(28 24 64 / 0.18)`): keypad keys only; the key edge of a phone keyboard.
+- **Float** (light `0 10px 30px -8px rgb(0 0 0 / 0.18), 0 1px 3px rgb(0 0 0 / 0.06)`; dark `0 10px 30px -8px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.08)`): sheets, dialogs, menus, toasts, the device-preview pill.
+- **Glass** (translucent white at 86% / dark #252528 at 82%, `blur(24px) saturate(180%)`, inner highlight plus a soft drop): the web sidebar and app tab bar only. Falls back to the solid section colour without backdrop-filter support or under reduced transparency.
+- **Bar** (ground at 80%, `blur(20px) saturate(180%)`, 0.5px separator below): the nav bar once content scrolls under it.
+- **Key** (`0 1px 0 rgb(0 0 0 / 0.12)`): keypad keys only, the system key edge.
 
 ### Named Rules
-**The Tinted Lift Rule.** Shadows are tinted navy or violet, never neutral black, and never a hard offset outside the keycap edge.
+**The Glass Is Chrome Rule.** Translucent material belongs to navigation (sidebar, tab bar, scrolled nav bar, flow footer). Content, sections, cards and sheets are opaque.
+
+**The No Lift Rule.** Grouped sections never take a shadow. If a section needs more separation, it is in the wrong place.
 
 ## Shapes
 
-Soft and round. Cards 24px; sheets and the keypad panel 28px; callouts and confirm-row panels 20px; inputs and keypad keys 14px; hoverable rows 12px. Every button, chip, segment, badge, disc and nav item is a full pill or circle. Borders are rare: inputs carry a 1px Heather Line; cards carry none.
+Continuous, generous rounding. Inset sections and callouts are 24px; the web sidebar 28px; app sheets 34px at the top (web dialogs 24px); inputs, nav items, QR plates and the Home app icon 9 to 12px; keypad keys 14px. Every button, capsule, segment, disc, avatar, tab-bar item and the tab bar itself is a full capsule or circle. Borders are rare: hairline separators inside lists, a 2px underline under the amount entry, a 1px danger border on an invalid input.
 
 ## Components
 
 ### Buttons
-- **Shape:** full pill; 48px tall with 24px padding, or 36px with 16px.
-- **Primary:** Wallet Violet with white text, 600 weight; hover Deep Violet; disabled Heather Line fill with muted text.
-- **Secondary:** Lavender Wash with Violet Ink text. **Ghost:** violet text, Lavender Wash on hover.
-- **Ink:** Night Navy with white; the confirm button for destructive actions, so red stays a status.
-- **Danger:** danger-soft fill with danger text, for in-place destructive actions.
-- **Loading:** a 16px spinner in currentColor, aria-busy.
+Calm, platform capsules.
+- **Shape:** full capsule; 50px tall on app at 17px semibold, 44px on web at 15px; a small size is 32px. Labels never wrap.
+- **Primary:** violet fill, white label; hover steps to the pressed violet; pressing drops to 70% opacity.
+- **Secondary:** tertiary fill with a tint label; hover to the violet wash.
+- **Ghost:** no fill, tint label; hover shows the tertiary fill.
+- **Danger:** red wash with red label. **Ink:** label-coloured fill with on-label text, used for the destructive confirm in sheets.
+- **Disabled:** tertiary fill with secondary-label text.
 
-### Chips and Pills
-- **Status pill:** 24px pill, chip type, uppercase, tinted fill with its own text colour. Pending amber, success green, failed red, refunded Mist with Violet Ink.
-- **Quick amounts:** 36px Mist pills with Violet Ink tabular figures, Lavender Wash on hover.
-- **Segmented tabs:** 36px pills; selected is Wallet Violet with white, others white with card shadow and muted text.
+### Status capsules
+- **Style:** 24px capsule, 10px side padding, 13px semibold, sentence case, state colour on its soft wash. Refunded and neutral badges use the tertiary fill with label text.
+- **Pending balance:** the same capsule larger on Home, with a clock glyph and the amount.
 
-### Cards / Containers
+### Inset sections
 - **Corner Style:** 24px.
-- **Background:** White.
-- **Shadow Strategy:** Card.
-- **Internal Padding:** 20px; rows inside are separated by Faint Line dividers.
-- **Callout:** 20px corners, 20px padding, tinted by tone (pending, danger, primary) or a white neutral card.
+- **Background:** Section colour, opaque.
+- **Shadow Strategy:** none (see Elevation).
+- **Internal Padding:** 20px app, 24px web; list rows inside are separated by soft separators.
+- **Header:** Title 3 outside and above the section, with an optional tint link ("Xem tất cả").
 
 ### Inputs / Fields
-- **Style:** 48px, white, 1px Heather Line, 14px corners; label 13px 500 above, hint or error 13px below.
-- **Focus:** 2px Wallet Violet outline.
-- **Error:** border and message in danger; the message is an alert.
+- **Style:** filled, borderless, 12px radius, 48px tall (44px web), 17px text (15px web), tertiary fill, secondary-label placeholder.
+- **Focus:** 2px tint outline. Caret is tint.
+- **Error:** 1px danger border, footnote error in danger below, announced as an alert.
+- **Label:** footnote 500 above the field; hint in secondary label below.
 
 ### Navigation
-- **Web sidebar:** floating glass panel (`glass` utility: white 72%, blur 24px + saturate 180%, white inner rim, violet drop shadow), radius 28, inset 12px from the window edges, sticky. 44px pill items; active item is a white pill with card shadow and Violet Ink semibold text. Group headings are 11px caps in Violet Ink (Muted fails contrast over glass on the sky). A toggle beside the logo collapses it to a 76px icon rail (labels become `sr-only` + tooltip, groups become a hairline); the choice is kept in localStorage per viewer.
-- **App header:** transparent over the sky, centred white title, 44px icon buttons either side.
-- **Tab bar:** white, five slots, with the middle Scan as a 56px raised disc filled with the sky gradient, float shadow and a 4px white ring. Unread counts are navy pills.
+- **App tab bar:** floating glass capsule, five items; the active item is a tertiary-fill pill with tint icon and label; Scan is a 52px filled violet circle in the middle; the unread count is a red capsule over the Notifications icon.
+- **App nav bar:** sticky, transparent at rest, bar material on scroll; inline title fades in; BackButton is a 28px tint chevron in a 44px target; CloseButton is a 30px tertiary-fill circle with an xmark in a 44px target.
+- **Web sidebar:** floating glass panel; items 40px with 12px radius; tint icons at rest; the selected item takes the tertiary fill with tint text and icon in semibold; collapse toggle top right.
 
-### Signature: Balance Card
-Centred available-balance label with a hide toggle, the Balance figure with the raised đồng, a pending-amount chip in Pending tint linking to history, then a 30-day line in Wallet Violet (2.5px, 18% fading area, white end dot, violet end tag) with "30 ngày trước" and "Hôm nay" beneath.
+### Segmented filters
+A horizontally scrolling row of 36px capsules with a fade on the trailing edge. Selected: violet fill, white label. Unselected: Section fill, label text, hover to tertiary fill. Counts follow the label in a lighter tone.
 
-### Signature: Keypad
-A 28px sky-gradient panel holding a 3 by 4 grid of 56px lavender keys (14px corners, keycap edge, 24px digits, a 000 key and a delete key), placed below the card that holds the Amount field. The PIN pad uses the same lavender keys on a Lavender Wash panel, with violet PIN dots.
+### Sheets
+Bottom sheet on app (34px top radius, grabber 36 by 5 in separator colour, slides up in 240ms on `cubic-bezier(0.16,1,0.3,1)`); centred 440px dialog on web (24px radius, fades in 150ms). Title 3 title, CloseButton top right, Float shadow, 40% black scrim.
 
-### Signature: Truth Line and Result
-A result shows a 64px status disc (tinted check, clock or cross), the outcome heading, the Amount, then confirm rows on a Mist panel whose first row is the truth line: one plain sentence of where the money is, such as "Đang xử lý · dự kiến xong trước 14:30" or "Không thành công · Tiền chưa bị trừ".
+### Amount entry and keypad (signature)
+The amount sits centred at Amount Display size over a 2px separator underline, with the ₫ in secondary label beside it and a footnote hint or error below. Quick amounts are 36px tertiary-fill capsules with deep-violet tabular numerals. On app the keypad is a 3 by 4 grid of 56px Section-colour keys with 14px corners and the Key edge, standing on the grouped ground.
 
-### Charts
-- **Limit rings:** 9-unit stroke on a Faint Line track, rounded cap, toned Chart Green under 75%, Amber from 75%, Red from 95%.
-- **Monthly bars:** Chart Green (current month solid, past at 70%), Chart Red over the limit; a 2px Night Navy limit line with a navy flag label.
+### Toast
+One message at a time: a label-coloured capsule with on-label 14px semibold text and the Float shadow, above the tab bar on app and 32px from the bottom on web, in a polite live region.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** put money on a white card overlapping the sky band, with the Card shadow and 24px corners.
-- **Do** set every amount in tabular numerals with the raised đồng sign.
-- **Do** state every transaction outcome as a truth line, and colour it only with its status pair.
-- **Do** label sections with the uppercase Label style and a muted "Xem tất cả ›" action.
-- **Do** use pills for every button, chip and segment.
-- **Do** take amounts through the violet keypad panel on the app.
+- **Do** put content in inset sections (radius 24, no shadow) on the grouped ground, and give each group a Title 3 header outside the section.
+- **Do** use `primary` for violet fills with white text and `tint` for violet text, icons, outlines and focus.
+- **Do** name states with sentence-case tinted capsules in the accessible state colours on their soft washes.
+- **Do** set the ₫ small and raised beside display numerals, with "đồng" for screen readers.
+- **Do** keep QR codes and barcodes black on a white plate, and camera and scan surfaces black, in both appearances.
+- **Do** check every new pairing in both appearances; the dark values are the separate half of the token, not an afterthought.
+- **Do** give translucent material a solid fallback for reduced transparency.
 
 ### Don't:
-- **Don't** use violet for status, categories or decoration; it is action, selection, focus, the sky and the balance line only.
-- **Don't** use green, amber or red outside transaction states, rings, bars and errors.
-- **Don't** confirm a destructive action with a red button; use the ink button.
-- **Don't** add hex values outside the tokens; tints come from the soft tokens.
-- **Don't** return to black-and-white ledger surfaces or a super-app icon grid.
+- **Don't** reintroduce the violet sky band, gradient headers or any brand chrome around the balance.
+- **Don't** lift sections or cards with shadows; shadows belong to floating sheets, menus and toasts.
+- **Don't** put glass on content; it is for the sidebar, tab bar and scrolled nav bar.
+- **Don't** set chips, capsules, buttons or section titles in uppercase; the group header is the only uppercase text.
+- **Don't** use violet for decoration, headings or borders that are not interactive.
+- **Don't** add a toolbar above the web content; account, notifications and demo controls live in the sidebar footer.
+- **Don't** use the chart system colours as text; they fail contrast as type.

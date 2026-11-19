@@ -64,7 +64,7 @@ export function ResultBlock({ tone, heading, amount, children, actions }: {
     <div className="flex flex-col items-center pt-6 text-center">
       <span aria-hidden className={cx('inline-flex size-16 items-center justify-center rounded-full animate-[fade-in_200ms_ease-out]', cls)}><Icon size={32} strokeWidth={2.25} /></span>
       <div role="status" aria-live="polite" className="w-full">
-        <p className="mt-4 text-[18px] leading-[26px] font-bold">{heading}</p>
+        <p className="mt-4 text-[17px] leading-[26px] font-bold">{heading}</p>
         {amount ? <p className="mt-2 break-words">{amount}</p> : null}
         {children ? <div className="mx-auto mt-3 flex max-w-[44ch] flex-col gap-1 text-muted">{children}</div> : null}
       </div>

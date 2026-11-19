@@ -77,7 +77,7 @@ function Timeline({ steps }: { steps: Step[] }) {
             <p className={cx('font-semibold', s.tone === 'current' && 'text-pending', s.tone === 'failed' && 'text-danger', s.tone === 'upcoming' && 'font-normal text-muted')}>
               {s.label}{s.tone === 'upcoming' ? <span className="sr-only"> (chưa đến)</span> : null}
             </p>
-            {s.lines.map((l) => <p key={l} className="text-[14px] leading-5 text-muted">{l}</p>)}
+            {s.lines.map((l) => <p key={l} className="text-[15px] leading-5 text-muted">{l}</p>)}
           </div>
         </li>
       ))}
@@ -108,14 +108,14 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
     <div className="pt-2">
       <style>{PRINT_CSS}</style>
       <div className="mb-4 flex items-center justify-between gap-2 print:hidden">
-        <h1 tabIndex={-1} data-page-title className="text-[24px] leading-[32px] font-bold outline-none">Biên lai</h1>
+        <h1 tabIndex={-1} data-page-title className="text-[22px] leading-[28px] font-bold outline-none">Biên lai</h1>
         {layout === 'app' ? <button type="button" onClick={close} aria-label="Đóng" className="inline-flex size-11 items-center justify-center rounded-full hover:bg-surface-2"><X size={22} strokeWidth={1.75} aria-hidden /></button> : null}
       </div>
       <article id="receipt" aria-label="Biên lai giao dịch" className="mx-auto max-w-[420px] card p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-[18px] font-bold">Biên lai giao dịch</p>
-            <p className="text-[14px] font-extrabold tracking-tight">Wallet</p>
+            <p className="text-[17px] font-bold">Biên lai giao dịch</p>
+            <p className="text-[15px] font-extrabold tracking-tight">Wallet</p>
           </div>
           <SampleBadge />
         </div>
@@ -125,8 +125,8 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
             <span aria-hidden className={cx('size-2 rounded-full', t.status === 'pending' ? 'bg-pending' : t.status === 'success' ? 'bg-success' : 'bg-ink')} />
             {STATUS_LABEL[t.status]}
           </p>
-          {t.status === 'pending' ? <p className="mt-1 text-[14px] text-pending">Biên lai này chưa phải xác nhận cuối cùng</p> : null}
-          {t.status === 'refunded' && refundTx ? <p className="mt-1 text-[14px]">Đã hoàn {formatVnd(refundTx.amount)} lúc {fmtDateTime(refundTx.createdAt)}</p> : null}
+          {t.status === 'pending' ? <p className="mt-1 text-[15px] text-pending">Biên lai này chưa phải xác nhận cuối cùng</p> : null}
+          {t.status === 'refunded' && refundTx ? <p className="mt-1 text-[15px]">Đã hoàn {formatVnd(refundTx.amount)} lúc {fmtDateTime(refundTx.createdAt)}</p> : null}
         </div>
         <ConfirmRows rows={[
           ['Mã giao dịch', <span className="tnum">{t.id}</span>],
@@ -210,10 +210,10 @@ export default function TransactionPage() {
   const wrongRecipient = t.type === 'p2p_out' && t.status === 'success' ? (
     <section aria-labelledby="wr-title" className="rounded-[16px] bg-surface-2 p-4">
       <h2 id="wr-title" className="font-semibold">Chuyển nhầm người nhận?</h2>
-      <p className="mt-1 text-[14px] leading-5">Giao dịch chuyển tiền đã thành công không thể hủy hoặc thu hồi. Hãy nhắn người nhận để đề nghị chuyển trả.</p>
+      <p className="mt-1 text-[15px] leading-5">Giao dịch chuyển tiền đã thành công không thể hủy hoặc thu hồi. Hãy nhắn người nhận để đề nghị chuyển trả.</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {/* Placeholder deep link (rules.md#history-and-support): no chat in P0. */}
-        <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-4 text-[14px] font-semibold text-on-ink no-underline"><MessageCircle size={18} strokeWidth={1.75} aria-hidden />Nhắn người nhận</a>
+        <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-4 text-[15px] font-semibold text-on-ink no-underline"><MessageCircle size={18} strokeWidth={1.75} aria-hidden />Nhắn người nhận</a>
         {!request ? <ButtonLink to={supportTo} variant="secondary" className="h-11">Liên hệ hỗ trợ</ButtonLink> : null}
       </div>
     </section>
@@ -231,7 +231,7 @@ export default function TransactionPage() {
           <Money amount={rowAmount(t)} sign={t.direction} />
         </p>
         <StatusPill status={t.status} />
-        <span className="text-[14px] text-muted">{t.status === 'success' ? fmtDateTime(t.updatedAt) : truthLine(t)}</span>
+        <span className="text-[15px] text-muted">{t.status === 'success' ? fmtDateTime(t.updatedAt) : truthLine(t)}</span>
       </header>
 
       <div className="mt-6 flex flex-col gap-4">
@@ -264,9 +264,9 @@ export default function TransactionPage() {
         ]} />
 
         {request ? (
-          <p className="text-[14px]">Đã gửi yêu cầu hỗ trợ ngày {fmtDateTime(request.createdAt).split(' · ')[1]} · {SUPPORT_STATUS_LABEL[request.status]}</p>
+          <p className="text-[15px]">Đã gửi yêu cầu hỗ trợ ngày {fmtDateTime(request.createdAt).split(' · ')[1]} · {SUPPORT_STATUS_LABEL[request.status]}</p>
         ) : !inWindow ? (
-          <p className="text-[14px] text-muted">Giao dịch đã quá {config.supportWindowDays} ngày; yêu cầu hỗ trợ trực tuyến không còn mở.</p>
+          <p className="text-[15px] text-muted">Giao dịch đã quá {config.supportWindowDays} ngày; yêu cầu hỗ trợ trực tuyến không còn mở.</p>
         ) : null}
 
         {layout === 'web' ? <>{wrongRecipient}{actions}</> : null}

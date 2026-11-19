@@ -70,8 +70,8 @@ export default function WithdrawFlow() {
             <span className="font-bold">Tổng tiền trừ từ ví</span>
             <Money amount={draft.amount + f} className="font-bold" />
           </div>
-          <p className="mt-4 text-[14px] text-muted">{authLine('withdraw', draft.amount)}</p>
-          {commit.busy ? <p role="status" className="mt-2 text-[14px] text-muted">Đang gửi yêu cầu…</p> : null}
+          <p className="mt-4 text-[15px] text-muted">{authLine('withdraw', draft.amount)}</p>
+          {commit.busy ? <p role="status" className="mt-2 text-[15px] text-muted">Đang gửi yêu cầu…</p> : null}
         </FlowFrame>
         {commit.sheet}
         {dialog}
@@ -89,7 +89,7 @@ export default function WithdrawFlow() {
   return (
     <>
       <FlowFrame title="Rút tiền" onClose={close} footer={<>
-        {draft.amount > 0 && !error ? <p aria-live="polite" className={cx('text-[14px]', feeTone)}>{feeText(draft.amount)}</p> : null}
+        {draft.amount > 0 && !error ? <p aria-live="polite" className={cx('text-[15px]', feeTone)}>{feeText(draft.amount)}</p> : null}
         <Button block disabled={!draft.amount || !!error} onClick={() => go('confirm')}>Tiếp tục</Button>
       </>}>
         <SourcePicker label="Về" value={draft.sourceId} onChange={(id) => setDraft({ sourceId: id })} />
@@ -109,7 +109,7 @@ function WithdrawResult({ t }: { t: Transaction }) {
   const w = useWorld()
   const src = w.sources.find((s) => s.id === t.sourceId)
   const name = src ? `${bankById(src.bankId).name} ${mask4(src.last4)}` : 'tài khoản của bạn'
-  const amount = <Money amount={t.amount} className={t.amount >= 100_000_000 ? 'text-[26px] leading-[34px] font-bold' : 'amount-display'} />
+  const amount = <Money amount={t.amount} className={t.amount >= 100_000_000 ? 'text-[28px] leading-[34px] font-bold' : 'amount-display'} />
   if (t.status === 'pending')
     return (
       <ResultBlock tone="pending" heading="Đang xử lý" amount={amount}>

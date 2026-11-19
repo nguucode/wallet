@@ -135,7 +135,7 @@ function WebShell({ children }: { children: ReactNode }) {
           <AccountMenu expanded={!collapsed} />
           <Link to="/notifications" title={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} aria-label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} className={cx('relative inline-flex size-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-2', collapsed && 'order-first', 'text-tint')}>
             <Bell size={20} strokeWidth={1.75} aria-hidden />
-            {unread ? <span className="absolute top-1 right-0.5 min-w-[18px] rounded-full bg-danger px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum">{unread > 9 ? '9+' : unread}</span> : null}
+            {unread ? <span className="absolute top-1 right-0.5 min-w-[18px] rounded-full bg-badge px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum">{unread > 9 ? '9+' : unread}</span> : null}
           </Link>
           <span className={cx('shrink-0', collapsed && 'order-first')}><DemoControlsButton compact /></span>
         </div>
@@ -173,7 +173,7 @@ function TabBar() {
               <Link to={t.route!} aria-current={active ? 'page' : undefined} className={cx('relative flex h-full flex-col items-center justify-center gap-0.5 rounded-full no-underline', active ? 'bg-surface-2 text-tint' : 'text-ink')}>
                 <Icon size={22} strokeWidth={active ? 2.25 : 1.75} aria-hidden />
                 <span className={cx('text-[10px] leading-3', active ? 'font-semibold' : 'font-medium')}>{t.label}{t.badge && unread ? <span className="sr-only">, {unread} chưa đọc</span> : null}</span>
-                {t.badge && unread ? <span className="absolute top-1 left-1/2 ml-1 min-w-[18px] rounded-full bg-danger px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum" aria-hidden>{unread > 9 ? '9+' : unread}</span> : null}
+                {t.badge && unread ? <span className="absolute top-1 left-1/2 ml-1 min-w-[18px] rounded-full bg-badge px-1 text-center text-[11px] leading-[18px] font-semibold text-white tnum" aria-hidden>{unread > 9 ? '9+' : unread}</span> : null}
               </Link>
             </li>
           )
@@ -225,7 +225,7 @@ export function ViewSwitchFab() {
   return (
     <button
       onClick={() => nav(target)}
-      className={cx("fixed bottom-6 z-40 inline-flex", onDevice ? "right-[404px]" : "right-6") + "  h-12 items-center gap-2 rounded-full bg-ink pr-5 pl-4 text-[14px] font-semibold text-on-ink shadow-[var(--shadow-float)] hover:bg-ink/85"}
+      className={cx("fixed bottom-6 z-40 inline-flex", onDevice ? "right-[404px]" : "right-6") + "  h-12 items-center gap-2 rounded-full bg-ink pr-5 pl-4 text-[15px] font-semibold text-on-ink shadow-[var(--shadow-float)] hover:bg-ink/85"}
     >
       {onDevice ? <Monitor size={18} strokeWidth={2} aria-hidden /> : <Smartphone size={18} strokeWidth={2} aria-hidden />}
       {onDevice ? 'Xem bản web' : 'Xem bản điện thoại'}

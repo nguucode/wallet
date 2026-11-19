@@ -154,7 +154,7 @@ export function Disc({ children, tone = 'neutral', size = 48 }: { children: Reac
 export function Avatar({ name, size = 44 }: { name: string; size?: number }) {
   const parts = name.trim().split(/\s+/)
   const initials = ((parts.length > 1 ? parts[parts.length - 2][0] : '') + parts[parts.length - 1][0]).toUpperCase()
-  return <Disc size={size}><span className="text-[14px] font-semibold text-ink/80">{initials}</span></Disc>
+  return <Disc size={size}><span className="text-[15px] font-semibold text-ink/80">{initials}</span></Disc>
 }
 
 /** Neutral bank monogram: real bank names as text, never logos (mock-data.md). */
@@ -206,7 +206,7 @@ export function Callout({ tone = 'neutral', title, children, action }: { tone?: 
   return (
     <div role={tone === 'danger' ? 'alert' : 'status'} className={cx('rounded-[var(--radius-card)] p-5', t)}>
       <p className="font-semibold">{title}</p>
-      {children ? <div className="mt-1 text-[14px] leading-[20px]">{children}</div> : null}
+      {children ? <div className="mt-1 text-[15px] leading-[20px]">{children}</div> : null}
       {action ? <div className="mt-3">{action}</div> : null}
     </div>
   )
@@ -244,7 +244,7 @@ export function Segmented<T extends string>({ value, options, onChange, label }:
           role="tab"
           aria-selected={o.value === value}
           onClick={() => onChange(o.value)}
-          className={cx('h-9 shrink-0 rounded-full px-4 text-[14px] font-semibold whitespace-nowrap transition-colors', o.value === value ? 'bg-primary text-white' : 'bg-surface text-ink hover:bg-surface-2')}
+          className={cx('h-9 shrink-0 rounded-full px-4 text-[15px] font-semibold whitespace-nowrap transition-colors', o.value === value ? 'bg-primary text-white' : 'bg-surface text-ink hover:bg-surface-2')}
         >
           {o.label}
           {o.count !== undefined ? <span className={cx('ml-1.5 tnum', o.value === value ? 'text-white/80' : 'text-muted')}>{o.count}</span> : null}
@@ -329,7 +329,7 @@ export function useToast(ms = 3000) {
   }, [msg, ms])
   const node = (
     <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-24 z-50 flex justify-center px-4 lg:bottom-8 print:hidden">
-      {msg ? <span className="max-w-[440px] rounded-full bg-ink px-5 py-3 text-center text-[14px] font-semibold text-on-ink shadow-[var(--shadow-float)]">{msg}</span> : null}
+      {msg ? <span className="max-w-[440px] rounded-full bg-ink px-5 py-3 text-center text-[15px] font-semibold text-on-ink shadow-[var(--shadow-float)]">{msg}</span> : null}
     </div>
   )
   return { show: (m: string) => setMsg(m), node }

@@ -48,7 +48,7 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
             <button
               key={k} type="button" tabIndex={-1} disabled={disabled}
               onClick={() => (k === 'del' ? setPin((p) => p.slice(0, -1)) : push(k))}
-              className="flex h-14 items-center justify-center rounded-[14px] bg-surface-2 text-[24px] font-semibold text-ink hover:bg-primary-soft active:bg-primary-soft-hover disabled:opacity-40"
+              className="flex h-14 items-center justify-center rounded-[14px] bg-surface-2 text-[28px] font-normal text-ink hover:bg-primary-soft active:bg-primary-soft-hover disabled:opacity-40"
             >
               {k === 'del' ? <Delete size={22} strokeWidth={1.75} /> : k}
             </button>
@@ -72,7 +72,7 @@ function FaceScan({ onDone, reason }: { onDone: (ok: boolean) => void; reason: s
   }
   return (
     <div className="text-center">
-      <p className="text-[14px] text-muted">{reason}</p>
+      <p className="text-[15px] text-muted">{reason}</p>
       <div className="relative mx-auto my-6 size-44">
         <svg viewBox="0 0 100 100" className="absolute inset-0" aria-hidden>
           <circle cx="50" cy="50" r="46" fill="none" stroke="var(--color-line)" strokeWidth="3" />
@@ -80,7 +80,7 @@ function FaceScan({ onDone, reason }: { onDone: (ok: boolean) => void; reason: s
         </svg>
         <span className="absolute inset-4 flex items-center justify-center rounded-full bg-surface-2"><ScanFace size={64} strokeWidth={1.25} aria-hidden className="text-muted" /></span>
       </div>
-      <p role="status" aria-live="polite" className="min-h-10 text-[14px]">
+      <p role="status" aria-live="polite" className="min-h-10 text-[15px]">
         {phase === 'ready' && 'Đưa khuôn mặt vào giữa khung tròn, giữ máy ngang tầm mắt.'}
         {phase === 'scanning' && 'Đang xác thực…'}
         {phase === 'failed' && <span className="text-danger">Khuôn mặt không khớp với CCCD. Còn {config.face.maxRetries - attempt + 1} lần thử.</span>}
@@ -120,7 +120,7 @@ export function AuthSheet({ open, onOpenChange, method, amount, onSuccess }: {
           <button type="button" onClick={() => setTimeout(() => onSuccess('device_biometric'), 500)} className="mx-auto my-6 flex size-24 items-center justify-center rounded-full bg-primary-soft text-primary-ink" aria-label="Xác thực bằng sinh trắc học thiết bị">
             <Fingerprint size={48} strokeWidth={1.5} aria-hidden />
           </button>
-          <p className="text-[14px] text-muted">Chạm để dùng vân tay hoặc Face ID của điện thoại.</p>
+          <p className="text-[15px] text-muted">Chạm để dùng vân tay hoặc Face ID của điện thoại.</p>
           <Button variant="ghost" className="mt-4" onClick={() => setUsePin(true)}>Dùng mã PIN</Button>
         </div>
       ) : locked ? (

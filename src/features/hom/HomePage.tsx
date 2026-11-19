@@ -146,7 +146,7 @@ function BillsDue({ loaded, guard }: { loaded: boolean; guard: Guard }) {
   const due = selectBillsDue(w.bills, now())
   if (loaded && !due.length) return null
   return (
-    <Section title="Hóa đơn sắp đến hạn" action={loaded ? <Link to="/bills" className="text-[14px] font-semibold text-tint">Xem tất cả</Link> : undefined}>
+    <Section title="Hóa đơn sắp đến hạn" action={loaded ? <Link to="/bills" className="text-[15px] font-semibold text-tint">Xem tất cả</Link> : undefined}>
       <Card className="px-4">
         {!loaded ? <SkeletonRow /> : (
           <ul className="divide-y divide-line-soft">
@@ -195,7 +195,7 @@ function RecentRecipients({ loaded, guard }: { loaded: boolean; guard: Guard }) 
   const list = selectRecentRecipients(w.transactions, 8)
   if (loaded && !list.length) return null
   return (
-    <Section title="Người nhận gần đây" action={<Link to="/transfer" className="text-[14px] font-semibold text-tint">Chuyển tiền</Link>}>
+    <Section title="Người nhận gần đây" action={<Link to="/transfer" className="text-[15px] font-semibold text-tint">Chuyển tiền</Link>}>
       <ul className="-mx-5 flex gap-2 overflow-x-auto px-3 pb-1 lg:mx-0 lg:overflow-visible lg:px-0">
         {!loaded
           ? Array.from({ length: 4 }, (_, i) => <li key={i} className="w-[72px] shrink-0"><Skeleton className="mx-auto size-14 rounded-full" /></li>)
@@ -277,7 +277,7 @@ function RecentActivity({ loaded, guard }: { loaded: boolean; guard: Guard }) {
       </ul>
     )
   return (
-    <Section title="Hoạt động gần đây" action={recent.length ? <Link to="/history" className="text-[14px] font-semibold text-tint">Xem tất cả</Link> : undefined}>
+    <Section title="Hoạt động gần đây" action={recent.length ? <Link to="/history" className="text-[15px] font-semibold text-tint">Xem tất cả</Link> : undefined}>
       <Card>{body}</Card>
     </Section>
   )

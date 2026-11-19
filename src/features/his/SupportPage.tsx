@@ -33,7 +33,7 @@ export default function SupportPage() {
       <ScreenTitle>Trợ giúp</ScreenTitle>
 
       <Card className="p-5">
-        <h2 className="text-[18px] leading-[26px] font-bold">Có vấn đề với một giao dịch?</h2>
+        <h2 className="text-[17px] leading-[26px] font-bold">Có vấn đề với một giao dịch?</h2>
         <p className="mt-1 text-muted">Mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ.</p>
         <ButtonLink to="/history" block={layout === 'app'} className="mt-4">Mở Lịch sử</ButtonLink>
       </Card>
@@ -63,7 +63,7 @@ export default function SupportPage() {
                             <ChevronDown size={18} strokeWidth={1.75} aria-hidden className={cx('shrink-0 transition-transform duration-150', qOpen && 'rotate-180')} />
                           </button>
                         </h4>
-                        <div id={`a-${q.slug}`} hidden={!qOpen} className="space-y-2 pr-4 pb-4 pl-6 text-[14px] leading-[20px]">
+                        <div id={`a-${q.slug}`} hidden={!qOpen} className="space-y-2 pr-4 pb-4 pl-6 text-[15px] leading-[20px]">
                           {q.answer.map((p) => <p key={p}>{p}</p>)}
                           {q.links?.length ? (
                             <p className="flex flex-wrap gap-x-4">
