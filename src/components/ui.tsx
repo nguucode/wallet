@@ -271,25 +271,29 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
           onEscapeKeyDown={(e) => !dismissible && e.preventDefault()}
           {...(description ? {} : { 'aria-describedby': undefined })}
           className={cx(
-            'fixed z-50 bg-surface shadow-[var(--shadow-float)] focus:outline-none',
+            // Header stays put; only the body scrolls, so the scrollbar runs inside the body, clear of the rounded corners.
+            'fixed z-50 flex flex-col overflow-hidden bg-surface shadow-[var(--shadow-float)] focus:outline-none',
             layout === 'app'
-              ? 'inset-x-0 bottom-0 max-h-[92dvh] overflow-y-auto rounded-t-[34px] px-5 pt-2 pb-[max(20px,env(safe-area-inset-bottom))] animate-[sheet-up_240ms_cubic-bezier(0.16,1,0.3,1)]'
-              : 'top-1/2 left-1/2 max-h-[88vh] w-[440px] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[24px] p-6 animate-[fade-in_150ms_ease-out]',
+              ? 'inset-x-0 bottom-0 max-h-[92dvh] rounded-t-[34px] animate-[sheet-up_240ms_cubic-bezier(0.16,1,0.3,1)]'
+              : 'top-1/2 left-1/2 max-h-[88vh] w-[440px] -translate-x-1/2 -translate-y-1/2 rounded-[24px] animate-[fade-in_150ms_ease-out]',
           )}
         >
-          {layout === 'app' ? <div aria-hidden className="mx-auto mb-3 h-[5px] w-9 rounded-full bg-line" /> : null}
-          <div className="mb-4 flex items-start justify-between gap-4">
-            <div>
+          {layout === 'app' ? <div aria-hidden className="mx-auto mt-2 h-[5px] w-9 shrink-0 rounded-full bg-line" /> : null}
+          <div className={cx('flex shrink-0 items-start justify-between gap-4 pb-4', layout === 'app' ? 'px-5 pt-3' : 'px-6 pt-6')}>
+            <div className="min-w-0">
               <Dialog.Title className="title-3">{title}</Dialog.Title>
               {description ? <Dialog.Description className="mt-1 text-muted">{description}</Dialog.Description> : null}
             </div>
+            {/* The 30px circle sits inside a 44px target; pull it out so the circle's edge meets the same inset as the title. */}
             {dismissible ? (
               <Dialog.Close asChild>
-                <CloseButton className="-mt-2 -mr-2" />
+                <CloseButton className="-mt-[10px] -mr-[7px]" />
               </Dialog.Close>
             ) : null}
           </div>
-          {children}
+          <div className={cx('sheet-scroll min-h-0 overflow-y-auto overscroll-contain', layout === 'app' ? 'mr-1 px-5 pb-[max(20px,env(safe-area-inset-bottom))]' : 'mr-1.5 mb-3 px-6 pb-3')}>
+            {children}
+          </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
