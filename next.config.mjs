@@ -1,7 +1,7 @@
 import { withGluestackUI } from '@gluestack/ui-next-adapter'
 import { fileURLToPath } from 'node:url'
 
-/** Static export (Cloudflare Pages). The app is a client-side SPA under app/[[...slug]]; public/_redirects sends every path to index.html. */
+/** Static export (Cloudflare Pages). The app is a client-side SPA under app/[[...slug]]; `npm run build` deletes out/404.html so Pages falls back to index.html for every path (its SPA mode). */
 const nextConfig = {
   // Export only for the build; `next dev` must serve every client path through the catch-all.
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,

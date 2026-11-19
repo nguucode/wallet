@@ -28,7 +28,7 @@ jobs:
       - run: npm run check-spec
       - run: npm test
       - run: npm run typecheck
-      # Next static export → out/ (public/_redirects keeps client routes on index.html)
+      # Next static export → out/ (no 404.html, so Pages serves index.html for client routes)
       - run: npm run build
       # wallet.ontheshore.biz is the custom domain on the Cloudflare Pages project "wallet" (Direct Upload, so deploys come from here)
       - if: github.ref == 'refs/heads/main'
