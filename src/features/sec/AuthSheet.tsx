@@ -4,7 +4,7 @@ import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
 import type { AuthMethod } from '@/domain/types'
 import { getState, verifyPin } from '@/app/store'
-import { Button, cx, Sheet } from '@/components/ui'
+import { Button, cx, Sheet } from '@/components/app-ui'
 
 import { fmtTime } from '@/app/format'
 

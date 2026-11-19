@@ -5,7 +5,7 @@ import { useLayout } from '@/app/layout'
 import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
 import { authFor, authLine } from '@/features/flow/FlowKit'
-import { Avatar, Button, cx, PageTitle, Skeleton } from '@/components/ui'
+import { Avatar, Button, cx, PageTitle, Skeleton } from '@/components/app-ui'
 
 /** In-shell page title: visible h1 on web; on app the shell header shows the title, so the h1 is for screen readers. */
 export function PageHeading({ children }: { children: ReactNode }) {

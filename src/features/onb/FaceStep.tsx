@@ -1,7 +1,7 @@
 import { ScanFace } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useLayout } from '@/app/layout'
-import { Button } from '@/components/ui'
+import { Button } from '@/components/app-ui'
 import { StepShell, useOnb } from './Frame'
 
 const PROMPTS = ['Đưa khuôn mặt vào khung', 'Quay nhẹ sang trái', 'Quay nhẹ sang phải', 'Giữ yên']

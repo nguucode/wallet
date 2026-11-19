@@ -4,7 +4,7 @@ import { useLayout } from '@/app/layout'
 import { FlowShell, Shell } from '@/app/Shell'
 import { useWorld } from '@/app/store'
 import { NotFound, ErrorPage } from '@/features/demo/NotFound'
-import { Skeleton } from '@/components/ui'
+import { Skeleton } from '@/components/app-ui'
 
 const p = (load: () => Promise<{ default: () => ReactNode }>) => lazy(load)
 const HomePage = p(() => import('@/features/hom/HomePage'))

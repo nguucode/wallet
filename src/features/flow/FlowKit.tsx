@@ -1,7 +1,7 @@
 import { Check, Clock, Delete, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { Link, useNavigate, useSearchParams } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { requiredAuth } from '@/domain/auth'
 import { config } from '@/domain/config'
 import { fee } from '@/domain/fees'
@@ -17,7 +17,17 @@ import {
 import type { FailureReason, Transaction } from '@/mock/seed'
 import { AuthSheet } from '@/features/sec/AuthSheet'
 import { GATE_COPY } from '@/features/sec/Gate'
-import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, Money, NavBar, WebBackLink } from '@/components/ui'
+import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, DetailRows, Ico, Money, NavBar, TextLink, WebBackLink } from '@/components/app-ui'
+import { Avatar } from '@/components/ui/avatar'
+import { Box } from '@/components/ui/box'
+import { Button as GButton, ButtonText } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Grid, GridItem } from '@/components/ui/grid'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Input, InputField } from '@/components/ui/input'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 
 export { fmtTime, fmtDate, fmtDateTime, maskPhone, formatPhone, maskAccount } from '@/app/format'
 import { fmtTime, fmtDateTime } from '@/app/format'
@@ -66,41 +76,39 @@ export function useFlow<D extends Record<string, unknown>>(flowId: string, steps
 
 /* ── Frame ────────────────────────────────────────────────────────── */
 
-/** Flow page frame: app = full screen with header and sticky bottom bar; web = title + inline footer. */
+/** Flow page frame: app = full screen with header and sticky bottom bar; web = title + inline footer. Content sits in one Card. */
 export function FlowFrame({ title, onBack, onClose, footer, children, description }: {
   title: string; onBack?: () => void; onClose?: () => void; footer?: ReactNode; children: ReactNode; description?: ReactNode
 }) {
   const layout = useLayout()
   if (layout === 'web')
     return (
-      <div>
+      <VStack>
         {onBack ? <WebBackLink onClick={onBack} /> : null}
-        <div className="mb-group flex items-start gap-2">
-          <h1 tabIndex={-1} data-page-title className="large-title flex-1 outline-none">{title}</h1>
-          {onClose ? <CloseButton onClick={onClose} className="-mr-[7px]" /> : null}
-        </div>
-        {description ? <p className="-mt-header mb-group text-muted">{description}</p> : null}
-        {/* One inset group for a plain step; a step that brings its own sections sits on the grouped background. */}
-        <div className="[&:not(:has(.card))]:card [&:not(:has(.card))]:p-inset">{children}</div>
-        {footer ? <div className="mt-group flex flex-col gap-2">{footer}</div> : null}
-      </div>
+        <HStack className="mb-6 items-start gap-2">
+          <Heading size="3xl" tabIndex={-1} data-page-title className="flex-1 outline-none">{title}</Heading>
+          {onClose ? <CloseButton onClick={onClose} /> : null}
+        </HStack>
+        {description ? <Text className="-mt-4 mb-6 text-muted-foreground">{description}</Text> : null}
+        <Card>{children}</Card>
+        {footer ? <VStack className="mt-6 gap-2">{footer}</VStack> : null}
+      </VStack>
     )
   return (
-    <div className="relative isolate flex min-h-dvh flex-col">
-      <div aria-hidden className="ambient pointer-events-none absolute -z-10 inset-x-0 top-0 h-[320px]" />
+    <VStack className="min-h-dvh bg-background">
       <NavBar
-        title={<h1 tabIndex={-1} data-page-title className="truncate outline-none">{title}</h1>}
-        left={onBack ? <BackButton onClick={onBack} /> : <span className="w-11" />}
-        right={onClose ? <CloseButton onClick={onClose} /> : <span className="w-11" />}
+        title={<Heading size="sm" tabIndex={-1} data-page-title isTruncated className="outline-none">{title}</Heading>}
+        left={onBack ? <BackButton onClick={onBack} /> : <Box className="w-11" />}
+        right={onClose ? <CloseButton onClick={onClose} /> : <Box className="w-11" />}
       />
-      <main id="main" className="relative mx-auto w-full max-w-[560px] flex-1 px-inset pt-2 pb-group">
-        {description ? <p className="mb-stack text-muted">{description}</p> : null}
-        <div className="[&:not(:has(.card))]:card [&:not(:has(.card))]:p-inset">{children}</div>
+      <Box role="main" id="main" className="mx-auto w-full max-w-[560px] flex-1 px-4 pb-6 pt-2">
+        {description ? <Text className="mb-3 text-muted-foreground">{description}</Text> : null}
+        <Card>{children}</Card>
         {/* The app keypad portals here so it stands on its own below the card, like the system number pad. */}
-        <div id="flow-keypad-slot" />
-      </main>
-      {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 border-t border-line/60 bg-ground/85 px-inset pt-stack pb-[max(16px,env(safe-area-inset-bottom))] backdrop-blur-xl">{footer}</div> : null}
-    </div>
+        <Box id="flow-keypad-slot" />
+      </Box>
+      {footer ? <VStack className="sticky bottom-0 z-20 mx-auto w-full max-w-[560px] gap-2 border-t border-border bg-background px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-3">{footer}</VStack> : null}
+    </VStack>
   )
 }
 
@@ -128,10 +136,10 @@ export function checkAmount(type: TxType, amount: number, opts: { essential?: bo
   if (type === 'bank_transfer' && amount > config.bankTransferMax) return { ok: false, message: `Mỗi lần chuyển đến ngân hàng tối đa ${formatVnd(config.bankTransferMax)}` }
   const f = fee(type, amount, freeUsed(w)).amount
   if (type !== 'topup' && !opts.fromSource && amount + f > w.balance)
-    return { ok: false, message: <>Số dư không đủ. Số dư khả dụng {formatVnd(w.balance)}{f ? `, phí ${formatVnd(f)}` : ''}. <Link to="/topup" className="font-semibold text-tint">Nạp tiền</Link></> }
+    return { ok: false, message: <>Số dư không đủ. Số dư khả dụng {formatVnd(w.balance)}{f ? `, phí ${formatVnd(f)}` : ''}. <TextLink to="/topup">Nạp tiền</TextLink></> }
   const lim = checkLimit(usage(w), type, amount, !!opts.essential)
   if (!lim.ok)
-    return { ok: false, message: <>Vượt hạn mức {lim.pool === 'essential' ? 'thanh toán thiết yếu' : 'giao dịch'} tháng này. Còn lại {formatVnd(lim.remaining)}. <Link to="/me/limits" className="font-semibold text-tint">Xem hạn mức</Link></> }
+    return { ok: false, message: <>Vượt hạn mức {lim.pool === 'essential' ? 'thanh toán thiết yếu' : 'giao dịch'} tháng này. Còn lại {formatVnd(lim.remaining)}. <TextLink to="/me/limits">Xem hạn mức</TextLink></> }
   return { ok: true }
 }
 
@@ -142,32 +150,31 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
   const shown = value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''
   const set = (n: number) => { if (n <= 9_999_999_999) onChange(n) }
   return (
-    <div>
-      <label htmlFor="amount" className="mb-header block text-center text-[15px] text-muted">{label}</label>
-      <div className={cx('flex items-start justify-center border-b-2 pb-2 transition-colors', error ? 'border-danger' : 'border-line focus-within:border-tint')}>
-        <input
-          id="amount" autoFocus={autoFocus && layout === 'web'} autoComplete="off" placeholder="0"
+    <VStack className="items-center">
+      <Text id="amount-label" className="mb-2 text-muted-foreground">{label}</Text>
+      <Input isInvalid={!!error} className="h-16 w-full">
+        <InputField
+          id="amount" autoFocus={autoFocus && layout === 'web'} autoComplete="off" placeholder="0 ₫"
           // App: the wallet keypad below types; the system keyboard stays down. Web: the physical keyboard.
           inputMode={layout === 'app' ? 'none' : 'numeric'}
-          value={shown}
-          onChange={(e) => set(parseVndInput(e.target.value))}
+          value={shown ? `${shown} ₫` : ''}
+          onChangeText={(v: string) => set(parseVndInput(v))}
+          aria-labelledby="amount-label"
           aria-invalid={!!error || undefined}
           aria-describedby="amount-msg"
-          style={{ width: `${Math.max(1, shown.length || 1) * 0.62 + 0.2}em` }}
-          className="amount-display max-w-full min-w-0 bg-transparent text-center outline-none placeholder:text-muted"
+          className="text-center text-4xl font-bold tabular-nums"
         />
-        <span className="mt-1 ml-1 text-[17px] leading-6 font-semibold text-muted" aria-hidden>₫</span>
-      </div>
-      <p id="amount-msg" role={error ? 'alert' : undefined} className={cx('mt-header min-h-5 text-center text-[13px] leading-5', error ? 'text-danger' : 'text-muted')}>{error ?? hint}</p>
+      </Input>
+      <Text id="amount-msg" role={error ? 'alert' : undefined} size="sm" className={cx('mt-2 min-h-5 text-center', error ? 'text-destructive' : 'text-muted-foreground')}>{error ?? hint}</Text>
       {quick.length ? (
-        <div className="mt-stack flex flex-wrap justify-center gap-2">
+        <HStack className="mt-3 flex-wrap justify-center gap-2">
           {quick.map((q) => (
-            <button key={q} type="button" onClick={() => onChange(q)} className="h-9 rounded-full bg-surface-2 px-3.5 text-[13px] font-semibold text-primary-ink tnum hover:bg-primary-soft">{formatVnd(q).replace(' ₫', '')}</button>
+            <GButton key={q} variant="secondary" size="sm" className="rounded-full" onPress={() => onChange(q)}><ButtonText className="tabular-nums">{formatVnd(q).replace(' ₫', '')}</ButtonText></GButton>
           ))}
-        </div>
+        </HStack>
       ) : null}
       {layout === 'app' ? <KeypadPortal value={value} onChange={set} /> : null}
-    </div>
+    </VStack>
   )
 }
 
@@ -178,7 +185,7 @@ function KeypadPortal(props: { value: number; onChange: (n: number) => void }) {
   return slot ? createPortal(pad, slot) : pad
 }
 
-/** Wallet keypad (app layout): system number-pad keys on the grouped background, with 000 for đồng amounts. */
+/** Wallet keypad (app layout): a 3×4 grid of gluestack Buttons, with 000 for đồng amounts. */
 export function Keypad({ value, onChange }: { value: number; onChange: (n: number) => void }) {
   const press = (k: string) => {
     if (k === 'del') return onChange(Math.floor(value / 10))
@@ -187,38 +194,22 @@ export function Keypad({ value, onChange }: { value: number; onChange: (n: numbe
   }
   const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '000', '0', 'del']
   return (
-    <div className="mt-stack px-1">
-      <div className="grid grid-cols-3 gap-2" role="group" aria-label="Bàn phím số">
-        {KEYS.map((k) => (
-          <button
-            key={k} type="button" onClick={() => press(k)}
-            aria-label={k === 'del' ? 'Xóa một chữ số' : undefined}
-            className="flex h-14 items-center justify-center rounded-[14px] bg-surface text-ink shadow-[0_1px_0_rgb(0_0_0/0.12)] active:bg-surface-2"
-          >
-            {k === 'del' ? <Delete size={24} strokeWidth={1.75} aria-hidden /> : <span className="text-[28px] leading-8 font-normal tnum">{k}</span>}
-          </button>
-        ))}
-      </div>
-    </div>
+    <Grid className="mt-3 gap-2" _extra={{ className: 'grid-cols-3' }} role="group" aria-label="Bàn phím số">
+      {KEYS.map((k) => (
+        <GridItem key={k} _extra={{ className: 'col-span-1' }}>
+          <GButton variant="outline" className="h-14 w-full" onPress={() => press(k)} aria-label={k === 'del' ? 'Xóa một chữ số' : undefined}>
+            {k === 'del' ? <Ico as={Delete} size="lg" /> : <ButtonText className="text-2xl font-normal tabular-nums">{k}</ButtonText>}
+          </GButton>
+        </GridItem>
+      ))}
+    </Grid>
   )
 }
 
 /* ── Confirm (US-FND-007) ─────────────────────────────────────────── */
 
-/** Key/value detail rows (confirm, result, profile). Put inside a section with left `inset`; the separator runs from the
- *  text edge to the card edge, like Row. */
-export function ConfirmRows({ rows }: { rows: [string, ReactNode][] }) {
-  return (
-    <dl className="-mr-inset">
-      {rows.map(([k, v]) => (
-        <div key={k} className="flex min-h-12 items-start justify-between gap-group border-t border-line-soft py-stack pr-inset first:border-t-0">
-          <dt className="shrink-0 text-muted">{k}</dt>
-          <dd className="min-w-0 text-right font-medium break-words">{v}</dd>
-        </div>
-      ))}
-    </dl>
-  )
-}
+/** Key/value detail rows (confirm, result, profile). */
+export const ConfirmRows = DetailRows
 
 export function feeLabel(type: TxType, amount: number) {
   const f = fee(type, amount, freeUsed(getState().world))
@@ -297,45 +288,44 @@ export function truthLine(t: Transaction): string {
 }
 
 function StatusMark({ status }: { status: Transaction['status'] }) {
-  const tone = status === 'success' || status === 'refunded' ? 'bg-success-soft text-success' : status === 'pending' ? 'bg-pending-soft text-pending' : 'bg-danger-soft text-danger'
-  const Icon = status === 'pending' ? Clock : status === 'failed' ? X : Check
+  const I = status === 'pending' ? Clock : status === 'failed' ? X : Check
   return (
-    <span className={cx('inline-flex size-16 items-center justify-center rounded-full animate-[fade-in_200ms_ease-out]', tone)} aria-hidden>
-      <Icon size={32} strokeWidth={2.25} />
-    </span>
+    <Avatar aria-hidden className={"h-16 w-16 " + (status === 'failed' ? 'bg-destructive' : status === 'pending' ? 'bg-muted' : 'bg-primary')}>
+      <Ico as={I} size="xl" className={status === 'pending' ? 'text-foreground' : 'text-primary-foreground'} />
+    </Avatar>
   )
 }
 
 export function ResultView({ txId, onRetry, extra, successHeading = 'Thành công' }: { txId: string; onRetry?: () => void; extra?: ReactNode; successHeading?: string }) {
   const w = useWorld()
   const t = w.transactions.find((x) => x.id === txId)
-  if (!t) return <p className="py-10 text-center text-muted">Không tìm thấy giao dịch.</p>
+  if (!t) return <Text className="py-10 text-center text-muted-foreground">Không tìm thấy giao dịch.</Text>
   const heading = t.status === 'success' ? successHeading : t.status === 'pending' ? 'Đang xử lý' : t.status === 'failed' ? 'Không thành công' : 'Đã hoàn tiền'
   return (
-    <div className="flex flex-col items-center pt-group text-center">
+    <VStack className="items-center pt-6">
       <StatusMark status={t.status} />
-      <p role="status" className="mt-stack headline">{heading}</p>
-      {/* Same amount rule as every transaction row (rowAmount): signed, fee on outgoing, incoming green, failed muted and struck. */}
-      <p className="mt-header"><Money amount={rowAmount(t)} sign={t.direction} tone={t.status !== 'failed'} className={cx('amount-display', t.status === 'failed' && 'text-muted line-through')} /></p>
-      <p className="mt-header max-w-[40ch] text-muted">{counterpartyName(t.counterparty, w)}{t.sourceId && t.type !== 'topup' ? ` · từ ${sourceLabel(w, t.sourceId)}` : ''}</p>
-      <div className="mt-group w-full text-left">
+      <Heading size="lg" role="status" className="mt-3 text-center">{heading}</Heading>
+      {/* Same amount rule as every transaction row (rowAmount): signed, fee on outgoing, failed struck through. */}
+      <Money amount={rowAmount(t)} sign={t.direction} className={cx('mt-2 text-3xl font-bold', t.status === 'failed' && 'text-muted-foreground line-through')} />
+      <Text className="mt-2 max-w-[40ch] text-center text-muted-foreground">{counterpartyName(t.counterparty, w)}{t.sourceId && t.type !== 'topup' ? ` · từ ${sourceLabel(w, t.sourceId)}` : ''}</Text>
+      <Box className="mt-6 w-full">
         <ConfirmRows rows={[
           ['Trạng thái', truthLine(t)],
           ...(t.status === 'failed' && t.failureReason ? [['Lý do', FAILURE_COPY[t.failureReason]] as [string, ReactNode]] : []),
           ...(t.status === 'pending' ? [['Nếu không thành công', 'Tiền sẽ hoàn về ví.'] as [string, ReactNode]] : []),
           ['Thời gian', fmtDateTime(t.createdAt)],
           ...(t.fee ? [['Phí', formatVnd(t.fee)] as [string, ReactNode]] : []),
-          ['Mã giao dịch', <span className="tnum">{t.id}</span>],
+          ['Mã giao dịch', <Text className="tabular-nums">{t.id}</Text>],
         ]} />
-      </div>
+      </Box>
       {extra}
-      <div className="mt-group flex w-full flex-col gap-2">
+      <VStack className="mt-6 w-full gap-2">
         {t.status === 'failed' && onRetry ? <Button block onClick={onRetry}>Thử lại</Button> : null}
-        <ButtonLink to={`/history/${t.id}`} variant={t.status === 'failed' && onRetry ? 'secondary' : 'primary'} block>Xem chi tiết</ButtonLink>
-        {t.status === 'failed' ? <ButtonLink to={`/support/new?tx=${t.id}`} variant="secondary" block>Liên hệ hỗ trợ</ButtonLink> : null}
+        <ButtonLink to={`/history/${t.id}`} variant={t.status === 'failed' && onRetry ? 'outline' : 'primary'} block>Xem chi tiết</ButtonLink>
+        {t.status === 'failed' ? <ButtonLink to={`/support/new?tx=${t.id}`} variant="outline" block>Liên hệ hỗ trợ</ButtonLink> : null}
         <ButtonLink to="/home" variant="ghost" block>Về trang chủ</ButtonLink>
-      </div>
-    </div>
+      </VStack>
+    </VStack>
   )
 }
 

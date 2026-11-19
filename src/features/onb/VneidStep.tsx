@@ -3,7 +3,7 @@ import { mmss } from '@/app/format'
 import { useEffect, useState } from 'react'
 import { useLayout } from '@/app/layout'
 import { now } from '@/app/store'
-import { Button, Sheet } from '@/components/ui'
+import { Button, Sheet } from '@/components/app-ui'
 import { SimLabel, StepShell, useOnb } from './Frame'
 import { IdentitySummary } from './NfcStep'
 

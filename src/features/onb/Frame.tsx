@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useRef, type ReactNode } from 're
 import { useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { SampleBadge } from '@/app/Shell'
-import { BackButton, cx, WebBackLink } from '@/components/ui'
+import { BackButton, cx, WebBackLink } from '@/components/app-ui'
 import { DemoControlsButton } from '@/features/demo/DemoControls'
 import { backTarget, stageOf, STAGES, type IdPath, type Step } from './steps'
 

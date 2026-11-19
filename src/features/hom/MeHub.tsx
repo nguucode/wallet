@@ -3,7 +3,7 @@ import { Gauge, HelpCircle, Landmark, ShieldCheck, User } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { bankById, defaultSource, signOut, useWorld } from '@/app/store'
-import { Avatar, Badge, Card, Confirm, Disc, Row, Skeleton } from '@/components/ui'
+import { Avatar, Badge, Card, Confirm, Disc, Row, Skeleton } from '@/components/app-ui'
 import { formatPhone } from '@/features/flow/FlowKit'
 import { KYC_LABEL, KYC_TONE, ScreenTitle, useLoaded } from '@/features/sec/kit'
 

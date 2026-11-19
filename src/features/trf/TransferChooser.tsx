@@ -4,7 +4,7 @@ import { useLayout } from '@/app/layout'
 import { bankById, useWorld } from '@/app/store'
 import { GatedRoute } from '@/features/sec/Gate'
 import { formatPhone, maskAccount } from '@/features/flow/FlowKit'
-import { Avatar, BankMark, Card, Disc, RailTile, Row, Section } from '@/components/ui'
+import { Avatar, BankMark, Card, Disc, RailTile, Row, Section } from '@/components/app-ui'
 import { recentRecipients, type Recent } from './logic'
 import { PageHeading } from './shared'
 

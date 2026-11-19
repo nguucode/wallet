@@ -10,7 +10,7 @@ import { GatedRoute } from '@/features/sec/Gate'
 import {
   AmountInput, checkAmount, ConfirmRows, FlowFrame, feeLabel, maskAccount, ResultView, useCloseFlow, useFlow, useMoneyCommit,
 } from '@/features/flow/FlowKit'
-import { BankMark, Button, ButtonLink, Callout, Card, cx, Money, Row, Section, Sheet, TextInput } from '@/components/ui'
+import { BankMark, Button, ButtonLink, Callout, Card, cx, Money, Row, Section, Sheet, TextInput } from '@/components/app-ui'
 import { fold, isValidAccountNumber } from './logic'
 import { AuthNote, LockedAmount, MessageField, RecipientChip } from './shared'
 

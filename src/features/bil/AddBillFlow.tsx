@@ -5,7 +5,7 @@ import { SampleBadge } from '@/app/Shell'
 import { lookupBill, mutate, now, saveBill, useWorld } from '@/app/store'
 import { ConfirmRows, FlowFrame, fmtDate, useCloseFlow, useFlow } from '@/features/flow/FlowKit'
 import { GatedRoute } from '@/features/sec/Gate'
-import { BankMark, Button, Field, Row, TextInput } from '@/components/ui'
+import { BankMark, Button, Field, Row, TextInput } from '@/components/app-ui'
 import { isValidCustomerCode, periodLabel, vnToday } from './bills'
 
 const STEPS = ['biller', 'customer-code', 'lookup'] as const

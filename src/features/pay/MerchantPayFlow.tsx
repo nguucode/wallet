@@ -6,7 +6,7 @@ import { formatVnd } from '@/domain/money'
 import { parseQr } from '@/domain/qr'
 import { GatedRoute } from '@/features/sec/Gate'
 import { AmountInput, checkAmount, ConfirmRows, FlowFrame, ResultView, useCloseFlow, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
-import { Button, ButtonLink, Callout, Disc, Money } from '@/components/ui'
+import { Button, ButtonLink, Callout, Disc, Money } from '@/components/app-ui'
 import { AuthNote, useWakeLock } from '@/features/trf/shared'
 
 type Draft = { merchantId?: string; name?: string; category?: string; amount: number; fixed?: boolean; txId?: string }

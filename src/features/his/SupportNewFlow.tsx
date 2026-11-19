@@ -5,7 +5,7 @@ import { formatVnd } from '@/domain/money'
 import { createSupportRequest, now, useWorld } from '@/app/store'
 import type { SupportRequest, Transaction } from '@/mock/seed'
 import { ConfirmRows, FlowFrame, fmtDateTime, formatPhone, useCloseFlow, useFlow } from '@/features/flow/FlowKit'
-import { Button, ButtonLink, Callout, cx, Field, TextInput } from '@/components/ui'
+import { Button, ButtonLink, Callout, cx, Field, TextInput } from '@/components/app-ui'
 import { isWithinSupportWindow, REASON_LABEL, reasonsFor, rowAmount, SUPPORT_STATUS_LABEL, TX_REASONS, validateDescription, type Reason } from './history'
 
 const STEPS = ['reason', 'details', 'sent'] as const

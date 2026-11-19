@@ -7,7 +7,7 @@ import { useLayout } from '@/app/layout'
 import { counterpartyName, now, typeLabel, useWorld } from '@/app/store'
 import type { Transaction, World } from '@/mock/seed'
 import { fmtDate, fmtTime, truthLine } from '@/features/flow/FlowKit'
-import { Button, cx, EmptyState, Segmented, Sheet, STATUS_LABEL, StatusPill } from '@/components/ui'
+import { Button, cx, EmptyState, Segmented, Sheet, STATUS_LABEL, StatusPill } from '@/components/app-ui'
 import {
   filterTransactions, groupByDay, groupByMonth, monthLabel, monthsOf, monthTotals, TABS,
   type Group, type HistoryFilter, type Tab,

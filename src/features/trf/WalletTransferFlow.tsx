@@ -9,7 +9,7 @@ import { GatedRoute } from '@/features/sec/Gate'
 import {
   AmountInput, checkAmount, ConfirmRows, FlowFrame, formatPhone, maskPhone, ResultView, useCloseFlow, useFlow, useMoneyCommit,
 } from '@/features/flow/FlowKit'
-import { Avatar, Badge, Button, ButtonLink, Callout, cx, Money, Row, Skeleton, TextInput } from '@/components/ui'
+import { Avatar, Badge, Button, ButtonLink, Callout, cx, Money, Row, Skeleton, TextInput } from '@/components/app-ui'
 import { filterContacts, isFullPhone, recentRecipients, resolvePhone, type PhoneLookup } from './logic'
 import { AuthNote, LockedAmount, MessageField, RecipientChip } from './shared'
 

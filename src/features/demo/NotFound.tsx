@@ -1,5 +1,5 @@
 import { Compass, TriangleAlert } from 'lucide-react'
-import { ButtonLink, EmptyState } from '@/components/ui'
+import { ButtonLink, EmptyState } from '@/components/app-ui'
 
 export function NotFound() {
   return (

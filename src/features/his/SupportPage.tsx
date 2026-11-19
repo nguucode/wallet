@@ -2,7 +2,7 @@ import { ChevronDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
-import { ButtonLink, Card, cx, Section } from '@/components/ui'
+import { ButtonLink, Card, cx, Section } from '@/components/app-ui'
 import { FAQ } from './faq'
 import { ScreenTitle } from './parts'
 

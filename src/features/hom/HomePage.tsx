@@ -8,7 +8,7 @@ import {
   bankById, gateOf, getState, now, pendingOut, setBalanceHidden, useWorld,
 } from '@/app/store'
 import { formatVnd } from '@/domain/money'
-import { Avatar, BankMark, Card, cx, Dong, EmptyState, IconButton, RailTile, Row, RowSkeleton, Section, Skeleton } from '@/components/ui'
+import { Avatar, BankMark, Card, cx, Dong, EmptyState, IconButton, RailTile, Row, RowSkeleton, Section, Skeleton } from '@/components/app-ui'
 import { TxIcon, TxRow } from '@/features/his/parts'
 import { LineChart } from '@/components/charts'
 import { maskAccount, maskPhone } from '@/features/flow/FlowKit'

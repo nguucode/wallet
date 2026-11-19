@@ -29,4 +29,4 @@ export const WALLET_LABEL: Record<WalletStatus, string> = {
 /** rules.md decisions: CCCD keeps its 12-digit length, `001*******45`. */
 export { maskId } from '@/app/format'
 
-export { ScreenTitle, useToast } from '@/components/ui'
+export { ScreenTitle, useToast } from '@/components/app-ui'

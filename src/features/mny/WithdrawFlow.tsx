@@ -4,7 +4,7 @@ import { config } from '@/domain/config'
 import { fee } from '@/domain/fees'
 import { formatVnd } from '@/domain/money'
 import { bankById, defaultSource, freeUsed, gateOf, getState, pendingEta, useWorld } from '@/app/store'
-import { Button, ButtonLink, cx, Money } from '@/components/ui'
+import { Button, ButtonLink, cx, Money } from '@/components/app-ui'
 import {
   authLine, AmountInput, checkAmount, ConfirmRows, FAILURE_COPY, feeLabel, FlowFrame, fmtTime, useCloseFlow, useFlow, useMoneyCommit,
 } from '@/features/flow/FlowKit'

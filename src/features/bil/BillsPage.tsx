@@ -7,7 +7,7 @@ import type { SavedBill, World } from '@/mock/seed'
 import { fmtDate } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
 import { ScreenTitle, TxIcon, useToast } from '@/features/his/parts'
-import { Badge, Card, cx, EmptyState, Row, Section } from '@/components/ui'
+import { Badge, Card, cx, EmptyState, Row, Section } from '@/components/app-ui'
 import { billStatusOn, isPayable, maskCode, overdueDays, periodLabel, sortBills, type BillStatus } from './bills'
 
 const CHIP: Record<BillStatus, { label: string; tone: 'danger' | 'secondary' | 'pending' | 'neutral' }> = {

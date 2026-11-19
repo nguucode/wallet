@@ -2,7 +2,7 @@ import { CreditCard, Fingerprint, Smartphone } from 'lucide-react'
 import { useState } from 'react'
 import { useLayout } from '@/app/layout'
 import { useWorld } from '@/app/store'
-import { Button, cx, Disc } from '@/components/ui'
+import { Button, cx, Disc } from '@/components/app-ui'
 import { StepShell, useOnb } from './Frame'
 import { maskIdNumber } from './steps'
 

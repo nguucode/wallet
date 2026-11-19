@@ -1,7 +1,7 @@
 import { Nfc } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { getState, now, useWorld } from '@/app/store'
-import { Button } from '@/components/ui'
+import { Button } from '@/components/app-ui'
 import { fmtDate } from '@/features/flow/FlowKit'
 import { DataList, StepShell, useOnb } from './Frame'
 import { maskIdNumber } from './steps'

@@ -1,7 +1,7 @@
 import { Check, ChevronDown, Clock, X } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { bankById, useWorld } from '@/app/store'
-import { BankMark, Badge, cx, Row, Sheet } from '@/components/ui'
+import { BankMark, Badge, cx, Row, Sheet } from '@/components/app-ui'
 import type { FundingSource } from '@/mock/seed'
 import { kindLabel, mask4, sortSources } from './logic'
 
@@ -77,4 +77,4 @@ export function ResultBlock({ tone, heading, amount, children, actions }: {
   )
 }
 
-export { useToast } from '@/components/ui'
+export { useToast } from '@/components/app-ui'

@@ -1,7 +1,7 @@
 import { TriangleAlert } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useLayout } from '@/app/layout'
-import { Button, cx } from '@/components/ui'
+import { Button, cx } from '@/components/app-ui'
 import { StepShell, useOnb } from './Frame'
 import { WARNING_CONSEQUENCE, WARNING_ITEMS } from './legal'
 import { mark } from './marks'

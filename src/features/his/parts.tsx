@@ -3,7 +3,7 @@ import type { TxType } from '@/domain/types'
 import { counterpartyName, typeLabel, useWorld } from '@/app/store'
 import { formatVnd } from '@/domain/money'
 import type { Transaction } from '@/mock/seed'
-import { cx, Disc, Row, StatusPill } from '@/components/ui'
+import { cx, Disc, Row, StatusPill } from '@/components/app-ui'
 import { fmtDate, fmtTime } from '@/features/flow/FlowKit'
 import { rowAmount } from './history'
 
@@ -46,4 +46,4 @@ export function TxRow({ t, withDate, onOpen }: { t: Transaction; withDate?: bool
   )
 }
 
-export { ScreenTitle, useToast } from '@/components/ui'
+export { ScreenTitle, useToast } from '@/components/app-ui'

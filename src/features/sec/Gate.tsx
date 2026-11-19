@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import type { GateId } from '@/domain/gate'
 import { gateOf, getState, useWorld } from '@/app/store'
-import { Button, Callout, Sheet } from '@/components/ui'
+import { Button, Callout, Sheet } from '@/components/app-ui'
 
 /** rules.md#gates copy: why the money action is blocked and the single next step. */
 export const GATE_COPY: Record<GateId, { title: string; body: string; cta?: { label: string; to: string } }> = {

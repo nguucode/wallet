@@ -1,10 +1,9 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath } from 'node:url'
 import { parse } from 'yaml'
 
-/** Parse `*.yaml?json` at build time so the YAML parser never ships to the browser (it was ~1/3 of the entry chunk). */
+/** Vitest only (the app builds with Next). `*.yaml?json` is parsed at load time, as the Next loader does. */
 const yamlAsJson = {
   name: 'yaml-as-json',
   load(id: string) {
@@ -14,8 +13,23 @@ const yamlAsJson = {
 }
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), yamlAsJson],
-  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
-  server: { port: 5173, fs: { allow: ['.'] } },
-  test: { environment: 'jsdom', globals: true, setupFiles: ['src/test/setup.ts'], exclude: ['**/node_modules/**', '**/._*'] },
+  // Plain React JSX in tests (tsconfig says nativewind for the Next build).
+  plugins: [react({ jsxImportSource: 'react' }), yamlAsJson],
+  oxc: { jsx: { importSource: 'react' } },
+  define: { __DEV__: 'true', global: 'globalThis' },
+  resolve: {
+    alias: [
+      { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
+      { find: /^react-native$/, replacement: 'react-native-web' },
+      { find: /^nativewind$/, replacement: fileURLToPath(new URL('./src/test/nativewind-stub.ts', import.meta.url)) },
+      { find: /^react-native-safe-area-context$/, replacement: 'react-native-safe-area-context/lib/module/index.js' },
+      { find: /^react-native-svg$/, replacement: 'react-native-svg/lib/module/ReactNativeSVG.web.js' },
+    ],
+    // gluestack ships `.web.tsx` variants (plain DOM) next to the native ones.
+    extensions: ['.web.tsx', '.web.ts', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
+  },
+  test: {
+    environment: 'jsdom', globals: true, setupFiles: ['src/test/setup.ts'], exclude: ['**/node_modules/**', '**/._*'],
+    server: { deps: { inline: [/@gluestack-ui/, /@expo\/html-elements/, /@legendapp/, /react-native-reanimated/, /react-native-worklets/, /react-native-svg/, /react-native-safe-area-context/] } },
+  },
 })

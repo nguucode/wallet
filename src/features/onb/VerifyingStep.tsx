@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { getState, mutate, submitVerification, type Settings } from '@/app/store'
-import { Button } from '@/components/ui'
+import { Button } from '@/components/app-ui'
 import { StatusMark, StepShell, useOnb } from './Frame'
 import { mark } from './marks'
 import { retryStepFor, type FailReason } from './steps'

@@ -4,18 +4,24 @@
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "jsx": "react-jsx",
+    "jsx": "preserve",
+    "jsxImportSource": "nativewind",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "allowImportingTsExtensions": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["node", "vite/client", "vitest/globals", "@testing-library/jest-dom"],
+    "incremental": true,
+    "esModuleInterop": true,
+    "moduleSuffixes": [".web", ""],
+    "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
+    "plugins": [{ "name": "next" }],
     "paths": { "@/*": ["./src/*"] }
   },
-  "include": ["src", "scripts", "vite.config.ts"]
+  "include": ["next-env.d.ts", "nativewind-env.d.ts", "src", "app", "registry.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "src/components/ui"]
 }

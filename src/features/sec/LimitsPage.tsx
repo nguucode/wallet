@@ -1,7 +1,7 @@
 import { now, dayCounter, useWorld } from '@/app/store'
 import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
-import { Badge, Card, cx, Dong, Skeleton } from '@/components/ui'
+import { Badge, Card, cx, Dong, Skeleton } from '@/components/app-ui'
 import { BarsWithLimit, Ring, ringTone } from '@/components/charts'
 import { ScreenTitle, useLoaded } from './kit'
 import { limitCounters, monthlyGeneral, nextReset, type Counter } from './limitsView'

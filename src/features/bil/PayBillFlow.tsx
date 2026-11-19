@@ -5,7 +5,7 @@ import { now, usage, useWorld } from '@/app/store'
 import { NotFound } from '@/features/demo/NotFound'
 import { authLine, ConfirmRows, FlowFrame, fmtDate, feeLabel, ResultView, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
-import { Button, ButtonLink, Callout } from '@/components/ui'
+import { Button, ButtonLink, Callout } from '@/components/app-ui'
 import { billTx, BillChip } from './BillsPage'
 import { billStatusOn, canPayBill, maskCode, overdueDays, periodLabel } from './bills'
 

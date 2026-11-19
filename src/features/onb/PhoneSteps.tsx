@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { delay, now } from '@/app/store'
-import { Button, cx, Field, TextInput } from '@/components/ui'
+import { Button, cx, Field, TextInput } from '@/components/app-ui'
 import { formatPhone } from '@/features/flow/FlowKit'
 import { StepShell, useOnb } from './Frame'
 import { checkOtp, isValidVnMobile, OTP } from './steps'

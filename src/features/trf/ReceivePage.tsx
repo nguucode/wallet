@@ -8,7 +8,7 @@ import { formatVnd } from '@/domain/money'
 import { buildQr } from '@/domain/qr'
 import { GatedRoute } from '@/features/sec/Gate'
 import { AmountInput, formatPhone } from '@/features/flow/FlowKit'
-import { Button, Card, Disc, Segmented, Sheet } from '@/components/ui'
+import { Button, Card, Disc, Segmented, Sheet } from '@/components/app-ui'
 import { PageHeading, QrImage } from './shared'
 
 /** rules.md decisions: the wallet's VietQR form is a virtual account at the Vietcombank BIN. */

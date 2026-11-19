@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { cx } from '@/components/ui'
+import { cx } from '@/components/app-ui'
 
 /** Web only: sidebar "Thanh toán" lands on Payment Code; Scan sits beside it (sitemap note). */
 export function PayTabs({ active }: { active: 'code' | 'scan' }) {

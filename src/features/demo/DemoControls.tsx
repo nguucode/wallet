@@ -5,7 +5,7 @@ import {
   useSettings, useWorld, type Settings,
 } from '@/app/store'
 import { SCENARIOS, type Scenario } from '@/mock/seed'
-import { Button, cx, IconButton, Sheet } from '@/components/ui'
+import { Button, cx, IconButton, Sheet } from '@/components/app-ui'
 import { formatVnd } from '@/domain/money'
 
 function Group({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
