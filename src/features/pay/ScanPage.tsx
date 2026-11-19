@@ -1,12 +1,19 @@
-import { Flashlight, ImageUp, LayoutGrid, X } from 'lucide-react'
-import { useEffect, useRef, useState, type DragEvent, type ReactNode } from 'react'
+import { Flashlight, ImageUp, LayoutGrid } from 'lucide-react'
+import { useEffect, useRef, useState, type DragEvent, type ElementType } from 'react'
 import { useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { useWorld } from '@/app/store'
 import { parseQr } from '@/domain/qr'
 import { sampleQrs } from '@/mock/seed'
 import { GatedRoute } from '@/features/sec/Gate'
-import { Button, Callout, cx, Sheet } from '@/components/app-ui'
+import { Button, Callout, CloseButton, cx, Ico, Sheet } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Center } from '@/components/ui/center'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Pressable } from '@/components/ui/pressable'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { PageHeading, QrImage } from '@/features/trf/shared'
 import { PayTabs } from './PayTabs'
 import { routeForQr } from './scan'
@@ -50,25 +57,25 @@ function useScanHandler() {
 function SampleGrid({ onPick, cols }: { onPick: (payload: string) => void; cols: string }) {
   const w = useWorld()
   return (
-    <ul className={cx('grid gap-3', cols)}>
+    <Box role="list" className={cx('grid gap-3', cols)}>
       {sampleQrs(w).map((q) => (
-        <li key={q.id}>
-          <button type="button" onClick={() => onPick(q.payload)} className="flex h-full w-full flex-col items-center gap-2 card p-inset text-center text-ink hover:bg-surface-2">
+        <Box key={q.id} role="listitem">
+          <Pressable role="button" onPress={() => onPick(q.payload)} className="h-full w-full items-center gap-2 rounded-xl border border-border bg-card p-4 data-[hover=true]:bg-accent data-[active=true]:bg-accent">
             <QrImage payload={q.payload} size={88} label="" />
-            <span className="line-clamp-2 text-[13px] leading-[18px] font-medium" title={q.label}>{q.label}</span>
-            <span className="text-[12px] leading-4 text-muted">{q.hint}</span>
-          </button>
-        </li>
+            <Text size="sm" className="line-clamp-2 text-center font-medium" title={q.label}>{q.label}</Text>
+            <Text size="xs" className="text-center text-muted-foreground">{q.hint}</Text>
+          </Pressable>
+        </Box>
       ))}
-    </ul>
+    </Box>
   )
 }
 
 export default function ScanPage() {
   const layout = useLayout()
   return layout === 'web'
-    ? <div><PageHeading>Quét mã</PageHeading><GatedRoute><WebScan /></GatedRoute></div>
-    : <div><PageHeading>Quét mã</PageHeading><GatedRoute><AppScan /></GatedRoute></div>
+    ? <Box><PageHeading>Quét mã</PageHeading><GatedRoute><WebScan /></GatedRoute></Box>
+    : <Box><PageHeading>Quét mã</PageHeading><GatedRoute><AppScan /></GatedRoute></Box>
 }
 
 /* ── Web: upload + sample library ─────────────────────────────────── */
@@ -83,25 +90,28 @@ function WebScan() {
   return (
     <>
       <PayTabs active="scan" />
-      <h2 className="mb-stack headline">Tải ảnh mã QR</h2>
-      <label
+      <Heading size="lg" as="h2" className="mb-3">Tải ảnh mã QR</Heading>
+      <Box
         onDragOver={(e) => { e.preventDefault(); setOver(true) }} onDragLeave={() => setOver(false)} onDrop={onDrop}
-        className={cx('flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[12px] border border-dashed p-6 text-center focus-within:outline-2 focus-within:outline-tint', over ? 'border-tint bg-primary-soft' : 'border-line hover:bg-surface-2')}
+        className={cx('rounded-xl border border-dashed', over ? 'border-primary bg-primary/10' : 'border-border hover:bg-muted')}
       >
-        <ImageUp size={28} strokeWidth={1.75} aria-hidden className="text-muted" />
-        <span aria-live="polite">{busy ? 'Đang đọc mã…' : 'Kéo ảnh vào đây hoặc chọn từ máy'}</span>
-        <span className="text-[13px] text-muted">PNG hoặc JPG</span>
-        <input ref={fileRef} type="file" accept="image/png,image/jpeg" className="sr-only" onChange={(e) => { void take(e.target.files?.[0]); e.target.value = '' }} />
-      </label>
+        <Pressable role="button" onPress={() => fileRef.current?.click()} className="min-h-40 w-full items-center justify-center gap-2 rounded-xl p-6">
+          <Ico as={ImageUp} size="xl" className="text-muted-foreground" />
+          <Text aria-live="polite" className="text-center">{busy ? 'Đang đọc mã…' : 'Kéo ảnh vào đây hoặc chọn từ máy'}</Text>
+          <Text size="sm" className="text-muted-foreground">PNG hoặc JPG</Text>
+        </Pressable>
+        {/* No gluestack file picker: a hidden native file input does the picking. */}
+        <input ref={fileRef} type="file" accept="image/png,image/jpeg" className="sr-only" tabIndex={-1} aria-label="Chọn ảnh mã QR" onChange={(e) => { void take(e.target.files?.[0]); e.target.value = '' }} />
+      </Box>
       {problem ? (
-        <div className="mt-stack">
+        <Box className="mt-3">
           <Callout tone="danger" title={problem.title} action={<Button size="sm" variant="secondary" onClick={() => (problem.action === 'other-image' ? fileRef.current?.click() : setProblem(null))}>{problem.action === 'other-image' ? 'Chọn ảnh khác' : 'Quét lại'}</Button>}>
             {problem.body}
           </Callout>
-        </div>
+        </Box>
       ) : null}
-      <h2 className="mt-12 mb-1 headline">Mã mẫu</h2>
-      <p className="mb-stack text-[13px] text-muted">Mã dựng sẵn cho bản demo. Chọn một mã để đi tiếp như khi quét thật.</p>
+      <Heading size="lg" as="h2" className="mt-12 mb-1">Mã mẫu</Heading>
+      <Text size="sm" className="mb-3 text-muted-foreground">Mã dựng sẵn cho bản demo. Chọn một mã để đi tiếp như khi quét thật.</Text>
       <SampleGrid onPick={(p) => { setProblem(null); handle(p) }} cols="grid-cols-2 sm:grid-cols-4" />
     </>
   )
@@ -182,38 +192,42 @@ function AppScan() {
   else if (cam === 'live') message = Detector ? 'Đưa mã QR vào khung' : 'Trình duyệt này chưa đọc được mã từ camera. Dùng Chọn ảnh hoặc Mã mẫu.'
   else message = 'Bật camera để quét mã của cửa hàng, ngân hàng hoặc ví.'
 
-  const tool = (label: string, icon: ReactNode, onClick: () => void, pressed?: boolean) => (
-    <button type="button" onClick={onClick} aria-pressed={pressed} className="flex min-w-[64px] flex-col items-center gap-2 rounded-xl py-1 text-white">
-      <span aria-hidden className={cx('inline-flex size-12 items-center justify-center rounded-full', pressed ? 'bg-white text-ink' : 'bg-white/15')}>{icon}</span>
-      <span className="text-[13px] leading-[18px]">{label}</span>
-    </button>
+  const tool = (label: string, icon: ElementType, onClick: () => void, pressed?: boolean) => (
+    <Pressable role="button" onPress={onClick} aria-pressed={pressed} className="min-w-16 items-center gap-2 rounded-xl py-1">
+      <Center aria-hidden className={cx('size-12 rounded-full', pressed ? 'bg-foreground' : 'bg-foreground/15')}>
+        <Ico as={icon} size="lg" className={pressed ? 'text-background' : 'text-foreground'} />
+      </Center>
+      <Text size="sm" className="text-foreground">{label}</Text>
+    </Pressable>
   )
 
+  // The camera surface stays dark in either theme: the `dark` class scopes the gluestack dark tokens to it.
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-black text-white">
+    <VStack className="dark fixed inset-0 z-40 bg-background">
+      {/* A camera feed has no gluestack equivalent: the native <video> stays. */}
       <video ref={videoRef} playsInline muted aria-hidden className={cx('absolute inset-0 size-full object-cover', cam !== 'live' && 'hidden')} />
-      <div className="relative z-10 flex h-14 items-center px-2 pt-[env(safe-area-inset-top)]">
-        <button type="button" onClick={close} aria-label="Đóng" className="inline-flex size-11 items-center justify-center rounded-full hover:bg-white/10"><X size={24} strokeWidth={1.75} /></button>
-        <p className="flex-1 text-center text-[17px] font-bold">Quét mã</p>
-        <span className="w-11" />
-      </div>
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4">
-        <p role="status" aria-live="polite" className="mb-group max-w-[32ch] text-center text-[15px] leading-[22px]">{message}</p>
-        <div className="relative aspect-square w-[min(240px,calc(100vw-32px))]" aria-hidden>
-          {['top-0 left-0 border-t-4 border-l-4 rounded-tl-[20px]', 'top-0 right-0 border-t-4 border-r-4 rounded-tr-[20px]', 'bottom-0 left-0 border-b-4 border-l-4 rounded-bl-[20px]', 'bottom-0 right-0 border-r-4 border-b-4 rounded-br-[20px]'].map((c) => (
-            <span key={c} className={cx('absolute size-12 border-white', c)} />
+      <HStack className="relative z-10 h-14 items-center px-2 pt-[env(safe-area-inset-top)]">
+        <CloseButton onClick={close} />
+        <Text size="lg" bold className="flex-1 text-center">Quét mã</Text>
+        <Box className="w-11" />
+      </HStack>
+      <VStack className="relative z-10 flex-1 items-center justify-center px-4">
+        <Text role="status" aria-live="polite" className="mb-6 max-w-[32ch] text-center">{message}</Text>
+        <Box className="relative aspect-square w-[min(240px,calc(100vw-32px))]" aria-hidden>
+          {['top-0 left-0 border-t-4 border-l-4 rounded-tl-2xl', 'top-0 right-0 border-t-4 border-r-4 rounded-tr-2xl', 'bottom-0 left-0 border-b-4 border-l-4 rounded-bl-2xl', 'bottom-0 right-0 border-r-4 border-b-4 rounded-br-2xl'].map((c) => (
+            <Box key={c} className={cx('absolute size-12 border-foreground', c)} />
           ))}
-        </div>
+        </Box>
         {cam !== 'live' && cam !== 'starting' ? (
-          <Button className="mt-group" onClick={() => void start()}>{cam === 'error' ? 'Thử lại' : cam === 'denied' ? 'Thử lại' : 'Bật camera'}</Button>
+          <Button className="mt-6" onClick={() => void start()}>{cam === 'error' ? 'Thử lại' : cam === 'denied' ? 'Thử lại' : 'Bật camera'}</Button>
         ) : null}
-      </div>
-      <div className="relative z-10 flex justify-center gap-6 px-4 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">
-        {torch !== null ? tool('Đèn', <Flashlight size={22} strokeWidth={1.75} />, () => void toggleTorch(), torch) : null}
-        {tool('Chọn ảnh', <ImageUp size={22} strokeWidth={1.75} />, () => fileRef.current?.click())}
-        {tool('Mã mẫu', <LayoutGrid size={22} strokeWidth={1.75} />, () => setSamples(true))}
+      </VStack>
+      <HStack className="relative z-10 justify-center gap-6 px-4 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">
+        {torch !== null ? tool('Đèn', Flashlight, () => void toggleTorch(), torch) : null}
+        {tool('Chọn ảnh', ImageUp, () => fileRef.current?.click())}
+        {tool('Mã mẫu', LayoutGrid, () => setSamples(true))}
         <input ref={fileRef} type="file" accept="image/png,image/jpeg" className="sr-only" tabIndex={-1} aria-label="Chọn ảnh mã QR" onChange={(e) => { setProblem(null); void handleFile(e.target.files?.[0]); e.target.value = '' }} />
-      </div>
+      </HStack>
 
       <Sheet open={samples} onOpenChange={setSamples} title="Mã mẫu" description="Mã dựng sẵn cho bản demo.">
         <SampleGrid onPick={(p) => { setSamples(false); handle(p) }} cols="grid-cols-2" />
@@ -223,6 +237,6 @@ function AppScan() {
           {problem?.action === 'other-image' ? 'Chọn ảnh khác' : 'Quét lại'}
         </Button>
       </Sheet>
-    </div>
+    </VStack>
   )
 }

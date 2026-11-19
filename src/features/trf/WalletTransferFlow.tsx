@@ -9,7 +9,14 @@ import { GatedRoute } from '@/features/sec/Gate'
 import {
   AmountInput, checkAmount, ConfirmRows, FlowFrame, formatPhone, maskPhone, ResultView, useCloseFlow, useFlow, useMoneyCommit,
 } from '@/features/flow/FlowKit'
-import { Avatar, Badge, Button, ButtonLink, Callout, cx, Money, Row, Skeleton, TextInput } from '@/components/app-ui'
+import { Avatar, Badge, Button, ButtonLink, Callout, cx, Money, Row, Skeleton } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input'
+import { Spinner } from '@/components/ui/spinner'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { filterContacts, isFullPhone, recentRecipients, resolvePhone, type PhoneLookup } from './logic'
 import { AuthNote, LockedAmount, MessageField, RecipientChip } from './shared'
 
@@ -67,10 +74,10 @@ export default function WalletTransferFlow() {
   let body: ReactNode
   if (reading)
     body = (
-      <div aria-busy className="space-y-stack">
-        <p role="status" className="text-muted">Đang đọc mã…</p>
+      <VStack aria-busy className="gap-3">
+        <Text role="status" className="text-muted-foreground">Đang đọc mã…</Text>
         <Skeleton className="h-16" />
-      </div>
+      </VStack>
     )
   else if (effective === 'recipient') body = <RecipientStep banner={banner} onPick={(r) => pick(r)} />
   else if (effective === 'amount') body = <AmountStep draft={draft} setDraft={setDraft} onNext={() => go('confirm')} onChange={() => go('recipient')} />
@@ -118,61 +125,62 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
   const row = (c: { id: string; name: string; phone: string; hasWallet: boolean }, group: string) => {
     const disabled = !c.hasWallet
     return (
-      <li key={group + c.id}>
+      <Box key={group + c.id} role="listitem">
         <Row
           disabled={disabled}
           aria-describedby={disabled ? 'no-wallet-help' : undefined}
           onClick={() => (disabled ? setHelper(`${c.name}: Người này chưa dùng ví nên chưa nhận được tiền qua ví.`) : onPick({ kind: 'contact', id: c.id, name: c.name, phone: c.phone }))}
-          left={<span className={cx(disabled && 'opacity-60')}><Avatar name={c.name} size={40} /></span>}
-          title={<span title={c.name} className={cx(disabled && 'text-muted')}>{c.name}</span>}
-          subtitle={<span className="tnum">{formatPhone(c.phone)}</span>}
+          left={<Box className={cx(disabled && 'opacity-60')}><Avatar name={c.name} size={40} /></Box>}
+          title={<Text title={c.name} className={cx(disabled && 'text-muted-foreground')}>{c.name}</Text>}
+          subtitle={<Text className="tabular-nums">{formatPhone(c.phone)}</Text>}
           right={disabled ? <Badge>Chưa dùng ví</Badge> : undefined}
         />
-      </li>
+      </Box>
     )
   }
 
   let single: ReactNode = null
-  if (self) single = <p role="status" className="py-3 text-danger">{SELF}</p>
+  if (self) single = <Text role="status" className="block py-3 text-destructive">{SELF}</Text>
   else if (needsLookup && lookup?.phone === digits) {
     const res = lookup.res
-    if (!res) single = <p role="status" className="flex items-center gap-2 py-3 text-muted"><span className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden />Đang tìm…</p>
+    if (!res) single = <HStack role="status" className="items-center gap-2 py-3"><Spinner size="small" aria-hidden /><Text className="text-muted-foreground">Đang tìm…</Text></HStack>
     else if (res.status === 'wallet')
-      single = <ul className="-mx-inset">{row({ ...res.contact, hasWallet: true }, 'lookup')}</ul>
+      single = <VStack role="list" className="-mx-4">{row({ ...res.contact, hasWallet: true }, 'lookup')}</VStack>
     else if (res.status === 'error')
-      single = <div role="alert" className="flex items-center justify-between gap-3 py-3"><span className="text-danger">Không kiểm tra được số điện thoại. Thử lại.</span><Button size="sm" variant="secondary" onClick={() => setRetry((n) => n + 1)}>Thử lại</Button></div>
-    else single = <p role="status" className="py-3 text-muted">Số điện thoại này chưa dùng ví.</p>
+      single = <HStack role="alert" className="items-center justify-between gap-3 py-3"><Text className="text-destructive">Không kiểm tra được số điện thoại. Thử lại.</Text><Button size="sm" variant="secondary" onClick={() => setRetry((n) => n + 1)}>Thử lại</Button></HStack>
+    else single = <Text role="status" className="block py-3 text-muted-foreground">Số điện thoại này chưa dùng ví.</Text>
   }
 
   return (
-    <div>
-      {banner ? <div className="mb-group"><Callout tone="danger" title={banner} /></div> : null}
-      <label htmlFor="recipient-search" className="mb-header block text-[13px] font-medium">Người nhận</label>
-      <div className="relative">
-        <Search size={18} strokeWidth={1.75} aria-hidden className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted" />
-        <TextInput
-          id="recipient-search" type="search" autoComplete="off" placeholder="Nhập số điện thoại hoặc tên" className="pl-11"
+    <Box>
+      {banner ? <Box className="mb-6"><Callout tone="danger" title={banner} /></Box> : null}
+      <Text id="recipient-search-label" size="sm" className="mb-2 block font-medium">Người nhận</Text>
+      <Input className="h-12">
+        <InputSlot className="pl-1"><InputIcon as={Search} aria-hidden /></InputSlot>
+        <InputField
+          id="recipient-search" role="searchbox" autoComplete="off" placeholder="Nhập số điện thoại hoặc tên"
+          aria-labelledby="recipient-search-label"
           inputMode={/^\d/.test(query) ? 'tel' : 'text'}
           value={digits ? formatPhone(digits) : query}
-          onChange={(e) => { setHelper(undefined); setQuery(/^[\d\s]+$/.test(e.target.value) ? e.target.value.replace(/\D/g, '').slice(0, 10) : e.target.value) }}
+          onChangeText={(v: string) => { setHelper(undefined); setQuery(/^[\d\s]+$/.test(v) ? v.replace(/\D/g, '').slice(0, 10) : v) }}
         />
-      </div>
-      <p id="no-wallet-help" role="status" aria-live="polite" className="mt-header min-h-5 text-[13px] leading-5 text-muted">{helper}</p>
+      </Input>
+      <Text id="no-wallet-help" role="status" aria-live="polite" size="sm" className="mt-2 block min-h-5 text-muted-foreground">{helper}</Text>
       {single}
-      {!single && !fRecent.length && !fAll.length ? <p className="py-3 text-muted">Không tìm thấy người nhận.</p> : null}
+      {!single && !fRecent.length && !fAll.length ? <Text className="block py-3 text-muted-foreground">Không tìm thấy người nhận.</Text> : null}
       {!single && fRecent.length ? (
-        <section aria-labelledby="g-recent" className="mt-header">
-          <h2 id="g-recent" className="label-caps sticky top-14 z-10 bg-surface py-header lg:top-0">Gần đây</h2>
-          <ul className="-mx-inset">{fRecent.map((c) => row(c, 'r'))}</ul>
-        </section>
+        <VStack role="region" aria-labelledby="g-recent" className="mt-2">
+          <Heading as="h2" id="g-recent" size="xs" className="sticky top-14 z-10 bg-background py-2 text-muted-foreground uppercase lg:top-0">Gần đây</Heading>
+          <VStack role="list" className="-mx-4">{fRecent.map((c) => row(c, 'r'))}</VStack>
+        </VStack>
       ) : null}
       {!single && fAll.length ? (
-        <section aria-labelledby="g-all" className="mt-stack">
-          <h2 id="g-all" className="label-caps sticky top-14 z-10 bg-surface py-header lg:top-0">Danh bạ</h2>
-          <ul className="-mx-inset">{fAll.map((c) => row(c, 'a'))}</ul>
-        </section>
+        <VStack role="region" aria-labelledby="g-all" className="mt-3">
+          <Heading as="h2" id="g-all" size="xs" className="sticky top-14 z-10 bg-background py-2 text-muted-foreground uppercase lg:top-0">Danh bạ</Heading>
+          <VStack role="list" className="-mx-4">{fAll.map((c) => row(c, 'a'))}</VStack>
+        </VStack>
       ) : null}
-    </div>
+    </Box>
   )
 }
 
@@ -185,16 +193,16 @@ function AmountStep({ draft, setDraft, onNext, onChange }: { draft: Draft; setDr
   const error = check && !check.ok ? check.message : undefined
   return (
     <>
-      <RecipientChip name={r.name} sub={<span className="tnum">{formatPhone(r.phone)}</span>} note={draft.fromQr ? 'Từ mã nhận tiền' : undefined} onChange={draft.locked ? undefined : onChange} />
+      <RecipientChip name={r.name} sub={<Text className="tabular-nums">{formatPhone(r.phone)}</Text>} note={draft.fromQr ? 'Từ mã nhận tiền' : undefined} onChange={draft.locked ? undefined : onChange} />
       {draft.locked
         ? <LockedAmount amount={draft.amount} note="Số tiền theo mã QR" error={error} />
-        : <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={error} hint={<>Số dư khả dụng: <span className="tnum">{formatVnd(w.balance)}</span></>} />}
+        : <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={error} hint={<>Số dư khả dụng: <Text className="tabular-nums">{formatVnd(w.balance)}</Text></>} />}
       <MessageField value={draft.message} onChange={(message) => setDraft({ message })} placeholder={`${w.customer.name} chuyển tiền`} />
-      <div className="mt-section">
+      <Box className="mt-8">
         {draft.locked && error
           ? <ButtonLink to="/pay/scan" variant="secondary" block>Đổi mã</ButtonLink>
           : <Button block disabled={!check?.ok} onClick={onNext}>Tiếp tục</Button>}
-      </div>
+      </Box>
     </>
   )
 }
@@ -207,30 +215,30 @@ function ConfirmStep({ draft, defaultMessage, toAmount, onDone }: { draft: Draft
   const commit = useMoneyCommit(() => ({ type: 'p2p_out', amount: draft.amount, counterparty: r, message, authMethod: 'pin' }), (t) => onDone(t.id))
   if (commit.busy)
     return (
-      <div role="status" aria-live="polite" className="flex flex-col items-center py-16 text-center">
-        <span className="size-8 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden />
-        <p className="mt-stack font-semibold">Đang chuyển tiền…</p>
-        <p className="mt-1"><Money amount={draft.amount} className="amount-display" /></p>
-      </div>
+      <VStack role="status" aria-live="polite" className="items-center py-16 text-center">
+        <Spinner size="large" aria-hidden />
+        <Text className="mt-3 font-semibold">Đang chuyển tiền…</Text>
+        <Money amount={draft.amount} className="mt-1 text-4xl font-bold" />
+      </VStack>
     )
   return (
     <>
-      <h2 className="mb-stack headline">Xác nhận</h2>
-      <p className="mb-stack text-center"><Money amount={draft.amount} className="amount-display" /></p>
+      <Heading as="h2" size="lg" className="mb-3">Xác nhận</Heading>
+      <Money amount={draft.amount} className="mb-3 block text-center text-4xl font-bold" />
       <ConfirmRows rows={[
-        ['Người nhận', <><span className="block break-words">{r.name}</span><span className="block text-[13px] font-normal text-muted tnum">{maskPhone(r.phone)}</span></>],
+        ['Người nhận', <><Text className="block break-words">{r.name}</Text><Text size="sm" className="block font-normal text-muted-foreground tabular-nums">{maskPhone(r.phone)}</Text></>],
         ['Số tiền', <Money amount={draft.amount} />],
         ['Phí', 'Miễn phí'],
-        ['Tổng tiền', <b><Money amount={draft.amount} /></b>],
+        ['Tổng tiền', <Money amount={draft.amount} className="font-bold" />],
         ['Nguồn tiền', 'Ví'],
         ['Lời nhắn', message],
       ]} />
       <AuthNote type="p2p_out" amount={draft.amount} />
-      {commit.error ? <p role="alert" className="mt-stack text-[13px] text-danger">{commit.error}</p> : null}
-      <div className="mt-section flex flex-col gap-2">
+      {commit.error ? <Text role="alert" size="sm" className="mt-3 block text-destructive">{commit.error}</Text> : null}
+      <VStack className="mt-8 gap-2">
         <Button block onClick={() => (checkAmount('p2p_out', draft.amount).ok ? commit.start() : toAmount())}>Xác nhận</Button>
         <Button block variant="ghost" onClick={toAmount}>Quay lại</Button>
-      </div>
+      </VStack>
       {commit.sheet}
     </>
   )

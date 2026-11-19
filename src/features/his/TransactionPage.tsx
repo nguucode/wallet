@@ -1,6 +1,6 @@
-import { Copy, FileText, LifeBuoy, MessageCircle, Printer, Repeat, Share2, X } from 'lucide-react'
+import { Copy, FileText, LifeBuoy, MessageCircle, Printer, Repeat, Share2, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
+import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
 import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
 import { useLayout } from '@/app/layout'
@@ -10,7 +10,14 @@ import type { Transaction, World } from '@/mock/seed'
 import { NotFound } from '@/features/demo/NotFound'
 import { ConfirmRows, FAILURE_COPY, fmtDateTime, fmtTime, maskAccount, maskPhone, truthLine } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
-import { Button, ButtonLink, cx, Money, STATUS_LABEL, StatusPill, WebBackLink } from '@/components/app-ui'
+import { Button, ButtonLink, Card, CloseButton, cx, Disc, Ico, IconButton, Money, Row, STATUS_LABEL, StatusPill, useLinkPress, WebBackLink } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Button as GButton, ButtonText } from '@/components/ui/button'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Pressable } from '@/components/ui/pressable'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { maskCode } from '@/features/bil/bills'
 import { isWithinSupportWindow, receiptShareText, rowAmount, SUPPORT_STATUS_LABEL } from './history'
 import { TxIcon, useToast } from './parts'
@@ -66,22 +73,24 @@ export function timelineSteps(t: Transaction, refundTx?: Transaction): Step[] {
 }
 
 function Timeline({ steps }: { steps: Step[] }) {
-  const dot = { done: 'bg-ink', current: 'bg-pending', failed: 'bg-danger', upcoming: 'border-2 border-line bg-surface' }
+  const dot = { done: 'bg-foreground', current: 'bg-primary', failed: 'bg-destructive', upcoming: 'border-2 border-border bg-card' }
   return (
-    <ol className="card p-inset" aria-label="Trạng thái giao dịch">
-      {steps.map((s, i) => (
-        <li key={i} className="relative flex gap-3 pb-stack last:pb-0">
-          {i < steps.length - 1 ? <span aria-hidden className="absolute top-4 left-[5px] h-full w-0.5 bg-line" /> : null}
-          <span aria-hidden className={cx('relative mt-header size-3 shrink-0 rounded-full', dot[s.tone])} />
-          <div className="min-w-0">
-            <p className={cx('font-semibold', s.tone === 'current' && 'text-pending', s.tone === 'failed' && 'text-danger', s.tone === 'upcoming' && 'font-normal text-muted')}>
-              {s.label}{s.tone === 'upcoming' ? <span className="sr-only"> (chưa đến)</span> : null}
-            </p>
-            {s.lines.map((l) => <p key={l} className="text-[15px] leading-5 text-muted">{l}</p>)}
-          </div>
-        </li>
-      ))}
-    </ol>
+    <Card>
+      <VStack role="list" aria-label="Trạng thái giao dịch">
+        {steps.map((s, i) => (
+          <HStack key={i} role="listitem" className="relative gap-3 pb-3 last:pb-0">
+            {i < steps.length - 1 ? <Box aria-hidden className="absolute top-4 left-[5px] h-full w-0.5 bg-border" /> : null}
+            <Box aria-hidden className={cx('mt-1.5 h-3 w-3 shrink-0 rounded-full', dot[s.tone])} />
+            <VStack className="min-w-0">
+              <Text className={cx('font-semibold', s.tone === 'failed' && 'text-destructive', s.tone === 'upcoming' && 'font-normal text-muted-foreground')}>
+                {s.label}{s.tone === 'upcoming' ? <Text className="sr-only"> (chưa đến)</Text> : null}
+              </Text>
+              {s.lines.map((l) => <Text key={l} size="sm" className="text-muted-foreground">{l}</Text>)}
+            </VStack>
+          </HStack>
+        ))}
+      </VStack>
+    </Card>
   )
 }
 
@@ -105,66 +114,71 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
   }
   const close = () => nav(`/history/${t.id}`, { replace: true })
   return (
-    <div className="pt-2">
+    <Box className="pt-2">
       <style>{PRINT_CSS}</style>
-      <div className="mb-stack flex items-center justify-between gap-2 print:hidden">
-        <h1 tabIndex={-1} data-page-title className="text-[22px] leading-[28px] font-bold outline-none">Biên lai</h1>
-        {layout === 'app' ? <button type="button" onClick={close} aria-label="Đóng" className="inline-flex size-11 items-center justify-center rounded-full hover:bg-surface-2"><X size={22} strokeWidth={1.75} aria-hidden /></button> : null}
-      </div>
-      <article id="receipt" aria-label="Biên lai giao dịch" className="mx-auto max-w-[420px] card p-inset">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="headline">Biên lai giao dịch</p>
-            <p className="text-[15px] font-extrabold tracking-tight">Wallet</p>
-          </div>
-          <SampleBadge />
-        </div>
-        <div className="my-group text-center">
-          <p className="amount-display">{formatVnd(rowAmount(t))}</p>
-          <p className="mt-1 inline-flex items-center gap-2 font-semibold">
-            <span aria-hidden className={cx('size-2 rounded-full', t.status === 'pending' ? 'bg-pending' : t.status === 'success' ? 'bg-success' : 'bg-ink')} />
-            {STATUS_LABEL[t.status]}
-          </p>
-          {t.status === 'pending' ? <p className="mt-1 text-[15px] text-pending">Biên lai này chưa phải xác nhận cuối cùng</p> : null}
-          {t.status === 'refunded' && refundTx ? <p className="mt-1 text-[15px]">Đã hoàn {formatVnd(refundTx.amount)} lúc {fmtDateTime(refundTx.createdAt)}</p> : null}
-        </div>
-        <ConfirmRows rows={[
-          ['Mã giao dịch', <span className="tnum">{t.id}</span>],
-          ['Thời gian', fmtDateTime(t.createdAt)],
-          ...(cp ? [cp] : []),
-          ['Lời nhắn', t.message ?? '—'],
-          ['Phí', t.fee ? formatVnd(t.fee) : 'Miễn phí'],
-          ['Tổng tiền', formatVnd(rowAmount(t))],
-        ]} />
-      </article>
-      <div className="mx-auto mt-group flex max-w-[420px] flex-col gap-2 print:hidden">
+      <HStack className="mb-3 items-center justify-between gap-2 print:hidden">
+        <Heading size="3xl" tabIndex={-1} data-page-title className="text-2xl outline-none">Biên lai</Heading>
+        {layout === 'app' ? <CloseButton onClick={close} /> : null}
+      </HStack>
+      <Box id="receipt" role="article" aria-label="Biên lai giao dịch" className="mx-auto w-full max-w-md">
+        <Card>
+          <HStack className="items-start justify-between gap-3">
+            <VStack>
+              <Text size="lg" bold>Biên lai giao dịch</Text>
+              <Text size="sm" className="font-extrabold tracking-tight">Wallet</Text>
+            </VStack>
+            <SampleBadge />
+          </HStack>
+          <VStack className="my-6 items-center gap-2">
+            <Money amount={rowAmount(t)} className="text-3xl font-bold" />
+            <StatusPill status={t.status} />
+            {t.status === 'pending' ? <Text size="sm" className="text-center font-medium">Biên lai này chưa phải xác nhận cuối cùng</Text> : null}
+            {t.status === 'refunded' && refundTx ? <Text size="sm" className="text-center">Đã hoàn {formatVnd(refundTx.amount)} lúc {fmtDateTime(refundTx.createdAt)}</Text> : null}
+          </VStack>
+          <ConfirmRows rows={[
+            ['Mã giao dịch', <Text className="font-medium tabular-nums">{t.id}</Text>],
+            ['Thời gian', fmtDateTime(t.createdAt)],
+            ...(cp ? [cp] : []),
+            ['Lời nhắn', t.message ?? '—'],
+            ['Phí', t.fee ? formatVnd(t.fee) : 'Miễn phí'],
+            ['Tổng tiền', formatVnd(rowAmount(t))],
+          ]} />
+        </Card>
+      </Box>
+      <VStack className="mx-auto mt-6 w-full max-w-md gap-2 print:hidden">
         {layout === 'web' ? (
-          <div className="flex gap-2">
-            <Button onClick={() => window.print()}><Printer size={18} strokeWidth={1.75} aria-hidden />In biên lai</Button>
+          <HStack className="gap-2">
+            <Button onClick={() => window.print()}><Ico as={Printer} />In biên lai</Button>
             <Button variant="secondary" onClick={close}>Đóng</Button>
-          </div>
+          </HStack>
         ) : (
-          <Button variant="ink" block onClick={share}><Share2 size={18} strokeWidth={1.75} aria-hidden />{canShare ? 'Chia sẻ' : 'Sao chép'}</Button>
+          <Button variant="primary" block onClick={share}><Ico as={Share2} />{canShare ? 'Chia sẻ' : 'Sao chép'}</Button>
         )}
-      </div>
+      </VStack>
       {toast.node}
-    </div>
+    </Box>
   )
 }
 
 /* ── Detail (US-HIS-002) ──────────────────────────────────────────── */
 
-function Action({ label, icon, onClick, to }: { label: string; icon: ReactNode; onClick?: () => void; to?: string }) {
+function Action({ label, icon, onClick, to }: { label: string; icon: LucideIcon; onClick?: () => void; to?: string }) {
   const layout = useLayout()
-  if (layout === 'web') return to ? <ButtonLink to={to} variant="secondary">{icon}{label}</ButtonLink> : <Button variant="secondary" onClick={onClick}>{icon}{label}</Button>
-  const inner = (
-    <>
-      <span aria-hidden className="inline-flex size-12 items-center justify-center rounded-full bg-surface-2 text-tint transition-colors group-hover:bg-primary-soft group-active:bg-primary-soft-hover">{icon}</span>
-      <span className="text-[12px] leading-4 font-semibold whitespace-nowrap">{label}</span>
-    </>
+  const press = useLinkPress(to, onClick)
+  if (layout === 'web') return <Button variant="secondary" to={to} onClick={onClick}><Ico as={icon} />{label}</Button>
+  // App tiles match Home shortcuts (48 disc, 24 glyph).
+  return (
+    <Pressable onPress={press} {...(to ? { href: to, role: 'link' } : { role: 'button' })}
+      className="min-w-20 items-center gap-2 rounded-xl data-[hover=true]:opacity-80 data-[active=true]:opacity-60">
+      <Disc><Ico as={icon} size="xl" className="text-primary" /></Disc>
+      <Text size="xs" bold className="whitespace-nowrap">{label}</Text>
+    </Pressable>
   )
-  const cls = 'group flex min-w-20 flex-col items-center gap-header rounded-xl text-ink no-underline'
-  return to ? <Link to={to} className={cls}>{inner}</Link> : <button type="button" onClick={onClick} className={cls}>{inner}</button>
+}
+
+/** A full-width card row that links to a related transaction. */
+function LinkCard({ to, children }: { to: string; children: ReactNode }) {
+  return <Card className="overflow-hidden p-0"><Row to={to} title={children} chevron /></Card>
 }
 
 export default function TransactionPage() {
@@ -197,82 +211,82 @@ export default function TransactionPage() {
   })()
 
   const copyId = async () => { try { await navigator.clipboard.writeText(t.id); toast.show('Đã sao chép mã giao dịch') } catch { toast.show('Không sao chép được') } }
-  const ic = { size: layout === 'app' ? 24 : 20, strokeWidth: 1.75, 'aria-hidden': true } as const // app tiles match Home shortcuts (48 disc, 24 glyph); web buttons keep 20
 
-  const actions = (
-    <div className={cx('flex gap-2', layout === 'web' ? 'flex-wrap' : 'card justify-around px-header py-inset')}>
-      {t.status !== 'failed' ? <Action label="Biên lai" icon={<FileText {...ic} />} to={`/history/${t.id}?view=receipt`} /> : null}
-      {!request ? <Action label="Liên hệ hỗ trợ" icon={<LifeBuoy {...ic} />} to={supportTo} /> : null}
-      {resendTo ? <Action label="Chuyển lại" icon={<Repeat {...ic} />} onClick={() => guard(resendTo)} /> : null}
-    </div>
+  const items = (
+    <>
+      {t.status !== 'failed' ? <Action label="Biên lai" icon={FileText} to={`/history/${t.id}?view=receipt`} /> : null}
+      {!request ? <Action label="Liên hệ hỗ trợ" icon={LifeBuoy} to={supportTo} /> : null}
+      {resendTo ? <Action label="Chuyển lại" icon={Repeat} onClick={() => guard(resendTo)} /> : null}
+    </>
   )
+  const actions = layout === 'web'
+    ? <HStack className="flex-wrap gap-2">{items}</HStack>
+    : <Card className="px-2 py-4"><HStack className="justify-around gap-2">{items}</HStack></Card>
 
   const wrongRecipient = t.type === 'p2p_out' && t.status === 'success' ? (
-    <section aria-labelledby="wr-title" className="rounded-[var(--radius-input)] bg-surface-2 p-inset">
-      <h2 id="wr-title" className="font-semibold">Chuyển nhầm người nhận?</h2>
-      <p className="mt-1 text-[15px] leading-5">Giao dịch chuyển tiền đã thành công không thể hủy hoặc thu hồi. Hãy nhắn người nhận để đề nghị chuyển trả.</p>
-      <div className="mt-stack flex flex-wrap gap-2">
+    <Box role="region" aria-labelledby="wr-title" className="rounded-lg border border-border bg-card p-4">
+      <Heading as="h2" size="md" id="wr-title">Chuyển nhầm người nhận?</Heading>
+      <Text size="sm" className="mt-1">Giao dịch chuyển tiền đã thành công không thể hủy hoặc thu hồi. Hãy nhắn người nhận để đề nghị chuyển trả.</Text>
+      <HStack className="mt-3 flex-wrap gap-2">
         {/* Placeholder deep link (rules.md#history-and-support): no chat in P0. */}
-        <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-4 text-[15px] font-semibold text-on-ink no-underline"><MessageCircle size={18} strokeWidth={1.75} aria-hidden />Nhắn người nhận</a>
-        {!request ? <ButtonLink to={supportTo} variant="secondary" className="h-11">Liên hệ hỗ trợ</ButtonLink> : null}
-      </div>
-    </section>
+        <GButton href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} role="link" size="lg">
+          <Ico as={MessageCircle} /><ButtonText>Nhắn người nhận</ButtonText>
+        </GButton>
+        {!request ? <ButtonLink to={supportTo} variant="secondary">Liên hệ hỗ trợ</ButtonLink> : null}
+      </HStack>
+    </Box>
   ) : null
 
   return (
-    <div className="max-w-[560px]">
+    <Box className="max-w-xl">
       {layout === 'web' ? <WebBackLink to="/history">Lịch sử</WebBackLink> : null}
 
-      <header className="card flex flex-col items-center gap-2 px-inset py-group text-center">
+      <Card className="items-center gap-2 px-4 py-6">
         <TxIcon type={t.type} size={56} />
-        <h1 tabIndex={-1} data-page-title className="mt-1 line-clamp-2 headline break-words outline-none">{name}</h1>
-        <p className="-mt-1 text-[13px] text-muted">{typeLabel(t.type)}</p>
-        <p className={cx('amount-display mt-1 break-all', t.status === 'failed' ? 'text-muted line-through' : t.direction === 'in' && 'text-success')}>
-          <Money amount={rowAmount(t)} sign={t.direction} />
-        </p>
+        <Heading size="3xl" tabIndex={-1} data-page-title className="mt-1 line-clamp-2 text-center text-lg break-words outline-none">{name}</Heading>
+        <Text size="sm" className="-mt-1 text-muted-foreground">{typeLabel(t.type)}</Text>
+        <Money amount={rowAmount(t)} sign={t.direction} className={cx('mt-1 text-3xl font-bold break-all', t.status === 'failed' && 'text-muted-foreground line-through')} />
         <StatusPill status={t.status} />
-        <span className="text-[15px] text-muted">{t.status === 'success' ? fmtDateTime(t.updatedAt) : truthLine(t)}</span>
-      </header>
+        <Text size="sm" className="text-center text-muted-foreground">{t.status === 'success' ? fmtDateTime(t.updatedAt) : truthLine(t)}</Text>
+      </Card>
 
-      <div className="mt-group flex flex-col gap-4">
+      <VStack className="mt-6 gap-4">
         {timelineSteps(t, refundTx).length > 1 ? <Timeline steps={timelineSteps(t, refundTx)} /> : null}
 
         {refundTx ? (
-          <Link to={`/history/${refundTx.id}`} className="flex min-h-12 items-center justify-between gap-3 card px-inset py-stack text-ink no-underline hover:bg-surface-2">
-            <span>Hoàn tiền · <span className="tnum text-success">{formatVnd(refundTx.amount, { sign: 'in' })}</span> · {fmtDateTime(refundTx.createdAt).split(' · ')[1]}</span>
-            <span aria-hidden className="text-muted">›</span>
-          </Link>
+          <LinkCard to={`/history/${refundTx.id}`}>
+            Hoàn tiền · <Text className="tabular-nums">{formatVnd(refundTx.amount, { sign: 'in' })}</Text> · {fmtDateTime(refundTx.createdAt).split(' · ')[1]}
+          </LinkCard>
         ) : null}
         {original ? (
-          <Link to={`/history/${original.id}`} className="flex min-h-12 items-center justify-between gap-3 card px-inset py-stack text-ink no-underline hover:bg-surface-2">
-            <span>Hoàn tiền cho giao dịch <span className="tnum">{original.id}</span></span>
-            <span aria-hidden className="text-muted">›</span>
-          </Link>
+          <LinkCard to={`/history/${original.id}`}>
+            Hoàn tiền cho giao dịch <Text className="tabular-nums">{original.id}</Text>
+          </LinkCard>
         ) : null}
 
         {layout === 'app' ? <>{actions}{wrongRecipient}</> : null}
 
         <ConfirmRows rows={[
           ['Mã giao dịch', (
-            <span className="inline-flex items-center gap-1">
-              <span className="tnum">{t.id}</span>
-              <button type="button" onClick={copyId} aria-label="Sao chép mã giao dịch" title="Sao chép" className="-my-2 -mr-2 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-tint hover:bg-primary-soft"><Copy size={18} strokeWidth={1.75} aria-hidden /></button>
-            </span>
+            <HStack className="items-center gap-1">
+              <Text className="font-medium tabular-nums">{t.id}</Text>
+              <IconButton label="Sao chép mã giao dịch" onClick={copyId} className="-my-2 -mr-2 shrink-0"><Ico as={Copy} className="text-primary" /></IconButton>
+            </HStack>
           )],
           ...detailRows(t, w),
           ...(t.authMethod ? [['Xác thực bằng', AUTH_LABEL[t.authMethod]] as [string, ReactNode]] : []),
         ]} />
 
         {request ? (
-          <p className="text-[15px]">Đã gửi yêu cầu hỗ trợ ngày {fmtDateTime(request.createdAt).split(' · ')[1]} · {SUPPORT_STATUS_LABEL[request.status]}</p>
+          <Text size="sm">Đã gửi yêu cầu hỗ trợ ngày {fmtDateTime(request.createdAt).split(' · ')[1]} · {SUPPORT_STATUS_LABEL[request.status]}</Text>
         ) : !inWindow ? (
-          <p className="text-[15px] text-muted">Giao dịch đã quá {config.supportWindowDays} ngày; yêu cầu hỗ trợ trực tuyến không còn mở.</p>
+          <Text size="sm" className="text-muted-foreground">Giao dịch đã quá {config.supportWindowDays} ngày; yêu cầu hỗ trợ trực tuyến không còn mở.</Text>
         ) : null}
 
         {layout === 'web' ? <>{wrongRecipient}{actions}</> : null}
-      </div>
+      </VStack>
       {sheet}
       {toast.node}
-    </div>
+    </Box>
   )
 }

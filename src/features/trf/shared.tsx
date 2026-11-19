@@ -5,13 +5,20 @@ import { useLayout } from '@/app/layout'
 import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
 import { authFor, authLine } from '@/features/flow/FlowKit'
-import { Avatar, Button, cx, PageTitle, Skeleton } from '@/components/app-ui'
+import { Avatar, Button, Card, cx, Ico, PageTitle, Skeleton } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Image } from '@/components/ui/image'
+import { Text } from '@/components/ui/text'
+import { Textarea, TextareaInput } from '@/components/ui/textarea'
+import { VStack } from '@/components/ui/vstack'
 
 /** In-shell page title: visible h1 on web; on app the shell header shows the title, so the h1 is for screen readers. */
 export function PageHeading({ children }: { children: ReactNode }) {
   return useLayout() === 'web'
     ? <PageTitle>{children}</PageTitle>
-    : <h1 tabIndex={-1} data-page-title className="sr-only">{children}</h1>
+    : <Heading size="3xl" tabIndex={-1} data-page-title className="sr-only">{children}</Heading>
 }
 
 /** QR always black on white (DESIGN: scanner contrast), with loading and error states. */
@@ -25,48 +32,52 @@ export function QrImage({ payload, size, label }: { payload: string; size: numbe
       .catch(() => live && setState({ payload, error: true }))
     return () => { live = false }
   }, [payload, size, retry])
+  const box = { width: size, height: size }
   if (state.error && state.payload === payload)
     return (
-      <div role="alert" className="flex flex-col items-center justify-center gap-3 rounded-[12px] border border-line bg-surface p-inset text-center" style={{ width: size, height: size }}>
-        <p className="text-[15px]">Không tạo được mã. Thử lại.</p>
+      <VStack role="alert" className="items-center justify-center gap-3 rounded-xl border border-border bg-card p-4 text-center" style={box}>
+        <Text>Không tạo được mã. Thử lại.</Text>
         <Button size="sm" variant="secondary" onClick={() => setRetry((r) => r + 1)}>Thử lại</Button>
-      </div>
+      </VStack>
     )
   if (!state.url || state.payload !== payload)
-    return <div aria-busy aria-label="Đang tạo mã" role="img" style={{ width: size, height: size }}><Skeleton className="size-full rounded-[12px]" /></div>
-  return <img src={state.url} width={size} height={size} alt={label} className="rounded-[12px] bg-white" style={{ width: size, height: size }} />
+    return <Box aria-busy aria-label="Đang tạo mã" role="img" style={box}><Skeleton className="size-full rounded-xl" /></Box>
+  return <Box style={box}><Image size="full" source={{ uri: state.url }} aria-label={label} className="rounded-xl" /></Box>
 }
 
 export function MessageField({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
-    <div className="mt-group">
-      <div className="mb-header flex items-baseline justify-between">
-        <label htmlFor="message" className="text-[13px] font-medium">Lời nhắn</label>
-        <span className="text-[13px] text-muted tnum" aria-live="off">{value.length}/{config.messageMax}</span>
-      </div>
-      <textarea
-        id="message" rows={2} maxLength={config.messageMax} value={value} placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value.slice(0, config.messageMax))}
-        aria-describedby="message-count"
-        className="w-full resize-none rounded-[var(--radius-input)] border border-transparent bg-surface-2 px-inset py-stack text-[15px] leading-[22px] focus:outline-none focus-visible:outline-2 focus-visible:outline-tint"
-      />
-      <span id="message-count" className="sr-only">Tối đa {config.messageMax} ký tự</span>
-    </div>
+    <VStack className="mt-6 gap-2">
+      <HStack className="items-baseline justify-between">
+        <Text id="message-label" size="sm" className="font-medium">Lời nhắn</Text>
+        <Text size="sm" className="text-muted-foreground tabular-nums" aria-live="off">{value.length}/{config.messageMax}</Text>
+      </HStack>
+      <Textarea className="h-auto">
+        <TextareaInput
+          id="message" multiline numberOfLines={2} maxLength={config.messageMax} value={value} placeholder={placeholder}
+          onChangeText={(v: string) => onChange(v.slice(0, config.messageMax))}
+          aria-labelledby="message-label"
+          aria-describedby="message-count"
+          className="px-4 py-3"
+        />
+      </Textarea>
+      <Text id="message-count" className="sr-only">Tối đa {config.messageMax} ký tự</Text>
+    </VStack>
   )
 }
 
 /** Amount fixed by a QR: no caret, lock icon, the reason, and any check error. */
 export function LockedAmount({ amount, note, error }: { amount: number; note: string; error?: ReactNode }) {
   return (
-    <div>
-      <p className="mb-header text-[13px] font-medium">Số tiền</p>
-      <p className={cx('flex items-center gap-2 border-b-2 pb-2', error ? 'border-danger' : 'border-line')}>
-        <span className="amount-display tnum">{formatVnd(amount)}</span>
-        <Lock size={18} strokeWidth={1.75} aria-hidden className="text-muted" />
-      </p>
-      <p className="mt-header text-[13px] text-muted">{note}</p>
-      {error ? <p role="alert" className="mt-1 text-[13px] leading-5 text-danger">{error}</p> : null}
-    </div>
+    <VStack className="gap-2">
+      <Text size="sm" className="font-medium">Số tiền</Text>
+      <HStack className={cx('items-center gap-2 border-b-2 pb-2', error ? 'border-destructive' : 'border-border')}>
+        <Text size="4xl" bold className="tabular-nums">{formatVnd(amount)}</Text>
+        <Ico as={Lock} size="md" className="text-muted-foreground" />
+      </HStack>
+      <Text size="sm" className="text-muted-foreground">{note}</Text>
+      {error ? <Text role="alert" size="sm" className="text-destructive">{error}</Text> : null}
+    </VStack>
   )
 }
 
@@ -87,25 +98,26 @@ export function useWakeLock(on: boolean) {
 
 export function RecipientChip({ name, sub, note, onChange }: { name: string; sub: ReactNode; note?: string; onChange?: () => void }) {
   return (
-    <div className="mb-group flex items-center gap-3 card p-inset">
-      <Avatar name={name} />
-      <div className="min-w-0 flex-1">
-        <p className="font-semibold break-words">{name}</p>
-        <p className="text-[13px] text-muted">{sub}</p>
-        {note ? <p className="text-[12px] text-muted">{note}</p> : null}
-      </div>
-      {onChange ? <Button variant="ghost" size="sm" onClick={onChange}>Đổi</Button> : null}
-    </div>
+    <Card className="mb-6">
+      <HStack className="items-center gap-3">
+        <Avatar name={name} />
+        <VStack className="min-w-0 flex-1">
+          <Text className="font-semibold break-words">{name}</Text>
+          <Text size="sm" className="text-muted-foreground">{sub}</Text>
+          {note ? <Text size="xs" className="text-muted-foreground">{note}</Text> : null}
+        </VStack>
+        {onChange ? <Button variant="ghost" size="sm" onClick={onChange}>Đổi</Button> : null}
+      </HStack>
+    </Card>
   )
 }
 
 export function AuthNote({ type, amount }: { type: Parameters<typeof authLine>[0]; amount: number }) {
   const face = authFor(type, amount) === 'face_match'
   return (
-    <p className="mt-stack flex items-start gap-2 rounded-[12px] bg-surface-2 px-4 py-3 text-[15px]">
-      {face ? <ScanFace size={18} strokeWidth={1.75} aria-hidden className="mt-1 shrink-0" /> : <Lock size={18} strokeWidth={1.75} aria-hidden className="mt-1 shrink-0" />}
-      {authLine(type, amount)}
-    </p>
+    <HStack className="mt-3 items-start gap-2 rounded-lg border border-border bg-card px-4 py-3">
+      <Ico as={face ? ScanFace : Lock} size="md" className="mt-1 shrink-0" />
+      <Text>{authLine(type, amount)}</Text>
+    </HStack>
   )
 }
-

@@ -1,14 +1,18 @@
 import { Download, Plus, Share2, X } from 'lucide-react'
 import { toCanvas } from 'qrcode'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Link } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { now, useWorld } from '@/app/store'
 import { formatVnd } from '@/domain/money'
 import { buildQr } from '@/domain/qr'
 import { GatedRoute } from '@/features/sec/Gate'
 import { AmountInput, formatPhone } from '@/features/flow/FlowKit'
-import { Button, Card, Disc, Segmented, Sheet } from '@/components/app-ui'
+import { Button, Card, Disc, Ico, Segmented, Sheet, TextLink } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Pressable } from '@/components/ui/pressable'
+import { Text } from '@/components/ui/text'
 import { PageHeading, QrImage } from './shared'
 
 /** rules.md decisions: the wallet's VietQR form is a virtual account at the Vietcombank BIN. */
@@ -41,12 +45,12 @@ async function renderImage(payload: string, name: string, amount: number): Promi
 
 export default function ReceivePage() {
   return (
-    <div>
+    <Box>
       <PageHeading>Nhận tiền</PageHeading>
       <GatedRoute allow={['kyc', 'kyc_review', 'no_source']}>
         <Receive />
       </GatedRoute>
-    </div>
+    </Box>
   )
 }
 
@@ -67,7 +71,7 @@ function Receive() {
   const incoming = w.transactions.find((t) => t.type === 'p2p_in' && t.createdAt > since.current)
   useEffect(() => {
     if (!incoming || incoming.counterparty.kind !== 'contact') return
-    setToast(<>Bạn vừa nhận {formatVnd(incoming.amount)} từ {incoming.counterparty.name}. <Link to={`/history/${incoming.id}`} className="font-semibold text-tint">Xem</Link></>)
+    setToast(<>Bạn vừa nhận {formatVnd(incoming.amount)} từ {incoming.counterparty.name}. <TextLink to={`/history/${incoming.id}`}>Xem</TextLink></>)
   }, [incoming])
 
   const save = async () => {
@@ -88,47 +92,47 @@ function Receive() {
 
   const actions: { label: string; icon: ReactNode; onClick: () => void }[] = [
     amount
-      ? { label: 'Xóa số tiền', icon: <X size={22} strokeWidth={1.75} />, onClick: () => setAmount(0) }
-      : { label: 'Thêm số tiền', icon: <Plus size={22} strokeWidth={1.75} />, onClick: () => { setEntry(0); setSheet(true) } },
-    { label: 'Lưu ảnh', icon: <Download size={22} strokeWidth={1.75} />, onClick: () => void save() },
-    { label: 'Chia sẻ', icon: <Share2 size={22} strokeWidth={1.75} />, onClick: () => void share() },
+      ? { label: 'Xóa số tiền', icon: <Ico as={X} size="lg" />, onClick: () => setAmount(0) }
+      : { label: 'Thêm số tiền', icon: <Ico as={Plus} size="lg" />, onClick: () => { setEntry(0); setSheet(true) } },
+    { label: 'Lưu ảnh', icon: <Ico as={Download} size="lg" />, onClick: () => void save() },
+    { label: 'Chia sẻ', icon: <Ico as={Share2} size="lg" />, onClick: () => void share() },
   ]
 
   return (
     <>
-      <Card className="flex flex-col items-center px-inset py-group text-center">
+      <Card className="items-center px-4 py-6 text-center">
         <Segmented label="Loại mã" value={kind} onChange={setKind} options={[{ value: 'wallet', label: 'Mã ví' }, { value: 'vietqr', label: 'VietQR' }]} />
-        <h2 className="mt-group text-[13px] font-medium text-muted">Mã nhận tiền</h2>
-        <div className="mt-stack card p-2">
+        <Heading as="h2" size="xs" className="mt-6 font-medium text-muted-foreground">Mã nhận tiền</Heading>
+        <Card className="mt-3 p-2">
           <QrImage payload={payload} size={size} label={`Mã nhận tiền của ${w.customer.name}${amount ? `, số tiền ${formatVnd(amount)}` : ''}`} />
-        </div>
-        {kind === 'vietqr' ? <p className="mt-stack text-[13px] text-muted">Quét bằng app ngân hàng bất kỳ</p> : null}
-        {amount ? <p className="mt-stack amount-display tnum">{formatVnd(amount)}</p> : null}
-        <p className="mt-stack text-[16px] font-bold break-words">{w.customer.name}</p>
-        <p className="text-[15px] text-muted tnum">{formatPhone(phone)}</p>
+        </Card>
+        {kind === 'vietqr' ? <Text size="sm" className="mt-3 text-muted-foreground">Quét bằng app ngân hàng bất kỳ</Text> : null}
+        {amount ? <Text size="4xl" bold className="mt-3 tabular-nums">{formatVnd(amount)}</Text> : null}
+        <Text size="lg" bold className="mt-3 break-words">{w.customer.name}</Text>
+        <Text className="text-muted-foreground tabular-nums">{formatPhone(phone)}</Text>
 
         {layout === 'web' ? (
-          <div className="mt-group flex flex-wrap justify-center gap-2">
+          <HStack className="mt-6 flex-wrap justify-center gap-2">
             {actions.map((a) => <Button key={a.label} variant="secondary" onClick={a.onClick}>{a.icon}{a.label}</Button>)}
-          </div>
+          </HStack>
         ) : (
-          <ul className="mt-group grid w-full grid-cols-3 gap-2">
+          <HStack role="list" className="mt-6 w-full gap-2">
             {actions.map((a) => (
-              <li key={a.label}>
-                <button type="button" onClick={a.onClick} className="flex w-full flex-col items-center gap-2 rounded-xl py-1 hover:bg-surface-2">
+              <Box key={a.label} role="listitem" className="flex-1">
+                <Pressable onPress={a.onClick} role="button" className="w-full items-center gap-2 rounded-xl py-1 data-[hover=true]:bg-muted data-[active=true]:bg-muted">
                   <Disc>{a.icon}</Disc>
-                  <span className="text-[13px] leading-[18px]">{a.label}</span>
-                </button>
-              </li>
+                  <Text size="sm">{a.label}</Text>
+                </Pressable>
+              </Box>
             ))}
-          </ul>
+          </HStack>
         )}
       </Card>
-      <p role="status" aria-live="polite" className="mt-stack min-h-6 text-center text-[15px]">{toast}</p>
+      <Text role="status" aria-live="polite" className="mt-3 block min-h-6 text-center">{toast}</Text>
 
       <Sheet open={sheet} onOpenChange={setSheet} title="Thêm số tiền" description="Người quét mã sẽ thấy sẵn số tiền này.">
         <AmountInput value={entry} onChange={setEntry} quick={[50_000, 100_000, 200_000, 500_000]} />
-        <Button block className="mt-group" disabled={!entry} onClick={() => { setAmount(entry); setSheet(false) }}>Xong</Button>
+        <Button block className="mt-6" disabled={!entry} onClick={() => { setAmount(entry); setSheet(false) }}>Xong</Button>
       </Sheet>
     </>
   )

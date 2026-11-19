@@ -1,6 +1,6 @@
 import { RefreshCw } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { executeMoney, getState, now, setPaymentCodeOpen, sourceLabel, useSettings, useWorld } from '@/app/store'
 import { formatVnd } from '@/domain/money'
@@ -9,7 +9,14 @@ import type { FundingSource, Transaction } from '@/mock/seed'
 import { AuthSheet } from '@/features/sec/AuthSheet'
 import { GatedRoute } from '@/features/sec/Gate'
 import { authFor, checkAmount } from '@/features/flow/FlowKit'
-import { Button, Card, cx, Row, Sheet } from '@/components/app-ui'
+import { Button, Card, cx, Ico, Row, Sheet, TextLink } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Progress, ProgressFilledTrack } from '@/components/ui/progress'
+import { Spinner } from '@/components/ui/spinner'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { PageHeading, QrImage, useWakeLock } from '@/features/trf/shared'
 import { Result } from './MerchantPayFlow'
 import { PayTabs } from './PayTabs'
@@ -38,11 +45,11 @@ function Barcode({ value }: { value: string }) {
 export default function PayCodePage() {
   const layout = useLayout()
   return (
-    <div>
+    <Box>
       <PageHeading>{layout === 'web' ? 'Thanh toán' : 'Mã thanh toán'}</PageHeading>
       {layout === 'web' ? <PayTabs active="code" /> : null}
       <GatedRoute><PayCode /></GatedRoute>
-    </div>
+    </Box>
   )
 }
 
@@ -131,20 +138,22 @@ function PayCode() {
   const urgent = remaining <= 10
 
   const banner = blocked ? (
-    <div role="alert" className="mb-stack card p-inset">
-      <p className="font-semibold">
-        {blocked.kind === 'balance' && `Chưa thanh toán: số dư khả dụng không đủ cho ${formatVnd(blocked.amount)}. Chọn nguồn tiền khác hoặc nạp tiền.`}
-        {blocked.kind === 'limit' && `Chưa thanh toán: ${formatVnd(blocked.amount)} vượt hạn mức tháng.`}
-        {blocked.kind === 'face' && 'Chưa thanh toán. Thu ngân có thể quét lại.'}
-        {blocked.kind === 'error' && 'Không gửi được yêu cầu. Bạn chưa bị trừ tiền.'}
-      </p>
-      {blocked.kind === 'balance' || blocked.kind === 'limit' ? (
-        <div className="mt-stack flex flex-wrap gap-2">
-          {sources.length ? <Button size="sm" variant="secondary" onClick={() => setPicker(true)}>Đổi nguồn tiền</Button> : null}
-          <Button size="sm" variant="secondary" onClick={() => nav('/topup')}>Nạp tiền</Button>
-        </div>
-      ) : null}
-    </div>
+    <Box role="alert" className="mb-3">
+      <Card>
+        <Text className="font-semibold">
+          {blocked.kind === 'balance' && `Chưa thanh toán: số dư khả dụng không đủ cho ${formatVnd(blocked.amount)}. Chọn nguồn tiền khác hoặc nạp tiền.`}
+          {blocked.kind === 'limit' && `Chưa thanh toán: ${formatVnd(blocked.amount)} vượt hạn mức tháng.`}
+          {blocked.kind === 'face' && 'Chưa thanh toán. Thu ngân có thể quét lại.'}
+          {blocked.kind === 'error' && 'Không gửi được yêu cầu. Bạn chưa bị trừ tiền.'}
+        </Text>
+        {blocked.kind === 'balance' || blocked.kind === 'limit' ? (
+          <HStack className="mt-3 flex-wrap gap-2">
+            {sources.length ? <Button size="sm" variant="secondary" onClick={() => setPicker(true)}>Đổi nguồn tiền</Button> : null}
+            <Button size="sm" variant="secondary" onClick={() => nav('/topup')}>Nạp tiền</Button>
+          </HStack>
+        ) : null}
+      </Card>
+    </Box>
   ) : null
 
   return (
@@ -152,44 +161,44 @@ function PayCode() {
       {phase !== 'auth' && code ? (
         <>
           {banner}
-          <Card className="relative flex flex-col items-center px-inset py-group text-center">
-            {app ? null : <h2 className="mb-stack headline">Mã thanh toán</h2>}
-            <div className="rounded-[12px] bg-white p-2">
+          <Card className="relative items-center px-4 py-6">
+            {app ? null : <Heading size="lg" as="h2" className="mb-3">Mã thanh toán</Heading>}
+            <Box className="rounded-xl bg-white p-2">
               <QrImage payload={code.value} size={240} label="Mã thanh toán, đưa thu ngân quét" />
-            </div>
-            <div className="mt-stack w-full max-w-[360px] bg-white px-2"><Barcode value={code.value} /></div>
-            <p className="mt-stack flex items-center gap-3 text-[15px]">
-              <span className="tnum font-semibold tracking-wider">{revealed ? code.value.replace(/(\d{4})(?=\d)/g, '$1 ') : `•••• ${code.value.slice(-4)}`}</span>
+            </Box>
+            <Box className="mt-3 w-full max-w-sm bg-white px-2"><Barcode value={code.value} /></Box>
+            <HStack className="mt-3 items-center gap-3">
+              <Text className="font-semibold tracking-wider tabular-nums">{revealed ? code.value.replace(/(\d{4})(?=\d)/g, '$1 ') : `•••• ${code.value.slice(-4)}`}</Text>
               {revealed ? null : <Button variant="ghost" size="sm" onClick={() => setRevealUntil(now() + 10_000)}>Hiện số</Button>}
-            </p>
-            <div className="mt-stack w-full max-w-[360px]">
-              <p className={cx('text-[15px] tnum', urgent ? 'font-semibold text-pending' : 'text-muted')} aria-hidden>Mã tự đổi sau {fmtCountdown(remaining)}</p>
-              <div className="mt-header h-1 w-full overflow-hidden rounded-full bg-line-soft" aria-hidden>
-                <div className={cx('h-full rounded-full transition-[width] duration-1000 ease-linear', urgent ? 'bg-pending' : 'bg-ink')} style={{ width: `${(remaining / PAY_CODE_TTL_S) * 100}%` }} />
-              </div>
-              <p className="sr-only" role="status" aria-live="polite">{announce}</p>
-            </div>
-            <Button variant="ghost" size="sm" className="mt-stack" onClick={() => issue(true)}><RefreshCw size={16} aria-hidden />Làm mới</Button>
-            {app ? <p className="mt-header text-[13px] text-muted">Tăng độ sáng màn hình để thu ngân quét dễ hơn</p> : null}
+            </HStack>
+            <VStack className="mt-3 w-full max-w-sm items-center gap-2">
+              <Text aria-hidden className={cx('tabular-nums', urgent ? 'font-semibold text-foreground' : 'text-muted-foreground')}>Mã tự đổi sau {fmtCountdown(remaining)}</Text>
+              <Progress aria-hidden value={(remaining / PAY_CODE_TTL_S) * 100} className="h-1">
+                <ProgressFilledTrack className={cx('duration-1000 ease-linear', urgent && 'bg-destructive')} />
+              </Progress>
+              <Text className="sr-only" role="status" aria-live="polite">{announce}</Text>
+            </VStack>
+            <Button variant="ghost" size="sm" className="mt-3" onClick={() => issue(true)}><Ico as={RefreshCw} size="sm" />Làm mới</Button>
+            {app ? <Text size="sm" className="mt-2 text-muted-foreground">Tăng độ sáng màn hình để thu ngân quét dễ hơn</Text> : null}
             {phase === 'paying' ? (
-              <div role="status" aria-live="polite" className="absolute inset-0 flex flex-col items-center justify-center rounded-[16px] bg-surface/90">
-                <span className="size-8 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden />
-                <p className="mt-stack font-semibold">Đang thanh toán…</p>
-              </div>
+              <VStack role="status" aria-live="polite" className="absolute inset-0 items-center justify-center rounded-xl bg-card/90">
+                <Spinner aria-hidden />
+                <Text className="mt-3 font-semibold">Đang thanh toán…</Text>
+              </VStack>
             ) : null}
           </Card>
-          <Card className="mt-group overflow-hidden">
+          <Card className="mt-6 overflow-hidden p-0">
             <Row
               onClick={sources.length ? () => setPicker(true) : undefined}
               title="Nguồn tiền"
-              subtitle={<span className="whitespace-nowrap text-ink">{label}</span>}
+              subtitle={<Text className="whitespace-nowrap text-foreground">{label}</Text>}
               chevron={sources.length > 0}
             />
           </Card>
-          <p className="mt-stack text-[13px] text-muted">Thu ngân quét mã này để trừ tiền. Không chia sẻ mã với người khác. <Link to="/pay/scan" className="font-medium text-tint">Quét mã thay vì đưa mã</Link></p>
+          <Text size="sm" className="mt-3 text-muted-foreground">Thu ngân quét mã này để trừ tiền. Không chia sẻ mã với người khác. <TextLink to="/pay/scan">Quét mã thay vì đưa mã</TextLink></Text>
         </>
       ) : (
-        <p className="card py-12 text-center text-muted">Xác thực để hiện mã thanh toán.</p>
+        <Card className="py-12"><Text className="text-center text-muted-foreground">Xác thực để hiện mã thanh toán.</Text></Card>
       )}
 
       <AuthSheet
@@ -207,18 +216,18 @@ function PayCode() {
         />
       ) : null}
       <Sheet open={picker} onOpenChange={setPicker} title="Nguồn tiền">
-        <ul className="-mx-inset">
+        <VStack role="list" className="-mx-4">
           {[{ id: WALLET, title: 'Ví', sub: `Số dư khả dụng: ${formatVnd(w.balance)}` }, ...sources.map((s) => ({ id: s.id, title: srcLabel(s) + (s.isDefault ? ' (mặc định)' : ''), sub: s.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản ngân hàng' }))].map((o) => (
-            <li key={o.id}>
+            <Box key={o.id} role="listitem">
               <Row
                 onClick={() => { setSourceId(o.id); setPicker(false); setBlocked(null); issue(true) }}
                 title={o.title}
                 selected={o.id === sourceId}
                 subtitle={o.sub}
               />
-            </li>
+            </Box>
           ))}
-        </ul>
+        </VStack>
       </Sheet>
     </>
   )

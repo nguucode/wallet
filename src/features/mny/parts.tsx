@@ -1,7 +1,12 @@
 import { Check, ChevronDown, Clock, X } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { bankById, useWorld } from '@/app/store'
-import { BankMark, Badge, cx, Row, Sheet } from '@/components/app-ui'
+import { BankMark, Badge, Disc, Ico, Row, Sheet } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { HStack } from '@/components/ui/hstack'
+import { Pressable } from '@/components/ui/pressable'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import type { FundingSource } from '@/mock/seed'
 import { kindLabel, mask4, sortSources } from './logic'
 
@@ -9,13 +14,14 @@ import { kindLabel, mask4, sortSources } from './logic'
 export function SourceLine({ s, sub }: { s: FundingSource; sub?: ReactNode }) {
   const bank = bankById(s.bankId)
   return (
-    <span className="flex min-w-0 flex-1 items-center gap-3">
+    <HStack className="min-w-0 flex-1 items-center gap-3">
       <BankMark short={bank.short} size={40} />
-      <span className="min-w-0 flex-1 text-left">
-        <span className="block font-medium">{bank.name}</span>
-        <span className="block text-[13px] leading-[18px] text-muted">{kindLabel(s.kind)} <span className="tnum">{mask4(s.last4)}</span>{sub}</span>
-      </span>
-    </span>
+      <VStack className="min-w-0 flex-1">
+        <Text className="font-medium">{bank.name}</Text>
+        <Text size="sm" className="text-muted-foreground">{kindLabel(s.kind)} <Text size="sm" className="tabular-nums text-muted-foreground">{mask4(s.last4)}</Text></Text>
+        {sub}
+      </VStack>
+    </HStack>
   )
 }
 
@@ -26,31 +32,34 @@ export function SourcePicker({ label, value, onChange }: { label: string; value?
   const current = w.sources.find((s) => s.id === value) ?? w.sources[0]
   if (!current) return null
   return (
-    <div className="mb-group">
-      <p id="source-label" className="mb-header text-[13px] font-medium">{label}</p>
-      <button type="button" aria-describedby="source-label" onClick={() => setOpen(true)} className="flex min-h-[60px] w-full items-center gap-stack rounded-[var(--radius-input)] bg-surface-2 px-inset py-header">
-        <span id="source-current" className="contents"><SourceLine s={current} /></span>
-        <ChevronDown size={20} strokeWidth={1.75} aria-hidden className="text-muted" />
-      </button>
+    <VStack className="mb-6 gap-2">
+      <Text id="source-label" size="sm" className="font-medium">{label}</Text>
+      <Pressable
+        role="button" aria-describedby="source-label" onPress={() => setOpen(true)}
+        className="min-h-[60px] w-full flex-row items-center gap-3 rounded-md border border-border bg-card px-4 py-2 data-[hover=true]:bg-accent data-[active=true]:bg-accent"
+      >
+        <Box id="source-current" className="contents"><SourceLine s={current} /></Box>
+        <Ico as={ChevronDown} className="text-muted-foreground" />
+      </Pressable>
       <Sheet open={open} onOpenChange={setOpen} title={label}>
-        <ul aria-label={label} className="-mx-inset">
+        <VStack role="list" aria-label={label} className="-mx-4 divide-y divide-border">
           {sortSources(w.sources).map((s) => {
             const bank = bankById(s.bankId)
             return (
-              <li key={s.id}>
+              <Box key={s.id} role="listitem">
                 <Row
                   onClick={() => { onChange(s.id); setOpen(false) }}
                   selected={s.id === current.id}
                   left={<BankMark short={bank.short} size={40} />}
                   title={bank.name}
-                  subtitle={<>{kindLabel(s.kind)} <span className="tnum">{mask4(s.last4)}</span>{s.isDefault ? ' · Mặc định' : null}</>}
+                  subtitle={<>{kindLabel(s.kind)} <Text size="sm" className="tabular-nums text-muted-foreground">{mask4(s.last4)}</Text>{s.isDefault ? ' · Mặc định' : null}</>}
                 />
-              </li>
+              </Box>
             )
           })}
-        </ul>
+        </VStack>
       </Sheet>
-    </div>
+    </VStack>
   )
 }
 
@@ -62,18 +71,19 @@ export function DefaultBadge() {
 export function ResultBlock({ tone, heading, amount, children, actions }: {
   tone: 'success' | 'pending' | 'failed'; heading: string; amount?: ReactNode; children?: ReactNode; actions?: ReactNode
 }) {
-  const Icon = tone === 'pending' ? Clock : tone === 'failed' ? X : Check
-  const cls = tone === 'success' ? 'bg-success-soft text-success' : tone === 'pending' ? 'bg-pending-soft text-pending' : 'bg-danger-soft text-danger'
+  const icon = tone === 'pending' ? Clock : tone === 'failed' ? X : Check
+  // No success/pending colour in the default theme: success uses primary, pending neutral, failed destructive.
+  const disc = tone === 'success' ? 'primary' : tone === 'failed' ? 'danger' : 'neutral'
   return (
-    <div className="flex flex-col items-center pt-group text-center">
-      <span aria-hidden className={cx('inline-flex size-16 items-center justify-center rounded-full animate-[fade-in_200ms_ease-out]', cls)}><Icon size={32} strokeWidth={2.25} /></span>
-      <div role="status" aria-live="polite" className="w-full">
-        <p className="mt-stack headline">{heading}</p>
-        {amount ? <p className="mt-header break-words">{amount}</p> : null}
-        {children ? <div className="mx-auto mt-stack flex max-w-[44ch] flex-col gap-1 text-muted">{children}</div> : null}
-      </div>
-      {actions ? <div className="mt-section flex w-full flex-col gap-2">{actions}</div> : null}
-    </div>
+    <VStack className="items-center pt-6 text-center">
+      <Disc tone={disc} size={64}><Ico as={icon} size="xl" className={tone === 'success' ? 'text-primary-foreground' : tone === 'failed' ? 'text-destructive' : 'text-foreground'} /></Disc>
+      <VStack role="status" aria-live="polite" className="w-full items-center">
+        <Text size="lg" bold className="mt-3 text-center">{heading}</Text>
+        {amount ? <Box className="mt-2 items-center break-words">{amount}</Box> : null}
+        {children ? <VStack className="mx-auto mt-3 max-w-[44ch] gap-1 *:text-center">{children}</VStack> : null}
+      </VStack>
+      {actions ? <VStack className="mt-8 w-full gap-2">{actions}</VStack> : null}
+    </VStack>
   )
 }
 

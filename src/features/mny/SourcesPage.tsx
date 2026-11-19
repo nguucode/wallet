@@ -1,9 +1,13 @@
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { Landmark, MoreVertical } from 'lucide-react'
 import { useState } from 'react'
 import { useLayout } from '@/app/layout'
 import { bankById, setDefaultSource, unlinkSource, useWorld, verifyPin } from '@/app/store'
-import { Button, ButtonLink, Card, cx, EmptyState, PageTitle, Sheet } from '@/components/app-ui'
+import { Button, ButtonLink, Card, EmptyState, Ico, IconButton, PageTitle, Sheet } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { PinPad } from '@/features/sec/AuthSheet'
 import type { FundingSource } from '@/mock/seed'
 import { canUnlink, sortSources, sourceName } from './logic'
@@ -11,7 +15,6 @@ import { DefaultBadge, SourceLine, useToast } from './parts'
 
 const NOTE = 'Bạn chỉ nạp tiền từ và rút tiền về tài khoản hoặc thẻ đứng tên mình.'
 const LAST_REASON = 'Không thể hủy liên kết nguồn tiền cuối cùng. Ví cần ít nhất một nguồn tiền chính chủ.'
-const itemCls = 'flex min-h-12 w-full cursor-pointer flex-col justify-center rounded-lg px-3 py-2 text-left outline-none data-[highlighted]:bg-surface-2 data-[disabled]:cursor-not-allowed'
 
 /** US-MNY-001 list, US-MNY-003 set default, US-MNY-004 unlink (PIN, last source protected). */
 export default function SourcesPage() {
@@ -44,72 +47,55 @@ export default function SourcesPage() {
   }
 
   const linkBtn = <ButtonLink to="/me/sources/link" variant="primary" block={layout === 'app'}>Liên kết ngân hàng</ButtonLink>
+  const optionsLabel = (s: FundingSource) => `Tùy chọn ${bankById(s.bankId).name} ${s.last4}`
 
   return (
-    <div>
+    <Box>
       {layout === 'web' ? (
-        <div className="flex items-start justify-between gap-4">
+        <HStack className="items-start justify-between gap-4">
           <PageTitle>Nguồn tiền</PageTitle>
           {sources.length ? linkBtn : null}
-        </div>
+        </HStack>
       ) : (
-        <h1 tabIndex={-1} data-page-title className="sr-only">Nguồn tiền</h1>
+        <Heading size="3xl" tabIndex={-1} data-page-title className="sr-only">Nguồn tiền</Heading>
       )}
 
       {!sources.length ? (
         <EmptyState
-          icon={<Landmark size={22} strokeWidth={1.75} />}
+          icon={<Ico as={Landmark} size="lg" />}
           title="Chưa có nguồn tiền nào"
           body="Ví cần ít nhất một tài khoản hoặc thẻ ghi nợ đứng tên bạn để nạp, rút và thanh toán."
           action={<ButtonLink to="/me/sources/link">Liên kết ngân hàng</ButtonLink>}
         />
       ) : (
         <>
-          <p className="mb-stack text-muted">{NOTE}</p>
-          <ul className="flex flex-col gap-3">
+          <Text className="mb-3 text-muted-foreground">{NOTE}</Text>
+          <VStack role="list" className="gap-3">
             {sources.map((s) => (
-              <li key={s.id}>
-                <Card className="flex min-h-[72px] items-center gap-3 py-stack pr-header pl-inset">
-                  <SourceLine s={s} sub={<span className="block break-words">{holder}</span>} />
+              <Box key={s.id} role="listitem">
+                <Card className="min-h-[72px] flex-row items-center gap-3 py-3 pr-2 pl-4">
+                  <SourceLine s={s} sub={<Text size="sm" className="break-words text-muted-foreground">{holder}</Text>} />
                   {s.isDefault ? <DefaultBadge /> : null}
-                  {layout === 'web' ? (
-                    <DropdownMenu.Root>
-                      <DropdownMenu.Trigger asChild>
-                        <button aria-label={`Tùy chọn ${bankById(s.bankId).name} ${s.last4}`} className="inline-flex size-12 shrink-0 items-center justify-center rounded-full hover:bg-surface-2">
-                          <MoreVertical size={20} strokeWidth={1.75} aria-hidden />
-                        </button>
-                      </DropdownMenu.Trigger>
-                      <DropdownMenu.Portal>
-                        <DropdownMenu.Content align="end" sideOffset={4} className="z-50 w-[280px] card p-2 shadow-[var(--shadow-float)]">
-                          {!s.isDefault ? <DropdownMenu.Item onSelect={() => makeDefault(s)} className={itemCls}>Đặt làm mặc định</DropdownMenu.Item> : null}
-                          <DropdownMenu.Item disabled={!unlinkable} onSelect={() => askUnlink(s)} className={cx(itemCls, unlinkable ? 'text-danger' : 'text-muted')}>
-                            Hủy liên kết
-                            {!unlinkable ? <span className="mt-1 block text-[13px] leading-[18px]">{LAST_REASON}</span> : null}
-                          </DropdownMenu.Item>
-                        </DropdownMenu.Content>
-                      </DropdownMenu.Portal>
-                    </DropdownMenu.Root>
-                  ) : (
-                    <button aria-label={`Tùy chọn ${bankById(s.bankId).name} ${s.last4}`} onClick={() => setSheetFor(s)} className="inline-flex size-12 shrink-0 items-center justify-center rounded-full hover:bg-surface-2">
-                      <MoreVertical size={20} strokeWidth={1.75} aria-hidden />
-                    </button>
-                  )}
+                  <IconButton label={optionsLabel(s)} onClick={() => setSheetFor(s)} className="size-12 shrink-0">
+                    <Ico as={MoreVertical} />
+                  </IconButton>
                 </Card>
-              </li>
+              </Box>
             ))}
-          </ul>
-          {layout === 'app' ? <div className="sticky bottom-[calc(80px+env(safe-area-inset-bottom))] mt-group">{linkBtn}</div> : null}
+          </VStack>
+          {/* Sits above the app tab bar (80px) and the home indicator. */}
+          {layout === 'app' ? <Box className="sticky bottom-[calc(80px+env(safe-area-inset-bottom))] mt-6">{linkBtn}</Box> : null}
         </>
       )}
 
-      {/* App: row actions in a bottom sheet. */}
+      {/* Row actions: Actionsheet on app, Modal on web (one pattern for both layouts). */}
       <Sheet open={!!sheetFor} onOpenChange={(o) => !o && setSheetFor(null)} title={sheetFor ? sourceName(sheetFor) : ''}>
         {sheetFor ? (
-          <div className="flex flex-col gap-2">
+          <VStack className="gap-2">
             {!sheetFor.isDefault ? <Button variant="secondary" block onClick={() => makeDefault(sheetFor)}>Đặt làm mặc định</Button> : null}
             <Button variant="danger" block disabled={!unlinkable} aria-describedby={!unlinkable ? 'last-reason' : undefined} onClick={() => askUnlink(sheetFor)}>Hủy liên kết</Button>
-            {!unlinkable ? <p id="last-reason" className="text-[13px] leading-[18px] text-muted">{LAST_REASON}</p> : null}
-          </div>
+            {!unlinkable ? <Text id="last-reason" size="sm" className="text-muted-foreground">{LAST_REASON}</Text> : null}
+          </VStack>
         ) : null}
       </Sheet>
 
@@ -118,10 +104,10 @@ export default function SourcesPage() {
         title={unlinkFor ? `Hủy liên kết ${sourceName(unlinkFor)}?` : ''}
         description="Bạn sẽ không nạp tiền từ hoặc rút tiền về nguồn này nữa. Giao dịch đang xử lý với nguồn này vẫn tiếp tục."
       >
-        <div className="mt-header flex flex-col gap-2">
+        <VStack className="mt-2 gap-2">
           <Button variant="danger" block onClick={() => { setPinError(undefined); setPinFor(unlinkFor); setUnlinkFor(null) }}>Hủy liên kết</Button>
           <Button variant="ghost" block onClick={() => setUnlinkFor(null)}>Giữ lại</Button>
-        </div>
+        </VStack>
       </Sheet>
 
       {/* PIN only: unlinking is not a transaction, so requiredAuth is not used (US-MNY-004). */}
@@ -130,6 +116,6 @@ export default function SourcesPage() {
       </Sheet>
 
       {toast.node}
-    </div>
+    </Box>
   )
 }

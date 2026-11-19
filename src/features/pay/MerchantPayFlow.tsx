@@ -6,7 +6,13 @@ import { formatVnd } from '@/domain/money'
 import { parseQr } from '@/domain/qr'
 import { GatedRoute } from '@/features/sec/Gate'
 import { AmountInput, checkAmount, ConfirmRows, FlowFrame, ResultView, useCloseFlow, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
-import { Button, ButtonLink, Callout, Disc, Money } from '@/components/app-ui'
+import { Button, ButtonLink, Callout, Card, Disc, Money } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Spinner } from '@/components/ui/spinner'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { AuthNote, useWakeLock } from '@/features/trf/shared'
 
 type Draft = { merchantId?: string; name?: string; category?: string; amount: number; fixed?: boolean; txId?: string }
@@ -14,13 +20,15 @@ const STEPS = ['amount', 'confirm', 'result'] as const
 
 export function MerchantHeader({ name, category }: { name: string; category?: string }) {
   return (
-    <div className="mb-group flex items-center gap-3 card p-inset">
-      <Disc><span className="text-[16px] font-bold">{(category ?? name).charAt(0)}</span></Disc>
-      <div className="min-w-0">
-        <p className="text-[16px] font-bold break-words">{name}</p>
-        <p className="text-[13px] text-muted">{category ? `${category} · Hà Nội` : 'Hà Nội'}</p>
-      </div>
-    </div>
+    <Card className="mb-6">
+      <HStack className="items-center gap-3">
+        <Disc><Text bold>{(category ?? name).charAt(0)}</Text></Disc>
+        <VStack className="min-w-0">
+          <Text bold className="break-words">{name}</Text>
+          <Text size="sm" className="text-muted-foreground">{category ? `${category} · Hà Nội` : 'Hà Nội'}</Text>
+        </VStack>
+      </HStack>
+    </Card>
   )
 }
 
@@ -68,8 +76,8 @@ function AmountStep({ draft, setDraft, onNext }: { draft: Draft; setDraft: (p: P
   return (
     <>
       <MerchantHeader name={draft.name!} category={draft.category} />
-      <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={check && !check.ok ? check.message : undefined} hint={<>Số dư khả dụng: <span className="tnum">{formatVnd(w.balance)}</span></>} />
-      <div className="mt-section"><Button block disabled={!check?.ok} onClick={onNext}>Tiếp tục</Button></div>
+      <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={check && !check.ok ? check.message : undefined} hint={<>Số dư khả dụng: <Text className="tabular-nums">{formatVnd(w.balance)}</Text></>} />
+      <Box className="mt-8"><Button block disabled={!check?.ok} onClick={onNext}>Tiếp tục</Button></Box>
     </>
   )
 }
@@ -83,34 +91,36 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
   )
   if (commit.busy)
     return (
-      <div role="status" aria-live="polite" className="flex flex-col items-center py-16 text-center">
-        <span className="size-8 animate-spin rounded-full border-2 border-current border-r-transparent" aria-hidden />
-        <p className="mt-stack font-semibold">Đang thanh toán…</p>
-        <p className="mt-1"><Money amount={draft.amount} className="amount-display" /></p>
-        <p className="mt-1 text-muted">{draft.name}</p>
-      </div>
+      <VStack role="status" aria-live="polite" className="items-center py-16">
+        <Spinner aria-hidden />
+        <Text className="mt-3 font-semibold">Đang thanh toán…</Text>
+        <Money amount={draft.amount} className="mt-1 text-4xl font-bold" />
+        <Text className="mt-1 text-center text-muted-foreground">{draft.name}</Text>
+      </VStack>
     )
   return (
     <>
       <MerchantHeader name={draft.name!} category={draft.category} />
-      <h2 className="mb-stack headline">Xác nhận</h2>
-      <p className="text-center"><Money amount={draft.amount} className="amount-display" /></p>
-      {draft.fixed ? <p className="mt-1 mb-stack text-center text-[13px] text-muted">Số tiền do cửa hàng đặt</p> : <div className="mb-stack" />}
+      <Heading size="lg" as="h2" className="mb-3">Xác nhận</Heading>
+      <VStack className="mb-3 items-center gap-1">
+        <Money amount={draft.amount} className="text-4xl font-bold" />
+        {draft.fixed ? <Text size="sm" className="text-center text-muted-foreground">Số tiền do cửa hàng đặt</Text> : null}
+      </VStack>
       <ConfirmRows rows={[
-        ['Cửa hàng', <span className="break-words">{draft.name}</span>],
+        ['Cửa hàng', <Text className="break-words">{draft.name}</Text>],
         ['Số tiền', <Money amount={draft.amount} />],
         ['Phí', 'Miễn phí'],
-        ['Tổng tiền', <b><Money amount={draft.amount} /></b>],
+        ['Tổng tiền', <Money amount={draft.amount} className="font-bold" />],
         ['Nguồn tiền', 'Ví'],
       ]} />
       <AuthNote type="qr_merchant" amount={draft.amount} />
-      {draft.fixed && !check.ok ? <p role="alert" className="mt-stack text-[13px] leading-5 text-danger">{check.message}</p> : null}
-      {commit.error ? <p role="alert" className="mt-stack text-[13px] text-danger">{commit.error}</p> : null}
-      <div className="mt-section flex flex-col gap-2">
+      {draft.fixed && !check.ok ? <Text size="sm" role="alert" className="mt-3 text-destructive">{check.message}</Text> : null}
+      {commit.error ? <Text size="sm" role="alert" className="mt-3 text-destructive">{commit.error}</Text> : null}
+      <VStack className="mt-8 gap-2">
         {draft.fixed && !check.ok
           ? <ButtonLink to="/pay/scan" block>Quét mã khác</ButtonLink>
           : <Button block onClick={() => (check.ok ? commit.start() : toAmount())}>Xác nhận</Button>}
-      </div>
+      </VStack>
       {commit.sheet}
     </>
   )
@@ -122,7 +132,7 @@ export function Result({ txId, onRetry }: { txId: string; onRetry?: () => void }
   const t = useWorld().transactions.find((x) => x.id === txId)
   useWakeLock(app && t?.status === 'success')
   const secs = t && app && t.status === 'success'
-    ? <p className="mt-stack text-[15px] text-muted tnum">Lúc {new Date(t.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' })}</p>
+    ? <Text className="mt-3 text-muted-foreground tabular-nums">Lúc {new Date(t.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' })}</Text>
     : null
   return <ResultView successHeading="Thanh toán thành công" txId={txId} onRetry={onRetry} extra={secs} />
 }

@@ -97,7 +97,7 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
   return (
     <VStack className="min-h-dvh bg-background">
       <NavBar
-        title={<Heading size="sm" tabIndex={-1} data-page-title isTruncated className="outline-none">{title}</Heading>}
+        title={<Heading as="h1" size="sm" tabIndex={-1} data-page-title className="truncate outline-none">{title}</Heading>}
         left={onBack ? <BackButton onClick={onBack} /> : <Box className="w-11" />}
         right={onClose ? <CloseButton onClick={onClose} /> : <Box className="w-11" />}
       />
@@ -162,7 +162,7 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
           aria-labelledby="amount-label"
           aria-invalid={!!error || undefined}
           aria-describedby="amount-msg"
-          className="text-center text-4xl font-bold tabular-nums"
+          className="text-center text-4xl font-bold tabular-nums placeholder:text-foreground/60"
         />
       </Input>
       <Text id="amount-msg" role={error ? 'alert' : undefined} size="sm" className={cx('mt-2 min-h-5 text-center', error ? 'text-destructive' : 'text-muted-foreground')}>{error ?? hint}</Text>
@@ -304,7 +304,7 @@ export function ResultView({ txId, onRetry, extra, successHeading = 'Thành côn
   return (
     <VStack className="items-center pt-6">
       <StatusMark status={t.status} />
-      <Heading size="lg" role="status" className="mt-3 text-center">{heading}</Heading>
+      <Heading as="h2" size="lg" role="status" className="mt-3 text-center">{heading}</Heading>
       {/* Same amount rule as every transaction row (rowAmount): signed, fee on outgoing, failed struck through. */}
       <Money amount={rowAmount(t)} sign={t.direction} className={cx('mt-2 text-3xl font-bold', t.status === 'failed' && 'text-muted-foreground line-through')} />
       <Text className="mt-2 max-w-[40ch] text-center text-muted-foreground">{counterpartyName(t.counterparty, w)}{t.sourceId && t.type !== 'topup' ? ` · từ ${sourceLabel(w, t.sourceId)}` : ''}</Text>
@@ -321,8 +321,8 @@ export function ResultView({ txId, onRetry, extra, successHeading = 'Thành côn
       {extra}
       <VStack className="mt-6 w-full gap-2">
         {t.status === 'failed' && onRetry ? <Button block onClick={onRetry}>Thử lại</Button> : null}
-        <ButtonLink to={`/history/${t.id}`} variant={t.status === 'failed' && onRetry ? 'outline' : 'primary'} block>Xem chi tiết</ButtonLink>
-        {t.status === 'failed' ? <ButtonLink to={`/support/new?tx=${t.id}`} variant="outline" block>Liên hệ hỗ trợ</ButtonLink> : null}
+        <ButtonLink to={`/history/${t.id}`} variant={t.status === 'failed' && onRetry ? 'secondary' : 'primary'} block>Xem chi tiết</ButtonLink>
+        {t.status === 'failed' ? <ButtonLink to={`/support/new?tx=${t.id}`} variant="secondary" block>Liên hệ hỗ trợ</ButtonLink> : null}
         <ButtonLink to="/home" variant="ghost" block>Về trang chủ</ButtonLink>
       </VStack>
     </VStack>

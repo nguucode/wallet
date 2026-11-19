@@ -1,11 +1,18 @@
+import { Circle } from 'lucide-react'
 import { useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
 import { createSupportRequest, now, useWorld } from '@/app/store'
 import type { SupportRequest, Transaction } from '@/mock/seed'
 import { ConfirmRows, FlowFrame, fmtDateTime, formatPhone, useCloseFlow, useFlow } from '@/features/flow/FlowKit'
-import { Button, ButtonLink, Callout, cx, Field, TextInput } from '@/components/app-ui'
+import { Button, ButtonLink, Callout, Card, cx, Field, TextInput, TextLink } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Link, LinkText } from '@/components/ui/link'
+import { Radio, RadioGroup, RadioIcon, RadioIndicator, RadioLabel } from '@/components/ui/radio'
+import { Text } from '@/components/ui/text'
+import { Textarea, TextareaInput } from '@/components/ui/textarea'
+import { VStack } from '@/components/ui/vstack'
 import { isWithinSupportWindow, REASON_LABEL, reasonsFor, rowAmount, SUPPORT_STATUS_LABEL, TX_REASONS, validateDescription, type Reason } from './history'
 
 const STEPS = ['reason', 'details', 'sent'] as const
@@ -13,13 +20,13 @@ type Draft = { txId?: string; reason?: Reason; details: string; phone: string; s
 
 function Summary({ t }: { t: Transaction }) {
   return (
-    <div className="mb-group">
+    <Box className="mb-6">
       <ConfirmRows rows={[
-        ['Mã giao dịch', <span className="tnum">{t.id}</span>],
-        ['Số tiền', <span className="tnum">{formatVnd(rowAmount(t))}</span>],
+        ['Mã giao dịch', <Text className="font-medium tabular-nums">{t.id}</Text>],
+        ['Số tiền', <Text className="font-medium tabular-nums">{formatVnd(rowAmount(t))}</Text>],
         ['Thời gian', fmtDateTime(t.createdAt)],
       ]} />
-    </div>
+    </Box>
   )
 }
 
@@ -50,23 +57,23 @@ export default function SupportNewFlow() {
       <FlowFrame title="Liên hệ hỗ trợ" onClose={() => nav(backTo)}>
         <Summary t={t} />
         <Callout title="Giao dịch này đã có yêu cầu hỗ trợ" action={<ButtonLink to={backTo} size="sm" variant="secondary">Về giao dịch</ButtonLink>}>
-          Mã yêu cầu <span className="tnum font-semibold">{existing.id}</span> · {SUPPORT_STATUS_LABEL[existing.status]}
+          Mã yêu cầu <Text size="sm" className="font-semibold tabular-nums">{existing.id}</Text> · {SUPPORT_STATUS_LABEL[existing.status]}
         </Callout>
       </FlowFrame>
     )
 
   const locked = !!t && !isWithinSupportWindow(t, now(), config.supportWindowDays)
-  const lockedNote = locked ? <p role="status" className="mb-stack rounded-[var(--radius-input)] bg-surface-2 p-inset text-[15px] leading-5">Giao dịch đã quá {config.supportWindowDays} ngày nên không thể gửi yêu cầu hỗ trợ trực tuyến</p> : null
+  const lockedNote = locked ? <Box role="status" className="mb-3 rounded-lg border border-border bg-card p-4"><Text>Giao dịch đã quá {config.supportWindowDays} ngày nên không thể gửi yêu cầu hỗ trợ trực tuyến</Text></Box> : null
 
   /* sent */
   if (flow.step === 'sent' && draft.sent)
     return (
       <FlowFrame title="Liên hệ hỗ trợ" footer={<ButtonLink to={backTo} block>{t ? 'Về giao dịch' : 'Về Trợ giúp'}</ButtonLink>}>
-        <div className="flex flex-col items-center pt-group text-center">
-          <p role="status" className="headline">Đã gửi yêu cầu hỗ trợ</p>
-          <p className="mt-header">Mã yêu cầu <span className="tnum font-semibold">{draft.sent.id}</span></p>
-          <p className="mt-1 text-muted">Thời gian xử lý tối đa 30 ngày làm việc</p>
-        </div>
+        <VStack className="items-center pt-6">
+          <Text role="status" size="lg" bold className="text-center">Đã gửi yêu cầu hỗ trợ</Text>
+          <Text className="mt-2 text-center">Mã yêu cầu <Text className="font-semibold tabular-nums">{draft.sent.id}</Text></Text>
+          <Text className="mt-1 text-center text-muted-foreground">Thời gian xử lý tối đa 30 ngày làm việc</Text>
+        </VStack>
       </FlowFrame>
     )
 
@@ -91,24 +98,28 @@ export default function SupportNewFlow() {
         {t ? <Summary t={t} /> : null}
         {lockedNote}
         {draft.reason === 'wrong_recipient' && t?.type === 'p2p_out' && t.status === 'success' ? (
-          <div className="mb-group rounded-[var(--radius-input)] bg-surface-2 p-inset">
-            <p className="font-semibold">Ví không thể tự hủy giao dịch đã thành công</p>
-            <a href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="mt-header inline-flex min-h-11 items-center font-semibold text-tint">Nhắn người nhận</a>
-          </div>
+          <VStack className="mb-6 items-start rounded-lg border border-border bg-card p-4">
+            <Text className="font-semibold">Ví không thể tự hủy giao dịch đã thành công</Text>
+            <Link href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="mt-2 min-h-11 justify-center">
+              <LinkText className="font-semibold">Nhắn người nhận</LinkText>
+            </Link>
+          </VStack>
         ) : null}
-        <p className="mb-stack text-[15px] text-muted">Lý do: <span className="font-medium text-ink">{REASON_LABEL[draft.reason]}</span></p>
+        <Text className="mb-3 text-muted-foreground">Lý do: <Text className="font-medium">{REASON_LABEL[draft.reason]}</Text></Text>
         <Field label="Mô tả vấn đề" htmlFor="sp-details">
-          <textarea
-            id="sp-details" disabled={locked} rows={5} maxLength={600} aria-required aria-describedby="sp-count"
-            value={draft.details} onChange={(e) => flow.setDraft({ ...draft, details: e.target.value })}
-            className="field-sizing-content min-h-32 w-full rounded-[var(--radius-input)] border border-transparent bg-surface-2 px-4 py-3 text-[15px] disabled:bg-surface-2"
-          />
-          <p id="sp-count" className={cx('mt-header text-right text-[13px] tnum', n > 500 ? 'text-danger' : 'text-muted')}>{n}/500 · tối thiểu 20 ký tự</p>
+          <Textarea isDisabled={locked} className="h-32">
+            <TextareaInput
+              id="sp-details" multiline numberOfLines={5} maxLength={600} aria-required aria-describedby="sp-count" textAlignVertical="top"
+              value={draft.details} onChangeText={(v: string) => flow.setDraft({ ...draft, details: v })}
+              className="px-4 py-3"
+            />
+          </Textarea>
+          <Text id="sp-count" size="sm" className={cx('mt-2 self-end tabular-nums', n > 500 ? 'text-destructive' : 'text-muted-foreground')}>{n}/500 · tối thiểu 20 ký tự</Text>
         </Field>
         <Field label="Số điện thoại liên hệ" htmlFor="sp-phone">
           <TextInput id="sp-phone" disabled={locked} inputMode="tel" value={formatPhone(draft.phone)} onChange={(e) => flow.setDraft({ ...draft, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} />
         </Field>
-        {error ? <p role="alert" className="text-danger">{error}</p> : null}
+        {error ? <Text role="alert" className="text-destructive">{error}</Text> : null}
         {dialog}
       </FlowFrame>
     )
@@ -122,21 +133,21 @@ export default function SupportNewFlow() {
       footer={<Button block disabled={!draft.reason || !!needsTx || locked} onClick={() => { flow.setDraft(draft); flow.go('details') }}>Tiếp tục</Button>}>
       {t ? <Summary t={t} /> : null}
       {lockedNote}
-      <fieldset disabled={locked}>
-        <legend className="mb-stack font-semibold">Bạn gặp vấn đề gì?</legend>
-        <div className="divide-y divide-line-soft card">
+      <Text id="sp-reason" className="mb-3 font-semibold">Bạn gặp vấn đề gì?</Text>
+      <Card className="overflow-hidden p-0">
+        <RadioGroup value={draft.reason ?? ''} onChange={(r: Reason) => flow.setDraft({ ...draft, reason: r })} isDisabled={locked} aria-labelledby="sp-reason" className="gap-0 divide-y divide-border">
           {reasons.map((r) => (
-            <label key={r} className="flex min-h-12 cursor-pointer items-center gap-3 px-4 py-3 has-disabled:cursor-not-allowed">
-              <input type="radio" name="reason" value={r} checked={draft.reason === r} onChange={() => flow.setDraft({ ...draft, reason: r })} className="size-5 accent-tint" />
-              <span>{REASON_LABEL[r]}</span>
-            </label>
+            <Radio key={r} value={r} aria-label={REASON_LABEL[r]} size="md" className="min-h-12 gap-3 px-4 py-3">
+              <RadioIndicator className="h-5 w-5"><RadioIcon as={Circle} /></RadioIndicator>
+              <RadioLabel className="text-base font-normal">{REASON_LABEL[r]}</RadioLabel>
+            </Radio>
           ))}
-        </div>
-      </fieldset>
+        </RadioGroup>
+      </Card>
       {needsTx ? (
-        <p role="status" className="mt-stack rounded-[var(--radius-input)] bg-surface-2 p-inset text-[15px] leading-5">
-          Hãy mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ để gửi yêu cầu về giao dịch đó. <Link to="/history" className="font-semibold text-tint">Mở Lịch sử</Link>
-        </p>
+        <Box role="status" className="mt-3 rounded-lg border border-border bg-card p-4">
+          <Text>Hãy mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ để gửi yêu cầu về giao dịch đó. <TextLink to="/history">Mở Lịch sử</TextLink></Text>
+        </Box>
       ) : null}
       {dialog}
     </FlowFrame>

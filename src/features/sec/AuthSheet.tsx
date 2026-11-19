@@ -4,7 +4,15 @@ import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
 import type { AuthMethod } from '@/domain/types'
 import { getState, verifyPin } from '@/app/store'
-import { Button, cx, Sheet } from '@/components/app-ui'
+import { Button, cx, Ico, Sheet } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Button as GButton, ButtonText } from '@/components/ui/button'
+import { Center } from '@/components/ui/center'
+import { Grid, GridItem } from '@/components/ui/grid'
+import { Input, InputField } from '@/components/ui/input'
+import { Pressable } from '@/components/ui/pressable'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 
 import { fmtTime } from '@/app/format'
 
@@ -14,7 +22,7 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
 }) {
   const [pin, setPin] = useState('')
   const [shake, setShake] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<{ focus: () => void }>(null)
   useEffect(() => {
     if (error) { setPin(''); setShake(true); const t = setTimeout(() => setShake(false), 300); return () => clearTimeout(t) }
   }, [error])
@@ -25,37 +33,43 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
     if (next.length === length) setTimeout(() => onComplete(next), 80)
   }
   return (
-    <div>
+    <Box>
       {/* Real input so keyboards, password managers off, and screen readers work. */}
-      <label className="sr-only" htmlFor="pin-input">{label}</label>
-      <input
-        id="pin-input" ref={inputRef} autoFocus inputMode="numeric" autoComplete="off" type="password" maxLength={length}
-        value={pin} disabled={disabled}
-        onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, length); setPin(v); if (v.length === length) setTimeout(() => onComplete(v), 80) }}
-        className="sr-only"
-        aria-invalid={!!error || undefined}
-        aria-describedby={error ? 'pin-error' : undefined}
-      />
-      <button type="button" onClick={() => inputRef.current?.focus()} aria-hidden tabIndex={-1} className={cx('mx-auto flex gap-4 py-3', shake && 'animate-[pulse_300ms]')}>
+      <Box className="sr-only">
+        <Input isDisabled={disabled} isInvalid={!!error}>
+          <InputField
+            id="pin-input" ref={inputRef as never} autoFocus inputMode="numeric" autoComplete="off" type="password" maxLength={length}
+            aria-label={label}
+            value={pin}
+            onChangeText={(t: string) => { const v = t.replace(/\D/g, '').slice(0, length); setPin(v); if (v.length === length) setTimeout(() => onComplete(v), 80) }}
+            aria-invalid={!!error || undefined}
+            aria-describedby={error ? 'pin-error' : undefined}
+          />
+        </Input>
+      </Box>
+      <Pressable onPress={() => inputRef.current?.focus()} aria-hidden focusable={false} className={cx('mx-auto flex-row gap-4 py-3', shake && 'animate-pulse')}>
         {Array.from({ length }, (_, i) => (
-          <span key={i} className={cx('size-3.5 rounded-full border-2 transition-colors', i < pin.length ? 'border-tint bg-primary' : 'border-line')} />
+          <Box key={i} className={cx('size-3.5 rounded-full', i < pin.length ? 'bg-foreground' : 'bg-muted')} />
         ))}
-      </button>
-      <p id="pin-error" role="alert" className="min-h-5 text-center text-[13px] leading-5 text-danger">{error}</p>
-      <div className="mx-auto mt-header grid max-w-[320px] grid-cols-3 gap-2 rounded-[24px] bg-primary-soft/60 p-2" aria-hidden>
-        {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'].map((k) =>
-          k === '' ? <span key="blank" /> : (
-            <button
-              key={k} type="button" tabIndex={-1} disabled={disabled}
-              onClick={() => (k === 'del' ? setPin((p) => p.slice(0, -1)) : push(k))}
-              className="flex h-14 items-center justify-center rounded-[14px] bg-surface-2 text-[28px] font-normal text-ink hover:bg-primary-soft active:bg-primary-soft-hover disabled:opacity-40"
-            >
-              {k === 'del' ? <Delete size={22} strokeWidth={1.75} /> : k}
-            </button>
-          ),
-        )}
-      </div>
-    </div>
+      </Pressable>
+      <Text id="pin-error" role="alert" size="sm" className="min-h-5 text-center text-destructive">{error}</Text>
+      <Grid className="mx-auto mt-2 max-w-xs gap-2" _extra={{ className: 'grid-cols-3' }} aria-hidden>
+        {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'].map((k) => (
+          <GridItem key={k || 'blank'} _extra={{ className: 'col-span-1' }}>
+            {k === '' ? null : (
+              <GButton
+                variant="secondary" focusable={false} isDisabled={disabled}
+                aria-label={k === 'del' ? 'Xóa' : undefined}
+                onPress={() => (k === 'del' ? setPin((p) => p.slice(0, -1)) : push(k))}
+                className="h-14 w-full rounded-xl"
+              >
+                {k === 'del' ? <Ico as={Delete} /> : <ButtonText className="text-2xl font-normal">{k}</ButtonText>}
+              </GButton>
+            )}
+          </GridItem>
+        ))}
+      </Grid>
+    </Box>
   )
 }
 
@@ -71,27 +85,28 @@ function FaceScan({ onDone, reason }: { onDone: (ok: boolean) => void; reason: s
     }, 1600)
   }
   return (
-    <div className="text-center">
-      <p className="text-[15px] text-muted">{reason}</p>
-      <div className="relative mx-auto my-group size-44">
+    <VStack className="items-center text-center">
+      <Text className="text-center text-muted-foreground">{reason}</Text>
+      <Box className="relative mx-auto my-6 size-44">
         <svg viewBox="0 0 100 100" className="absolute inset-0" aria-hidden>
-          <circle cx="50" cy="50" r="46" fill="none" stroke="var(--color-line)" strokeWidth="3" />
-          {phase === 'scanning' ? <circle cx="50" cy="50" r="46" fill="none" stroke="var(--color-tint)" strokeWidth="3" strokeDasharray="289" strokeDashoffset="289" strokeLinecap="round" style={{ animation: 'ring 1.6s linear forwards' }} transform="rotate(-90 50 50)" /> : null}
+          <circle cx="50" cy="50" r="46" fill="none" className="stroke-border" strokeWidth="3" />
+          {/* Arc fills over the 1.6s scan; no keyframes needed (the old `ring` keyframe lived in the removed CSS). */}
+          <circle cx="50" cy="50" r="46" fill="none" className="stroke-primary" strokeWidth="3" strokeDasharray="289" strokeDashoffset={phase === 'scanning' ? 0 : 289} strokeLinecap="round" style={{ transition: phase === 'scanning' ? 'stroke-dashoffset 1.6s linear' : 'none' }} transform="rotate(-90 50 50)" />
         </svg>
-        <span className="absolute inset-4 flex items-center justify-center rounded-full bg-surface-2"><ScanFace size={64} strokeWidth={1.25} aria-hidden className="text-muted" /></span>
-      </div>
-      <p role="status" aria-live="polite" className="min-h-10 text-[15px]">
+        <Center className="absolute inset-4 rounded-full bg-muted"><Ico as={ScanFace} size="xl" className="size-16 text-muted-foreground" /></Center>
+      </Box>
+      <Text role="status" aria-live="polite" className={cx('min-h-10 text-center', (phase === 'failed' || phase === 'out') && 'text-destructive')}>
         {phase === 'ready' && 'Đưa khuôn mặt vào giữa khung tròn, giữ máy ngang tầm mắt.'}
         {phase === 'scanning' && 'Đang xác thực…'}
-        {phase === 'failed' && <span className="text-danger">Khuôn mặt không khớp với CCCD. Còn {config.face.maxRetries - attempt + 1} lần thử.</span>}
-        {phase === 'out' && <span className="text-danger">Bạn đã thử quá số lần cho phép. Thử lại sau.</span>}
-      </p>
+        {phase === 'failed' && <>Khuôn mặt không khớp với CCCD. Còn {config.face.maxRetries - attempt + 1} lần thử.</>}
+        {phase === 'out' && 'Bạn đã thử quá số lần cho phép. Thử lại sau.'}
+      </Text>
       {phase === 'out' ? (
-        <Button variant="secondary" block className="mt-stack" onClick={() => onDone(false)}>Đóng</Button>
+        <Button variant="secondary" block className="mt-3" onClick={() => onDone(false)}>Đóng</Button>
       ) : (
-        <Button block className="mt-stack" loading={phase === 'scanning'} onClick={start}>{phase === 'failed' ? 'Thử lại' : 'Bắt đầu quét'}</Button>
+        <Button block className="mt-3" loading={phase === 'scanning'} onClick={start}>{phase === 'failed' ? 'Thử lại' : 'Bắt đầu quét'}</Button>
       )}
-    </div>
+    </VStack>
   )
 }
 
@@ -116,15 +131,15 @@ export function AuthSheet({ open, onOpenChange, method, amount, onSuccess }: {
       {effective === 'face_match' ? (
         <FaceScan reason={reason} onDone={(ok) => (ok ? onSuccess('face_match') : onOpenChange(false))} />
       ) : effective === 'device_biometric' ? (
-        <div className="text-center">
-          <button type="button" onClick={() => setTimeout(() => onSuccess('device_biometric'), 500)} className="mx-auto my-group flex size-24 items-center justify-center rounded-full bg-primary-soft text-primary-ink" aria-label="Xác thực bằng sinh trắc học thiết bị">
-            <Fingerprint size={48} strokeWidth={1.5} aria-hidden />
-          </button>
-          <p className="text-[15px] text-muted">Chạm để dùng vân tay hoặc Face ID của điện thoại.</p>
-          <Button variant="ghost" className="mt-stack" onClick={() => setUsePin(true)}>Dùng mã PIN</Button>
-        </div>
+        <VStack className="items-center text-center">
+          <GButton variant="secondary" onPress={() => setTimeout(() => onSuccess('device_biometric'), 500)} className="mx-auto my-6 size-24 rounded-full" aria-label="Xác thực bằng sinh trắc học thiết bị">
+            <Ico as={Fingerprint} className="size-12" />
+          </GButton>
+          <Text className="text-center text-muted-foreground">Chạm để dùng vân tay hoặc Face ID của điện thoại.</Text>
+          <Button variant="ghost" className="mt-3" onClick={() => setUsePin(true)}>Dùng mã PIN</Button>
+        </VStack>
       ) : locked ? (
-        <p role="alert" className="py-group text-center text-danger">Mã PIN đang tạm khóa do nhập sai nhiều lần. Thử lại sau {fmtTime(sec.pinLockedUntil!)}.</p>
+        <Text role="alert" className="py-6 text-center text-destructive">Mã PIN đang tạm khóa do nhập sai nhiều lần. Thử lại sau {fmtTime(sec.pinLockedUntil!)}.</Text>
       ) : (
         <PinPad
           label="Mã PIN 6 số"

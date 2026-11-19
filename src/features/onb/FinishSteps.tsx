@@ -3,7 +3,11 @@ import { useNavigate } from 'react-router'
 import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
 import { delay, finishOnboarding, useWorld } from '@/app/store'
-import { Button, Sheet } from '@/components/app-ui'
+import { Button, Callout, Sheet } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Heading } from '@/components/ui/heading'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { formatPhone } from '@/features/flow/FlowKit'
 import { DataList, StatusMark, StepShell, useOnb } from './Frame'
 import { TERMS_FULL, TERMS_SUMMARY } from './legal'
@@ -31,20 +35,20 @@ export function TermsStep() {
   }
   return (
     <StepShell title="Điều khoản sử dụng ví" footer={<>
-      {error ? <p role="alert" className="text-[15px] text-danger">Chưa mở được ví. Thử lại.</p> : null}
+      {error ? <Text role="alert" size="sm" className="text-destructive">Chưa mở được ví. Thử lại.</Text> : null}
       <Button block loading={busy} onClick={accept}>{error ? 'Thử lại' : 'Đồng ý và mở ví'}</Button>
     </>}>
-      <dl className="flex flex-col gap-4">
+      <VStack role="list" className="gap-4">
         {TERMS_SUMMARY.map(([k, v]) => (
-          <div key={k}><dt className="font-semibold">{k}</dt><dd className="text-[15px] leading-5 text-muted">{v}</dd></div>
+          <VStack key={k} role="listitem"><Text className="font-semibold">{k}</Text><Text size="sm" className="text-muted-foreground">{v}</Text></VStack>
         ))}
-      </dl>
-      <Button variant="ghost" className="mt-stack -ml-4" onClick={() => setFull(true)}>Xem toàn bộ điều khoản</Button>
+      </VStack>
+      <Box className="mt-3 -ml-4 self-start"><Button variant="ghost" onClick={() => setFull(true)}>Xem toàn bộ điều khoản</Button></Box>
       <Sheet open={full} onOpenChange={setFull} title="Điều khoản sử dụng ví">
-        <div className="flex flex-col gap-4">
-          {TERMS_FULL.map(([k, v]) => <section key={k}><h3 className="font-semibold">{k}</h3><p className="text-[15px] leading-5 text-muted">{v}</p></section>)}
-        </div>
-        <Button variant="secondary" block className="mt-group" onClick={() => setFull(false)}>Đóng</Button>
+        <VStack className="gap-4">
+          {TERMS_FULL.map(([k, v]) => <VStack key={k}><Heading as="h3" size="sm">{k}</Heading><Text size="sm" className="text-muted-foreground">{v}</Text></VStack>)}
+        </VStack>
+        <Button variant="secondary" block className="mt-6" onClick={() => setFull(false)}>Đóng</Button>
       </Sheet>
     </StepShell>
   )
@@ -61,18 +65,18 @@ export function ReadyStep() {
       <Button block onClick={leave('/me/sources/link?return=home')}>Liên kết ngân hàng</Button>
       <Button variant="ghost" block onClick={leave('/home')}>Để sau</Button>
     </>}>
-      <div className="mb-group"><StatusMark tone="primary" /></div>
-      <p className="mb-header headline">{w.customer.name}</p>
-      <DataList rows={[['Số ví', <span className="tnum whitespace-nowrap">{formatPhone(w.customer.walletNumber)}</span>]]} />
-      <h2 className="mt-group mb-1 font-semibold">Hạn mức giao dịch</h2>
+      <Box className="mb-6"><StatusMark tone="primary" /></Box>
+      <Text size="lg" className="mb-2 block font-semibold">{w.customer.name}</Text>
+      <DataList rows={[['Số ví', <Text className="whitespace-nowrap tabular-nums">{formatPhone(w.customer.walletNumber)}</Text>]]} />
+      <Heading as="h2" size="md" className="mt-6 mb-1">Hạn mức giao dịch</Heading>
       <DataList rows={[
-        ['Chuyển tiền và thanh toán', <span className="tnum whitespace-nowrap">{formatVnd(config.limits.generalMonth)}/tháng</span>],
-        ['Thanh toán thiết yếu (điện, nước…)', <span className="tnum whitespace-nowrap">{formatVnd(config.limits.essentialMonth)}/tháng</span>],
+        ['Chuyển tiền và thanh toán', <Text className="whitespace-nowrap tabular-nums">{formatVnd(config.limits.generalMonth)}/tháng</Text>],
+        ['Thanh toán thiết yếu (điện, nước…)', <Text className="whitespace-nowrap tabular-nums">{formatVnd(config.limits.essentialMonth)}/tháng</Text>],
       ]} />
       {w.customer.kycStatus === 'verifying' ? (
-        <p role="status" className="mt-group rounded-[12px] bg-pending-soft p-3 text-[15px] leading-5 font-medium text-pending">Hồ sơ đang được kiểm tra, thường xong trong 24 giờ.</p>
+        <Box className="mt-6"><Callout tone="pending" title="Hồ sơ đang được kiểm tra, thường xong trong 24 giờ." /></Box>
       ) : null}
-      <p className="mt-group">Bạn cần liên kết tài khoản hoặc thẻ ghi nợ đứng tên mình trước khi dùng ví.</p>
+      <Text className="mt-6 block">Bạn cần liên kết tài khoản hoặc thẻ ghi nợ đứng tên mình trước khi dùng ví.</Text>
     </StepShell>
   )
 }

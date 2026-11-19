@@ -5,6 +5,7 @@ import { FlowShell, Shell } from '@/app/Shell'
 import { useWorld } from '@/app/store'
 import { NotFound, ErrorPage } from '@/features/demo/NotFound'
 import { Skeleton } from '@/components/app-ui'
+import { VStack } from '@/components/ui/vstack'
 
 const p = (load: () => Promise<{ default: () => ReactNode }>) => lazy(load)
 const HomePage = p(() => import('@/features/hom/HomePage'))
@@ -41,7 +42,7 @@ class Boundary extends Component<{ children: ReactNode; resetKey: string }, { er
 }
 
 function Loading() {
-  return <div className="space-y-stack pt-stack" aria-busy><Skeleton className="h-8 w-48" /><Skeleton className="h-24" /><Skeleton className="h-16" /></div>
+  return <VStack className="gap-3 pt-3" aria-busy><Skeleton className="h-8 w-48" /><Skeleton className="h-24" /><Skeleton className="h-16" /></VStack>
 }
 
 /** Scenario `new` (signed out): every shell route goes to onboarding. */

@@ -33,7 +33,7 @@ export function LineChart({ values, label, className, endTag, wide }: { values: 
       </svg>
       {endTag ? (
         <Box aria-hidden className="absolute -translate-x-full -translate-y-[130%]" style={{ left: `${(ex / W) * 100}%`, top: `${(ey / H) * 100}%` }}>
-          <Badge><BadgeText className="normal-case">{endTag}</BadgeText></Badge>
+          <Badge><BadgeText className="whitespace-nowrap">{endTag}</BadgeText></Badge>
         </Box>
       ) : null}
     </Box>
@@ -70,7 +70,7 @@ export function BarsWithLimit({ bars, limit, limitLabel, label }: { bars: { key:
     <VStack role="figure" aria-label={label}>
       <Box className="relative" style={{ height: H + 24 }}>
         <Box aria-hidden className="absolute inset-x-0 border-t-2 border-foreground" style={{ top: y(limit) }}>
-          <Box className="absolute right-0 -translate-y-1/2"><Badge><BadgeText className="normal-case">{limitLabel}</BadgeText></Badge></Box>
+          <Box className="absolute right-0 -translate-y-1/2"><Badge><BadgeText className="whitespace-nowrap">{limitLabel}</BadgeText></Badge></Box>
         </Box>
         <HStack className="absolute inset-x-0 top-0 items-end justify-between gap-2" style={{ height: H }}>
           {bars.map((b) => (
@@ -83,7 +83,7 @@ export function BarsWithLimit({ bars, limit, limitLabel, label }: { bars: { key:
           ))}
         </HStack>
         <HStack aria-hidden className="absolute inset-x-0 bottom-0 justify-between gap-2">
-          {bars.map((b) => <Text key={b.key} size="2xs" className={cx('flex-1 text-center', b.current ? 'font-bold text-foreground' : 'text-muted-foreground')}>{b.short}</Text>)}
+          {bars.map((b) => <Text key={b.key} size="xs" className={cx('flex-1 text-center', b.current ? 'font-bold text-foreground' : 'text-muted-foreground')}>{b.short}</Text>)}
         </HStack>
       </Box>
     </VStack>

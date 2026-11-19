@@ -13,6 +13,7 @@ import { Divider } from '@/components/ui/divider'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
 import { Image } from '@/components/ui/image'
+import { Link, LinkText } from '@/components/ui/link'
 import { Menu, MenuItem, MenuItemLabel, MenuSeparator } from '@/components/ui/menu'
 import { Pressable } from '@/components/ui/pressable'
 import { Text } from '@/components/ui/text'
@@ -42,11 +43,20 @@ function useRouteFocus() {
 const isActive = (pathname: string, route?: string) => !!route && (pathname === route || pathname.startsWith(route + '/'))
 
 function Logo({ size = 28 }: { size?: number }) {
-  return <Image source={{ uri: '/icon.svg' }} alt="" style={{ width: size, height: size }} />
+  return <Image source={{ uri: '/icon.svg' }} alt="" size="none" className={size > 28 ? 'h-9 w-9 rounded-lg' : 'h-7 w-7 rounded-md'} />
+}
+
+/** Keyboard users skip the navigation: first focusable element, visible only when focused. */
+function SkipLink() {
+  return (
+    <Link href="#main" className="absolute left-2 top-2 z-50 -translate-y-20 rounded-md bg-background px-4 py-2 data-[focus-visible=true]:translate-y-0">
+      <LinkText>Bỏ qua điều hướng</LinkText>
+    </Link>
+  )
 }
 
 function UnreadBadge({ n }: { n: number }) {
-  return <Badge variant="destructive" className="absolute -top-1 -right-1 min-w-[18px] rounded-full px-1" aria-hidden><BadgeText className="normal-case">{n > 9 ? '9+' : n}</BadgeText></Badge>
+  return <Badge variant="destructive" className="absolute -top-1 -right-1 min-w-[18px] rounded-full px-1 dark:bg-destructive" aria-hidden><BadgeText>{n > 9 ? '9+' : n}</BadgeText></Badge>
 }
 
 /* ── Web layout ───────────────────────────────────────────────────── */
@@ -126,6 +136,7 @@ function WebShell({ children }: { children: ReactNode }) {
   const bellLabel = unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'
   return (
     <HStack className="min-h-dvh bg-background">
+      <SkipLink />
       <Box className={cx('sticky top-0 z-40 h-dvh shrink-0', collapsed ? 'w-16' : 'w-60')}>
         <VStack
           role="complementary"
@@ -140,7 +151,7 @@ function WebShell({ children }: { children: ReactNode }) {
             ) : (
               <>
                 <Pressable onPress={home} href="/home" role="link" aria-label="Wallet, về Trang chủ">
-                  <HStack className="items-center gap-2"><Logo /><Heading size="md" aria-hidden>Wallet</Heading></HStack>
+                  <HStack className="items-center gap-2"><Logo /><Heading as="p" size="md" aria-hidden>Wallet</Heading></HStack>
                 </Pressable>
                 <IconButton label={collapsed ? 'Ghim thanh bên mở rộng' : 'Thu gọn thanh bên'} aria-expanded={!collapsed} onClick={pin}>
                   <Ico as={collapsed ? PanelLeftOpen : PanelLeftClose} size="sm" className="text-muted-foreground" />
@@ -189,7 +200,7 @@ function TabItem({ t, active, unread }: { t: NavItem; active: boolean; unread: n
   if (t.emphasis === 'center')
     return (
       <Box className="flex-1 items-center">
-        <Button onPress={press} href={t.route} role="link" aria-label={t.label} aria-current={active ? 'page' : undefined} className="h-13 w-13 rounded-full px-0">
+        <Button onPress={press} href={t.route} role="link" aria-label={t.label} aria-current={active ? 'page' : undefined} className="h-12 w-12 rounded-full px-0">
           <Ico as={I} size="lg" className="text-primary-foreground" />
         </Button>
       </Box>
@@ -197,7 +208,7 @@ function TabItem({ t, active, unread }: { t: NavItem; active: boolean; unread: n
   return (
     <Pressable onPress={press} href={t.route} role="link" aria-current={active ? 'page' : undefined} className="relative flex-1 items-center justify-center gap-1 py-1.5">
       <Ico as={I} size="lg" className={active ? 'text-foreground' : 'text-muted-foreground'} />
-      <Text size="2xs" className={active ? 'font-semibold text-foreground' : 'text-muted-foreground'}>
+      <Text size="xs" className={active ? 'font-semibold text-foreground' : 'text-muted-foreground'}>
         {t.label}{t.badge && unread ? <Text className="sr-only">, {unread} chưa đọc</Text> : null}
       </Text>
       {t.badge && unread ? <UnreadBadge n={unread} /> : null}
@@ -226,6 +237,7 @@ function AppShell({ children }: { children: ReactNode }) {
   const title = root && pathname === '/home' ? 'Wallet' : s?.title ?? 'Wallet'
   return (
     <Box className="min-h-dvh bg-background">
+      <SkipLink />
       <NavBar
         title={<Text aria-hidden>{title}</Text>}
         titleVisible={!root}

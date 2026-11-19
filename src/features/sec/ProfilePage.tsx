@@ -2,7 +2,10 @@ import { Check, Clock, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { gateOf, useWorld } from '@/app/store'
 import { ConfirmRows } from '@/features/flow/FlowKit'
-import { Avatar, Badge, Callout, Card, cx, Skeleton } from '@/components/app-ui'
+import { Avatar, Badge, Callout, Card, cx, Ico, Skeleton } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { formatPhone } from '@/features/flow/FlowKit'
 import { fmtYmd } from '@/features/hom/selectors'
 import { GateCallout } from './Gate'
@@ -15,48 +18,48 @@ export default function ProfilePage() {
   const c = w.customer
   const gate = gateOf(w)
   const hasId = c.kycStatus !== 'unverified'
-  const none = <span className="text-muted">Chưa có</span>
+  const none = <Text className="text-muted-foreground">Chưa có</Text>
   const tone = KYC_TONE[c.kycStatus]
   const KycIcon = tone === 'success' ? Check : tone === 'pending' ? Clock : X
+  const kycColor = tone === 'success' ? 'text-foreground' : tone === 'pending' ? 'text-muted-foreground' : 'text-destructive'
 
   const rows: [string, ReactNode][] = [
     ['Họ và tên', c.name],
-    ['Số điện thoại', <span className="tnum">{formatPhone(c.phone)}</span>],
-    ['Số ví', <span className="tnum">{formatPhone(c.walletNumber)}</span>],
-    ['Số CCCD', hasId ? <span className="tnum whitespace-nowrap">{maskId(c.idNumber)}</span> : none],
-    ['Ngày hết hạn CCCD', hasId ? <span className="tnum">{fmtYmd(c.idExpiry)}</span> : none],
+    ['Số điện thoại', <Text className="tabular-nums">{formatPhone(c.phone)}</Text>],
+    ['Số ví', <Text className="tabular-nums">{formatPhone(c.walletNumber)}</Text>],
+    ['Số CCCD', hasId ? <Text className="whitespace-nowrap tabular-nums">{maskId(c.idNumber)}</Text> : none],
+    ['Ngày hết hạn CCCD', hasId ? <Text className="tabular-nums">{fmtYmd(c.idExpiry)}</Text> : none],
     ['Phương thức xác thực', c.kycMethod ? (c.kycMethod === 'nfc' ? 'Chip CCCD (NFC)' : 'VNeID') : none],
     ['Trạng thái xác thực', (
-      <span className={cx('inline-flex items-center gap-2', tone === 'success' ? 'text-ink' : tone === 'pending' ? 'text-pending' : 'text-danger')}>
-        <KycIcon size={16} strokeWidth={2.25} aria-hidden />{KYC_LABEL[c.kycStatus]}
-      </span>
+      // DetailRows puts the value inside a Text (span), so only inline pieces here.
+      <Text className={cx('font-medium', kycColor)}><Ico as={KycIcon} size="sm" className={cx('mr-2 inline-block align-middle', kycColor)} />{KYC_LABEL[c.kycStatus]}</Text>
     )],
     ['Trạng thái ví', (
-      <span className={cx('inline-flex items-center gap-2', w.walletStatus === 'active' ? 'text-ink' : 'text-danger')}>
-        <span aria-hidden className={cx('size-2 rounded-full', w.walletStatus === 'active' ? 'bg-success' : 'bg-danger')} />{WALLET_LABEL[w.walletStatus]}
-      </span>
+      <Text className={cx('font-medium', w.walletStatus === 'active' ? 'text-foreground' : 'text-destructive')}>
+        <Text aria-hidden className={cx('mr-2 inline-block size-2 rounded-full align-middle', w.walletStatus === 'active' ? 'bg-primary' : 'bg-destructive')} />{WALLET_LABEL[w.walletStatus]}
+      </Text>
     )],
   ]
 
   return (
-    <div>
+    <Box>
       <ScreenTitle>Hồ sơ và xác thực</ScreenTitle>
-      <div className="card flex items-center gap-4 p-inset">
+      <Card className="flex-row items-center gap-4">
         <Avatar name={c.name} src={c.photo} size={64} />
-        <div className="min-w-0 flex-1 pt-1">
-          <p className="headline break-words">{c.name}</p>
-          <div className="mt-1"><Badge tone={tone}>{KYC_LABEL[c.kycStatus]}</Badge></div>
-        </div>
-      </div>
+        <VStack className="min-w-0 flex-1 items-start gap-1 pt-1">
+          <Text size="lg" bold className="break-words">{c.name}</Text>
+          <Badge tone={tone}>{KYC_LABEL[c.kycStatus]}</Badge>
+        </VStack>
+      </Card>
 
       {c.kycStatus === 'id_expiring' ? (
-        <div className="mt-group"><Callout tone="pending" title={`CCCD của bạn hết hạn vào ${fmtYmd(c.idExpiry)}. Sau ngày này ví sẽ tạm ngừng giao dịch.`} /></div>
+        <Box className="mt-6"><Callout tone="pending" title={`CCCD của bạn hết hạn vào ${fmtYmd(c.idExpiry)}. Sau ngày này ví sẽ tạm ngừng giao dịch.`} /></Box>
       ) : null}
-      {gate ? <div className="mt-group"><GateCallout gate={gate} /></div> : null}
+      {gate ? <Box className="mt-6"><GateCallout gate={gate} /></Box> : null}
 
-      <Card className="mt-group overflow-hidden px-inset">
+      <Card className="mt-6 overflow-hidden py-0">
         <ConfirmRows rows={rows.map(([k, v]) => [k, loaded ? v : <Skeleton className="ml-auto h-4 w-28" />] as [string, React.ReactNode])} />
       </Card>
-    </div>
+    </Box>
   )
 }

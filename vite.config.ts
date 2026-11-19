@@ -26,7 +26,7 @@ export default defineConfig({
       { find: /^react-native-svg$/, replacement: 'react-native-svg/lib/module/ReactNativeSVG.web.js' },
     ],
     // gluestack ships `.web.tsx` variants (plain DOM) next to the native ones.
-    extensions: ['.web.tsx', '.web.ts', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
+    extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
   },
   test: {
     environment: 'jsdom', globals: true, setupFiles: ['src/test/setup.ts'], exclude: ['**/node_modules/**', '**/._*'],

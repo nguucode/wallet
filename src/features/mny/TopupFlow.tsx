@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router'
 import { formatVnd } from '@/domain/money'
 import { bankById, defaultSource, gateOf, getState, useWorld } from '@/app/store'
 import { Button, ButtonLink, cx, Money } from '@/components/app-ui'
+import { Text } from '@/components/ui/text'
 import { authLine, AmountInput, checkAmount, ConfirmRows, feeLabel, FlowFrame, formatPhone, useCloseFlow, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
 import { GateCallout } from '@/features/sec/Gate'
 import { kindLabel, mask4 } from './logic'
@@ -41,8 +42,8 @@ export default function TopupFlow() {
         <Button block onClick={() => go('confirm')}>Thử lại</Button>
         <ButtonLink to={`/history/${t.id}`} variant="secondary" block>Xem chi tiết</ButtonLink>
       </>}>
-        <ResultBlock tone={ok ? 'success' : 'failed'} heading={ok ? 'Nạp tiền thành công' : 'Nạp tiền không thành công'} amount={<Money amount={t.amount} sign="in" tone={ok} className={cx('amount-display', !ok && 'text-muted line-through')} />}>
-          {ok ? <p>Số dư khả dụng: <span className="tnum">{formatVnd(w.balance)}</span></p> : <p>{bankName} đã từ chối giao dịch. Ví không bị trừ tiền.</p>}
+        <ResultBlock tone={ok ? 'success' : 'failed'} heading={ok ? 'Nạp tiền thành công' : 'Nạp tiền không thành công'} amount={<Money amount={t.amount} sign="in" tone={ok} className={cx('text-3xl font-bold', !ok && 'text-muted-foreground line-through')} />}>
+          {ok ? <Text className="text-muted-foreground">Số dư khả dụng: <Text className="tabular-nums text-muted-foreground">{formatVnd(w.balance)}</Text></Text> : <Text className="text-muted-foreground">{bankName} đã từ chối giao dịch. Ví không bị trừ tiền.</Text>}
         </ResultBlock>
       </FlowFrame>
     )
@@ -57,18 +58,18 @@ export default function TopupFlow() {
       {step === 'confirm' && source ? (
         <FlowFrame title="Xác nhận nạp tiền" onBack={() => go('amount')} onClose={close}
           footer={<>
-            {commit.error ? <p role="alert" className="text-[13px] text-danger">{commit.error}</p> : null}
+            {commit.error ? <Text role="alert" size="sm" className="text-destructive">{commit.error}</Text> : null}
             <Button block loading={commit.busy} onClick={commit.start}>Xác nhận</Button>
           </>}>
           <ConfirmRows rows={[
             ['Số tiền', <Money amount={draft.amount} />],
             ['Phí', feeLabel('topup', draft.amount)],
             ['Tổng tiền', <Money amount={draft.amount} className="font-bold" />],
-            ['Từ', <>{bankById(source.bankId).name}<br /><span className="text-[13px] text-muted">{kindLabel(source.kind)} <span className="tnum">{mask4(source.last4)}</span></span></>],
+            ['Từ', <>{bankById(source.bankId).name}{'\n'}<Text size="sm" className="text-muted-foreground">{kindLabel(source.kind)} <Text size="sm" className="tabular-nums text-muted-foreground">{mask4(source.last4)}</Text></Text></>],
             ['Đến', `Ví của bạn · ${formatPhone(w.customer.walletNumber)}`],
           ]} />
-          <p className="mt-stack text-[15px] text-muted">{authLine('topup', draft.amount)}</p>
-          {commit.busy ? <p role="status" className="mt-header text-[15px] text-muted">Đang gửi yêu cầu…</p> : null}
+          <Text className="mt-3 text-muted-foreground">{authLine('topup', draft.amount)}</Text>
+          {commit.busy ? <Text role="status" className="mt-2 text-muted-foreground">Đang gửi yêu cầu…</Text> : null}
         </FlowFrame>
       ) : (
         <AmountStep draft={draft} setDraft={setDraft} onNext={() => go('confirm')} onClose={close} balance={w.balance} />
@@ -87,7 +88,7 @@ function AmountStep({ draft, setDraft, onNext, onClose, balance }: { draft: Draf
       <AmountInput
         value={draft.amount} onChange={(n) => setDraft({ amount: n })} quick={QUICK}
         error={check && !check.ok ? check.message : undefined}
-        hint={<>Số dư khả dụng: <span className="tnum">{formatVnd(balance)}</span></>}
+        hint={<>Số dư khả dụng: <Text size="sm" className="tabular-nums text-muted-foreground">{formatVnd(balance)}</Text></>}
       />
     </FlowFrame>
   )

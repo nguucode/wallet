@@ -104,7 +104,7 @@ export function Section({ title, action, children, className }: { title: string;
   return (
     <VStack className={cx('mt-8 gap-3', className)} aria-label={title} role="region">
       <HStack className="items-baseline justify-between gap-4">
-        <Heading size="lg">{title}</Heading>
+        <Heading as="h2" size="lg">{title}</Heading>
         {action}
       </HStack>
       {children}
@@ -212,7 +212,7 @@ export function RailTile({ to, onClick, label, leading, name, sub }: { to: strin
         {leading}
         <VStack className="w-full items-center">
           <Text size="xs" bold isTruncated className="w-full text-center">{name}</Text>
-          {sub ? <Text size="2xs" isTruncated className="w-full text-center text-muted-foreground">{sub}</Text> : null}
+          {sub ? <Text size="xs" isTruncated className="w-full text-center text-muted-foreground">{sub}</Text> : null}
         </VStack>
       </VStack>
     </Pressable>
@@ -247,7 +247,7 @@ export function Avatar({ name, size = 44, src }: { name: string; size?: number; 
 
 /** Neutral bank monogram: real bank names as text, never logos (mock-data.md). */
 export function BankMark({ short, size = 44 }: { short: string; size?: number }) {
-  return <GAvatar aria-hidden style={{ width: size, height: size }}><Text size="2xs" bold>{short}</Text></GAvatar>
+  return <GAvatar aria-hidden style={{ width: size, height: size }}><Text size="xs" bold>{short}</Text></GAvatar>
 }
 
 /* ── Status & money ───────────────────────────────────────────────── */
@@ -255,7 +255,7 @@ export function BankMark({ short, size = 44 }: { short: string; size?: number })
 export const STATUS_LABEL: Record<TxStatus, string> = { pending: 'Đang xử lý', success: 'Thành công', failed: 'Không thành công', refunded: 'Đã hoàn tiền' }
 export function StatusPill({ status }: { status: TxStatus; className?: string }) {
   const variant = status === 'failed' ? 'destructive' : status === 'success' ? 'default' : status === 'pending' ? 'outline' : 'secondary'
-  return <GBadge variant={variant}><BadgeText>{STATUS_LABEL[status]}</BadgeText></GBadge>
+  return <GBadge variant={variant} className={variant === 'destructive' ? 'dark:bg-destructive' : undefined}><BadgeText>{STATUS_LABEL[status]}</BadgeText></GBadge>
 }
 
 export function Money({ amount, sign, hidden, className }: { amount: number; sign?: 'in' | 'out'; hidden?: boolean; className?: string; tone?: boolean }) {
@@ -270,7 +270,7 @@ export function Dong() {
 
 export function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'secondary' | 'success' | 'pending' | 'danger' }) {
   const variant = tone === 'danger' ? 'destructive' : tone === 'primary' ? 'default' : tone === 'pending' ? 'outline' : 'secondary'
-  return <GBadge variant={variant}><BadgeText>{children}</BadgeText></GBadge>
+  return <GBadge variant={variant} className={variant === 'destructive' ? 'dark:bg-destructive' : undefined}><BadgeText>{children}</BadgeText></GBadge>
 }
 
 export function Skeleton({ className }: { className?: string }) {
@@ -363,7 +363,7 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
   const header = (
     <HStack className="w-full items-start justify-between gap-4">
       <VStack className="min-w-0 flex-1 gap-1">
-        <Heading size="lg">{title}</Heading>
+        <Heading as="h2" size="lg">{title}</Heading>
         {description ? <Text className="text-muted-foreground">{description}</Text> : null}
       </VStack>
       {dismissible ? <CloseButton onClick={close} /> : null}
@@ -398,7 +398,7 @@ export function Confirm({ open, onOpenChange, title, body, confirmLabel, cancelL
     <Sheet open={open} onOpenChange={onOpenChange} title={title} description={body}>
       <VStack className="gap-2">
         <Button variant={danger ? 'danger' : 'primary'} block onClick={() => { onConfirm(); onOpenChange(false) }}>{confirmLabel}</Button>
-        <Button variant="outline" block onClick={() => onOpenChange(false)}>{cancelLabel}</Button>
+        <Button variant="secondary" block onClick={() => onOpenChange(false)}>{cancelLabel}</Button>
       </VStack>
     </Sheet>
   )

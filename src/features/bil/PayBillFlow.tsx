@@ -1,11 +1,14 @@
 import type { ReactNode } from 'react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { formatVnd } from '@/domain/money'
 import { now, usage, useWorld } from '@/app/store'
 import { NotFound } from '@/features/demo/NotFound'
 import { authLine, ConfirmRows, FlowFrame, fmtDate, feeLabel, ResultView, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
-import { Button, ButtonLink, Callout } from '@/components/app-ui'
+import { Button, ButtonLink, Callout, TextLink } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { HStack } from '@/components/ui/hstack'
+import { Text } from '@/components/ui/text'
 import { billTx, BillChip } from './BillsPage'
 import { billStatusOn, canPayBill, maskCode, overdueDays, periodLabel } from './bills'
 
@@ -39,8 +42,8 @@ export default function PayBillFlow() {
 
   const detailRows = (): [string, ReactNode][] => [
     ['Nhà cung cấp', biller.name],
-    ['Chủ hộ', <span className="break-words">{bill.holder || '—'}</span>],
-    ['Mã khách hàng', <span className="tnum">{bill.customerCode}</span>],
+    ['Chủ hộ', <Text className="break-words">{bill.holder || '—'}</Text>],
+    ['Mã khách hàng', <Text className="tabular-nums">{bill.customerCode}</Text>],
     ['Kỳ', periodLabel(bill.period)],
     ['Hạn thanh toán', fmtDate(bill.dueDate + 'T12:00:00+07:00')],
   ]
@@ -49,17 +52,17 @@ export default function PayBillFlow() {
     return (
       <FlowFrame title="Xác nhận thanh toán" onBack={() => flow.go('view')} onClose={exit}
         footer={<Button block loading={commit.busy} onClick={commit.start}>Xác nhận</Button>}>
-        <p className="text-[13px] font-medium text-muted">Số tiền</p>
-        <p className="amount-display mb-group">{formatVnd(bill.amount)}</p>
+        <Text size="sm" className="font-medium text-muted-foreground">Số tiền</Text>
+        <Text size="4xl" bold className="mb-6 tabular-nums">{formatVnd(bill.amount)}</Text>
         <ConfirmRows rows={[
           ['Phí', feeLabel('bill', bill.amount)],
-          ['Tổng tiền', <span className="tnum">{formatVnd(bill.amount)}</span>],
+          ['Tổng tiền', <Text className="tabular-nums">{formatVnd(bill.amount)}</Text>],
           ['Nguồn tiền', 'Số dư ví'],
-          ['Nhà cung cấp', <span className="break-words">{biller.name} · <span className="tnum">{maskCode(bill.customerCode)}</span></span>],
-          ['Chủ hộ', <span className="break-words">{bill.holder || '—'}</span>],
+          ['Nhà cung cấp', <Text className="break-words">{biller.name} · <Text className="tabular-nums">{maskCode(bill.customerCode)}</Text></Text>],
+          ['Chủ hộ', <Text className="break-words">{bill.holder || '—'}</Text>],
         ]} />
-        <p className="mt-stack text-[15px] text-muted">{authLine('bill', bill.amount)}</p>
-        {commit.error ? <p role="alert" className="mt-stack text-danger">{commit.error}</p> : null}
+        <Text className="mt-3 text-muted-foreground">{authLine('bill', bill.amount)}</Text>
+        {commit.error ? <Text role="alert" className="mt-3 text-destructive">{commit.error}</Text> : null}
         {commit.sheet}
       </FlowFrame>
     )
@@ -70,20 +73,20 @@ export default function PayBillFlow() {
   return (
     <FlowFrame title="Chi tiết hóa đơn" onBack={() => nav('/bills')}
       footer={status === 'due' || status === 'overdue' ? <Button block disabled={!check.ok} onClick={() => guard(() => flow.go('confirm'))}>Thanh toán</Button> : undefined}>
-      <div className="flex items-center gap-2"><BillChip status={status} />{status === 'overdue' ? <span className="text-[15px] text-danger">Quá hạn {overdueDays(bill, at)} ngày</span> : null}</div>
-      <p className="amount-display mt-header mb-group">{formatVnd(bill.amount)}</p>
+      <HStack className="items-center gap-2"><BillChip status={status} />{status === 'overdue' ? <Text className="text-destructive">Quá hạn {overdueDays(bill, at)} ngày</Text> : null}</HStack>
+      <Text size="4xl" bold className="mt-2 mb-6 tabular-nums">{formatVnd(bill.amount)}</Text>
       <ConfirmRows rows={detailRows()} />
 
-      <div className="mt-stack">
+      <Box className="mt-3">
         {status === 'settling' || status === 'paid' ? (
           <Callout tone={status === 'settling' ? 'pending' : 'neutral'} title={status === 'settling' ? 'Đang xử lý · Nhà cung cấp đang xác nhận' : 'Đã thanh toán'}
             action={tx ? <ButtonLink to={`/history/${tx.id}`} size="sm" variant="secondary">Xem giao dịch</ButtonLink> : undefined} />
         ) : !check.ok && check.reason === 'insufficient_balance' ? (
-          <p role="alert" className="text-danger">Số dư không đủ, cần thêm {formatVnd(check.short)}. <Link to="/topup" className="font-semibold text-tint">Nạp tiền</Link></p>
+          <Text role="alert" className="text-destructive">Số dư không đủ, cần thêm {formatVnd(check.short)}. <TextLink to="/topup">Nạp tiền</TextLink></Text>
         ) : !check.ok && check.reason === 'essential_limit' ? (
-          <p role="alert" className="text-danger">Vượt hạn mức thanh toán thiết yếu tháng này, còn lại {formatVnd(check.remaining)}. <Link to="/me/limits" className="font-semibold text-tint">Xem hạn mức</Link></p>
-        ) : <p className="text-[15px] text-muted">Thanh toán từ số dư ví · Miễn phí</p>}
-      </div>
+          <Text role="alert" className="text-destructive">Vượt hạn mức thanh toán thiết yếu tháng này, còn lại {formatVnd(check.remaining)}. <TextLink to="/me/limits">Xem hạn mức</TextLink></Text>
+        ) : <Text className="text-muted-foreground">Thanh toán từ số dư ví · Miễn phí</Text>}
+      </Box>
       {gateSheet}
     </FlowFrame>
   )

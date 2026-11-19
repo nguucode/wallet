@@ -1,11 +1,18 @@
 import { useState, type ReactNode } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import { formatVnd } from '@/domain/money'
 import { SampleBadge } from '@/app/Shell'
 import { lookupBill, mutate, now, saveBill, useWorld } from '@/app/store'
 import { ConfirmRows, FlowFrame, fmtDate, useCloseFlow, useFlow } from '@/features/flow/FlowKit'
 import { GatedRoute } from '@/features/sec/Gate'
-import { BankMark, Button, Field, Row, TextInput } from '@/components/app-ui'
+import { BankMark, Button, Card, Field, Row, TextInput, TextLink } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Link, LinkText } from '@/components/ui/link'
+import { Pressable } from '@/components/ui/pressable'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { isValidCustomerCode, periodLabel, vnToday } from './bills'
 
 const STEPS = ['biller', 'customer-code', 'lookup'] as const
@@ -43,19 +50,21 @@ function Flow() {
   if (flow.step === 'biller' || !biller)
     return (
       <FlowFrame title="Chọn nhà cung cấp" onClose={close}>
-        <h2 className="label-caps mb-header px-4">Điện</h2>
-        <ul className="card overflow-hidden">
+        <Heading size="xs" as="h2" className="mb-2 px-4 uppercase text-muted-foreground">Điện</Heading>
+        <Card className="overflow-hidden p-0">
+          <VStack role="list" className="divide-y divide-border">
           {billers.map((b) => (
-            <li key={b.id}>
+            <Box key={b.id} role="listitem">
               <Row
                 onClick={() => { setDraft({ billerId: b.id, found: undefined, noDebt: false }); setError(undefined); go('customer-code') }}
                 left={<BankMark short={monogram(b.name)} size={40} />}
                 title={b.name}
                 chevron
               />
-            </li>
+            </Box>
           ))}
-        </ul>
+          </VStack>
+        </Card>
         {dialog}
       </FlowFrame>
     )
@@ -75,23 +84,23 @@ function Flow() {
             <Button block variant="secondary" onClick={() => finish(false)}>Chỉ lưu</Button>
           </>
         ) : <Button block onClick={() => finish(false)}>Lưu hóa đơn</Button>}>
-        <div className="card p-inset">
-          <p className="font-semibold">{biller.name}</p>
-          <p className="text-[13px] text-muted tnum">{draft.code}</p>
+        <Card>
+          <Text className="font-semibold">{biller.name}</Text>
+          <Text size="sm" className="text-muted-foreground tabular-nums">{draft.code}</Text>
           {draft.found ? (
             <>
-              <p className="amount-display mt-stack">{formatVnd(draft.found.amount)}</p>
-              <div className="mt-stack">
+              <Text size="4xl" bold className="mt-3 tabular-nums">{formatVnd(draft.found.amount)}</Text>
+              <Box className="mt-3">
                 <ConfirmRows rows={[
                   ['Chủ hộ', draft.found.holder],
                   ['Địa chỉ', draft.found.address],
                   ['Kỳ', periodLabel(draft.found.period)],
                   ['Hạn thanh toán', fmtDate(new Date(now() + 10 * 86_400_000))],
                 ]} />
-              </div>
+              </Box>
             </>
-          ) : <p role="status" className="mt-stack">Không có hóa đơn cần thanh toán kỳ này</p>}
-        </div>
+          ) : <Text role="status" className="mt-3">Không có hóa đơn cần thanh toán kỳ này</Text>}
+        </Card>
         {dialog}
       </FlowFrame>
     )
@@ -102,7 +111,7 @@ function Flow() {
     setError(undefined)
     if (!isValidCustomerCode(draft.code)) return setError('Mã khách hàng không đúng định dạng')
     const saved = w.bills.find((b) => b.billerId === biller.id && b.customerCode === draft.code)
-    if (saved) return setError(<>Hóa đơn này đã có trong danh sách. <Link to={`/bills/${saved.id}`} className="font-semibold text-tint">Xem hóa đơn</Link></>)
+    if (saved) return setError(<>Hóa đơn này đã có trong danh sách. <TextLink to={`/bills/${saved.id}`}>Xem hóa đơn</TextLink></>)
     setBusy(true)
     try {
       const r = await lookupBill(biller.id, draft.code)
@@ -110,37 +119,38 @@ function Flow() {
       else if (r.error === 'no_debt') { setDraft({ found: undefined, noDebt: true }); go('lookup') }
       else setError(r.error === 'not_found' ? `Không tìm thấy mã khách hàng tại ${biller.name}` : 'Nhà cung cấp đang tạm gián đoạn, vui lòng thử lại sau')
     } catch {
-      setError(<>Không tra cứu được. <button type="button" onClick={lookup} className="font-semibold text-tint underline">Thử lại</button></>)
+      setError(<>Không tra cứu được. <Link role="button" onPress={() => void lookup()}><LinkText>Thử lại</LinkText></Link></>)
     } finally { setBusy(false) }
   }
   return (
     <FlowFrame title="Nhập mã khách hàng" onBack={() => go('biller')} onClose={close}
       footer={<Button block loading={busy} onClick={lookup}>{busy ? 'Đang tra cứu…' : 'Tra cứu'}</Button>}>
-      <form onSubmit={(e) => { e.preventDefault(); void lookup() }}>
-        <p className="mb-stack flex items-center gap-2 font-medium">
+      <Box>
+        <HStack className="mb-3 items-center gap-2">
           <BankMark short={monogram(biller.name)} size={32} />
-          {biller.name}
-        </p>
+          <Text className="font-medium">{biller.name}</Text>
+        </HStack>
         <Field label="Mã khách hàng" htmlFor="bill-code" error={error} hint="Mã in ở góc trên hóa đơn tiền điện, ví dụ HH01234567890">
           <TextInput
             id="bill-code" autoFocus inputMode="text" autoCapitalize="characters" autoComplete="off" spellCheck={false} maxLength={13}
-            invalid={!!error} readOnly={busy} value={draft.code} className="tnum uppercase"
+            invalid={!!error} readOnly={busy} value={draft.code} className="tabular-nums uppercase"
             onChange={(e) => { setError(undefined); setDraft({ code: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '') }) }}
+            onKeyDown={(e) => { if (e.key === 'Enter' && !busy) void lookup() }}
           />
         </Field>
-      </form>
-      <div className="rounded-[var(--radius-input)] bg-surface-2 p-inset">
-        <p className="mb-header flex items-center gap-2 text-[13px] font-semibold">Mã mẫu <SampleBadge /></p>
-        <ul className="text-[13px]">
+      </Box>
+      <Box className="rounded-lg border border-border bg-card p-4">
+        <HStack className="mb-2 items-center gap-2"><Text size="sm" className="font-semibold">Mã mẫu</Text><SampleBadge /></HStack>
+        <VStack role="list">
           {SAMPLES.map((s) => (
-            <li key={s.code}>
-              <button type="button" onClick={() => { setError(undefined); setDraft({ code: s.code }) }} className="flex min-h-11 w-full items-center gap-2 text-left hover:underline">
-                <span className="font-semibold tnum">{s.code}</span><span className="text-muted">· {s.hint}</span>
-              </button>
-            </li>
+            <Box key={s.code} role="listitem">
+              <Pressable role="button" onPress={() => { setError(undefined); setDraft({ code: s.code }) }} className="min-h-11 w-full flex-row items-center gap-2 data-[hover=true]:underline">
+                <Text size="sm" className="font-semibold tabular-nums">{s.code}</Text><Text size="sm" className="text-muted-foreground">· {s.hint}</Text>
+              </Pressable>
+            </Box>
           ))}
-        </ul>
-      </div>
+        </VStack>
+      </Box>
       {dialog}
     </FlowFrame>
   )

@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-React 19 + Vite + TypeScript + React Router 7 + Tailwind v4 + Radix, Vitest, axe, the same stack as Fortify. One app with two layouts: a desktop web wallet (≥ 1024px, sidebar) and a mobile app shell (< 1024px, tab bar, sheets, numeric keypad). It is installable as a PWA. The layout follows the viewport width, so a desktop reviewer sees the mobile shell by narrowing the window below 1024px (or on a phone); the `/device` phone-frame preview was removed 2026-11-19. Deployed to Cloudflare Pages at wallet.ontheshore.biz by GitHub Actions on every push to `main` (check-spec, test, build, deploy). Capacitor is added only if a real install file is ever needed. Expo and a split web + Expo monorepo were ruled out.
+Next.js 15 (static export) + React 19 + TypeScript 6 + React Router 7 (client routes inside one catch-all page) + gluestack-ui v4 (NativeWind, react-native-web), Vitest, axe. Rebuilt on gluestack 2026-11-19. One app with two layouts: a desktop web wallet (≥ 1024px, sidebar) and a mobile app shell (< 1024px, tab bar, sheets, numeric keypad). It is installable as a PWA. The layout follows the viewport width, so a desktop reviewer sees the mobile shell by narrowing the window below 1024px (or on a phone); the `/device` phone-frame preview was removed 2026-11-19. Deployed to Cloudflare Pages at wallet.ontheshore.biz by GitHub Actions on every push to `main` (check-spec, test, typecheck, build to `out/`, deploy). Capacitor is added only if a real install file is ever needed. Expo and a split web + Expo monorepo were ruled out.
 
 ## Users
 
@@ -58,13 +58,13 @@ Simple, with every state always clear. Wallet does only the core jobs, and it sh
   - Step-up thresholds (10M VND per transaction, 20M VND cumulative per day, as MoMo publishes them) live in config.
 - **Currency:** VND, no decimals, formatted `1.250.000 ₫`. The balance can be hidden or shown.
 - **Language:** UI in Vietnamese. Spec, User Stories and code identifiers in English.
-- **Visual system:** Apple Human Interface Guidelines (decided 2026-11-19), documented in DESIGN.md as "Inset Grouped". Violet `#5B2BE0` is the app tint; type is the system stack (SF Pro on Apple devices, Be Vietnam Pro elsewhere for full Vietnamese diacritics); light and dark follow the system setting.
+- **Visual system:** gluestack-ui v4 with its default theme, unmodified (decided 2026-11-19, replacing the Apple HIG "Inset Grouped" build). Neutral palette, no brand tint; Inter for Vietnamese diacritics; light and dark follow the system setting. See DESIGN.md.
 
 ## Brand Commitments
 
 - The product name is **Wallet** (working name), hosted at wallet.ontheshore.biz.
-- UI follows Apple's Human Interface Guidelines (iOS on the app layout, macOS sidebar conventions on web) as a third-party app would: grouped backgrounds, inset grouped sections, large titles, Liquid Glass on navigation chrome only, the app's own violet tint. It borrows no Apple brand: no Apple logo, no Apple Pay or Apple Wallet marks or names, no SF Symbols artwork (icons are Lucide), and SF Pro is never shipped as a webfont, only reached through the system font stack.
-- History: PayPal grammar ("Clear Ledger", 2026-11-17), then Copilot grammar ("Violet Sky", 2026-11-17), then Apple HIG ("Inset Grouped", 2026-11-19). The PayPal study stays in the vault note `10-projects/wallet/paypal-style-study.md` for flow reference.
+- UI is gluestack-ui exactly as the library ships it: its components and default theme, nothing custom on top. Icons are Lucide through gluestack Icon.
+- History: PayPal grammar ("Clear Ledger", 2026-11-17), then Copilot grammar ("Violet Sky", 2026-11-17), then Apple HIG ("Inset Grouped", 2026-11-19), then gluestack-ui default (2026-11-19, sếp rejected the custom UI). The PayPal study stays in the vault note `10-projects/wallet/paypal-style-study.md` for flow reference.
 - Never use the PayPal logo or monogram, PayPal Pro or PayPal Open fonts, PayPal's exact colours (#0065F2, #002991, #001435, #0070BA, #003087), its yellow or black logo buttons, or the word "PayPal".
 - No MoMo, ZaloPay, NAPAS or bank logos. Banks use real Vietnamese bank names as text (decided 2026-11-17: it is a demo). People, merchants and billers in mock data are fictional; VietQR is referenced by name only.
 

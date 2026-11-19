@@ -1,479 +1,54 @@
----
-name: Inset Grouped
-description: Wallet as a first-party Apple app. Neutral grouped ground, content in inset sections, violet only where you can act.
-colors:
-  primary: "#5b2be0"
-  primary-hover: "#4a1fc4"
-  tint: "#5b2be0"
-  primary-soft: "#eee9fd"
-  primary-soft-hover: "#e3dbfc"
-  primary-ink: "#3d1a9e"
-  ink: "#000000"
-  on-ink: "#ffffff"
-  muted: "#66666b"
-  surface: "#ffffff"
-  surface-2: "rgb(118 118 128 / 0.12)"
-  ground: "#f2f2f7"
-  line: "#c6c6c8"
-  line-soft: "#e5e5ea"
-  success: "#1a7a35"
-  success-soft: "#e4f5e8"
-  pending: "#a05a00"
-  pending-soft: "#fff1dc"
-  danger: "#c00012"
-  danger-soft: "#fde8ea"
-  danger-soft-hover: "#fbd7db"
-  badge: "#c00012"
-  secondary: "#3ee0c5"
-  secondary-ink: "#0e7a6c"
-  secondary-soft: "#e0f7f3"
-  on-secondary: "#0f0d16"
-  card-accent: "#3ee0c5"
-  card-violet: "#9d7bff"
-  card-base-top: "#1d1a29"
-  card-base: "#14121c"
-  card-base-bottom: "#0f0d16"
-  card-glow: "rgb(124 82 255 / 0.55)"
-  card-shadow: "rgb(15 13 22 / 0.7)"
-  chart-up: "#34c759"
-  chart-warn: "#ff9500"
-  chart-over: "#ff3b30"
-typography:
-  large-title:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "34px"
-    fontWeight: 700
-    lineHeight: "41px"
-    letterSpacing: "0.01em"
-  balance:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "48px"
-    fontWeight: 700
-    lineHeight: "58px"
-    letterSpacing: "-0.01em"
-    fontFeature: "tnum"
-  balance-app:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "40px"
-    fontWeight: 700
-    lineHeight: "50px"
-    letterSpacing: "-0.01em"
-    fontFeature: "tnum"
-  amount-display:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "32px"
-    fontWeight: 700
-    lineHeight: "40px"
-    letterSpacing: "-0.01em"
-    fontFeature: "tnum"
-  title-3:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "20px"
-    fontWeight: 600
-    lineHeight: "25px"
-    letterSpacing: "-0.01em"
-  body:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "17px"
-    fontWeight: 400
-    lineHeight: "22px"
-  body-web:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "15px"
-    fontWeight: 400
-    lineHeight: "20px"
-  title-1:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "28px"
-    fontWeight: 700
-    lineHeight: "34px"
-  title-2:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "22px"
-    fontWeight: 700
-    lineHeight: "28px"
-  headline:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "17px"
-    fontWeight: 600
-    lineHeight: "22px"
-  callout:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "16px"
-    fontWeight: 400
-    lineHeight: "21px"
-  subheadline:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "15px"
-    fontWeight: 400
-    lineHeight: "20px"
-  caption-1:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "12px"
-    fontWeight: 400
-    lineHeight: "16px"
-  caption-2:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "11px"
-    fontWeight: 400
-    lineHeight: "13px"
-  keypad-digit:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "28px"
-    fontWeight: 400
-    lineHeight: "32px"
-  footnote:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "13px"
-    fontWeight: 400
-    lineHeight: "18px"
-  label-caps:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "13px"
-    fontWeight: 400
-    lineHeight: "18px"
-    letterSpacing: "0"
-  tab-label:
-    fontFamily: "-apple-system, BlinkMacSystemFont, Be Vietnam Pro, system-ui, sans-serif"
-    fontSize: "10px"
-    fontWeight: 500
-    lineHeight: "12px"
-rounded:
-  focus-ring: "4px"
-  input: "12px"
-  nav-item: "10px"
-  key: "14px"
-  card: "24px"
-  sidebar: "24px"
-  sheet-app: "34px"
-  full: "9999px"
-spacing:
-  gutter-app: "16px"
-  gutter-web: "48px"
-  sidebar-inset: "12px"
-  inset-app: "16px"
-  inset-web: "20px"
-  hero-app: "20px"
-  hero-web: "28px"
-  header: "8px"
-  stack: "12px"
-  group: "24px"
-  section-app: "32px"
-  section-web: "40px"
-components:
-  button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "#ffffff"
-    rounded: "{rounded.full}"
-    height: "50px"
-    padding: "0 24px"
-    typography: "{typography.body}"
-  button-primary-hover:
-    backgroundColor: "{colors.primary-hover}"
-  button-secondary:
-    backgroundColor: "{colors.surface-2}"
-    textColor: "{colors.tint}"
-    rounded: "{rounded.full}"
-    height: "50px"
-  button-secondary-hover:
-    backgroundColor: "{colors.primary-soft}"
-  button-ghost:
-    textColor: "{colors.tint}"
-    rounded: "{rounded.full}"
-    height: "50px"
-  button-danger:
-    backgroundColor: "{colors.danger-soft}"
-    textColor: "{colors.danger}"
-    rounded: "{rounded.full}"
-    height: "50px"
-  button-ink:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.on-ink}"
-    rounded: "{rounded.full}"
-    height: "50px"
-  section:
-    backgroundColor: "{colors.surface}"
-    rounded: "{rounded.card}"
-    padding: "20px"
-  input:
-    backgroundColor: "{colors.surface-2}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.input}"
-    height: "48px"
-    padding: "0 16px"
-  status-success:
-    backgroundColor: "{colors.success-soft}"
-    textColor: "{colors.success}"
-    rounded: "{rounded.full}"
-    height: "24px"
-  status-pending:
-    backgroundColor: "{colors.pending-soft}"
-    textColor: "{colors.pending}"
-    rounded: "{rounded.full}"
-    height: "24px"
-  status-failed:
-    backgroundColor: "{colors.danger-soft}"
-    textColor: "{colors.danger}"
-    rounded: "{rounded.full}"
-    height: "24px"
-  segment-selected:
-    backgroundColor: "{colors.primary}"
-    textColor: "#ffffff"
-    rounded: "{rounded.full}"
-    height: "36px"
-  segment:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.full}"
-    height: "36px"
-  nav-item-active:
-    backgroundColor: "{colors.surface-2}"
-    textColor: "{colors.tint}"
-    rounded: "{rounded.nav-item}"
-    height: "40px"
-  tab-bar:
-    rounded: "{rounded.full}"
-    height: "64px"
-  keypad-key:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.key}"
-    height: "56px"
----
+# Design system: gluestack-ui (default theme)
 
-# Design System: Inset Grouped
+Decided 2026-11-19 by sếp: the custom "Inset Grouped" UI is retired. Every screen is built from **gluestack-ui v4** components with the **default gluestack theme**, unmodified. The previous systems ("Clear Ledger", "Violet Sky", "Inset Grouped") are history only; their tokens, utilities and violet tint no longer exist.
 
-History: replaces "Violet Sky" (2026-11-17). Direction pinned by the owner 2026-11-19: follow Apple's design system, keep violet #5B2BE0 as the app tint, system font stack, light and dark following `prefers-color-scheme`. Values above are the light appearance; the dark appearance is listed in each colour entry below and lives in the `prefers-color-scheme: dark` block of `src/index.css`.
+## Source of truth
 
-## Overview
+- Components: generated by the gluestack CLI into `src/components/ui/<name>/` and kept as shipped (`// @ts-nocheck` header only). Add more with `npx gluestack-ui@latest add <name>` in a scratch Next app and copy the folder in; never hand-edit them.
+- Theme: `src/components/ui/gluestack-ui-provider/config.ts` (gluestack default light and dark values). Light/dark follows the system (`GluestackUIProvider mode="system"`).
+- Tailwind: `tailwind.config.cjs` from the gluestack init (NativeWind preset). No project CSS beyond the three `@tailwind` directives in `app/globals.css`.
+- Font: Inter through `next/font` as `--font-sans`, the slot gluestack's Next template expects (Inter covers Vietnamese).
 
-**Creative North Star: "The First-Party App"**
+## Tokens
 
-Wallet should read as if Apple shipped it. The reviewer recognises the platform in the first second, stops looking at the styling, and spends their attention on the balance, the states and the rules. Everything sits on a neutral grouped ground; content lives in white (dark: near-black) inset sections with generous 24px corners and no shadow. Colour is rationed: the violet tint marks only what you can act on, and green, orange and red appear only where a money state needs naming.
+Colour, only these: `background`, `foreground`, `card`, `card-foreground`, `popover`, `popover-foreground`, `primary`, `primary-foreground`, `secondary`, `secondary-foreground`, `muted`, `muted-foreground`, `accent`, `accent-foreground`, `destructive`, `border`, `input`, `ring`. The default theme is neutral (primary is near-black in light, near-white in dark). There is no success or warning colour: transaction states are named by Badge variant and text (`default` = Thành công, `outline` = Đang xử lý, `destructive` = Không thành công, `secondary` = Đã hoàn tiền), never by an invented colour. The one literal colour is `bg-white` behind QR codes and barcodes, a scanning requirement.
 
-Depth comes from material, not from shadow. Navigation chrome (the web sidebar, the app tab bar, the nav bar once content scrolls under it) is translucent glass; content is opaque and flat. Type is the system face at Apple's sizes, so large titles, section headers and list rows carry the hierarchy without decoration.
+Spacing: the Tailwind scale on a 4pt grid (`2` 8px inside a group, `3` 12px between siblings, `4` 16px card padding and page gutter on app, `6` 24px between groups, `8` 32px between sections). Radii and type sizes: the component defaults (`Text`/`Heading` `size`), no arbitrary values.
 
-The signature is the money itself: big tabular numerals with the ₫ set small and raised beside them. The world rejects the old violet sky band, lifted shadow cards, uppercase chips, and any brand chrome around the balance.
+## Composition
 
-**Key Characteristics:**
-- Neutral grouped background, content in inset grouped sections (radius 24, no shadow).
-- One accent: violet tint for buttons, links, selection, focus, and the balance line.
-- Status as sentence-case tinted capsules, never uppercase chips.
-- Glass only on navigation chrome; content surfaces stay opaque.
-- System font at Apple's type ramp: 34 large title, 20 title 3, 17 body (15 on web).
-- Light and dark are both first-class and follow the OS.
+`src/components/app-ui.tsx` is the project's layer on top of gluestack. It keeps one API for the screens and renders only gluestack parts:
 
-## Colors
+| Wallet piece | gluestack |
+|---|---|
+| Button, ButtonLink, IconButton | Button, ButtonText, ButtonSpinner (links render `<a href>` and route on the client) |
+| Card, Section, Callout | Card, VStack/HStack, Heading, Text |
+| Row (list row), RailTile, DetailRows | Pressable, HStack/VStack, Text, Icon; lists separate rows with `divide-y divide-border` inside `Card className="p-0"` |
+| Disc, Avatar, BankMark | Avatar, AvatarFallbackText, AvatarImage |
+| StatusPill, Badge | Badge, BadgeText |
+| Field, TextInput | FormControl, Input, InputField |
+| Segmented (filter chips) | Button group with `role="tab"` |
+| Sheet, Confirm | Actionsheet on the app layout, Modal on web |
+| useToast | Toast (plus a polite live region) |
+| Skeleton, RowSkeleton | Skeleton |
+| Icons | lucide-react through gluestack `Icon as={…}` (`Ico`) |
 
-A neutral Apple grouped palette with a single violet voice and three accessible state colours.
+Shell (`src/app/Shell.tsx`): web = a bordered `Card`-coloured sidebar (collapsible rail, account `Menu` in the footer with notifications and demo controls), content in a 768px column; app = NavBar, large `Heading`, bottom tab bar of Pressables with the Scan action as a filled Button. Flows (`FlowKit.tsx`): `FlowFrame` puts each step in one Card with the footer actions below (sticky on app); the amount step is an `Input` plus a `Grid` keypad of Buttons.
 
-### Primary
-- **App Tint Violet** (`primary`, light #5b2be0 / dark #6e48f5): the tint as a fill. Primary buttons, the selected segment, the Scan button in the tab bar, the chart's change badge. White text on it (7.3:1 light, 5.4:1 dark).
-- **Tint as Ink** (`tint`, light #5b2be0 / dark #b19dff): the tint as text, icon, border and focus ring: links, "Xem tất cả", back chevrons, sidebar icons, secondary-button labels, the 30-day line chart. It splits from `primary` because no single dark value can carry white text on a fill and also read as text on #1c1c1e; the dark tint is 7.4:1 on the section surface.
-- **Pressed Violet** (`primary-hover`, light #4a1fc4 / dark #7d5bf7): hover on primary fills.
-- **Violet Wash** (`primary-soft`, light #eee9fd / dark violet at 26%): primary-toned badges, discs and callouts; hover for secondary buttons. `primary-soft-hover` steps it once.
-- **Deep Violet Text** (`primary-ink`, light #3d1a9e / dark #cbbcff): text on the violet wash and on quick-amount chips.
+Charts (`src/components/charts.tsx`): gluestack has none, so they are SVG drawn only with theme tokens (`stroke-primary`, `stroke-muted`, `stroke-destructive`) and Box bars, with Badge labels.
 
-### Tertiary (states)
-- **Settled Green** (`success`, light #1a7a35 / dark #30d158) on `success-soft` (light #e4f5e8 / dark green at 18%): "Thành công", incoming amounts.
-- **Pending Amber** (`pending`, light #a05a00 / dark #ffb340) on `pending-soft` (light #fff1dc / dark orange at 18%): "Đang xử lý", the pending balance capsule.
-- **Failure Red** (`danger`, light #c00012 / dark #ff6961) on `danger-soft` (light #fde8ea / dark red at 20%): failures, destructive actions, field errors.
-- **Badge Red** (`badge`, #c00012 in both modes): the unread count badge only, white text 6:1. It stays one red in dark mode because white on Failure Red's dark value fails contrast.
-- **Chart greens, oranges, reds** (`chart-up` #34c759 / #30d158, `chart-warn` #ff9500 / #ff9f0a, `chart-over` #ff3b30 / #ff453a): Apple's system colours, used only as large chart marks (limit rings, spending bars), never as text.
+## Conventions (audit 2026-11-19)
 
-### Neutral
-- **Label** (`ink`, #000000 / #ffffff): primary text; also the fill of the ink button, and toast, with **On Label** (`on-ink`, #ffffff / #000000) on top.
-- **Secondary Label** (`muted`, #66666b / #aeaeb2): subtitles, captions, group headers, placeholders. Darker than Apple's accessible variant so it stays at least 4.5:1 on the ambient wash as well as on ground and sections.
-- **Secondary Teal** (`secondary` fill #3ee0c5 with `on-secondary` #0f0d16 text; `secondary-ink` light #0e7a6c / dark #3ee0c5 for text and icons; `secondary-soft` light #e0f7f3 / dark teal at 16%): the second brand colour, so the UI is never violet alone. Violet means *act* (buttons, links, selection); teal means *notice* (information and data: the money card's line and change tag, informational status such as a bill "Sắp đến hạn", future data series). Teal is never a button, link or selected state, and never success (success stays green).
-- **Card Teal** (`card-accent` = `secondary`) and **Card Violet** (`card-violet`, #9d7bff): the money card's accents. The balance line runs violet to teal along time, the change tag is teal with dark text, and a faint teal counter-glow sits bottom-left against the violet glow top-right. Teal complements the violet and the graphite; it carries no up/down meaning.
-- **Section** (`surface`, #ffffff / #1c1c1e): inset grouped sections, sheets, keypad keys, unselected segments.
-- **Tertiary Fill** (`surface-2`, grey 118/118/128 at 12% / 24%): discs, avatars, bank marks, inputs, secondary buttons, hover and active rows, selected nav items, skeletons.
-- **Grouped Ground** (`ground`, #f2f2f7 / #000000): the page background behind everything.
-- **Separator** (`line`, #c6c6c8 / #38383a) and **Soft Separator** (`line-soft`, #e5e5ea / #2c2c2e): hairlines, the amount underline, ring tracks, list dividers.
+- **Headings:** page title `Heading size="3xl"` (h1, from ScreenTitle/PageTitle/FlowFrame); section `as="h2" size="lg"`; sub-section inside a card `as="h2"|"h3" size="md"`; date or category group labels `as="h2" size="xs"` uppercase in `text-muted-foreground`. Always pass `as` so levels never skip. Do not combine `as` with `isTruncated` (gluestack forwards it to the DOM); use `className="truncate"`.
+- **Text:** smallest size is `xs` (12px); `2xs` is not used.
+- **Badges:** gluestack's default uppercase BadgeText everywhere, no `normal-case`. Destructive badges add `dark:bg-destructive` (the default `bg-destructive/60` in dark fails contrast with white text).
+- **Notes and info boxes:** the gluestack Alert surface, `rounded-lg border border-border bg-card p-4`. Never text on a `bg-muted` fill: `muted-foreground` on `muted` is 4.3:1 and fails AA.
+- **Buttons:** primary action `primary`; the paired secondary action `secondary`; destructive `danger`; quiet links `ghost`. Icons inside buttons go through `Ico`, not `ButtonIcon` (its className is not applied on react-native-web).
+- **Row actions:** a `Sheet` on both layouts (Actionsheet on app, Modal on web). gluestack `Menu` is kept only where it opens away from the screen edge (account menu, history filters): its popover measures 0px wide on web and cannot shift off the right edge.
+- **Providers:** `GluestackUIProvider` sits in `app/layout.tsx` (writes the theme variables during SSR; a head script sets the light/dark class before paint) and again inside `BrowserRouter` in `src/main.tsx` (overlays portal through the nearest provider and their content needs router context).
 
-### Named Rules
-**The Tint Means Tap Rule.** Violet appears only on things you can act on (and the one balance line chart). A violet heading, border or decorative wash is a bug.
+## Rules
 
-**The Fill Versus Tint Rule.** Use `primary` when violet is a background with white text on it; use `tint` when violet is the text, icon, outline or focus ring. Never swap them; dark mode breaks the moment you do.
-
-**The Fixed Plate Rule.** QR codes and barcodes always sit black on a white plate (#ffffff, radius 12), and camera and scan surfaces are always black, in both appearances. They are physical-world surfaces, not themed ones.
-
-## Typography
-
-**Display Font:** System UI: SF Pro on Apple devices (`-apple-system, BlinkMacSystemFont`), Be Vietnam Pro elsewhere for full Vietnamese diacritics, then `system-ui`.
-**Body Font:** the same stack.
-
-**Character:** one family at Apple's sizes and weights. Hierarchy comes from size steps and weight, not from a second face, colour or case.
-
-### Hierarchy
-- **Balance** (700, 48/58 web; 40/50 app as `balance-app`; tabular): the available balance on Home.
-- **Amount Display** (700, 32/40, tabular): amounts in flows and on result screens.
-- **Large Title** (700, 34/41): the title of every tab root and web page. On the app, Home pairs it with the app icon and "Wallet".
-- **Title 3** (600, 20/25): section headers above inset sections, sheet titles.
-- **Body** (400, 17/22 on app below 1024px; 15/20 on web): everything else. Row titles take 500, amounts in rows take 600 tabular.
-- **Footnote** (400, 13/18): row subtitles, field hints and errors, field labels (500).
-- **Status Capsule** (600, 13/16): pills and badges, sentence case.
-- **Group Header** (`label-caps`, 400, 13/18, uppercase, secondary label): the group header above an inset section, outside it, left-aligned with the section's content inset (16px), Apple's footnote caps. The web sidebar's group names use 12px semibold sentence case instead.
-- **Tab Label** (500, 10/12; 600 when active): the app tab bar.
-
-### Named Rules
-**The Raised Dong Rule.** Beside display numerals the ₫ sits at 0.55em, raised 0.42em, semibold, with a 0.12em gap; screen readers hear "đồng". Inline in running text the plain "₫" stays.
-
-**The One Uppercase Rule.** The group header is the only uppercase text in the system. Capsules, buttons, segments and section titles are sentence case.
-
-## Layout
-
-The app layout (below 1024px) is a single 560px-max column with 16px gutters. Tab roots show a large title in the content; pushed screens show an inline title in a sticky nav bar that is transparent at rest and gains the bar material once content scrolls. A floating glass tab bar (64px tall, 12px from the sides and bottom, 536px max) carries five items; a gradient of the ground fades content out beneath it, and pages reserve 128px of bottom padding.
-
-The web layout (1024px and up) puts a floating glass sidebar inset 12px from the window, 224px wide, collapsible to a 56px icon rail that is remembered per viewer. In the rail the app icon is the expand control: hovering it peeks the full sidebar over the content (the content column does not move), leaving the sidebar returns it to the rail, clicking the icon pins it open. Rows are compact, macOS-sidebar density: 36px items (10px radius, 18px icons, 15px label), 1px apart, group names 12px semibold on a 24px line, 10px panel padding, so the whole menu fits a 800px-tall window without scrolling. Its footer, with no divider above it, holds the account (the persona's photo avatar and short name, menu opening upward), notifications with a red count badge, and demo controls. There is no toolbar above web content. Content sits in a 768px main column with 48px gutters and 56px top padding; pages inside it cap at 560px.
-
-Sections stack with 32px (app) or 40px (web) between them, each preceded by a Title 3 header with an optional tint link on the right. Section padding is 20px on app, 24px on web. List rows are at least 64px tall with a 12px gap between leading disc and text.
-
-Flows use the same rhythm. On web: a tint "‹ Quay lại" link, a large title with a CloseButton beside it, then the step. On app: a nav bar with BackButton and CloseButton. A step's content is wrapped in one inset section only when it has no sections of its own. The footer is sticky on a blurred ground with a hairline above. The number keypad stands outside the section on the grouped background, as the system number pad does.
-
-### Spacing system
-
-Spacing is named by role on a 4pt grid and lives in `src/index.css` as Tailwind spacing keys (`p-inset`, `mt-section`, `gap-stack`…). Web values switch at 1024px. A raw number in layout code is a bug unless it is a component's own internal dimension (a chip's 10px side padding, a button's height).
-
-| Token | App / Web | Role |
-|---|---|---|
-| `inset` | 16 / 20 | Padding inside a section; left and right of every row; caps group headers align to it. |
-| `hero` | 20 / 28 | Padding of the money card. |
-| `header` | 8 | A header to the content it labels (section title → section, group caps → section, field label → input). |
-| `stack` | 12 | Sibling blocks of one group (money card → shortcuts, filters → active chips, row vertical padding). |
-| `group` | 24 | Page title → first content; groups inside a section; centred display blocks' vertical padding. |
-| `section` | 32 / 40 | Between titled sections. |
-
-Rhythm: tight inside (header 8, stack 12), generous between (group 24, section 32/40), so grouping reads from proximity before any container. Tables put `inset` on the first and last cells and `group` between columns. Equal-column grids (shortcuts) replace hand-tuned gaps. Menus keep 8px and the QR plate keeps an 8px quiet zone by exception.
-
-**The Named Spacing Rule.** Layout spacing uses a role token, never a number. If no role fits, the layout is wrong before the token is.
-
-## Elevation & Depth
-
-Flat by default, with material for chrome. Content surfaces carry no shadow; they separate from the ground by tone alone (white on #f2f2f7, #1c1c1e on black). Depth is reserved for things that float over content.
-
-### Shadow Vocabulary
-- **Float** (light `0 10px 30px -8px rgb(0 0 0 / 0.18), 0 1px 3px rgb(0 0 0 / 0.06)`; dark `0 10px 30px -8px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.08)`): sheets, dialogs, menus, toasts.
-- **Glass** (translucent white at 86% / dark #252528 at 82%, `blur(24px) saturate(180%)`, inner highlight plus a soft drop): the web sidebar and app tab bar only. Falls back to the solid section colour without backdrop-filter support or under reduced transparency.
-- **Bar** (ground at 80%, `blur(20px) saturate(180%)`, 0.5px separator below): the nav bar once content scrolls under it.
-- **Key** (`0 1px 0 rgb(0 0 0 / 0.12)`): keypad keys only, the system key edge.
-
-### Named Rules
-**The Glass Is Chrome Rule.** Translucent material belongs to navigation (sidebar, tab bar, scrolled nav bar, flow footer). Content, sections, cards and sheets are opaque.
-
-**The No Lift Rule.** Grouped sections never take a shadow. If a section needs more separation, it is in the wrong place. The one exception is the money card.
-
-**The Money Card Rule.** The Home balance is a dark physical card, not a section: graphite base (#1d1a29 → #0f0d16), violet light glowing from inside the top-right corner (never a violet fill), a faint teal counter-glow bottom-left, a diagonal sheen, a light top rim, a banknote guilloche (three hairline hypotrochoids) fanning in from the top-right corner and masked before the text, and a soft drop shadow. Text is left-aligned and white; the pending capsule is translucent amber with amber text. The card looks the same in light and dark.
-
-**The Two Colours Rule.** Violet is for what you can act on; teal is for what you should notice. A screen may carry both, but never use teal for an action or violet for plain information.
-
-**The Ambient Wash Rule.** The top of every app and web page carries a faint violet light (two soft radial glows over a 9% violet tint, fading into the ground by about 440px on web, 380px on app, 320px in flows). It sits behind content and the glass sidebar, so the glass has something to blur. It never carries text contrast below 4.5:1.
-
-## Shapes
-
-Continuous, generous rounding. Inset sections and callouts are 24px; the web sidebar 24px; app sheets 34px at the top (web dialogs 24px); inputs, QR plates and the Home app icon 9 to 12px; sidebar items 10px; keypad keys 14px. Every button, capsule, segment, disc, avatar, tab-bar item and the tab bar itself is a full capsule or circle. Borders are rare: hairline separators inside lists, a 2px underline under the amount entry, a 1px danger border on an invalid input.
-
-## Components
-
-### Buttons
-Calm, platform capsules.
-- **Shape:** full capsule; 50px tall on app at 17px semibold, 44px on web at 15px; a small size is 32px. Labels never wrap.
-- **Primary:** violet fill, white label; hover steps to the pressed violet; pressing drops to 70% opacity.
-- **Secondary:** tertiary fill with a tint label; hover to the violet wash.
-- **Ghost:** no fill, tint label; hover shows the tertiary fill.
-- **Danger:** red wash with red label. **Ink:** label-coloured fill with on-label text, used for the destructive confirm in sheets.
-- **Disabled:** tertiary fill with secondary-label text.
-
-### Status capsules
-- **Style:** 24px capsule, 10px side padding, 13px semibold, sentence case, state colour on its soft wash. Refunded and neutral badges use the tertiary fill with label text.
-- **Pending balance:** the same capsule larger on Home, with a clock glyph and the amount.
-
-### Inset sections
-- **Corner Style:** 24px.
-- **Background:** Section colour, opaque.
-- **Shadow Strategy:** none (see Elevation).
-- **Internal Padding:** `inset` (16 app / 20 web) for content blocks; lists carry no padding of their own (rows do).
-- **Header:** Title 3 outside and above the section, with an optional tint link ("Xem tất cả", semibold, set once by `Section`).
-- **Titles inside a section:** `headline` (17/22 semibold), never another size or weight.
-
-### List rows (`Row`)
-The only way to draw a row in a list. Hand-built rows are a defect.
-- **Container:** `card overflow-hidden` with the rows as direct `<li>` children; no `divide-y`, no list padding. Inside a sheet or a padded card, the list bleeds edge to edge with `-mx-inset`.
-- **Geometry:** row padding-left `inset`; content padding-right `inset`; min-height 60; `gap-stack` between leading, text and trailing.
-- **Leading:** 40px disc (`Disc`, `Avatar`, `BankMark`, `TxIcon`) with a 20px / 1.75 glyph.
-- **Text:** title body `font-medium`, wraps to two lines at most (it is the row's identity); subtitle 13/18 secondary label, one line, with the essential fact first (time, due date) so truncation only drops the least important part.
-- **Trailing:** amount `font-semibold tnum` with an optional capsule under it; navigation rows end in `chevron` (ChevronRight 20 / 1.75, secondary); picker rows end in a tint check (`selected`), never a coloured fill or a text marker.
-- **Separator:** a hairline (`line-soft`) from the text edge to the card edge; none above the first row.
-- **States:** hover and press fill the whole row with tertiary fill, no rounding; disabled rows stay focusable (`aria-disabled`), dim their leading and title, and take no fill; focus ring drawn inside the row.
-- **Multi-line content** (notifications, settings with a control) keeps the same geometry with its own body.
-
-### Transaction rows (`TxRow`, `TxAmount`)
-Every transaction, wherever it appears (Home activity, History, results), uses one representation:
-- **Leading:** `TxIcon` by type (top-up, withdraw, wallet out, wallet in, bank, merchant, bill, refund). Never initials, never a generic arrow.
-- **Title / subtitle:** counterparty; "type · time" (with the date where the list is not grouped by day).
-- **Amount (`rowAmount`):** signed, fee included on outgoing, incoming in success green, failed in secondary label and struck through. Result screens use the same rule.
-- **Status:** a `StatusPill` under the amount only when the status is not success.
-
-### Detail rows (`ConfirmRows`)
-Key/value rows for confirm steps, results, receipts and the profile: key in secondary label, value right-aligned medium, 12 vertical padding, separator from the text edge to the card edge (the list bleeds right with `-mr-inset`), none above the first row.
-
-### Group headers vs section titles
-- **Section title** (`Section`, Title 3, outside the card, optional action at the right edge): a named top-level block of a page ("Hóa đơn của tôi", "Gần đây" on Transfer).
-- **Group header** (`label-caps`, aligned with row text): a group *inside* one list, such as date groups in History and Notifications or "Gần đây / Danh bạ" inside the wallet-transfer picker.
-
-### Rails and tiles
-- **Recipient rail** (`RailTile`): 72px item, 56px Avatar or BankMark, short name 12/16 semibold on one line, bank on a second line 11/14 secondary; the first item sits on the title edge; the accessible name starts with the visible text.
-- **Action tiles** (Home shortcuts, add-bill, receipt actions): 48px disc with a 24px tint glyph, label 12/16 semibold. The disc reacts, never the tile: hover turns the disc `primary-soft`, press `primary-soft-hover`; no fill behind the tile (a grey block behind a grey disc swallows the disc). A dense row of six or more tiles (Home shortcuts on the app layout) uses the tab-bar label size 11/14 so labels keep a gutter and break into two balanced lines; Scan and Payment Code stay first (PRODUCT.md).
-
-### Interaction states
-- Rows, ghost controls, chips on the ground: hover and press = tertiary fill (`surface-2`).
-- Icon tiles and rail tiles: the disc or face reacts (disc `primary-soft`, avatar dims to 80% / 60%), never a fill behind the tile.
-- Tinted fills (secondary button, quick amounts): hover = `primary-soft`.
-- Text links: tint, semibold, underline on hover only.
-- Every tappable element has a press state; nothing removes the focus outline without a visible replacement (the amount entry's underline turns tint on focus).
-- Web back navigation above a large title is `WebBackLink` (tint chevron + label), the same on every page.
-- Section actions keep their text size but get a 44px hit area (vertical padding cancelled by a negative margin).
-- Reduced motion is designed per element, never a global kill: sheets fade instead of sliding, the sidebar rail does not animate its width; fades, spinners, colour changes and progress strokes stay because they report state.
-
-### Inputs / Fields
-- **Style:** filled, borderless, 12px radius, 48px tall (44px web), 17px text (15px web), tertiary fill, secondary-label placeholder.
-- **Focus:** 2px tint outline. Caret is tint.
-- **Error:** 1px danger border, footnote error in danger below, announced as an alert.
-- **Label:** footnote 500 above the field; hint in secondary label below.
-
-### Navigation
-- **App tab bar:** floating glass capsule, five items; the active item is a tertiary-fill pill with tint icon and label; Scan is a 52px filled violet circle in the middle; the unread count is a red capsule over the Notifications icon.
-- **App nav bar:** sticky, transparent at rest, bar material on scroll; inline title fades in; BackButton is a 28px tint chevron in a 44px target; CloseButton is a 30px tertiary-fill circle with an xmark in a 44px target.
-- **Web sidebar:** floating glass panel; items 40px with 12px radius; tint icons at rest; the selected item takes the tertiary fill with tint text and icon in semibold; collapse toggle top right.
-
-### Segmented filters
-A horizontally scrolling row of 36px capsules with a fade on the trailing edge. Selected: violet fill, white label. Unselected: Section fill, label text, hover to tertiary fill. Counts follow the label in a lighter tone.
-
-### Sheets
-Bottom sheet on app (34px top radius, grabber 36 by 5 in separator colour, slides up in 240ms on `cubic-bezier(0.16,1,0.3,1)`); centred 440px dialog on web (24px radius, fades in 150ms). Title 3 title, CloseButton top right, Float shadow, 40% black scrim.
-
-### Amount entry and keypad (signature)
-The amount sits centred at Amount Display size over a 2px separator underline, with the ₫ in secondary label beside it and a footnote hint or error below. Quick amounts are 36px tertiary-fill capsules with deep-violet tabular numerals. On app the keypad is a 3 by 4 grid of 56px Section-colour keys with 14px corners and the Key edge, standing on the grouped ground.
-
-### Toast
-One message at a time: a label-coloured capsule with on-label 14px semibold text and the Float shadow, above the tab bar on app and 32px from the bottom on web, in a polite live region.
-
-## Do's and Don'ts
-
-### Do:
-- **Do** put content in inset sections (radius 24, no shadow) on the grouped ground, and give each group a Title 3 header outside the section.
-- **Do** use `primary` for violet fills with white text and `tint` for violet text, icons, outlines and focus.
-- **Do** name states with sentence-case tinted capsules in the accessible state colours on their soft washes.
-- **Do** set the ₫ small and raised beside display numerals, with "đồng" for screen readers.
-- **Do** keep QR codes and barcodes black on a white plate, and camera and scan surfaces black, in both appearances.
-- **Do** check every new pairing in both appearances; the dark values are the separate half of the token, not an afterthought.
-- **Do** give translucent material a solid fallback for reduced transparency.
-
-### Don't:
-- **Don't** reintroduce the violet sky band, gradient headers or any brand chrome around the balance.
-- **Don't** lift sections or cards with shadows; shadows belong to floating sheets, menus and toasts.
-- **Don't** put glass on content; it is for the sidebar, tab bar and scrolled nav bar.
-- **Don't** set chips, capsules, buttons or section titles in uppercase; the group header is the only uppercase text.
-- **Don't** use violet for decoration, headings or borders that are not interactive.
-- **Don't** add a toolbar above the web content; account, notifications and demo controls live in the sidebar footer.
-- **Don't** use the chart system colours as text; they fail contrast as type.
+1. No raw HTML elements for UI in screens: Box, VStack, HStack, Center, Grid, Text, Heading and the components above. An `<svg>` drawing (QR, barcode, chart) is the exception.
+2. No custom colours, shadows, gradients, glass or blur. No hand-written CSS.
+3. Accessibility stays as before: one h1 per page (`ScreenTitle`/`PageTitle`/`FlowFrame`, focused on route change), live regions for status and errors, labelled inputs, skip link, 44px targets on the app layout.

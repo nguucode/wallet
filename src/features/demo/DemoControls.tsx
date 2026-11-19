@@ -1,40 +1,68 @@
-import { FlaskConical, RotateCcw } from 'lucide-react'
+import { Circle, FlaskConical, RotateCcw } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import {
   advanceClock, cashierScan, msToNextMonth, refundLatestMerchant, reset, resolvePending, resolveVerification, setScenario, setSetting, simulateIncoming,
   useSettings, useWorld, type Settings,
 } from '@/app/store'
 import { SCENARIOS, type Scenario } from '@/mock/seed'
-import { Button, cx, IconButton, Sheet } from '@/components/app-ui'
+import { Button, cx, Ico, IconButton, Sheet } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Button as GButton, ButtonText } from '@/components/ui/button'
+import { HStack } from '@/components/ui/hstack'
+import { Radio, RadioGroup, RadioIcon, RadioIndicator, RadioLabel } from '@/components/ui/radio'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { formatVnd } from '@/domain/money'
 
 function Group({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
   return (
-    <fieldset className="border-t border-line-soft pt-stack pb-stack first:border-t-0 first:pt-0">
-      <legend className="text-[13px] font-semibold">{title}</legend>
-      {note ? <p className="mt-1 text-[12px] leading-4 text-muted">{note}</p> : null}
-      <div className="mt-header flex flex-wrap gap-2">{children}</div>
-    </fieldset>
+    <VStack role="group" aria-label={title} className="border-t border-border py-3 first:border-t-0 first:pt-0">
+      <Text size="sm" bold aria-hidden>{title}</Text>
+      {note ? <Text size="xs" className="mt-1 text-muted-foreground">{note}</Text> : null}
+      <HStack className="mt-2 flex-wrap gap-2">{children}</HStack>
+    </VStack>
   )
 }
 
-function Chip<T extends string>({ value, current, onPick, children }: { value: T; current: T; onPick: (v: T) => void; children: ReactNode }) {
+function Chip<T extends string>({ value, current, onPick, children }: { value: T; current: T; onPick: (v: T) => void; children: string }) {
   const on = value === current
   return (
-    <button type="button" aria-pressed={on} onClick={() => onPick(value)} className={cx('h-8 rounded-full px-3 text-[13px] font-medium', on ? 'bg-primary text-white' : 'bg-surface-2 text-primary-ink hover:bg-primary-soft')}>
-      {children}
-    </button>
+    <GButton size="sm" variant={on ? 'default' : 'secondary'} aria-pressed={on} onPress={() => onPick(value)} className="rounded-full">
+      <ButtonText>{children}</ButtonText>
+    </GButton>
   )
 }
 
-function Act({ onClick, children, disabled }: { onClick: () => void; children: ReactNode; disabled?: string }) {
+function Act({ onClick, children, disabled }: { onClick: () => void; children: string; disabled?: string }) {
   return (
-    <span className="inline-flex flex-col">
-      <button type="button" onClick={onClick} disabled={!!disabled} className="h-8 rounded-full bg-surface-2 px-3 text-[13px] font-medium text-primary-ink hover:bg-primary-soft disabled:bg-transparent disabled:text-muted disabled:ring-1 disabled:ring-line">{children}</button>
-      {disabled ? <span className="mt-1 px-1 text-[12px] leading-4 text-muted">{disabled}</span> : null}
-    </span>
+    <VStack>
+      <GButton size="sm" variant={disabled ? 'outline' : 'secondary'} isDisabled={!!disabled} onPress={onClick} className="rounded-full">
+        <ButtonText>{children}</ButtonText>
+      </GButton>
+      {disabled ? <Text size="xs" className="mt-1 px-1 text-muted-foreground">{disabled}</Text> : null}
+    </VStack>
   )
 }
+
+/** A native-select replacement: gluestack RadioGroup, one radio per option. */
+function RadioList<T extends string>({ label, value, options, onChange }: { label: string; value: T; options: readonly (readonly [T, string])[]; onChange: (v: T) => void }) {
+  return (
+    <RadioGroup aria-label={label} value={value} onChange={(v: string) => onChange(v as T)} className="w-full gap-2">
+      {options.map(([v, l]) => (
+        <Radio key={v} value={v} size="md">
+          <RadioIndicator><RadioIcon as={Circle} /></RadioIndicator>
+          <RadioLabel>{l}</RadioLabel>
+        </Radio>
+      ))}
+    </RadioGroup>
+  )
+}
+
+const FAILURES = [
+  ['bank_declined', 'Ngân hàng từ chối'],
+  ['recipient_bank_rejected', 'Ngân hàng nhận từ chối'],
+  ['timeout_reversed', 'Quá thời gian, đã hoàn'],
+] as const satisfies readonly (readonly [Settings['nextFailure'], string])[]
 
 /** The panel body. Every control is a simulation (mock-data.md#demo-controls). */
 export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => void }) {
@@ -44,25 +72,24 @@ export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => vo
   const set = <K extends keyof Settings>(k: K) => (v: Settings[K]) => setSetting(k, v)
   const pending = w.transactions.filter((t) => t.status === 'pending').length
   return (
-    <div className="text-[15px]">
-      <p className="mb-stack text-[13px] leading-[18px] text-muted">Công cụ cho người xem demo. Mọi thao tác ở đây là mô phỏng. Mã PIN và OTP mẫu: <b className="tnum text-ink">123456</b>.</p>
+    <VStack>
+      <Text size="sm" className="mb-3 text-muted-foreground">Công cụ cho người xem demo. Mọi thao tác ở đây là mô phỏng. Mã PIN và OTP mẫu: <Text size="sm" bold className="tabular-nums">123456</Text>.</Text>
       <Group title="Kịch bản" note={SCENARIOS.find((x) => x.id === s.scenario)?.hint}>
-        <label className="sr-only" htmlFor="demo-scenario">Kịch bản</label>
-        <select id="demo-scenario" value={s.scenario} onChange={(e) => { setScenario(e.target.value as Scenario); say('Đã chuyển kịch bản') }} className="h-10 flex-1 rounded-[12px] border border-line bg-surface px-3">
-          {SCENARIOS.map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
-        </select>
-        <Button variant="secondary" size="sm" onClick={() => { reset(); say('Đã đặt lại dữ liệu mẫu') }}><RotateCcw size={14} aria-hidden />Đặt lại dữ liệu</Button>
+        <RadioList
+          label="Kịch bản" value={s.scenario}
+          options={SCENARIOS.map((x) => [x.id, x.label] as const)}
+          onChange={(v: Scenario) => { setScenario(v); say('Đã chuyển kịch bản') }}
+        />
+        <Button variant="secondary" size="sm" onClick={() => { reset(); say('Đã đặt lại dữ liệu mẫu') }}><Ico as={RotateCcw} size="sm" />Đặt lại dữ liệu</Button>
       </Group>
       <Group title="Kết quả giao dịch tiếp theo" note={s.nextOutcome === 'success' ? 'Nạp tiền, chuyển đến ví và thanh toán QR luôn xong ngay nên bỏ qua “Đang xử lý”.' : 'Áp dụng cho giao dịch tiếp theo, sau đó tự về “Thành công”.'}>
         <Chip value="success" current={s.nextOutcome} onPick={set('nextOutcome')}>Thành công</Chip>
         <Chip value="pending" current={s.nextOutcome} onPick={set('nextOutcome')}>Đang xử lý</Chip>
         <Chip value="failed" current={s.nextOutcome} onPick={set('nextOutcome')}>Không thành công</Chip>
         {s.nextOutcome === 'failed' ? (
-          <select aria-label="Lý do không thành công" value={s.nextFailure} onChange={(e) => setSetting('nextFailure', e.target.value as Settings['nextFailure'])} className="h-8 rounded-full border border-line bg-surface px-3 text-[13px]">
-            <option value="bank_declined">Ngân hàng từ chối</option>
-            <option value="recipient_bank_rejected">Ngân hàng nhận từ chối</option>
-            <option value="timeout_reversed">Quá thời gian, đã hoàn</option>
-          </select>
+          <Box className="mt-1 w-full">
+            <RadioList label="Lý do không thành công" value={s.nextFailure} options={FAILURES} onChange={set('nextFailure')} />
+          </Box>
         ) : null}
       </Group>
       <Group title="Giao dịch đang xử lý" note={pending ? `${pending} giao dịch đang chờ` : 'Không có giao dịch nào đang chờ'}>
@@ -94,7 +121,7 @@ export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => vo
         <Chip value="normal" current={s.latency} onPick={set('latency')}>Bình thường</Chip>
         <Chip value="slow" current={s.latency} onPick={set('latency')}>Chậm (3 giây)</Chip>
       </Group>
-    </div>
+    </VStack>
   )
 }
 
@@ -104,13 +131,13 @@ export function DemoControlsButton({ compact, className }: { compact?: boolean; 
   return (
     <>
       {compact ? (
-        <IconButton label="Demo controls" className={cx('text-tint', className)} onClick={() => setOpen(true)}><FlaskConical size={20} strokeWidth={1.75} /></IconButton>
+        <IconButton label="Demo controls" className={cx(className)} onClick={() => setOpen(true)}><Ico as={FlaskConical} className="text-primary" /></IconButton>
       ) : (
-        <Button variant="secondary" size="sm" onClick={() => setOpen(true)}><FlaskConical size={16} strokeWidth={1.75} aria-hidden />Demo controls</Button>
+        <Button variant="secondary" size="sm" className={className} onClick={() => setOpen(true)}><Ico as={FlaskConical} size="sm" />Demo controls</Button>
       )}
       <Sheet open={open} onOpenChange={setOpen} title="Demo controls">
         <DemoControlsPanel onAction={setMsg} />
-        <p role="status" aria-live="polite" className="min-h-5 text-[13px] text-success">{msg}</p>
+        <Box role="status" aria-live="polite" className="min-h-5"><Text size="sm">{msg}</Text></Box>
       </Sheet>
     </>
   )

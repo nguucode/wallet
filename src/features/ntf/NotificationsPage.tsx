@@ -3,7 +3,13 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { markRead, now, useWorld } from '@/app/store'
 import type { Notification, NotificationKind } from '@/mock/seed'
-import { cx, Disc, EmptyState, IconButton, RowSkeleton, Segmented } from '@/components/app-ui'
+import { Button, Card, cx, Disc, EmptyState, Ico, IconButton, RowSkeleton, Segmented } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Pressable } from '@/components/ui/pressable'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { fmtTime } from '@/features/flow/FlowKit'
 import { ScreenTitle, useLoaded } from '@/features/sec/kit'
 import { useReminders } from './useReminders'
@@ -33,15 +39,15 @@ export default function NotificationsPage() {
   }
   const markAll = unreadIds.length && loaded ? (
     layout === 'web'
-      ? <button type="button" onClick={() => markRead(unreadIds)} className="h-11 shrink-0 text-[15px] font-semibold text-tint hover:underline">Đánh dấu tất cả đã đọc</button>
-      : <IconButton label="Đánh dấu tất cả đã đọc" onClick={() => markRead(unreadIds)} className="shrink-0 text-tint"><CheckCheck size={22} strokeWidth={1.75} /></IconButton>
+      ? <Button variant="ghost" size="sm" onClick={() => markRead(unreadIds)} className="shrink-0">Đánh dấu tất cả đã đọc</Button>
+      : <IconButton label="Đánh dấu tất cả đã đọc" onClick={() => markRead(unreadIds)} className="shrink-0"><Ico as={CheckCheck} className="text-primary" /></IconButton>
   ) : null
 
   return (
-    <div>
+    <Box>
       <ScreenTitle>Thông báo</ScreenTitle>
-      <div className="flex items-center gap-2">
-        <div className="min-w-0 flex-1">
+      <HStack className="items-center gap-2">
+        <Box className="min-w-0 flex-1">
           <Segmented
             label="Loại thông báo"
             value={view.slug}
@@ -51,49 +57,53 @@ export default function NotificationsPage() {
               return { value: v.slug, label: v.label, count: loaded && c ? c : undefined }
             })}
           />
-        </div>
+        </Box>
         {markAll}
-      </div>
+      </HStack>
 
-      <div className="mt-stack">
+      <VStack className="mt-3 gap-6">
         {!loaded ? (
-          <div aria-busy>{Array.from({ length: 8 }, (_, i) => <RowSkeleton key={i} />)}</div>
+          <VStack aria-busy>{Array.from({ length: 8 }, (_, i) => <RowSkeleton key={i} />)}</VStack>
         ) : !items.length ? (
-          <EmptyState icon={<BellOff size={22} strokeWidth={1.75} />} title={view.empty} />
+          <EmptyState icon={<Ico as={BellOff} />} title={view.empty} />
         ) : (
           groups.map((g) => (
-            <section key={g.label} aria-label={g.label} className="mt-group first:mt-stack">
-              <h2 className="label-caps mb-header px-inset">{g.label}</h2>
-              <ul className="card overflow-hidden">
-                {g.items.map((n) => {
-                  const Icon = ICON[n.kind]
-                  return (
-                    <li key={n.id}>
-                      {/* Row geometry (DESIGN.md "List rows") with a two-line body, so the icon tops-aligns instead of centring. */}
-                      <button type="button" onClick={() => open(n)} className="row flex w-full items-stretch gap-stack pl-inset text-left transition-colors hover:bg-surface-2 active:bg-surface-2 focus-visible:outline-offset-[-2px]">
-                        <span className="flex shrink-0 py-stack"><Disc size={40}><Icon size={20} strokeWidth={1.75} /></Disc></span>
-                        <span className="row-sep flex min-w-0 flex-1 items-start gap-stack py-stack pr-inset">
-                        <span className="min-w-0 flex-1">
-                          <span className="flex items-baseline gap-2">
-                            <span className={cx('min-w-0 flex-1', n.read ? 'font-medium' : 'font-semibold')}>{n.title}</span>
-                            <span className="shrink-0 text-[13px] leading-[18px] text-muted tnum">{fmtTime(n.createdAt)}</span>
-                          </span>
-                          {n.body ? <span className="mt-1 line-clamp-2 block text-[13px] leading-[18px] text-muted">{n.body}</span> : null}
-                        </span>
-                        {n.read ? <span className="w-2 shrink-0" /> : (
-                          <span className="mt-header size-2 shrink-0 rounded-full bg-tint"><span className="sr-only">Chưa đọc</span></span>
-                        )}
-                        </span>
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            </section>
+            <VStack key={g.label} role="region" aria-label={g.label} className="gap-2">
+              <Heading as="h2" size="xs" className="px-4 font-semibold tracking-wide text-muted-foreground uppercase">{g.label}</Heading>
+              <Card className="overflow-hidden p-0">
+                <VStack role="list" className="divide-y divide-border">
+                  {g.items.map((n) => (
+                    <Box key={n.id} role="listitem">
+                      <NotificationRow n={n} onOpen={open} />
+                    </Box>
+                  ))}
+                </VStack>
+              </Card>
+            </VStack>
           ))
         )}
-      </div>
-    </div>
+      </VStack>
+    </Box>
   )
 }
 
+/** Row geometry with a two-line body, so the icon top-aligns instead of centring. */
+function NotificationRow({ n, onOpen }: { n: Notification; onOpen: (n: Notification) => void }) {
+  return (
+    <Pressable role="button" onPress={() => onOpen(n)} className="w-full data-[hover=true]:bg-accent data-[active=true]:bg-accent">
+      <HStack className="items-start gap-3 px-4 py-3">
+        <Disc size={40}><Ico as={ICON[n.kind]} /></Disc>
+        <VStack className="min-w-0 flex-1">
+          <HStack className="items-baseline gap-2">
+            <Text className={cx('min-w-0 flex-1', n.read ? 'font-medium' : 'font-semibold')}>{n.title}</Text>
+            <Text size="sm" className="shrink-0 tabular-nums text-muted-foreground">{fmtTime(n.createdAt)}</Text>
+          </HStack>
+          {n.body ? <Text size="sm" className="mt-1 line-clamp-2 text-muted-foreground">{n.body}</Text> : null}
+        </VStack>
+        {n.read ? <Box className="w-2 shrink-0" /> : (
+          <Box className="mt-2 size-2 shrink-0 rounded-full bg-primary"><Text className="sr-only">Chưa đọc</Text></Box>
+        )}
+      </HStack>
+    </Pressable>
+  )
+}

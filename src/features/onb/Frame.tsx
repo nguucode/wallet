@@ -3,7 +3,16 @@ import { createContext, useContext, useEffect, useRef, type ReactNode } from 're
 import { useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { SampleBadge } from '@/app/Shell'
-import { BackButton, cx, WebBackLink } from '@/components/app-ui'
+import { BackButton, Badge, Button, Card, cx, DetailRows, Ico, WebBackLink } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { Center } from '@/components/ui/center'
+import { Grid, GridItem } from '@/components/ui/grid'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Image } from '@/components/ui/image'
+import { Progress, ProgressFilledTrack } from '@/components/ui/progress'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { DemoControlsButton } from '@/features/demo/DemoControls'
 import { backTarget, stageOf, STAGES, type IdPath, type Step } from './steps'
 
@@ -18,22 +27,24 @@ export const useOnb = () => useContext(Ctx)
 function Stages({ step }: { step: Step }) {
   const cur = stageOf(step)
   return (
-    <div className="w-full">
-      <p className="sr-only">Bước {cur + 1} trên 3: {STAGES[cur]}</p>
-      <ol aria-hidden className="grid grid-cols-3 gap-2">
+    <Box className="w-full">
+      <Text className="sr-only">Bước {cur + 1} trên 3: {STAGES[cur]}</Text>
+      <Grid aria-hidden className="gap-2" _extra={{ className: 'grid-cols-3' }}>
         {STAGES.map((s, i) => (
-          <li key={s} className="min-w-0">
-            <span className={cx('block h-1 rounded-full', i <= cur ? 'bg-primary' : 'bg-surface-2')} />
-            <span className={cx('mt-header block text-[12px] leading-4', i === cur ? 'font-semibold text-ink' : 'text-muted')}>{s}</span>
-          </li>
+          <GridItem key={s} className="min-w-0" _extra={{ className: 'col-span-1' }}>
+            <Progress value={i <= cur ? 100 : 0} className="h-1">
+              <ProgressFilledTrack />
+            </Progress>
+            <Text size="xs" className={cx('mt-2 block', i === cur ? 'font-semibold text-foreground' : 'text-muted-foreground')}>{s}</Text>
+          </GridItem>
         ))}
-      </ol>
-    </div>
+      </Grid>
+    </Box>
   )
 }
 
 /**
- * One onboarding step (US-ONB-001). Web: centred 560 column on the neutral background, step in a 1px card.
+ * One onboarding step (US-ONB-001). Web: centred 560 column on the neutral background, step in a card.
  * App: full screen, header with back and "Để sau", primary pinned to the bottom safe area.
  */
 export function StepShell({ title, children, footer, description }: { title: string; children?: ReactNode; footer?: ReactNode; description?: ReactNode }) {
@@ -47,77 +58,67 @@ export function StepShell({ title, children, footer, description }: { title: str
     h1.current?.focus({ preventScroll: true })
     window.scrollTo(0, 0)
   }, [title])
-  const skip = canSkip ? <button type="button" onClick={() => { clear(); nav('/home') }} className="h-11 rounded-full px-3 text-[17px] text-tint hover:bg-surface-2 lg:text-[15px]">Để sau</button> : null
-  const heading = <h1 ref={h1} tabIndex={-1} className={cx('outline-none', layout === 'web' ? 'text-[28px] leading-[34px] font-bold' : 'large-title')}>{title}</h1>
+  const skip = canSkip ? <Button variant="ghost" onClick={() => { clear(); nav('/home') }} className="rounded-full">Để sau</Button> : null
+  const heading = <Heading size="3xl" ref={h1} tabIndex={-1} className="outline-none">{title}</Heading>
+  const desc = description ? <Text className="mt-2 block text-muted-foreground">{description}</Text> : null
 
   if (layout === 'web')
     return (
-      <div className="relative min-h-dvh bg-ground">
-        <header className="relative mx-auto flex h-16 max-w-[960px] items-center justify-between gap-4 px-8">
-          <span className="flex items-center gap-2 text-[20px] font-bold tracking-tight">
-            <img src="/icon.svg" alt="" width={28} height={28} className="size-7 rounded-[7px]" />
-            Wallet
-          </span>
-          <span className="flex items-center gap-2"><DemoControlsButton /><SampleBadge />{skip}</span>
-        </header>
-        <main id="main" className="relative mx-auto max-w-[560px] px-inset pt-group pb-16">
-          <div className="mb-stack"><Stages step={step} /></div>
-          <div className="card p-hero">
-            {back ? (
-              <WebBackLink onClick={() => go(back)} />
-            ) : null}
+      <Box className="relative min-h-dvh bg-background">
+        <HStack role="banner" className="relative mx-auto h-16 max-w-[960px] items-center justify-between gap-4 px-8">
+          <HStack className="items-center gap-2">
+            <Image source={{ uri: '/icon.svg' }} alt="" size="none" className="size-7 rounded-md" />
+            <Heading as="p" size="lg">Wallet</Heading>
+          </HStack>
+          <HStack className="items-center gap-2"><DemoControlsButton /><SampleBadge />{skip}</HStack>
+        </HStack>
+        <Box role="main" id="main" className="relative mx-auto max-w-[560px] px-4 pt-6 pb-16">
+          <Box className="mb-3"><Stages step={step} /></Box>
+          <Card className="p-5">
+            {back ? <WebBackLink onClick={() => go(back)} /> : null}
             {heading}
-            {description ? <p className="mt-header text-muted">{description}</p> : null}
-            <div className="mt-group">{children}</div>
-            {footer ? <div className="mt-section flex flex-col gap-2">{footer}</div> : null}
-          </div>
-        </main>
-      </div>
+            {desc}
+            <Box className="mt-6">{children}</Box>
+            {footer ? <VStack className="mt-8 gap-2">{footer}</VStack> : null}
+          </Card>
+        </Box>
+      </Box>
     )
 
   return (
-    <div className="flex min-h-dvh flex-col bg-surface">
-      <header className="sticky top-0 z-30 bg-surface/85 px-1 pb-3 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
-        <div className="flex h-[52px] items-center gap-1">
-          {back ? <BackButton onClick={() => go(back)} /> : <span className="w-3" />}
-          <span className="flex flex-1 items-center gap-1"><SampleBadge /></span>
+    <VStack className="min-h-dvh bg-background">
+      <VStack role="banner" className="sticky top-0 z-30 bg-background px-1 pb-3 pt-[env(safe-area-inset-top)]">
+        <HStack className="h-14 items-center gap-1">
+          {back ? <BackButton onClick={() => go(back)} /> : <Box className="w-3" />}
+          <HStack className="flex-1 items-center gap-1"><SampleBadge /></HStack>
           <DemoControlsButton compact />
           {skip}
-        </div>
-        <div className="px-4"><Stages step={step} /></div>
-      </header>
-      <main id="main" className="mx-auto w-full max-w-[560px] flex-1 px-inset pt-stack pb-group">
+        </HStack>
+        <Box className="px-4"><Stages step={step} /></Box>
+      </VStack>
+      <Box role="main" id="main" className="mx-auto w-full max-w-[560px] flex-1 px-4 pt-3 pb-6">
         {heading}
-        {description ? <p className="mt-header text-muted">{description}</p> : null}
-        <div className="mt-group">{children}</div>
-      </main>
-      {footer ? <div className="sticky bottom-0 z-20 mx-auto flex w-full max-w-[560px] flex-col gap-2 bg-surface/85 backdrop-blur-xl px-5 pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</div> : null}
-    </div>
+        {desc}
+        <Box className="mt-6">{children}</Box>
+      </Box>
+      {footer ? <VStack className="sticky bottom-0 z-20 mx-auto w-full max-w-[560px] gap-2 border-t border-border bg-background px-5 pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</VStack> : null}
+    </VStack>
   )
 }
 
-/** 64px status mark in a soft circle: tick (accent), clock (amber), cross (danger). */
+/** Status mark in a soft circle: tick (primary), clock (muted), cross (destructive). */
 export function StatusMark({ tone }: { tone: 'primary' | 'pending' | 'danger' }) {
-  const Icon = tone === 'pending' ? Clock : tone === 'danger' ? X : Check
-  const cls = { primary: 'bg-primary-soft text-tint', pending: 'bg-pending-soft text-pending', danger: 'bg-danger-soft text-danger' }[tone]
-  return <span aria-hidden className={cx('inline-flex size-16 items-center justify-center rounded-full animate-[fade-in_200ms_ease-out]', cls)}><Icon size={32} strokeWidth={2.25} /></span>
+  const icon = tone === 'pending' ? Clock : tone === 'danger' ? X : Check
+  const cls = { primary: 'bg-primary/10 text-primary', pending: 'border border-border bg-card text-foreground', danger: 'bg-destructive/10 text-destructive' }[tone]
+  return <Center aria-hidden className={cx('size-16 rounded-full', cls)}><Ico as={icon} size="xl" className="text-current" /></Center>
 }
 
 /** Label/value rows separated by 1px rules; long uppercase names wrap without clipping diacritics. */
 export function DataList({ rows }: { rows: [string, ReactNode][] }) {
-  return (
-    <dl className="divide-y divide-line-soft border-y border-line-soft">
-      {rows.map(([k, v]) => (
-        <div key={k} className="flex items-start justify-between gap-4 py-3">
-          <dt className="shrink-0 text-muted">{k}</dt>
-          <dd className="min-w-0 text-right leading-[24px] font-medium break-words">{v}</dd>
-        </div>
-      ))}
-    </dl>
-  )
+  return <Box className="border-y border-border"><DetailRows rows={rows} /></Box>
 }
 
 /** Simulated hand-off panel header, so it never reads as Wallet UI. */
 export function SimLabel({ children }: { children: ReactNode }) {
-  return <p className="mb-stack inline-flex h-6 items-center rounded-full border border-dashed border-line px-2.5 text-[12px] font-medium text-muted">{children}</p>
+  return <Box className="mb-3 self-start"><Badge tone="pending">{children}</Badge></Box>
 }

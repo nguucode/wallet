@@ -2,6 +2,13 @@ import { TriangleAlert } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useLayout } from '@/app/layout'
 import { Button, cx } from '@/components/app-ui'
+import { Alert, AlertIcon, AlertText } from '@/components/ui/alert'
+import { Box } from '@/components/ui/box'
+import { HStack } from '@/components/ui/hstack'
+import { CheckIcon } from '@/components/ui/icon'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
+import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from '@/components/ui/checkbox'
 import { StepShell, useOnb } from './Frame'
 import { WARNING_CONSEQUENCE, WARNING_ITEMS } from './legal'
 import { mark } from './marks'
@@ -30,24 +37,29 @@ export function WarningStep() {
   const ok = canContinue({ reachedEnd: reached, ticked })
   return (
     <StepShell title="Cảnh báo quan trọng" footer={<>
-      <label className={cx('flex min-h-11 items-center gap-3', !reached && 'text-muted')}>
-        <input type="checkbox" checked={ticked} disabled={!reached} onChange={(e) => setTicked(e.target.checked)} aria-describedby={!reached ? 'warn-help' : undefined} className="size-5 accent-[var(--color-tint)]" />
-        <span className="font-medium">Tôi đã đọc và hiểu</span>
-      </label>
-      {!reached ? <p id="warn-help" className="text-[13px] text-muted">Cuộn hết nội dung để xác nhận</p> : null}
+      <Checkbox
+        value="read" isChecked={ticked} isDisabled={!reached} onChange={setTicked}
+        aria-label="Tôi đã đọc và hiểu" aria-describedby={!reached ? 'warn-help' : undefined}
+        className="min-h-11 gap-3"
+      >
+        <CheckboxIndicator><CheckboxIcon as={CheckIcon} /></CheckboxIndicator>
+        <CheckboxLabel className={cx('text-base', !reached && 'text-muted-foreground')}>Tôi đã đọc và hiểu</CheckboxLabel>
+      </Checkbox>
+      {!reached ? <Text id="warn-help" size="sm" className="text-muted-foreground">Cuộn hết nội dung để xác nhận</Text> : null}
       <Button block disabled={!ok} onClick={() => { mark('warningAt'); go('terms') }}>Tiếp tục</Button>
     </>}>
-      <div tabIndex={0} role="region" aria-label="Các hành vi bị cấm" className={cx('relative overflow-y-auto rounded-[12px] border border-line p-inset', layout === 'web' ? 'max-h-[360px]' : 'max-h-[calc(100dvh-380px)] min-h-40')}>
-        <ul className="flex flex-col gap-4">
+      <Box tabIndex={0} role="region" aria-label="Các hành vi bị cấm" className={cx('relative overflow-y-auto rounded-xl border border-border p-4', layout === 'web' ? 'max-h-[360px]' : 'max-h-[calc(100dvh-380px)] min-h-40')}>
+        <VStack role="list" className="gap-4">
           {WARNING_ITEMS.map((t) => (
-            <li key={t} className="flex gap-3"><span aria-hidden className="mt-header size-1.5 shrink-0 rounded-full bg-ink" />{t}</li>
+            <HStack key={t} role="listitem" className="gap-3"><Box aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-foreground" /><Text>{t}</Text></HStack>
           ))}
-        </ul>
-        <p className="mt-group flex gap-3 rounded-[12px] bg-danger-soft p-3 font-medium text-danger">
-          <TriangleAlert size={20} strokeWidth={1.75} aria-hidden className="mt-1 shrink-0" />{WARNING_CONSEQUENCE}
-        </p>
-        <div ref={ref} aria-hidden className="h-px" />
-      </div>
+        </VStack>
+        <Alert variant="destructive" className="mt-6 gap-3 bg-destructive/10 p-3">
+          <AlertIcon as={TriangleAlert} className="size-5" />
+          <AlertText className="text-base">{WARNING_CONSEQUENCE}</AlertText>
+        </Alert>
+        <Box ref={ref} aria-hidden className="h-px" />
+      </Box>
     </StepShell>
   )
 }

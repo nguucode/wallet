@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router'
 import type { GateId } from '@/domain/gate'
 import { gateOf, getState, useWorld } from '@/app/store'
 import { Button, Callout, Sheet } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { VStack } from '@/components/ui/vstack'
 
 /** rules.md#gates copy: why the money action is blocked and the single next step. */
 export const GATE_COPY: Record<GateId, { title: string; body: string; cta?: { label: string; to: string } }> = {
@@ -38,10 +40,10 @@ export function useGuard(allow: GateId[] = []) {
   }
   const sheet: ReactNode = gate ? (
     <Sheet open onOpenChange={(o) => !o && setGate(null)} title={GATE_COPY[gate].title} description={GATE_COPY[gate].body}>
-      <div className="flex flex-col gap-2">
+      <VStack className="gap-2">
         {GATE_COPY[gate].cta ? <Button block onClick={() => { setGate(null); nav(GATE_COPY[gate].cta!.to) }}>{GATE_COPY[gate].cta!.label}</Button> : null}
         <Button variant="secondary" block onClick={() => setGate(null)}>Để sau</Button>
-      </div>
+      </VStack>
     </Sheet>
   ) : null
   return { guard, sheet }
@@ -51,6 +53,6 @@ export function useGuard(allow: GateId[] = []) {
 export function GatedRoute({ children, allow = [] }: { children: ReactNode; allow?: GateId[] }) {
   const w = useWorld()
   const g = gateOf(w)
-  if (g && !allow.includes(g)) return <div className="pt-stack"><GateCallout gate={g} /></div>
+  if (g && !allow.includes(g)) return <Box className="pt-3"><GateCallout gate={g} /></Box>
   return <>{children}</>
 }

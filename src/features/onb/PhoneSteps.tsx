@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
+import { mmss } from '@/app/format'
 import { delay, now } from '@/app/store'
 import { Button, cx, Field, TextInput } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { HStack } from '@/components/ui/hstack'
+import { Input, InputField } from '@/components/ui/input'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { formatPhone } from '@/features/flow/FlowKit'
 import { StepShell, useOnb } from './Frame'
 import { checkOtp, isValidVnMobile, OTP } from './steps'
@@ -26,7 +32,7 @@ export function PhoneStep() {
       <Field label="Số điện thoại" htmlFor="phone" error={error} hint="Số điện thoại này sẽ là số ví của bạn.">
         <TextInput
           id="phone" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="0901 234 567" invalid={!!error}
-          value={formatPhone(digits)} className="tnum"
+          value={formatPhone(digits)} className="tabular-nums"
           onChange={(e) => { setError(undefined); setDigits(e.target.value.replace(/\D/g, '').slice(0, 10)) }}
           onBlur={() => digits.length > 0 && validate()}
           onKeyDown={(e) => e.key === 'Enter' && ready && submit()}
@@ -36,8 +42,6 @@ export function PhoneStep() {
   )
 }
 
-import { mmss } from '@/app/format'
-
 /** US-ONB-002: OTP, checked on the sixth digit; attempts, resend cooldown and expiry from OTP config. */
 export function OtpStep() {
   const { draft, setDraft, go } = useOnb()
@@ -45,7 +49,8 @@ export function OtpStep() {
   const [error, setError] = useState<string>()
   const [checking, setChecking] = useState(false)
   const [, tick] = useState(0)
-  const input = useRef<HTMLInputElement>(null)
+  const input = useRef<{ focus: () => void }>(null)
+  const [focused, setFocused] = useState(false)
   useEffect(() => { const t = setInterval(() => tick((n) => n + 1), 1000); return () => clearInterval(t) }, [])
   const sentAt = draft.otpSentAt ?? now()
   const attemptsLeft = draft.otpAttemptsLeft ?? OTP.attempts
@@ -73,35 +78,38 @@ export function OtpStep() {
   }
 
   return (
-    <StepShell title="Nhập mã OTP" description={<>Mã gồm 6 số đã gửi đến <span className="whitespace-nowrap tnum">{formatPhone(draft.phone)}</span></>}>
-      <label htmlFor="otp" className="sr-only">Mã OTP 6 số</label>
-      <div className="relative mx-auto w-fit">
-        <input
-          id="otp" ref={input} autoFocus inputMode="numeric" autoComplete="one-time-code" maxLength={6}
-          value={code} readOnly={checking} disabled={exhausted}
-          aria-invalid={!!error || undefined} aria-describedby="otp-msg otp-note"
-          onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 6); setCode(v); setError(undefined); if (v.length === 6) verify(v) }}
-          className="peer absolute inset-0 z-10 w-full cursor-text opacity-0"
-        />
-        <div aria-hidden className="flex gap-2 rounded-[12px] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-tint">
+    <StepShell title="Nhập mã OTP" description={<>Mã gồm 6 số đã gửi đến <Text className="whitespace-nowrap tabular-nums text-muted-foreground">{formatPhone(draft.phone)}</Text></>}>
+      <Box className="relative mx-auto w-fit">
+        {/* One real input sits invisibly over the six boxes; the boxes only mirror its value. */}
+        <Input isDisabled={exhausted} isReadOnly={checking} className="absolute inset-0 z-10 h-full w-full cursor-text border-0 opacity-0 data-[disabled=true]:opacity-0">
+          <InputField
+            id="otp" ref={input as never} autoFocus inputMode="numeric" autoComplete={'one-time-code' as never} maxLength={6}
+            aria-label="Mã OTP 6 số"
+            value={code}
+            aria-invalid={!!error || undefined} aria-describedby="otp-msg otp-note"
+            onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+            onChangeText={(t: string) => { const v = t.replace(/\D/g, '').slice(0, 6); setCode(v); setError(undefined); if (v.length === 6) verify(v) }}
+          />
+        </Input>
+        <HStack aria-hidden className={cx('gap-2 rounded-xl', focused && 'ring-2 ring-ring ring-offset-4')}>
           {Array.from({ length: 6 }, (_, i) => (
-            <span key={i} className={cx('flex size-11 items-center justify-center rounded-[12px] border text-[20px] font-semibold tnum lg:size-12', error ? 'border-danger' : i === code.length ? 'border-ink' : 'border-line', exhausted && 'bg-surface-2')}>
-              {code[i] ?? ''}
-            </span>
+            <Box key={i} className={cx('flex size-11 items-center justify-center rounded-xl border lg:size-12', error ? 'border-destructive' : i === code.length ? 'border-foreground' : 'border-border', exhausted && 'bg-muted')}>
+              <Text size="xl" className="font-semibold tabular-nums">{code[i] ?? ''}</Text>
+            </Box>
           ))}
-        </div>
-      </div>
-      <p id="otp-msg" role="alert" className="mt-stack min-h-5 text-center text-[13px] leading-5 text-danger">{error}</p>
-      <p id="otp-note" className="mt-1 text-center text-[13px] text-muted">Mô phỏng: mã OTP là 123456</p>
-      <div className="mt-group flex flex-col items-center gap-1">
+        </HStack>
+      </Box>
+      <Text id="otp-msg" role="alert" size="sm" className="mt-3 block min-h-5 text-center text-destructive">{error}</Text>
+      <Text id="otp-note" size="sm" className="mt-1 block text-center text-muted-foreground">Mô phỏng: mã OTP là 123456</Text>
+      <VStack className="mt-6 items-center gap-1">
         {wait > 0 && !exhausted ? (
-          <p className="text-[15px] text-muted">Gửi lại mã sau <span className="tnum">{mmss(wait)}</span></p>
+          <Text className="text-muted-foreground">Gửi lại mã sau <Text className="tabular-nums text-muted-foreground">{mmss(wait)}</Text></Text>
         ) : (
           <Button variant="ghost" onClick={resend}>Gửi lại mã</Button>
         )}
         <Button variant="ghost" onClick={() => go('phone')}>Đổi số điện thoại</Button>
-      </div>
-      {checking ? <p role="status" className="sr-only">Đang kiểm tra mã</p> : null}
+      </VStack>
+      {checking ? <Text role="status" className="sr-only">Đang kiểm tra mã</Text> : null}
     </StepShell>
   )
 }

@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { getState, mutate, submitVerification, type Settings } from '@/app/store'
 import { Button } from '@/components/app-ui'
+import { Spinner } from '@/components/ui/spinner'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { StatusMark, StepShell, useOnb } from './Frame'
 import { mark } from './marks'
 import { retryStepFor, type FailReason } from './steps'
@@ -38,27 +41,27 @@ export function VerifyingStep() {
   if (!result)
     return (
       <StepShell title="Đang đối chiếu thông tin…">
-        <div role="status" className="flex flex-col items-center py-section text-center">
-          <span aria-hidden className="size-12 animate-spin rounded-full border-4 border-current border-r-transparent" />
-          <p className="mt-stack text-muted">Thường mất vài giây.</p>
-        </div>
+        <VStack role="status" className="items-center py-8 text-center">
+          <Spinner aria-hidden size="large" />
+          <Text className="mt-3 text-muted-foreground">Thường mất vài giây.</Text>
+        </VStack>
       </StepShell>
     )
 
   if (result === 'verified')
     return (
       <StepShell title="Xác thực thành công">
-        <div role="status" className="flex flex-col items-center py-section"><StatusMark tone="primary" /><p className="sr-only">Xác thực thành công</p></div>
+        <VStack role="status" className="items-center py-8"><StatusMark tone="primary" /><Text className="sr-only">Xác thực thành công</Text></VStack>
       </StepShell>
     )
 
   if (result === 'needs_review')
     return (
       <StepShell title="Hồ sơ đang được kiểm tra" footer={<Button block onClick={() => go('warning', { replace: true })}>Tiếp tục</Button>}>
-        <div role="status" className="flex flex-col items-center text-center">
+        <VStack role="status" className="items-center text-center">
           <StatusMark tone="pending" />
-          <p className="mt-stack max-w-[44ch]">Thường xong trong 24 giờ. Bạn vẫn có thể hoàn tất mở ví, nhưng chưa giao dịch được cho đến khi có kết quả.</p>
-        </div>
+          <Text className="mt-3 max-w-[44ch]">Thường xong trong 24 giờ. Bạn vẫn có thể hoàn tất mở ví, nhưng chưa giao dịch được cho đến khi có kết quả.</Text>
+        </VStack>
       </StepShell>
     )
 
@@ -71,10 +74,10 @@ export function VerifyingStep() {
       <Button block onClick={() => (target === 'verifying' ? setAttempt((a) => a + 1) : go(target))}>{f.action}</Button>
       {canLeave ? <Button variant="ghost" block onClick={() => { clear(); nav('/home') }}>Để sau</Button> : null}
     </>}>
-      <div role="alert" className="flex flex-col items-center text-center">
+      <VStack role="alert" className="items-center text-center">
         <StatusMark tone="danger" />
-        <p className="mt-stack max-w-[44ch]">{f.body}</p>
-      </div>
+        <Text className="mt-3 max-w-[44ch]">{f.body}</Text>
+      </VStack>
     </StepShell>
   )
 }

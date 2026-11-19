@@ -5,7 +5,13 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { BANKS, bankById, linkSource, useWorld } from '@/app/store'
-import { BankMark, Button, Card, Field, Row, Segmented, Sheet, TextInput } from '@/components/app-ui'
+import { BankMark, Button, Card, DetailRows, Field, Ico, Row, Segmented, Sheet, TextInput } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { HStack } from '@/components/ui/hstack'
+import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input'
+import { Spinner } from '@/components/ui/spinner'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { FlowFrame, useFlow } from '@/features/flow/FlowKit'
 import { groupDigits, isOwnAccount, lookupHolder, mask4 } from './logic'
 import { ResultBlock } from './parts'
@@ -41,30 +47,30 @@ export default function LinkSourceFlow() {
     return (
       <FlowFrame title="Chọn ngân hàng" onClose={close}>
         <Field label="Tìm ngân hàng" htmlFor="bank-q">
-          <div className="relative">
-            <Search size={18} strokeWidth={1.75} aria-hidden className="absolute top-1/2 left-4 -translate-y-1/2 text-muted" />
-            <TextInput id="bank-q" type="search" value={query} onChange={(e) => setQuery(e.target.value)} className="pl-11" autoComplete="off" />
-          </div>
+          <Input className="h-12">
+            <InputSlot className="pl-3"><InputIcon as={Search} aria-hidden className="text-muted-foreground" /></InputSlot>
+            <InputField id="bank-q" role="searchbox" aria-label="Tìm ngân hàng" value={query} onChangeText={setQuery} autoComplete="off" />
+          </Input>
         </Field>
         {banks.length ? (
-          <ul className="-mx-inset">
+          <VStack role="list" className="-mx-4 divide-y divide-border">
             {banks.map((b) => {
               const linked = w.sources.find((s) => s.bankId === b.id)
               return (
-                <li key={b.id}>
+                <Box key={b.id} role="listitem">
                   <Row
                     onClick={() => { setDraft({ bankId: b.id, number: draft.bankId === b.id ? draft.number : '' }); go('account') }}
                     left={<BankMark short={b.short} size={40} />}
                     title={b.name}
-                    subtitle={linked ? <>Đã liên kết <span className="tnum">{mask4(linked.last4)}</span></> : undefined}
+                    subtitle={linked ? <>Đã liên kết <Text size="sm" className="tabular-nums text-muted-foreground">{mask4(linked.last4)}</Text></> : undefined}
                     chevron
                   />
-                </li>
+                </Box>
               )
             })}
-          </ul>
+          </VStack>
         ) : (
-          <p role="status" className="py-section text-center text-muted">Không tìm thấy ngân hàng.</p>
+          <Text role="status" className="py-8 text-center text-muted-foreground">Không tìm thấy ngân hàng.</Text>
         )}
       </FlowFrame>
     )
@@ -87,21 +93,21 @@ export default function LinkSourceFlow() {
     return (
       <FlowFrame title={bank.name} onBack={back('bank')} onClose={close}
         footer={<Button block loading={checking} disabled={!valid} onClick={submit}>Tiếp tục</Button>}>
-        <Card className="p-inset">
-          <div className="mb-group">
+        <Card>
+          <Box className="mb-6">
             <Segmented label="Loại nguồn tiền" value={draft.kind} onChange={(k) => { setError(undefined); setDraft({ kind: k }) }}
               options={[{ value: 'account', label: 'Tài khoản' }, { value: 'debit_card', label: 'Thẻ ghi nợ' }]} />
-          </div>
+          </Box>
           <Field label={isCard ? 'Số thẻ' : 'Số tài khoản'} htmlFor="src-number" error={error} hint={`Từ ${config.accountDigits.min} đến ${config.accountDigits.max} chữ số`}>
             <TextInput
-              id="src-number" inputMode="numeric" autoComplete="off" invalid={!!error}
+              id="src-number" aria-label={isCard ? 'Số thẻ' : 'Số tài khoản'} inputMode="numeric" autoComplete="off" invalid={!!error}
               value={groupDigits(draft.number)}
               onChange={(e) => { setError(undefined); setDraft({ number: e.target.value.replace(/\D/g, '').slice(0, config.accountDigits.max) }) }}
               onKeyDown={(e) => e.key === 'Enter' && valid && !checking && submit()}
-              className="tnum"
+              className="tabular-nums"
             />
           </Field>
-          <p className="break-words"><span className="text-muted">Chủ tài khoản: </span><span className="font-medium">{holder}</span></p>
+          <Text className="break-words"><Text className="text-muted-foreground">Chủ tài khoản: </Text><Text className="font-medium">{holder}</Text></Text>
         </Card>
       </FlowFrame>
     )
@@ -111,13 +117,13 @@ export default function LinkSourceFlow() {
     return (
       <FlowFrame title="Cho phép Wallet" onBack={back('account')} onClose={close}
         footer={<Button block onClick={() => { setSheetOpen(true); go('bank-app') }}>Đồng ý liên kết</Button>}>
-        <Card className="p-inset">
-          <p className="mb-stack text-muted">{bank.name} · {draft.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản'} <span className="tnum">{mask4(draft.number.slice(-4))}</span></p>
-          <ul className="flex flex-col gap-3">
+        <Card>
+          <Text className="mb-3 text-muted-foreground">{bank.name} · {draft.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản'} <Text className="tabular-nums text-muted-foreground">{mask4(draft.number.slice(-4))}</Text></Text>
+          <VStack role="list" className="gap-3">
             {['Nạp tiền vào ví từ tài khoản này', 'Rút tiền từ ví về tài khoản này'].map((l) => (
-              <li key={l} className="flex items-start gap-3"><Check size={20} strokeWidth={2} aria-hidden className="mt-1 shrink-0 text-success" />{l}</li>
+              <HStack key={l} role="listitem" className="items-start gap-3"><Ico as={Check} className="mt-0.5 shrink-0 text-primary" /><Text>{l}</Text></HStack>
             ))}
-          </ul>
+          </VStack>
         </Card>
       </FlowFrame>
     )
@@ -137,21 +143,19 @@ export default function LinkSourceFlow() {
     return (
       <FlowFrame title="Xác nhận trên ứng dụng ngân hàng" onBack={back('consent')} onClose={close}
         footer={!sheetOpen ? <Button block onClick={() => setSheetOpen(true)}>Mở ứng dụng {bank.name}</Button> : undefined}>
-        {layout === 'web' ? <p className="mb-stack font-medium">Mở ứng dụng ngân hàng trên điện thoại để xác nhận</p> : null}
-        <p role="status" className="flex items-center gap-2 text-muted">
-          <span aria-hidden className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" />
-          Đang chờ xác nhận từ ngân hàng…
-        </p>
+        {layout === 'web' ? <Text className="mb-3 font-medium">Mở ứng dụng ngân hàng trên điện thoại để xác nhận</Text> : null}
+        <HStack role="status" className="items-center gap-2">
+          <Spinner size="small" aria-hidden />
+          <Text className="text-muted-foreground">Đang chờ xác nhận từ ngân hàng…</Text>
+        </HStack>
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen} title={`Mô phỏng ứng dụng ${bank.name}`} description="Đây là màn hình mô phỏng của ngân hàng, không phải của Wallet.">
-          <dl className="mb-group divide-y divide-line-soft rounded-[12px] bg-surface-2 px-4">
-            {[['Yêu cầu', 'Liên kết với ví Wallet'], ['Nguồn tiền', `${draft.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản'} ${mask4(draft.number.slice(-4))}`], ['Chủ tài khoản', holder], ['Số ví', w.customer.walletNumber]].map(([k, v]) => (
-              <div key={k} className="flex justify-between gap-4 py-2.5"><dt className="text-muted">{k}</dt><dd className="text-right font-medium break-words">{v}</dd></div>
-            ))}
-          </dl>
-          <div className="flex flex-col gap-2">
-            <Button variant="ink" block loading={confirming} onClick={() => decide(true)}>Xác nhận liên kết</Button>
+          <Box className="mb-6 rounded-lg border border-border bg-card px-4">
+            <DetailRows rows={[['Yêu cầu', 'Liên kết với ví Wallet'], ['Nguồn tiền', `${draft.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản'} ${mask4(draft.number.slice(-4))}`], ['Chủ tài khoản', holder], ['Số ví', w.customer.walletNumber]]} />
+          </Box>
+          <VStack className="gap-2">
+            <Button variant="primary" block loading={confirming} onClick={() => decide(true)}>Xác nhận liên kết</Button>
             <Button variant="secondary" block disabled={confirming} onClick={() => decide(false)}>Từ chối</Button>
-          </div>
+          </VStack>
         </Sheet>
       </FlowFrame>
     )
@@ -165,7 +169,7 @@ export default function LinkSourceFlow() {
           <Button block onClick={() => { setSheetOpen(true); go('bank-app') }}>Thử lại</Button>
           <Button variant="secondary" block onClick={() => go('bank')}>Chọn ngân hàng khác</Button>
         </>}>
-          <ResultBlock tone="failed" heading="Ngân hàng chưa xác nhận liên kết"><p>Nguồn tiền chưa được thêm vào ví.</p></ResultBlock>
+          <ResultBlock tone="failed" heading="Ngân hàng chưa xác nhận liên kết"><Text className="text-muted-foreground">Nguồn tiền chưa được thêm vào ví.</Text></ResultBlock>
         </FlowFrame>
       )
     const done = (to: string) => () => { clear(); nav(to) }
@@ -175,7 +179,7 @@ export default function LinkSourceFlow() {
         <Button variant="secondary" block onClick={done('/home')}>Về trang chủ</Button>
       </> : toHome ? <Button block onClick={done('/home')}>Về trang chủ</Button> : <Button block onClick={done('/me/sources')}>Xem nguồn tiền</Button>}>
         <ResultBlock tone="success" heading={`Đã liên kết ${name}`}>
-          {draft.first ? <p>Ví đã sẵn sàng để nạp tiền.</p> : null}
+          {draft.first ? <Text className="text-muted-foreground">Ví đã sẵn sàng để nạp tiền.</Text> : null}
         </ResultBlock>
       </FlowFrame>
     )

@@ -4,7 +4,11 @@ import { useLayout } from '@/app/layout'
 import { bankById, useWorld } from '@/app/store'
 import { GatedRoute } from '@/features/sec/Gate'
 import { formatPhone, maskAccount } from '@/features/flow/FlowKit'
-import { Avatar, BankMark, Card, Disc, RailTile, Row, Section } from '@/components/app-ui'
+import { Avatar, BankMark, Card, Disc, Ico, RailTile, Row, Section } from '@/components/app-ui'
+import { Box } from '@/components/ui/box'
+import { HStack } from '@/components/ui/hstack'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 import { recentRecipients, type Recent } from './logic'
 import { PageHeading } from './shared'
 
@@ -27,51 +31,51 @@ export default function TransferChooser() {
   const name = (r: Recent) => (r.kind === 'wallet' ? r.name : r.holder)
 
   const options = (
-    <Card className="overflow-hidden">
-      <ul>
-        {OPTIONS.map(({ to, icon: Icon, title, sub }) => (
-          <li key={to}>
-            <Row to={to} left={<Disc size={40}><Icon size={20} strokeWidth={1.75} /></Disc>} title={title} subtitle={sub} chevron />
-          </li>
+    <Card className="p-0 overflow-hidden">
+      <VStack role="list" className="divide-y divide-border">
+        {OPTIONS.map(({ to, icon, title, sub }) => (
+          <Box key={to} role="listitem">
+            <Row to={to} left={<Disc size={40}><Ico as={icon} size="md" /></Disc>} title={title} subtitle={sub} chevron />
+          </Box>
         ))}
-      </ul>
+      </VStack>
     </Card>
   )
-  const empty = <p className="text-muted">Chưa có người nhận gần đây.</p>
+  const empty = <Text className="text-muted-foreground">Chưa có người nhận gần đây.</Text>
 
   const recentWeb = recent.length ? (
-    <Card className="overflow-hidden">
-      <ul>
+    <Card className="p-0 overflow-hidden">
+      <VStack role="list" className="divide-y divide-border">
         {recent.map((r) => (
-          <li key={r.key}>
+          <Box key={r.key} role="listitem">
             <Row
               to={recentLink(r, w.bankRecipients)}
               left={r.kind === 'wallet' ? <Avatar name={r.name} size={40} /> : <BankMark short={bankById(r.bankId).short} size={40} />}
-              title={<span title={name(r)}>{name(r)}</span>}
-              subtitle={r.kind === 'wallet' ? formatPhone(r.phone) : <span className="whitespace-nowrap">{bankById(r.bankId).name} · {maskAccount(r.account)}</span>}
+              title={<Text title={name(r)}>{name(r)}</Text>}
+              subtitle={r.kind === 'wallet' ? formatPhone(r.phone) : <Text className="whitespace-nowrap">{bankById(r.bankId).name} · {maskAccount(r.account)}</Text>}
             />
-          </li>
+          </Box>
         ))}
-      </ul>
+      </VStack>
     </Card>
   ) : empty
 
   // Same rail spec as Home's recipients: 72px items, 56px avatars, 8px gap, first avatar on the title edge.
   const recentApp = recent.length ? (
-    <ul className="-mx-inset flex gap-header overflow-x-auto pr-inset pb-1 pl-2">
+    <HStack role="list" className="-mx-4 gap-2 overflow-x-auto pr-4 pb-1 pl-2">
       {recent.map((r) => (
-        <li key={r.key} className="w-[72px] shrink-0">
+        <Box key={r.key} role="listitem" className="w-[72px] shrink-0">
           <RailTile
             to={recentLink(r, w.bankRecipients)} label={name(r)} name={shortName(name(r))} sub={r.kind === 'wallet' ? undefined : bankById(r.bankId).name}
             leading={r.kind === 'wallet' ? <Avatar name={r.name} size={56} /> : <BankMark short={bankById(r.bankId).short} size={56} />}
           />
-        </li>
+        </Box>
       ))}
-    </ul>
+    </HStack>
   ) : empty
 
   return (
-    <div>
+    <Box>
       <PageHeading>Chuyển tiền</PageHeading>
       <GatedRoute>
         {layout === 'web' ? (
@@ -81,11 +85,11 @@ export default function TransferChooser() {
           </>
         ) : (
           <>
-            <div className="mt-header">{options}</div>
+            <Box className="mt-2">{options}</Box>
             <Section title="Gần đây">{recentApp}</Section>
           </>
         )}
       </GatedRoute>
-    </div>
+    </Box>
   )
 }
