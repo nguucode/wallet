@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && rm -rf out/404.html out/404",
+    "build": "next build && rm -rf out/404.html out/404 && echo Not found > out/_next/404.html",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "check-spec": "ruby scripts/check-spec.rb"
