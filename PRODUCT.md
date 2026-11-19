@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-React 19 + Vite + TypeScript + React Router 7 + Tailwind v4 + Radix, Vitest, axe, the same stack as Fortify. One app with two layouts: a desktop web wallet (≥ 1024px, sidebar) and a mobile app shell (< 1024px, tab bar, sheets, numeric keypad). It is installable as a PWA, and a `/device` route renders the mobile shell in a 390×844 phone frame for desktop reviewers. Deployed manually to Cloudflare Pages at wallet.ontheshore.biz. Capacitor is added only if a real install file is ever needed. Expo and a split web + Expo monorepo were ruled out.
+React 19 + Vite + TypeScript + React Router 7 + Tailwind v4 + Radix, Vitest, axe, the same stack as Fortify. One app with two layouts: a desktop web wallet (≥ 1024px, sidebar) and a mobile app shell (< 1024px, tab bar, sheets, numeric keypad). It is installable as a PWA, and a `/device` route renders the mobile shell in a 390×844 phone frame for desktop reviewers. Deployed to Cloudflare Pages at wallet.ontheshore.biz by GitHub Actions on every push to `main` (check-spec, test, build, deploy). Capacitor is added only if a real install file is ever needed. Expo and a split web + Expo monorepo were ruled out.
 
 ## Users
 
@@ -58,19 +58,20 @@ Simple, with every state always clear. Wallet does only the core jobs, and it sh
   - Step-up thresholds (10M VND per transaction, 20M VND cumulative per day, as MoMo publishes them) live in config.
 - **Currency:** VND, no decimals, formatted `1.250.000 ₫`. The balance can be hidden or shown.
 - **Language:** UI in Vietnamese. Spec, User Stories and code identifiers in English.
-- **Undecided:** accent hue and typeface. The typeface must carry full Vietnamese diacritics; candidates are Inter and Be Vietnam Pro.
+- **Visual system:** Apple Human Interface Guidelines (decided 2026-11-19), documented in DESIGN.md as "Inset Grouped". Violet `#5B2BE0` is the app tint; type is the system stack (SF Pro on Apple devices, Be Vietnam Pro elsewhere for full Vietnamese diacritics); light and dark follow the system setting.
 
 ## Brand Commitments
 
 - The product name is **Wallet** (working name), hosted at wallet.ontheshore.biz.
-- UI follows PayPal's interface grammar and borrows nothing of its brand. Grammar measured in the vault note `10-projects/wallet/paypal-style-study.md`.
+- UI follows Apple's Human Interface Guidelines (iOS on the app layout, macOS sidebar conventions on web) as a third-party app would: grouped backgrounds, inset grouped sections, large titles, Liquid Glass on navigation chrome only, the app's own violet tint. It borrows no Apple brand: no Apple logo, no Apple Pay or Apple Wallet marks or names, no SF Symbols artwork (icons are Lucide), and SF Pro is never shipped as a webfont, only reached through the system font stack.
+- History: PayPal grammar ("Clear Ledger", 2026-11-17), then Copilot grammar ("Violet Sky", 2026-11-17), then Apple HIG ("Inset Grouped", 2026-11-19). The PayPal study stays in the vault note `10-projects/wallet/paypal-style-study.md` for flow reference.
 - Never use the PayPal logo or monogram, PayPal Pro or PayPal Open fonts, PayPal's exact colours (#0065F2, #002991, #001435, #0070BA, #003087), its yellow or black logo buttons, or the word "PayPal".
 - No MoMo, ZaloPay, NAPAS or bank logos. Banks use real Vietnamese bank names as text (decided 2026-11-17: it is a demo). People, merchants and billers in mock data are fictional; VietQR is referenced by name only.
 
 ## Evidence on Hand
 
 - Research note with primary sources: regulation, MoMo/ZaloPay IA, object model, proposed sitemap, P0 scope (vault path above).
-- PayPal style measurements (vault path above).
+- PayPal style measurements (vault path above), kept for flow reference; the visual system is now DESIGN.md.
 - No real users, transactions, testimonials or metrics. All data is mock from a fixed seed. Do not fabricate user counts, ratings or partner logos.
 
 ## Product Principles
