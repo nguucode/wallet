@@ -1,4 +1,4 @@
-import { Bell, CreditCard, Palette, FileText, Gauge, HelpCircle, History, Home, Landmark, PanelLeftClose, PanelLeftOpen, QrCode, ScanLine, Send, ShieldCheck, User, Wallet } from 'lucide-react'
+import { Bell, CreditCard, Palette, FileText, Gauge, HelpCircle, History, Home, Landmark, QrCode, ScanLine, Send, ShieldCheck, User, Wallet } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
 import { pageScroller, useLayout } from '@/app/layout'
@@ -6,18 +6,16 @@ import { isTabRoot, screenFor, sidebar, tabBar, type NavItem } from '@/app/sitem
 import { signOut, unreadCount, useWorld } from '@/app/store'
 import { useTheme } from '@/app/theme'
 import { DemoControlsButton, DemoControlsSheet } from '@/features/demo/DemoControls'
-import { backdropClass, ThemeControls } from '@/features/demo/ThemeControls'
+import { backdropClass } from '@/features/demo/ThemeControls'
 import { Avatar, BackButton, Confirm, cx, Ico, IconButton, NavBar, useLinkPress } from '@/components/app-ui'
 import { Badge, BadgeText } from '@/components/ui/badge'
 import { Box } from '@/components/ui/box'
-import { Button, ButtonText } from '@/components/ui/button'
-import { Divider } from '@/components/ui/divider'
+import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
 import { Image } from '@/components/ui/image'
 import { Link, LinkText } from '@/components/ui/link'
 import { Menu, MenuItem, MenuItemLabel, MenuSeparator } from '@/components/ui/menu'
-import { Popover, PopoverBackdrop, PopoverBody, PopoverContent } from '@/components/ui/popover'
 import { Pressable } from '@/components/ui/pressable'
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
@@ -62,155 +60,101 @@ function UnreadBadge({ n }: { n: number }) {
   return <Badge variant="destructive" className="absolute -top-1 -right-1 min-w-[18px] rounded-full px-1 dark:bg-destructive" aria-hidden><BadgeText className="dark:text-background">{n > 9 ? '9+' : n}</BadgeText></Badge>
 }
 
-/* ── Web layout ───────────────────────────────────────────────────── */
+/* ── Web layout: macOS System Settings ───────────────────────────────
+ * Geometry is Apple's own (DESIGN.md "Provenance"): a NavigationSplitView rendered by macOS 26.6 gives a floating
+ * sidebar 215pt wide, inset 8pt from the window on three sides, 18pt corners; List(.sidebar) rows are 32pt
+ * (NSTableView .sourceList, medium) with the selection inset 10pt and ~10pt corners; the toolbar title sits on the
+ * content's leading edge, 20pt right of the sidebar, and the first box starts 72pt down.
+ * HIG Sidebars: "By default, sidebar icons use your app's accent color."
+ */
 
-function SideLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
+function SideLink({ item }: { item: NavItem }) {
   const I = ICONS[item.id] ?? Wallet
   const { pathname } = useLocation()
   const active = isActive(pathname, item.route) || (item.id === 'pay' && pathname.startsWith('/pay'))
   const press = useLinkPress(item.route)
   return (
-    <Button
-      variant="ghost"
-      size="sm"
+    <Pressable
       onPress={press}
       href={item.route}
       role="link"
       aria-current={active ? 'page' : undefined}
-      aria-label={collapsed ? item.label : undefined}
-      // iPadOS sidebar: the current item is a rounded cell (card surface) with the tint on its icon; hover is a lighter cell.
-      className={cx('h-10 justify-start gap-3 rounded-xl data-[hover=true]:bg-card/60', collapsed ? 'w-10 justify-center self-center px-0' : 'px-2.5', active && 'bg-card shadow-sm')}
+      className={cx('h-8 flex-row items-center gap-2 rounded-[10px] px-2.5', active ? 'bg-primary' : 'data-[hover=true]:bg-foreground/5')}
     >
-      <Ico as={I} size="md" className={cx('shrink-0', active ? 'text-primary' : 'text-foreground')} />
-      {/* Same size as page content (text-base): the sm button's text-xs read smaller than the content beside it. */}
-      {collapsed ? null : <ButtonText className={cx('truncate text-base', active && 'font-semibold')}>{item.label}</ButtonText>}
-    </Button>
+      <Box className="w-[18px] items-center"><Ico as={I} size="sm" className={active ? 'text-primary-foreground' : 'text-primary'} /></Box>
+      <Text isTruncated className={active ? 'text-primary-foreground' : 'text-foreground'}>{item.label}</Text>
+    </Pressable>
   )
 }
 
-function AccountMenu({ expanded }: { expanded: boolean }) {
+function AccountMenu() {
   const w = useWorld()
   const nav = useNavigate()
   const [confirm, setConfirm] = useState(false)
   return (
     <>
       <Menu
-        placement="top left"
-        offset={8}
+        placement="bottom left"
+        offset={4}
         trigger={(props) => (
-          <Button {...props} variant="ghost" size="sm" aria-label="Tài khoản" className={cx('h-9 gap-2 px-1', expanded ? 'min-w-0 flex-1 justify-start' : 'w-9 justify-center px-0')}>
+          <Pressable {...props} className="flex-row items-center gap-2 rounded-[10px] px-2.5 py-1.5 data-[hover=true]:bg-foreground/5">
             <Avatar name={w.customer.name} src={w.customer.photo} size={28} />
-            {expanded ? <ButtonText className="min-w-0 truncate text-base">{w.customer.name.split(' ').slice(-2).join(' ')}</ButtonText> : null}
-          </Button>
+            <VStack className="min-w-0 flex-1">
+              <Text bold isTruncated>{w.customer.name}</Text>
+              <Text size="xs" isTruncated className="text-muted-foreground">Số ví {w.customer.walletNumber}</Text>
+            </VStack>
+          </Pressable>
         )}
       >
-        <MenuItem key="profile" textValue="Hồ sơ" onPress={() => nav('/me/profile')}>
-          <VStack>
-            <MenuItemLabel bold>{w.customer.name}</MenuItemLabel>
-            <MenuItemLabel className="text-sm text-muted-foreground">Hồ sơ · Số ví {w.customer.walletNumber}</MenuItemLabel>
-          </VStack>
-        </MenuItem>
-        <MenuSeparator />
+        <MenuItem key="profile" textValue="Hồ sơ" onPress={() => nav('/me/profile')}><MenuItemLabel>Hồ sơ và xác thực</MenuItemLabel></MenuItem>
         <MenuItem key="security" textValue="Bảo mật" onPress={() => nav('/me/security')}><MenuItemLabel>Bảo mật</MenuItemLabel></MenuItem>
-        <MenuItem key="signout" textValue="Đăng xuất" onPress={() => setConfirm(true)}><MenuItemLabel className="text-destructive">Đăng xuất</MenuItemLabel></MenuItem>
+        <MenuSeparator />
+        <MenuItem key="signout" textValue="Đăng xuất" onPress={() => setConfirm(true)}><MenuItemLabel>Đăng xuất…</MenuItemLabel></MenuItem>
       </Menu>
       <Confirm open={confirm} onOpenChange={setConfirm} title="Đăng xuất khỏi Wallet?" body="Bản demo sẽ quay về màn Mở ví." confirmLabel="Đăng xuất" onConfirm={() => { signOut(); nav('/onboarding') }} danger />
     </>
   )
 }
 
-const COLLAPSE_KEY = 'wallet.sidebar.collapsed'
-
-/** Per-viewer preference; storage may be unavailable (private mode), so default to expanded. */
-function useSidebarCollapsed() {
-  const [collapsed, setCollapsed] = useState(() => { try { return localStorage.getItem(COLLAPSE_KEY) === '1' } catch { return false } })
-  const toggle = () => setCollapsed((c) => { try { localStorage.setItem(COLLAPSE_KEY, c ? '0' : '1') } catch { /* ignore */ } return !c })
-  return [collapsed, toggle] as const
-}
-
-/** Collapsed rail: the Demo controls box folds into one palette button that opens it in a popover beside the rail. */
-function RailThemeButton({ onMore }: { onMore: () => void }) {
-  const [open, setOpen] = useState(false)
-  return (
-    <Popover
-      isOpen={open}
-      onOpen={() => setOpen(true)}
-      onClose={() => setOpen(false)}
-      placement="right bottom"
-      offset={12}
-      trigger={(props) => (
-        <Button {...props} variant="ghost" size="icon" aria-label="Demo controls" className="h-9 w-9 rounded-full">
-          <Ico as={Palette} size="sm" />
-        </Button>
-      )}
-    >
-      <PopoverBackdrop />
-      <PopoverContent className="w-64">
-        <PopoverBody><ThemeControls onMore={() => { setOpen(false); onMore() }} /></PopoverBody>
-      </PopoverContent>
-    </Popover>
-  )
-}
-
-/**
- * Web shell (sếp's sketch 2026-11-19): the whole window is the viewer's backdrop; the sidebar sits on it with no surface
- * of its own; content lives in one rounded panel, the content column itself, centred on the backdrop.
- */
 function WebShell({ children }: { children: ReactNode }) {
-  const [collapsed, toggleCollapsed] = useSidebarCollapsed()
   const [demoOpen, setDemoOpen] = useState(false)
-  const theme = useTheme()
   const w = useWorld()
   const unread = unreadCount(w)
-  const home = useLinkPress('/home')
   const bell = useLinkPress('/notifications')
-  const bellLabel = unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'
-  const toggleLabel = collapsed ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'
+  const { pathname } = useLocation()
+  const title = screenFor(pathname)?.title ?? 'Wallet'
   return (
-    <HStack className={cx('h-dvh overflow-hidden print:h-auto print:overflow-visible', backdropClass(theme.background))}>
+    <HStack className="h-dvh overflow-hidden bg-background print:h-auto print:overflow-visible">
       <SkipLink />
-      <VStack role="complementary" className={cx('h-full shrink-0 px-2.5 py-3', collapsed ? 'w-16' : 'w-64')}>
-        <HStack className={cx('mb-3 h-9 shrink-0 items-center', collapsed ? 'flex-col gap-2 h-auto' : 'justify-between pl-1')}>
-          <Pressable onPress={home} href="/home" role="link" aria-label="Wallet, về Trang chủ">
-            <HStack className="items-center gap-2"><Logo />{collapsed ? null : <Heading as="p" size="md" aria-hidden>Wallet</Heading>}</HStack>
-          </Pressable>
-          <IconButton label={toggleLabel} aria-expanded={!collapsed} onClick={toggleCollapsed} className="h-9 w-9">
-            <Ico as={collapsed ? PanelLeftOpen : PanelLeftClose} size="sm" className="text-foreground/70" />
-          </IconButton>
-        </HStack>
-        <VStack role="navigation" aria-label="Điều hướng chính" className="flex-1 gap-px overflow-y-auto overflow-x-hidden">
+      <VStack role="complementary" className="absolute bottom-2 left-2 top-2 z-30 w-[215px] rounded-[18px] border border-foreground/10 bg-sidebar/90 px-2.5 pb-2.5 pt-3 shadow-sm backdrop-blur-xl">
+        <AccountMenu />
+        <VStack role="navigation" aria-label="Điều hướng chính" className="mt-3 flex-1 overflow-y-auto overflow-x-hidden">
           {sidebar.map((x) =>
             'group' in x ? (
-              <VStack key={x.group} className="mt-3 gap-px">
-                {collapsed
-                  ? <><Text className="sr-only">{x.group}</Text><Divider className="mx-auto mb-1 w-6" /></>
-                  : <Text size="sm" isTruncated className="px-2.5 pb-1 font-semibold text-foreground/70">{x.group}</Text>}
-                {x.items.map((i) => <SideLink key={i.id} item={i} collapsed={collapsed} />)}
+              // Settings separates groups with space only; the group name stays for screen readers.
+              <VStack key={x.group} className="mt-3">
+                <Text className="sr-only">{x.group}</Text>
+                {x.items.map((i) => <SideLink key={i.id} item={i} />)}
               </VStack>
             ) : (
-              <SideLink key={x.id} item={x} collapsed={collapsed} />
+              <SideLink key={x.id} item={x} />
             ),
           )}
         </VStack>
-        {/* Footer: demo controls, then account and notifications (sketch). */}
-        <VStack className={cx('mt-2 shrink-0 gap-2', collapsed && 'items-center')}>
-          {collapsed
-            ? <RailThemeButton onMore={() => setDemoOpen(true)} />
-            : <Box className="rounded-2xl border border-border/50 bg-card/80 p-3 shadow-sm backdrop-blur-xl"><ThemeControls onMore={() => setDemoOpen(true)} /></Box>}
-          <Box className={cx('flex', collapsed ? 'flex-col items-center gap-px' : 'flex-row items-center gap-1')}>
-            <AccountMenu expanded={!collapsed} />
-            <Box className="relative">
-              <IconButton label={bellLabel} onClick={bell}><Ico as={Bell} size="sm" /></IconButton>
-              {unread ? <UnreadBadge n={unread} /> : null}
-            </Box>
-          </Box>
-        </VStack>
+        <HStack className="mt-2 items-center justify-between px-1">
+          <SampleBadge />
+          <IconButton label="Demo controls" onClick={() => setDemoOpen(true)}><Ico as={Palette} size="sm" /></IconButton>
+        </HStack>
       </VStack>
-      {/* The white panel IS the content column (sketch): centred on the backdrop, which shows on both sides; the area
-          around it scrolls, so the panel grows with its content. */}
-      <Box id="main-scroll" className="min-w-0 flex-1 overflow-y-auto px-6 py-2 print:overflow-visible">
-        {/* iOS grouped surface: the panel is systemGroupedBackground, the cards on it are the cells. */}
-        <Box role="main" id="main" className="mx-auto min-h-[calc(100dvh-16px)] w-full max-w-[672px] shrink-0 rounded-[28px] bg-background px-8 pb-16 pt-10 shadow-sm">
+      <Box id="main-scroll" className="h-full min-w-0 flex-1 overflow-y-auto pl-[223px] print:overflow-visible print:pl-0">
+        <HStack className="sticky top-0 z-20 h-[52px] shrink-0 items-center gap-2 bg-background/80 px-5 backdrop-blur-xl" role="banner">
+          <Text bold className="flex-1 text-lg" aria-hidden>{title}</Text>
+          <Box className="relative">
+            <IconButton label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} onClick={bell}><Ico as={Bell} size="sm" /></IconButton>
+            {unread ? <UnreadBadge n={unread} /> : null}
+          </Box>
+        </HStack>
+        <Box role="main" id="main" className="w-full max-w-[680px] shrink-0 px-5 pb-16 pt-5">
           {children}
         </Box>
       </Box>
@@ -304,6 +248,6 @@ export function Shell() {
 export function FlowShell() {
   const layout = useLayout()
   useRouteFocus()
-  if (layout === 'web') return <WebShell><Box className="mx-auto w-full max-w-[560px]"><Outlet /></Box></WebShell>
+  if (layout === 'web') return <WebShell><Outlet /></WebShell>
   return <Box className="min-h-dvh bg-backdrop-app"><Outlet /></Box>
 }

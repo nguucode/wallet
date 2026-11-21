@@ -7,6 +7,8 @@ module.exports = {
     './app/**/*.{js,jsx,ts,tsx}',
   ],
   presets: [require('nativewind/preset')],
+  // `mac:` = the web layout (useLayout's 1024px breakpoint), which renders the macOS System Settings grammar.
+  plugins: [require('tailwindcss/plugin')(({ addVariant }) => addVariant('mac', '@media (min-width: 1024px)'))],
   important: 'html',
   safelist: [
     {
@@ -49,6 +51,8 @@ module.exports = {
           DEFAULT: 'rgb(var(--destructive) / <alpha-value>)',
         },
         border: 'rgb(var(--border)/<alpha-value>)',
+        // Web (macOS) only: selected segment and the sidebar panel, defined in app/globals.css.
+        'segment-selected': 'rgb(var(--segment-selected, 210 210 210) / <alpha-value>)',
         input: 'rgb(var(--input)/<alpha-value>)',
         ring: 'rgb(var(--ring) / <alpha-value>)',
         white: 'rgb(255 255 255)',
@@ -130,17 +134,21 @@ module.exports = {
       // iOS Dynamic Type default sizes on the Tailwind scale gluestack's Text/Heading sizes resolve to:
       // xs Footnote 13 · sm Subheadline 15 · base Body/Headline 17 · lg Title 3 20 · xl Title 2 22 · 2xl Title 1 28 ·
       // 3xl 30 · 4xl Large Title 34 (Heading 3xl, page titles, amounts) · 5xl 48 (balance).
+      // Type scale as variables: iOS Dynamic Type by default (app layout); the web layout (app/globals.css, >= 1024px) re-values them to the
+      // AppKit text styles read from NSFont.preferredFont on macOS 26 (see app/globals.css and DESIGN.md).
+      // iOS: xs Footnote 13 · sm Subheadline 15 · base Body 17 · lg Title 3 20 · xl Title 2 22 · 2xl Title 1 28 ·
+      // 4xl Large Title 34 · 5xl 48 (balance).
       fontSize: {
         '2xs': '10px',
-        xs: ['13px', '18px'],
-        sm: ['15px', '20px'],
-        base: ['17px', '23px'], // iOS Body is 17/22; 23 gives Vietnamese diacritics and wrapped paragraphs room (1.35)
-        lg: ['20px', '25px'],
-        xl: ['22px', '28px'],
-        '2xl': ['28px', '34px'],
-        '3xl': ['30px', '36px'],
-        '4xl': ['34px', '41px'],
-        '5xl': ['48px', '52px'],
+        xs: ['var(--fs-xs, 13px)', 'var(--lh-xs, 18px)'],
+        sm: ['var(--fs-sm, 15px)', 'var(--lh-sm, 20px)'],
+        base: ['var(--fs-base, 17px)', 'var(--lh-base, 23px)'], // iOS Body is 17/22; 23 gives Vietnamese diacritics room
+        lg: ['var(--fs-lg, 20px)', 'var(--lh-lg, 25px)'],
+        xl: ['var(--fs-xl, 22px)', 'var(--lh-xl, 28px)'],
+        '2xl': ['var(--fs-2xl, 28px)', 'var(--lh-2xl, 34px)'],
+        '3xl': ['var(--fs-3xl, 30px)', 'var(--lh-3xl, 36px)'],
+        '4xl': ['var(--fs-4xl, 34px)', 'var(--lh-4xl, 41px)'],
+        '5xl': ['var(--fs-5xl, 48px)', 'var(--lh-5xl, 52px)'],
       },
       boxShadow: {
         'hard-1': '-2px 2px 8px 0px rgba(38, 38, 38, 0.20)',

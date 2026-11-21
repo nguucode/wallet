@@ -1,3 +1,73 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Web layout (>= 1024px, the same breakpoint as useLayout) = macOS System Settings (sếp 2026-11-21). Every value is Apple's own, read on macOS 26.6 (DESIGN.md
+ * "Provenance"): [appkit] NSColor / NSFont / NSControl values from AppKit; [render] pixels of Apple's own SwiftUI
+ * Form(.grouped) and NavigationSplitView rendered by the system. One departure: secondary text in light mode.
+ */
+@media (min-width: 1024px) {
+html:root {
+  /* [appkit] NSFont.preferredFont(forTextStyle:) — Subheadline 11/16, Callout 12/17, Body 13/18, Title 3 15/22,
+     Title 2 17/24, Title 1 22/30, Large Title 26/34. iOS Footnote has no legible macOS twin (10pt), so xs takes
+     Subheadline. There is no macOS style above Large Title: the balance uses it. */
+  --fs-xs: 11px; --lh-xs: 16px;
+  --fs-sm: 12px; --lh-sm: 17px;
+  --fs-base: 13px; --lh-base: 18px;
+  --fs-lg: 15px; --lh-lg: 22px;
+  --fs-xl: 17px; --lh-xl: 24px;
+  --fs-2xl: 22px; --lh-2xl: 30px;
+  --fs-3xl: 26px; --lh-3xl: 34px;
+  --fs-4xl: 26px; --lh-4xl: 34px;
+  --fs-5xl: 26px; --lh-5xl: 34px;
+
+  --background: 255 255 255;      /* [render] window content */
+  --card: 249 249 249;            /* [render] Form section box */
+  --popover: 255 255 255;
+  --foreground: 39 39 39;         /* [appkit] labelColor, black 84.7% */
+  --popover-foreground: 39 39 39;
+  --secondary-foreground: 39 39 39;
+  --accent-foreground: 39 39 39;
+  /* [appkit] secondaryLabelColor is black 49.8% (#808080, 3.9:1 on white, under AA); one step darker, 60%. */
+  --muted-foreground: 102 102 102;
+  --secondary: 233 233 233;       /* [render] push button bezel */
+  --muted: 233 233 233;
+  --accent: 243 243 243;          /* [appkit] black 4.7% (tertiarySystemFill): hover */
+  --border: 239 239 239;          /* [render] Form row separator */
+  --input: 221 221 221;
+  --sidebar: 249 249 249;         /* [render] Tahoe sidebar panel */
+  --selected-unemphasized: 220 220 220; /* [appkit] unemphasizedSelectedContentBackgroundColor */
+  --segment-selected: 210 210 210; /* [render] selected segment */
+  --primary: var(--primary-mac, 0 100 225);
+  --primary-foreground: var(--primary-mac-foreground, 255 255 255);
+  --ring: var(--primary-mac, 0 100 225);
+}
+html.dark {
+  --background: 47 47 47;         /* [render] */
+  --card: 56 56 56;               /* [render] */
+  --popover: 56 56 56;
+  --foreground: 223 223 223;      /* [appkit] white 84.7% */
+  --popover-foreground: 223 223 223;
+  --secondary-foreground: 223 223 223;
+  --accent-foreground: 223 223 223;
+  /* [appkit] secondaryLabelColor is white 54.9% (161): 4.4:1 on the sidebar panel; one step lighter, 168. */
+  --muted-foreground: 168 168 168;
+  --secondary: 75 75 75;          /* [render] push button bezel */
+  --muted: 75 75 75;
+  --accent: 57 57 57;
+  --border: 68 68 68;             /* [render] */
+  --input: 75 75 75;
+  --sidebar: 58 58 58;            /* [render] */
+  --selected-unemphasized: 70 70 70; /* [appkit] */
+  --segment-selected: 100 100 104; /* [render] selected segment */
+}
+/* [render] Form separators stop 10pt short of both edges of the box. */
+html .divide-y > :not(:first-child) {
+  border-top-width: 0 !important;
+  background-image: linear-gradient(rgb(var(--border)), rgb(var(--border)));
+  background-size: calc(100% - 20px) 1px;
+  background-position: 10px 0;
+  background-repeat: no-repeat;
+}
+}

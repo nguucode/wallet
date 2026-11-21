@@ -1,4 +1,4 @@
-import { Check, Clock, Delete, X } from 'lucide-react'
+import { Check, ChevronLeft, Clock, Delete, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate, useSearchParams } from 'react-router'
@@ -17,7 +17,7 @@ import {
 import type { FailureReason, Transaction } from '@/mock/seed'
 import { AuthSheet } from '@/features/sec/AuthSheet'
 import { GATE_COPY } from '@/features/sec/Gate'
-import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, DetailRows, Fee, Ico, Money, NavBar, TextLink, WebBackLink, Card } from '@/components/app-ui'
+import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, DetailRows, Fee, Ico, Money, NavBar, TextLink, IconButton, Card } from '@/components/app-ui'
 import { Avatar } from '@/components/ui/avatar'
 import { Box } from '@/components/ui/box'
 import { Button as GButton, ButtonText } from '@/components/ui/button'
@@ -82,15 +82,17 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
   const layout = useLayout()
   if (layout === 'web')
     return (
+      // macOS System Settings: the toolbar names the pane; the step reads as a group header (Headline, inset 10pt)
+      // with back/close beside it, the form sits in one grouped box, and the default button is trailing.
       <VStack>
-        {onBack ? <WebBackLink onClick={onBack} /> : null}
-        <HStack className="mb-6 items-start gap-2">
-          <Heading size="3xl" tabIndex={-1} data-page-title className="flex-1 outline-none">{title}</Heading>
+        <HStack className="mb-[11px] min-h-7 items-center gap-1 px-2.5">
+          {onBack ? <IconButton label="Quay lại" onClick={onBack} className="-ml-2"><Ico as={ChevronLeft} size="sm" /></IconButton> : null}
+          <Heading size="sm" tabIndex={-1} data-page-title className="flex-1 font-bold outline-none mac:text-base">{title}</Heading>
           {onClose ? <CloseButton onClick={onClose} /> : null}
         </HStack>
-        {description ? <Text className="-mt-4 mb-6 text-muted-foreground">{description}</Text> : null}
-        <Card>{children}</Card>
-        {footer ? <VStack className="mt-6 gap-2">{footer}</VStack> : null}
+        {description ? <Text className="mb-3 px-2.5 text-muted-foreground">{description}</Text> : null}
+        <Card className="mac:p-2.5">{children}</Card>
+        {footer ? <HStack className="mt-5 flex-row-reverse flex-wrap gap-2 [&>*]:w-auto">{footer}</HStack> : null}
       </VStack>
     )
   return (

@@ -56,6 +56,9 @@ export function themeVars(p: ThemePrefs, dark: boolean): Record<string, string> 
   const appTint = grad ? (dark ? mix(primary, GROUPED.dark, 0.2) : mix(primary, APP_LIGHT, 0.06)) : app
   return {
     '--primary': primary,
+    // macOS: blue is AppKit's selectedContentBackgroundColor (white text in both modes); other tints keep the iOS value.
+    '--primary-mac': p.primary === 'blue' ? (dark ? '0 89 209' : '0 100 225') : primary,
+    '--primary-mac-foreground': p.primary === 'blue' ? '255 255 255' : dark ? '0 0 0' : '255 255 255',
     '--primary-foreground': dark ? '0 0 0' : '255 255 255',
     '--ring': primary,
     '--backdrop': backdrop,

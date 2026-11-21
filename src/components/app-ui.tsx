@@ -69,12 +69,13 @@ export function Button({ variant = 'primary', size = 'md', block, loading, disab
       {...(to ? { href: to, role: 'link' } : {})}
       aria-busy={loading || undefined}
       // iOS: capsule buttons; the large (md) size is the 50pt iOS filled button.
-      className={cx('rounded-full', size === 'md' && 'h-12', block && 'w-full', className)}
+      // macOS: the regular push button, 24pt tall with 6pt corners ([appkit] NSButton fittingSize, [render] corner).
+      className={cx('rounded-full mac:h-6 mac:rounded-[6px] mac:px-3', size === 'md' && 'h-12', block && 'w-full', className)}
       {...rest}
     >
       {loading ? <ButtonSpinner /> : null}
       {/* Label role: 14px for every size (gluestack's sm button would drop to 12px). */}
-      {parts.map((c, i) => (typeof c === 'string' || typeof c === 'number' ? <ButtonText key={i} className="text-sm">{c}</ButtonText> : c))}
+      {parts.map((c, i) => (typeof c === 'string' || typeof c === 'number' ? <ButtonText key={i} className="text-sm mac:text-base mac:font-normal">{c}</ButtonText> : c))}
     </GButton>
   )
 }
@@ -85,7 +86,7 @@ export function ButtonLink(props: Omit<ButtonProps, 'onClick'> & { to: string })
 
 export function IconButton({ label, children, onClick, className, ...rest }: { label: string; children: ReactNode; onClick?: Press; className?: string; 'aria-expanded'?: boolean; disabled?: boolean }) {
   return (
-    <GButton variant="ghost" size="icon" aria-label={label} onPress={onClick} isDisabled={rest.disabled} className={cx('rounded-full', className)} {...rest}>
+    <GButton variant="ghost" size="icon" aria-label={label} onPress={onClick} isDisabled={rest.disabled} className={cx('rounded-full mac:h-7 mac:w-7', className)} {...rest}>
       {children}
     </GButton>
   )
@@ -100,14 +101,16 @@ export function Ico({ as, size = 'md', className }: { as: React.ElementType; siz
 
 export function Card({ className, children, role, ...aria }: { className?: string; children: ReactNode; as?: 'div' | 'section' | 'article'; role?: string; 'aria-label'?: string }) {
   // iOS inset grouped: cells on the grouped background, 24px corners, no border or shadow.
-  return <GCard role={role} {...aria} className={cx('gap-0 rounded-3xl border-0 shadow-none', className)}>{children}</GCard>
+  // macOS: the grouped Form section box, 12pt corners ([render]).
+  return <GCard role={role} {...aria} className={cx('gap-0 rounded-3xl border-0 shadow-none mac:rounded-[12px]', className)}>{children}</GCard>
 }
 
 export function Section({ title, action, children, className }: { title: string; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <VStack className={cx('mt-8 gap-3', className)} aria-label={title} role="region">
-      <HStack className="items-baseline justify-between gap-4">
-        <Heading as="h2" size="lg">{title}</Heading>
+    // macOS [render]: 57.5pt from one box to the next, header in Headline (13 bold) inset 10pt, 11pt above its box.
+    <VStack className={cx('mt-8 gap-3 mac:mt-[30px] mac:gap-[11px]', className)} aria-label={title} role="region">
+      <HStack className="items-baseline justify-between gap-4 mac:px-2.5">
+        <Heading as="h2" size="lg" className="mac:text-base mac:font-bold">{title}</Heading>
         {action}
       </HStack>
       {children}
@@ -122,16 +125,12 @@ export function Section({ title, action, children, className }: { title: string;
  */
 /** Group heading over a list (date, category): one style everywhere. Sentence case: Vietnamese capitals stack diacritics. */
 export function GroupLabel({ children, as = 'h2', id, className }: { children: ReactNode; as?: 'h2' | 'h3'; id?: string; className?: string }) {
-  return <Heading as={as} id={id} size="xs" className={cx('text-sm font-semibold text-muted-foreground', className)}>{children}</Heading>
+  return <Heading as={as} id={id} size="xs" className={cx('text-sm font-semibold text-muted-foreground mac:px-2.5 mac:text-base mac:font-bold mac:text-foreground', className)}>{children}</Heading>
 }
 
-export function PageTitle({ children, description }: { children: ReactNode; description?: ReactNode }) {
-  return (
-    <VStack className="mb-6 gap-1">
-      <Heading size="3xl" tabIndex={-1} data-page-title className="outline-none">{children}</Heading>
-      {description ? <Text className="text-muted-foreground">{description}</Text> : null}
-    </VStack>
-  )
+/** Same as ScreenTitle: on web the toolbar carries the title (macOS); on app the nav bar / large title does. */
+export function PageTitle(props: { children: ReactNode; description?: ReactNode }) {
+  return <ScreenTitle {...props} />
 }
 
 /** True once the page has scrolled under the nav bar. */
@@ -187,15 +186,16 @@ export function Row({ left, title, subtitle, right, rightSub, chevron, selected,
 }) {
   const press = useLinkPress(to, disabled ? undefined : onClick)
   const body = (
-    <HStack className="min-h-[60px] w-full items-center gap-3 px-4 py-2">
+    // macOS [render]: rows 38pt with 10pt side insets.
+    <HStack className="min-h-[60px] w-full items-center gap-3 px-4 py-2 mac:min-h-[38px] mac:gap-2 mac:px-2.5 mac:py-1.5">
       {left ? <Box className="shrink-0">{left}</Box> : null}
       <VStack className="min-w-0 flex-1">
-        <Text className="line-clamp-2 font-medium">{title}</Text>
+        <Text className="line-clamp-2 font-medium mac:font-normal">{title}</Text>
         {subtitle ? <Text size="sm" isTruncated className="text-muted-foreground">{subtitle}</Text> : null}
       </VStack>
       {right !== undefined ? (
         <VStack className="shrink-0 items-end gap-1">
-          <Text className="font-semibold tabular-nums">{right}</Text>
+          <Text className="font-semibold tabular-nums mac:font-normal">{right}</Text>
           {rightSub ? <Text size="sm">{rightSub}</Text> : null}
         </VStack>
       ) : null}
@@ -209,7 +209,7 @@ export function Row({ left, title, subtitle, right, rightSub, chevron, selected,
       onPress={press}
       {...(to ? { href: to, role: 'link' } : { role: 'button', 'aria-pressed': selected })}
       aria-disabled={disabled || undefined}
-      className={cx('w-full data-[hover=true]:bg-accent data-[active=true]:bg-accent', disabled && 'opacity-40', className)}
+      className={cx('w-full data-[hover=true]:bg-accent data-[active=true]:bg-accent mac:data-[hover=true]:bg-transparent mac:data-[active=true]:bg-accent', disabled && 'opacity-40', className)}
       {...aria}
     >
       {body}
@@ -328,7 +328,7 @@ export function EmptyState({ icon, title, body, action }: { icon: ReactNode; tit
 
 export function Callout({ tone = 'neutral', title, children, action }: { tone?: 'neutral' | 'pending' | 'danger' | 'primary'; title: ReactNode; children?: ReactNode; action?: ReactNode }) {
   return (
-    <GCard role={tone === 'danger' ? 'alert' : 'status'} className={cx('gap-1', tone === 'danger' && 'border-destructive')}>
+    <GCard role={tone === 'danger' ? 'alert' : 'status'} className={cx('gap-1 mac:rounded-[12px] mac:p-2.5', tone === 'danger' && 'border-destructive')}>
       <Text bold className={cx(tone === 'danger' && 'text-destructive')}>{title}</Text>
       {children ? <Box><Text size="sm">{children}</Text></Box> : null}
       {action ? <Box className="mt-3">{action}</Box> : null}
@@ -364,7 +364,8 @@ type TextInputProps = {
 /** gluestack Input + InputField. onChange/onKeyDown keep the DOM-style signature the screens use. */
 export function TextInput({ id, invalid, className, onChange, onKeyDown, type, disabled, readOnly, autoComplete, ...rest }: TextInputProps) {
   return (
-    <Input isInvalid={invalid} isDisabled={disabled} isReadOnly={readOnly} className={cx('h-12', className)}>
+    // macOS [render]: rounded-border text field 26pt tall, ~10pt corners, window-background fill.
+    <Input isInvalid={invalid} isDisabled={disabled} isReadOnly={readOnly} className={cx('h-12 mac:h-[26px] mac:rounded-[10px] mac:bg-background', className)}>
       <InputField
         id={id}
         type={type === 'password' ? 'password' : 'text'}
@@ -380,12 +381,18 @@ export function TextInput({ id, invalid, className, onChange, onKeyDown, type, d
 /** Filter chips: a row of gluestack Buttons acting as tabs (the selected one is the default variant). */
 export function Segmented<T extends string>({ value, options, onChange, label }: { value: T; options: { value: T; label: string; count?: number }[]; onChange: (v: T) => void; label: string }) {
   return (
-    <HStack role="tablist" aria-label={label} className="gap-2 overflow-x-auto pb-1">
-      {options.map((o) => (
-        <GButton key={o.value} role="tab" aria-selected={o.value === value} size="sm" variant={o.value === value ? 'default' : 'outline'} className="rounded-full" onPress={() => onChange(o.value)}>
-          <ButtonText className="text-sm">{o.label}{o.count !== undefined ? ` ${o.count}` : ''}</ButtonText>
-        </GButton>
-      ))}
+    // macOS [render]: a segmented control, 24pt track on the control fill, 6pt corners, the selected segment a darker
+    // neutral fill (no accent). App keeps iOS capsule chips.
+    <HStack role="tablist" aria-label={label} className="gap-2 overflow-x-auto pb-1 mac:gap-0 mac:self-start mac:overflow-visible mac:rounded-[6px] mac:bg-secondary mac:pb-0">
+      {options.map((o) => {
+        const on = o.value === value
+        return (
+          <GButton key={o.value} role="tab" aria-selected={on} size="sm" variant={on ? 'default' : 'outline'} onPress={() => onChange(o.value)}
+            className={cx('rounded-full mac:h-6 mac:rounded-[6px] mac:border-0 mac:px-3', on ? 'mac:bg-segment-selected mac:data-[hover=true]:bg-segment-selected' : 'mac:bg-transparent mac:data-[hover=true]:bg-transparent')}>
+            <ButtonText className={cx('text-sm mac:text-base mac:font-normal', on && 'mac:text-foreground')}>{o.label}{o.count !== undefined ? ` ${o.count}` : ''}</ButtonText>
+          </GButton>
+        )
+      })}
     </HStack>
   )
 }
@@ -401,7 +408,7 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
   const header = (
     <HStack className="w-full items-start justify-between gap-4">
       <VStack className="min-w-0 flex-1 gap-1">
-        <Heading as="h2" size="lg">{title}</Heading>
+        <Heading as="h2" size="lg" className="mac:text-base mac:font-bold">{title}</Heading>
         {description ? <Text className="text-muted-foreground">{description}</Text> : null}
       </VStack>
       {dismissible ? <CloseButton onClick={close} /> : null}
@@ -422,7 +429,8 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
   return (
     <Modal isOpen={open} onClose={close} closeOnOverlayClick={dismissible} size="md">
       <ModalBackdrop />
-      <ModalContent role="dialog" aria-modal aria-label={title} className="max-h-[88vh] rounded-3xl border-0 bg-card">
+      {/* macOS [render]: a system panel (NSAlert) is 26pt-cornered glass with 16pt margins. */}
+      <ModalContent role="dialog" aria-modal aria-label={title} className="max-h-[88vh] rounded-3xl border-0 bg-card mac:rounded-[26px] mac:border mac:border-foreground/10 mac:bg-popover/90 mac:p-4 mac:backdrop-blur-2xl">
         <ModalHeader>{header}</ModalHeader>
         <ModalBody className="mt-4"><Box className="shrink-0">{children}</Box></ModalBody>
       </ModalContent>
@@ -435,9 +443,10 @@ export function Confirm({ open, onOpenChange, title, body, confirmLabel, cancelL
 }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title={title} description={body}>
-      <VStack className="gap-2">
-        <Button variant={danger ? 'danger' : 'primary'} block onClick={() => { onConfirm(); onOpenChange(false) }}>{confirmLabel}</Button>
-        <Button variant="secondary" block onClick={() => onOpenChange(false)}>{cancelLabel}</Button>
+      {/* macOS [render] NSAlert: two equal 28pt capsules side by side, cancel on the left, the action on the right. */}
+      <VStack className="gap-2 mac:flex-row-reverse mac:gap-2">
+        <Box className="mac:flex-1"><Button variant={danger ? 'danger' : 'primary'} block className="mac:h-7 mac:rounded-full" onClick={() => { onConfirm(); onOpenChange(false) }}>{confirmLabel}</Button></Box>
+        <Box className="mac:flex-1"><Button variant="secondary" block className="mac:h-7 mac:rounded-full" onClick={() => onOpenChange(false)}>{cancelLabel}</Button></Box>
       </VStack>
     </Sheet>
   )
@@ -447,9 +456,10 @@ export function Confirm({ open, onOpenChange, title, body, confirmLabel, cancelL
 export function ScreenTitle({ children, description }: { children: ReactNode; description?: ReactNode }) {
   const layout = useLayout()
   return (
-    <VStack className={cx('gap-1', layout === 'web' ? 'mb-6' : 'mb-3')}>
-      <Heading size="3xl" tabIndex={-1} data-page-title className={cx('outline-none', layout === 'app' && 'sr-only')}>{children}</Heading>
-      {description ? <Text className="text-muted-foreground">{description}</Text> : null}
+    // Web (macOS): the toolbar shows the title, as in System Settings; the h1 stays for screen readers and route focus.
+    <VStack className={cx('gap-1', layout === 'web' ? (description ? 'mb-4' : '') : 'mb-3')}>
+      <Heading size="3xl" tabIndex={-1} data-page-title className="sr-only outline-none">{children}</Heading>
+      {description ? <Text className="text-muted-foreground mac:px-2.5">{description}</Text> : null}
     </VStack>
   )
 }

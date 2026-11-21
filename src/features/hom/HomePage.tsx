@@ -7,7 +7,7 @@ import {
   bankById, gateOf, getState, now, pendingOut, setBalanceHidden, useWorld,
 } from '@/app/store'
 import { formatVnd } from '@/domain/money'
-import { Avatar, BankMark, Card, EmptyState, Ico, RailTile, Row, RowSkeleton, Section, Skeleton, TextLink, useLinkPress } from '@/components/app-ui'
+import { Avatar, BankMark, Card, cx, EmptyState, Ico, RailTile, Row, RowSkeleton, Section, Skeleton, TextLink, useLinkPress } from '@/components/app-ui'
 import { Badge, BadgeIcon, BadgeText } from '@/components/ui/badge'
 import { Box } from '@/components/ui/box'
 import { Button as GButton } from '@/components/ui/button'
@@ -34,7 +34,6 @@ const guardedClick = (guard: Guard, to: string) => (e?: { preventDefault?: () =>
 
 export default function HomePage() {
   const w = useWorld()
-  const layout = useLayout()
   const loaded = useLoaded()
   const { guard, sheet } = useGuard()
   useReminders()
@@ -43,7 +42,6 @@ export default function HomePage() {
   return (
     <Box>
       <Heading size="3xl" tabIndex={-1} data-page-title className="sr-only">Trang chủ</Heading>
-      {layout === 'web' ? <Heading as="p" size="3xl" className="mb-6" aria-hidden>Chào {shortName(w.customer.name)}</Heading> : null}
       <BalanceSection loaded={loaded} />
       <ShortcutsRow guard={guard} />
       {gate ? <Box role="region" aria-label="Trạng thái ví" className="mt-8"><GateCallout gate={gate} /></Box> : null}
@@ -72,9 +70,10 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
   return (
     // The money card (sếp: dark, as the old Wallet card): a `dark` scope, so every token inside takes its dark value
     // (text, chart, chip, the tint) in both modes; a soft glow of the tint from the top-right corner.
-    <Card role="region" aria-label="Số dư" className="dark relative isolate gap-0 overflow-hidden bg-card p-5">
+    // Web (macOS System Settings): a plain grouped box with the 10pt inset, no dark scope or glow.
+    <Card role="region" aria-label="Số dư" className={cx('relative isolate gap-0 overflow-hidden bg-card', layout === 'app' ? 'dark p-5' : 'p-2.5')}>
       {/* Glow on its own layer: gluestack's tailwind-merge would drop bg-card for a bg-[gradient] on the card. */}
-      <Box aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_100%_0%,rgb(var(--primary)/0.4),transparent_62%)]" />
+      {layout === 'app' ? <Box aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_100%_0%,rgb(var(--primary)/0.4),transparent_62%)]" /> : null}
       <HStack className="items-center gap-1">
         <Heading as="h2" size="sm" className="font-semibold text-muted-foreground">Số dư khả dụng</Heading>
         <GButton

@@ -66,10 +66,10 @@ function Pick({ label, value, options, onChange, className }: { label: string; v
   const current = options.find(([v]) => v === value)?.[1] ?? options[0][1]
   return (
     <VStack className={cx('gap-2', className)}>
-      <Text size="sm" bold>{label}</Text>
+      <Text size="sm" bold className="mac:px-0.5 mac:font-normal mac:text-muted-foreground">{label}</Text>
       <Menu placement="bottom left" offset={4} className="max-h-80" trigger={(p) => (
-        <GButton {...p} variant="outline" aria-label={`${label}: ${current}`} className="h-11 w-full justify-between">
-          <ButtonText className="truncate text-sm font-normal">{current}</ButtonText>
+        <GButton {...p} variant="outline" aria-label={`${label}: ${current}`} className="h-11 w-full justify-between mac:h-6 mac:rounded-[6px] mac:border-0 mac:bg-secondary mac:px-2.5">
+          <ButtonText className="truncate text-sm font-normal mac:text-base mac:text-foreground">{current}</ButtonText>
           <Ico as={ChevronDown} className="text-muted-foreground" />
         </GButton>
       )}>
