@@ -1,4 +1,4 @@
-import { Bell, ChevronLeft, CreditCard, Palette, FileText, Gauge, HelpCircle, History, Home, Landmark, QrCode, ScanLine, Send, ShieldCheck, User, Wallet, X } from 'lucide-react'
+import { Bell, ChevronLeft, CreditCard, Palette, FileText, Gauge, HelpCircle, History, Home, Landmark, QrCode, ScanLine, Send, ShieldCheck, User, Wallet } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
 import { pageScroller, useLayout } from '@/app/layout'
@@ -145,14 +145,13 @@ function WebShell({ children }: { children: ReactNode }) {
       <Box id="main-scroll" className="h-full min-w-0 flex-1 overflow-y-auto pl-[223px] print:overflow-visible print:pl-0">
         <HStack className="sticky top-0 z-20 h-[52px] shrink-0 items-center gap-2 bg-background/80 px-5 backdrop-blur-xl" role="banner">
           {tb.onBack ? <IconButton label="Quay lại" onClick={tb.onBack} className="-ml-1"><Ico as={ChevronLeft} size="sm" /></IconButton> : null}
-          <Text bold isTruncated className="flex-1 text-lg" aria-hidden>{title}</Text>
-          {tb.onClose ? <IconButton label="Đóng" onClick={tb.onClose}><Ico as={X} size="sm" /></IconButton> : null}
+          <Text isTruncated className="flex-1 text-lg font-semibold" aria-hidden>{title}</Text>
           <Box className="relative">
             <IconButton label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} onClick={bell}><Ico as={Bell} size="sm" /></IconButton>
             {unread ? <UnreadBadge n={unread} /> : null}
           </Box>
         </HStack>
-        <Box role="main" id="main" className="w-full max-w-[680px] shrink-0 px-5 pb-16 pt-5">
+        <Box role="main" id="main" className="mx-auto w-full max-w-[744px] shrink-0 px-5 pb-16 pt-5">
           {children}
         </Box>
       </Box>

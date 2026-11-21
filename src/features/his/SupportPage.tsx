@@ -19,7 +19,7 @@ function Toggle({ level, open, controls, onPress, className, children }: { level
   return (
     <Box role="heading" aria-level={level}>
       <Pressable role="button" aria-expanded={open} aria-controls={controls} onPress={onPress}
-        className={cx('w-full flex-row items-center justify-between gap-3 py-3 pr-4 data-[hover=true]:bg-accent data-[active=true]:bg-accent', className)}>
+        className={cx('w-full flex-row items-center justify-between gap-3 py-3 pr-4 data-[hover=true]:bg-accent data-[active=true]:bg-accent mac:min-h-[38px] mac:py-2 mac:pr-2.5 mac:[&_*]:font-normal', className)}>
         {children}
         <Ico as={ChevronDown} size="lg" className={cx('shrink-0 text-muted-foreground transition-transform duration-150', open && 'rotate-180')} />
       </Pressable>

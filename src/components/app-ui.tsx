@@ -4,7 +4,7 @@
  * The exported API is the one the screens already use; everything inside is gluestack.
  */
 import { Check, ChevronLeft, ChevronRight, X } from 'lucide-react'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { formatVnd } from '@/domain/money'
@@ -71,7 +71,7 @@ export function Button({ variant = 'primary', size = 'md', block, loading, disab
       aria-busy={loading || undefined}
       // iOS: capsule buttons; the large (md) size is the 50pt iOS filled button.
       // macOS: the regular push button, 24pt tall with 6pt corners ([appkit] NSButton fittingSize, [render] corner).
-      className={cx('rounded-full mac:h-6 mac:min-h-0 mac:rounded-[6px] mac:px-3', size === 'md' && 'h-12', block && 'w-full', className)}
+      className={cx('rounded-full mac:h-6 mac:min-h-0 mac:rounded-[6px] mac:px-3', size === 'md' && 'h-12', block && 'w-full mac:w-auto mac:self-end', className)}
       {...rest}
     >
       {loading ? <ButtonSpinner /> : null}
@@ -393,7 +393,7 @@ export function Segmented<T extends string>({ value, options, onChange, label }:
         return (
           <GButton key={o.value} role="tab" aria-selected={on} size="sm" variant={on ? 'default' : 'outline'} onPress={() => onChange(o.value)}
             className={cx('h-11 rounded-full mac:h-6 mac:min-h-0 mac:rounded-[6px] mac:border-0 mac:px-3', on ? 'mac:bg-segment-selected mac:data-[hover=true]:bg-segment-selected' : 'mac:bg-transparent mac:data-[hover=true]:bg-transparent')}>
-            <ButtonText className={cx('text-sm mac:text-base mac:font-normal', on && 'mac:text-foreground')}>{o.label}{o.count !== undefined ? ` ${o.count}` : ''}</ButtonText>
+            <ButtonText className={cx('text-sm mac:text-base mac:font-normal', on && 'mac:text-foreground mac:dark:text-white')}>{o.label}{o.count !== undefined ? ` ${o.count}` : ''}</ButtonText>
           </GButton>
         )
       })}
@@ -403,28 +403,49 @@ export function Segmented<T extends string>({ value, options, onChange, label }:
 
 /* ── Overlays ─────────────────────────────────────────────────────── */
 
+/**
+ * Web dialogs (macOS): focus moves into the dialog when it opens (the default button of an alert, else the first
+ * control), and Esc cancels, as HIG Alerts lists "Pressing Escape (Esc)" among the ways to cancel on macOS.
+ */
+function useDialogKeys(open: boolean, label: string, onEsc: () => void, focus: 'default' | 'first') {
+  const layout = useLayout()
+  useEffect(() => {
+    if (!open || layout !== 'web') return
+    const find = () => document.querySelector<HTMLElement>(`[aria-label="${CSS.escape(label)}"][aria-modal]`)
+    const t = setTimeout(() => {
+      const box = find()
+      const all = box ? [...box.querySelectorAll<HTMLElement>('button, [href], input, textarea, [tabindex]:not([tabindex="-1"])')] : []
+      ;(focus === 'default' ? all[all.length - 1] : all[0])?.focus()
+    }, 60)
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.preventDefault(); onEsc() } }
+    // Capture phase: focused controls inside the dialog may stop the event before it bubbles.
+    window.addEventListener('keydown', key, true)
+    return () => { clearTimeout(t); window.removeEventListener('keydown', key, true) }
+  }, [open, layout, label, onEsc, focus])
+}
+
 /** Actionsheet on the app layout, Modal on web. */
-export function Sheet({ open, onOpenChange, title, description, children, dismissible = true }: {
-  open: boolean; onOpenChange: (o: boolean) => void; title: string; description?: ReactNode; children: ReactNode; dismissible?: boolean
+export function Sheet({ open, onOpenChange, title, description, children, dismissible = true, hideClose }: {
+  open: boolean; onOpenChange: (o: boolean) => void; title: string; description?: ReactNode; children: ReactNode; dismissible?: boolean; hideClose?: boolean
 }) {
   const layout = useLayout()
   const close = () => dismissible && onOpenChange(false)
-  const header = (
-    <HStack className="w-full items-start justify-between gap-4">
-      <VStack className="min-w-0 flex-1 gap-1">
-        <Heading as="h2" size="lg" className="mac:text-base mac:font-bold">{title}</Heading>
-        {description ? <Text className="text-muted-foreground">{description}</Text> : null}
-      </VStack>
-      {dismissible ? <CloseButton onClick={close} /> : null}
-    </HStack>
-  )
+  useDialogKeys(open, title, close, 'first')
+  const showClose = dismissible && !hideClose
   if (layout === 'app')
     return (
       <Actionsheet isOpen={open} onClose={close} closeOnOverlayClick={dismissible}>
         <ActionsheetBackdrop />
         <ActionsheetContent role="dialog" aria-modal aria-label={title} className="max-h-[92dvh] items-stretch rounded-t-[32px] border-0 bg-card">
           <ActionsheetDragIndicatorWrapper><ActionsheetDragIndicator /></ActionsheetDragIndicatorWrapper>
-          {header}
+          {/* HIG Sheets (iOS): "the Cancel button belongs on the leading edge". */}
+          <HStack className="w-full items-center gap-2">
+            {showClose ? <Button variant="ghost" size="sm" className="-ml-3" onClick={close}>Đóng</Button> : null}
+            <VStack className="min-w-0 flex-1 gap-1">
+              <Heading as="h2" size="lg">{title}</Heading>
+              {description ? <Text className="text-muted-foreground">{description}</Text> : null}
+            </VStack>
+          </HStack>
           {/* Scroll box is a fixed-height flex column: the content wrapper must not shrink, or its children overlap. */}
           <Box className="mt-4 overflow-y-auto pb-4"><Box className="shrink-0">{children}</Box></Box>
         </ActionsheetContent>
@@ -433,10 +454,17 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
   return (
     <Modal isOpen={open} onClose={close} closeOnOverlayClick={dismissible} size="md">
       <ModalBackdrop />
-      {/* macOS [render]: a system panel (NSAlert) is 26pt-cornered glass with 16pt margins. */}
-      <ModalContent role="dialog" aria-modal aria-label={title} className="max-h-[88vh] rounded-3xl border-0 bg-card mac:rounded-[26px] mac:border mac:border-foreground/10 mac:bg-popover/90 mac:p-4 mac:backdrop-blur-2xl">
-        <ModalHeader>{header}</ModalHeader>
+      {/* macOS [render]: a system panel (NSAlert) is 26pt-cornered glass with 16pt margins; HIG Sheets dismisses with a
+          Cancel/Done button at the bottom trailing edge, not a close glyph. */}
+      <ModalContent role="dialog" aria-modal aria-label={title} className="max-h-[88vh] rounded-[26px] border border-foreground/10 bg-popover/90 p-4 backdrop-blur-2xl">
+        <ModalHeader>
+          <VStack className="min-w-0 flex-1 gap-1">
+            <Heading as="h2" size="lg" className="text-base font-bold">{title}</Heading>
+            {description ? <Text className="text-muted-foreground">{description}</Text> : null}
+          </VStack>
+        </ModalHeader>
         <ModalBody className="mt-4"><Box className="shrink-0">{children}</Box></ModalBody>
+        {showClose ? <HStack className="mt-4 justify-end"><Button variant="secondary" size="sm" onClick={close}>Xong</Button></HStack> : null}
       </ModalContent>
     </Modal>
   )
@@ -447,6 +475,8 @@ export function Confirm({ open, onOpenChange, title, body, confirmLabel, cancelL
 }) {
   const layout = useLayout()
   const confirm = () => { onConfirm(); onOpenChange(false) }
+  const cancel = useCallback(() => onOpenChange(false), [onOpenChange])
+  useDialogKeys(open, title, cancel, 'default')
   if (layout === 'web')
     // macOS NSAlert ([render] macOS 26.6): 260pt wide, 26pt corners, app icon, centred bold title and message, two equal
     // 28pt capsules with cancel leading and the action trailing; no close button. HIG Alerts keeps the destructive style
@@ -459,14 +489,14 @@ export function Confirm({ open, onOpenChange, title, body, confirmLabel, cancelL
           <Heading as="h2" size="sm" className="mt-3 text-center text-base font-bold">{title}</Heading>
           {body ? <Text className="mt-1 text-center">{body}</Text> : null}
           <HStack className="mt-4 w-full gap-2">
-            <Box className="flex-1"><Button variant="secondary" block className="mac:h-7 mac:min-h-0 mac:rounded-full" onClick={() => onOpenChange(false)}>{cancelLabel}</Button></Box>
-            <Box className="flex-1"><Button variant="primary" block className="mac:h-7 mac:min-h-0 mac:rounded-full" onClick={confirm}>{confirmLabel}</Button></Box>
+            <Box className="flex-1"><Button variant="secondary" block className="mac:h-7 mac:min-h-0 mac:!w-full mac:rounded-full" onClick={() => onOpenChange(false)}>{cancelLabel}</Button></Box>
+            <Box className="flex-1"><Button variant="primary" block className="mac:h-7 mac:min-h-0 mac:!w-full mac:rounded-full" onClick={confirm}>{confirmLabel}</Button></Box>
           </HStack>
         </ModalContent>
       </Modal>
     )
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} title={title} description={body}>
+    <Sheet open={open} onOpenChange={onOpenChange} title={title} description={body} hideClose>
       <VStack className="gap-2">
         <Button variant={danger ? 'danger' : 'primary'} block onClick={confirm}>{confirmLabel}</Button>
         <Button variant="secondary" block onClick={() => onOpenChange(false)}>{cancelLabel}</Button>
@@ -520,9 +550,10 @@ export function DetailRows({ rows }: { rows: [string, ReactNode][] }) {
   return (
     <VStack role="list" className="divide-y divide-border">
       {rows.map(([k, v]) => (
-        <HStack key={k} role="listitem" className="min-h-12 items-start justify-between gap-6 py-3">
-          <Text className="shrink-0 text-muted-foreground">{k}</Text>
-          <Box className="min-w-0 items-end"><Text className="text-right font-medium break-words">{v}</Text></Box>
+        // macOS [render] LabeledContent: label in label colour leading, value in secondary label trailing, 38pt rows.
+        <HStack key={k} role="listitem" className="min-h-12 items-start justify-between gap-6 py-3 mac:min-h-[38px] mac:items-center mac:px-2.5 mac:py-2.5">
+          <Text className="shrink-0 text-muted-foreground mac:text-foreground">{k}</Text>
+          <Box className="min-w-0 items-end"><Text className="text-right font-medium break-words mac:font-normal mac:text-muted-foreground">{v}</Text></Box>
         </HStack>
       ))}
     </VStack>

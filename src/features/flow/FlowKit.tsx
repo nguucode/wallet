@@ -81,8 +81,8 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
   title: string; onBack?: () => void; onClose?: () => void; footer?: ReactNode; children: ReactNode; description?: ReactNode
 }) {
   const layout = useLayout()
-  // HIG Toolbars: back at the toolbar's leading edge, then the title; close joins them in the toolbar.
-  useToolbarNav({ title, onBack, onClose }, layout === 'web')
+  // HIG Toolbars: back at the toolbar's leading edge, then the title. Cancelling sits beside the default button (HIG Sheets).
+  useToolbarNav({ title, onBack }, layout === 'web')
   if (layout === 'web')
     return (
       // macOS System Settings: the step title, back and close live in the toolbar; the form sits in one grouped box and
@@ -91,7 +91,12 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
         <Heading size="sm" tabIndex={-1} data-page-title className="sr-only outline-none">{title}</Heading>
         {description ? <Text className="mb-3 px-2.5 text-muted-foreground">{description}</Text> : null}
         <Card className="mac:p-2.5">{children}</Card>
-        {footer ? <HStack className="mt-5 flex-row-reverse flex-wrap gap-2 [&>*]:w-auto">{footer}</HStack> : null}
+        {footer || onClose ? (
+          <HStack className="mt-5 flex-row-reverse flex-wrap gap-2 [&>*]:w-auto">
+            {footer}
+            {onClose ? <Button variant="secondary" onClick={onClose}>Hủy</Button> : null}
+          </HStack>
+        ) : null}
       </VStack>
     )
   return (

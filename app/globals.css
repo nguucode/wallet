@@ -41,8 +41,8 @@ html:root {
   --segment-selected: 210 210 210; /* [render] selected segment */
   --primary: var(--primary-mac, 0 100 225);
   --primary-foreground: var(--primary-mac-foreground, 255 255 255);
-  --ring: var(--primary-mac, 0 100 225);
   --link: 0 104 218;              /* [appkit] linkColor */
+  --ring: 0 103 244;              /* [appkit] keyboardFocusIndicatorColor (used at 50%) */
 }
 html.dark {
   --background: 47 47 47;         /* [render] */
@@ -63,6 +63,7 @@ html.dark {
   --selected-unemphasized: 70 70 70; /* [appkit] */
   --segment-selected: 100 100 104; /* [render] selected segment */
   --link: 65 156 255;             /* [appkit] linkColor */
+  --ring: 26 169 255;             /* [appkit] keyboardFocusIndicatorColor */
   /* systemRed dark is 255 66 69; the iOS accessible 255 105 97 is 4.2:1 on the box. Lightened for AA text. */
   --destructive: 255 122 122;
 }

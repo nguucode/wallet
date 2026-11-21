@@ -34,9 +34,10 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
   }
   return (
     <Box>
-      {/* Real input so keyboards, password managers off, and screen readers work. */}
-      <Box className="sr-only">
-        <Input isDisabled={disabled} isInvalid={!!error}>
+      {/* Real input so keyboards, password managers off, and screen readers work. macOS: it is the visible secure
+          text field (24pt, AppKit regular); the dots and keypad are iPhone idioms, app only. */}
+      <Box className="sr-only mac:not-sr-only mac:mx-auto mac:w-48">
+        <Input isDisabled={disabled} isInvalid={!!error} className="mac:h-6 mac:min-h-0 mac:rounded-[6px] mac:bg-background">
           <InputField
             id="pin-input" ref={inputRef as never} autoFocus inputMode="numeric" autoComplete="off" type="password" maxLength={length}
             aria-label={label}
@@ -47,13 +48,13 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
           />
         </Input>
       </Box>
-      <Pressable onPress={() => inputRef.current?.focus()} aria-hidden focusable={false} className={cx('mx-auto flex-row gap-4 py-3', shake && 'animate-pulse')}>
+      <Pressable onPress={() => inputRef.current?.focus()} aria-hidden focusable={false} className={cx('mx-auto flex-row gap-4 py-3 mac:hidden', shake && 'animate-pulse')}>
         {Array.from({ length }, (_, i) => (
           <Box key={i} className={cx('size-3.5 rounded-full', i < pin.length ? 'bg-foreground' : 'bg-muted')} />
         ))}
       </Pressable>
       <Text id="pin-error" role="alert" size="sm" className="min-h-5 text-center text-destructive">{error}</Text>
-      <Grid className="mx-auto mt-2 max-w-xs gap-2" _extra={{ className: 'grid-cols-3' }} aria-hidden>
+      <Grid className="mx-auto mt-2 max-w-xs gap-2 mac:hidden" _extra={{ className: 'grid-cols-3' }} aria-hidden>
         {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'].map((k) => (
           <GridItem key={k || 'blank'} _extra={{ className: 'col-span-1' }}>
             {k === '' ? null : (

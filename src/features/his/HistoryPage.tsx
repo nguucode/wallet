@@ -112,7 +112,7 @@ function take(groups: Group[], count: number) {
 /** Month-grouped table: ARIA table roles on gluestack stacks (gluestack has no Table). */
 function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w: World; onOpen: (id: string) => void }) {
   // Sized for the 672px panel: the transaction column keeps the room.
-  const col = { date: 'w-28 shrink-0 pr-3 pl-4', tx: 'min-w-0 flex-1 pr-3', status: 'w-32 shrink-0 pr-3', amount: 'w-32 shrink-0 items-end pr-4' }
+  const col = { date: 'w-28 shrink-0 pr-3 pl-4', tx: 'min-w-0 flex-1 pr-3', status: 'w-32 shrink-0 pr-3 mac:w-44', amount: 'w-32 shrink-0 items-end pr-4' }
   return (
     <Card className="overflow-hidden p-0 pb-2">
       <VStack role="table" aria-label="Lịch sử giao dịch, mới nhất trước, nhóm theo tháng">

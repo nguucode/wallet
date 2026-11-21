@@ -1,4 +1,4 @@
-import { Landmark, MoreVertical } from 'lucide-react'
+import { Landmark, MoreHorizontal } from 'lucide-react'
 import { useState } from 'react'
 import { useLayout } from '@/app/layout'
 import { bankById, setDefaultSource, unlinkSource, useWorld, verifyPin } from '@/app/store'
@@ -77,7 +77,7 @@ export default function SourcesPage() {
                   <SourceLine s={s} sub={<Text size="sm" className="break-words text-muted-foreground">{holder}</Text>} />
                   {s.isDefault ? <DefaultBadge /> : null}
                   <IconButton label={optionsLabel(s)} onClick={() => setSheetFor(s)} className="size-12 shrink-0">
-                    <Ico as={MoreVertical} />
+                    <Ico as={MoreHorizontal} />
                   </IconButton>
                 </Card>
               </Box>
