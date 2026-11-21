@@ -9,7 +9,7 @@ import { GatedRoute } from '@/features/sec/Gate'
 import {
   AmountInput, checkAmount, ConfirmRows, FlowFrame, formatPhone, maskPhone, ResultView, useCloseFlow, useFlow, useMoneyCommit,
 } from '@/features/flow/FlowKit'
-import { Avatar, Badge, Button, ButtonLink, Callout, cx, Fee, Money, Row, Skeleton, GroupLabel } from '@/components/app-ui'
+import { Avatar, Badge, Button, ButtonLink, Callout, Fee, Money, Row, Skeleton, GroupLabel } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
@@ -127,11 +127,10 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
     return (
       <Box key={group + c.id} role="listitem">
         <Row
-          disabled={disabled}
           aria-describedby={disabled ? 'no-wallet-help' : undefined}
           onClick={() => (disabled ? setHelper(`${c.name}: Người này chưa dùng ví nên chưa nhận được tiền qua ví.`) : onPick({ kind: 'contact', id: c.id, name: c.name, phone: c.phone }))}
-          left={<Box className={cx(disabled && 'opacity-60')}><Avatar name={c.name} size={40} /></Box>}
-          title={<Text title={c.name} className={cx(disabled && 'text-muted-foreground')}>{c.name}</Text>}
+          left={<Avatar name={c.name} size={40} />}
+          title={<Text title={c.name}>{c.name}</Text>}
           subtitle={<Text className="tabular-nums">{formatPhone(c.phone)}</Text>}
           right={disabled ? <Badge>Chưa dùng ví</Badge> : undefined}
         />
@@ -155,7 +154,7 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
     <Box>
       {banner ? <Box className="mb-6"><Callout tone="danger" title={banner} /></Box> : null}
       <Text id="recipient-search-label" size="sm" className="mb-2 block font-medium">Người nhận</Text>
-      <Input className="h-12 mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background">
+      <Input className="h-12 mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background mac:dark:bg-background">
         <InputSlot className="pl-1"><InputIcon as={Search} aria-hidden /></InputSlot>
         <InputField
           id="recipient-search" role="searchbox" autoComplete="off" placeholder="Nhập số điện thoại hoặc tên"

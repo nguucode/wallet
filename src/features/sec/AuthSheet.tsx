@@ -37,7 +37,7 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
       {/* Real input so keyboards, password managers off, and screen readers work. macOS: it is the visible secure
           text field (24pt, AppKit regular); the dots and keypad are iPhone idioms, app only. */}
       <Box className="sr-only mac:not-sr-only mac:mx-auto mac:w-48">
-        <Input isDisabled={disabled} isInvalid={!!error} className="mac:h-6 mac:min-h-0 mac:rounded-[6px] mac:bg-background">
+        <Input isDisabled={disabled} isInvalid={!!error} className="mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background">
           <InputField
             id="pin-input" ref={inputRef as never} autoFocus inputMode="numeric" autoComplete="off" type="password" maxLength={length}
             aria-label={label}
@@ -128,7 +128,7 @@ export function AuthSheet({ open, onOpenChange, method, amount, onSuccess }: {
     : `Tổng giao dịch hôm nay vượt ${formatVnd(config.stepUp.perDay)} nên cần xác thực khuôn mặt theo quy định.`
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} title={title} description={effective === 'face_match' ? undefined : `Nhập mã PIN để xác nhận ${formatVnd(amount)}`}>
+    <Sheet open={open} onOpenChange={onOpenChange} title={title} closeLabel="Hủy" description={effective === 'face_match' ? undefined : `Nhập mã PIN để xác nhận ${formatVnd(amount)}`}>
       {effective === 'face_match' ? (
         <FaceScan reason={reason} onDone={(ok) => (ok ? onSuccess('face_match') : onOpenChange(false))} />
       ) : effective === 'device_biometric' ? (

@@ -191,7 +191,7 @@ export function Row({ left, title, subtitle, right, rightSub, chevron, selected,
     <HStack className="min-h-[60px] w-full items-center gap-3 px-4 py-2 mac:min-h-[38px] mac:gap-2 mac:px-2.5 mac:py-1.5">
       {left ? <Box className="shrink-0">{left}</Box> : null}
       <VStack className="min-w-0 flex-1">
-        <Text className="line-clamp-2 font-medium mac:font-normal">{title}</Text>
+        <Text className="line-clamp-2">{title}</Text>
         {subtitle ? <Text size="sm" isTruncated className="text-muted-foreground">{subtitle}</Text> : null}
       </VStack>
       {right !== undefined ? (
@@ -222,14 +222,15 @@ export function Row({ left, title, subtitle, right, rightSub, chevron, selected,
 export function RailTile({ to, onClick, label, leading, name, sub }: { to: string; onClick?: Press; label: string; leading: ReactNode; name: string; sub?: string }) {
   const press = useLinkPress(to, onClick)
   return (
-    <Pressable onPress={press} href={to} role="link" aria-label={`${name}${sub ? ` ${sub}` : ''}, ${label}`} className="items-center rounded-lg data-[hover=true]:opacity-80 data-[active=true]:opacity-60">
+    <Pressable onPress={press} href={to} role="link" className="items-center rounded-lg data-[hover=true]:opacity-80 data-[active=true]:opacity-60">
       <VStack className="items-center gap-2">
-        {leading}
+        <Box aria-hidden>{leading}</Box>
         <VStack className="w-full items-center">
           <Text size="sm" isTruncated className="w-full text-center font-medium">{name}</Text>
           {sub ? <Text size="xs" isTruncated className="w-full text-center text-muted-foreground">{sub}</Text> : null}
         </VStack>
       </VStack>
+      <Text className="sr-only">, {label}</Text>
     </Pressable>
   )
 }
@@ -411,6 +412,8 @@ function useDialogKeys(open: boolean, label: string, onEsc: () => void, focus: '
   const layout = useLayout()
   useEffect(() => {
     if (!open || layout !== 'web') return
+    // Focus returns to whatever opened the dialog once it closes.
+    const opener = document.activeElement as HTMLElement | null
     const find = () => document.querySelector<HTMLElement>(`[aria-label="${CSS.escape(label)}"][aria-modal]`)
     const t = setTimeout(() => {
       const box = find()
@@ -420,13 +423,15 @@ function useDialogKeys(open: boolean, label: string, onEsc: () => void, focus: '
     const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.preventDefault(); onEsc() } }
     // Capture phase: focused controls inside the dialog may stop the event before it bubbles.
     window.addEventListener('keydown', key, true)
-    return () => { clearTimeout(t); window.removeEventListener('keydown', key, true) }
+    return () => { clearTimeout(t); window.removeEventListener('keydown', key, true); setTimeout(() => opener?.isConnected && opener.focus(), 0) }
   }, [open, layout, label, onEsc, focus])
 }
 
 /** Actionsheet on the app layout, Modal on web. */
-export function Sheet({ open, onOpenChange, title, description, children, dismissible = true, hideClose }: {
+export function Sheet({ open, onOpenChange, title, description, children, dismissible = true, hideClose, closeLabel = 'Đóng' }: {
   open: boolean; onOpenChange: (o: boolean) => void; title: string; description?: ReactNode; children: ReactNode; dismissible?: boolean; hideClose?: boolean
+  /** Web dismiss button (HIG Sheets): "Hủy" when the sheet holds a pending task, "Đóng" otherwise, "Xong" when it only applies settings. */
+  closeLabel?: string
 }) {
   const layout = useLayout()
   const close = () => dismissible && onOpenChange(false)
@@ -438,14 +443,14 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
         <ActionsheetBackdrop />
         <ActionsheetContent role="dialog" aria-modal aria-label={title} className="max-h-[92dvh] items-stretch rounded-t-[32px] border-0 bg-card">
           <ActionsheetDragIndicatorWrapper><ActionsheetDragIndicator /></ActionsheetDragIndicatorWrapper>
-          {/* HIG Sheets (iOS): "the Cancel button belongs on the leading edge". */}
-          <HStack className="w-full items-center gap-2">
-            {showClose ? <Button variant="ghost" size="sm" className="-ml-3" onClick={close}>Đóng</Button> : null}
-            <VStack className="min-w-0 flex-1 gap-1">
-              <Heading as="h2" size="lg">{title}</Heading>
-              {description ? <Text className="text-muted-foreground">{description}</Text> : null}
-            </VStack>
+          {/* HIG Sheets (iOS): dismissal at the leading edge; HIG Toolbars: a close glyph, not a "Close" text label. Inline
+              title centred. */}
+          <HStack className="w-full items-center">
+            <Box className="w-11">{showClose ? <IconButton label="Đóng" onClick={close} className="-ml-2 bg-secondary"><Ico as={X} size="sm" /></IconButton> : null}</Box>
+            <Heading as="h2" size="sm" className="min-w-0 flex-1 text-center">{title}</Heading>
+            <Box className="w-11" />
           </HStack>
+          {description ? <Text className="mt-2 text-center text-muted-foreground">{description}</Text> : null}
           {/* Scroll box is a fixed-height flex column: the content wrapper must not shrink, or its children overlap. */}
           <Box className="mt-4 overflow-y-auto pb-4"><Box className="shrink-0">{children}</Box></Box>
         </ActionsheetContent>
@@ -464,7 +469,7 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
           </VStack>
         </ModalHeader>
         <ModalBody className="mt-4"><Box className="shrink-0">{children}</Box></ModalBody>
-        {showClose ? <HStack className="mt-4 justify-end"><Button variant="secondary" size="sm" onClick={close}>Xong</Button></HStack> : null}
+        {showClose ? <HStack className="mt-4 justify-end"><Button variant="secondary" size="sm" onClick={close}>{closeLabel}</Button></HStack> : null}
       </ModalContent>
     </Modal>
   )

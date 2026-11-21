@@ -88,6 +88,8 @@ function AccountMenu() {
   const [confirm, setConfirm] = useState(false)
   return (
     <>
+      {/* The confirm opens after the menu has closed and handed focus back, so keyboard activation (Return) cannot race
+          the menu's focus restore and dismiss it. */}
       <Menu
         placement="bottom left"
         offset={4}
@@ -104,7 +106,7 @@ function AccountMenu() {
         <MenuItem key="profile" textValue="Hồ sơ" onPress={() => nav('/me/profile')} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Hồ sơ và xác thực</MenuItemLabel></MenuItem>
         <MenuItem key="security" textValue="Bảo mật" onPress={() => nav('/me/security')} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Bảo mật</MenuItemLabel></MenuItem>
         <MenuSeparator />
-        <MenuItem key="signout" textValue="Đăng xuất" onPress={() => setConfirm(true)} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Đăng xuất…</MenuItemLabel></MenuItem>
+        <MenuItem key="signout" textValue="Đăng xuất…" onPress={() => setTimeout(() => setConfirm(true), 80)} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Đăng xuất…</MenuItemLabel></MenuItem>
       </Menu>
       <Confirm open={confirm} onOpenChange={setConfirm} title="Đăng xuất khỏi Wallet?" body="Bản demo sẽ quay về màn Mở ví." confirmLabel="Đăng xuất" onConfirm={() => { signOut(); nav('/onboarding') }} danger />
     </>
@@ -197,7 +199,7 @@ function AppShell({ children }: { children: ReactNode }) {
   const nav = useNavigate()
   const s = screenFor(pathname)
   const root = isTabRoot(pathname)
-  const title = root && pathname === '/home' ? 'Wallet' : s?.title ?? 'Wallet'
+  const title = s?.title ?? 'Wallet'
   const theme = useTheme()
   return (
     <Box className={cx('min-h-dvh', backdropClass(theme.background, true))}>

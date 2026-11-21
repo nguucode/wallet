@@ -152,16 +152,16 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
           <Text id="bank-label" size="sm" className="font-medium">Ngân hàng</Text>
           <Pressable
             role="button" aria-labelledby="bank-label bank-value" aria-haspopup="dialog" onPress={() => setPicker(true)}
-            className="h-12 w-full flex-row items-center gap-3 rounded-md border border-border bg-transparent px-3 lg:h-11"
+            className="h-12 w-full flex-row items-center gap-3 rounded-md border border-border bg-transparent px-3 mac:h-6 mac:w-auto mac:self-start mac:gap-1.5 mac:rounded-[6px] mac:border-0 mac:bg-secondary mac:px-2"
           >
-            {bank ? <BankMark short={bank.short} size={28} /> : null}
-            <Text id="bank-value" className={cx('flex-1 text-left', !bank && 'text-muted-foreground')}>{bank?.name ?? 'Chọn ngân hàng'}</Text>
+            {bank ? <Box className="mac:hidden"><BankMark short={bank.short} size={28} /></Box> : null}
+            <Text id="bank-value" className={cx('flex-1 text-left mac:flex-none', !bank && 'text-muted-foreground')}>{bank?.name ?? 'Chọn ngân hàng'}</Text>
             <Ico as={ChevronDown} size="md" className="text-muted-foreground" />
           </Pressable>
         </VStack>
         <Text id="account-label" size="sm" className="mb-2 block font-medium">Số tài khoản</Text>
         <HStack className="gap-2">
-          <Input isInvalid={!!formatError || !!lookupError} className="h-12 flex-1">
+          <Input isInvalid={!!formatError || !!lookupError} className="h-12 flex-1 mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background">
             <InputField
               id="account" inputMode="numeric" autoComplete="off" maxLength={19} value={account}
               aria-labelledby="account-label" aria-describedby="lookup-msg"
@@ -206,7 +206,7 @@ function BankPicker({ open, onOpenChange, onPick }: { open: boolean; onOpenChang
   const list = BANKS.filter((b) => fold(b.name).includes(fold(q)))
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title="Chọn ngân hàng">
-      <Input className="mb-3 h-12">
+      <Input className="mb-3 h-12 mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background">
         <InputSlot className="pl-1"><InputIcon as={Search} aria-hidden /></InputSlot>
         <InputField aria-label="Tìm ngân hàng" placeholder="Tìm ngân hàng" value={q} onChangeText={setQ} />
       </Input>

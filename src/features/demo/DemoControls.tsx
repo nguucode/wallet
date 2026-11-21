@@ -1,4 +1,4 @@
-import { Circle, FlaskConical, RotateCcw } from 'lucide-react'
+import { FlaskConical, RotateCcw } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import {
   advanceClock, cashierScan, msToNextMonth, refundLatestMerchant, reset, resolvePending, resolveVerification, setScenario, setSetting, simulateIncoming,
@@ -9,7 +9,7 @@ import { Button, cx, Ico, IconButton, Sheet } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Button as GButton, ButtonText } from '@/components/ui/button'
 import { HStack } from '@/components/ui/hstack'
-import { Radio, RadioGroup, RadioIcon, RadioIndicator, RadioLabel } from '@/components/ui/radio'
+import { Radio, RadioGroup, RadioIndicator, RadioLabel } from '@/components/ui/radio'
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
 import { formatVnd } from '@/domain/money'
@@ -51,7 +51,7 @@ function RadioList<T extends string>({ label, value, options, onChange }: { labe
     <RadioGroup aria-label={label} value={value} onChange={(v: string) => onChange(v as T)} className="w-full gap-2">
       {options.map(([v, l]) => (
         <Radio key={v} value={v} size="md">
-          <RadioIndicator><RadioIcon as={Circle} /></RadioIndicator>
+          <RadioIndicator />
           <RadioLabel>{l}</RadioLabel>
         </Radio>
       ))}
@@ -130,7 +130,7 @@ export function DemoControlsPanel({ onAction }: { onAction?: (msg: string) => vo
 export function DemoControlsSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   const [msg, setMsg] = useState('')
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} title="Demo controls">
+    <Sheet open={open} onOpenChange={onOpenChange} title="Demo controls" closeLabel="Xong">
       <VStack className="mb-3 border-b border-border pb-3"><ThemeControls title={false} /></VStack>
       <DemoControlsPanel onAction={setMsg} />
       <Box role="status" aria-live="polite" className="min-h-5"><Text size="sm">{msg}</Text></Box>

@@ -83,16 +83,17 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
   const layout = useLayout()
   // HIG Toolbars: back at the toolbar's leading edge, then the title. Cancelling sits beside the default button (HIG Sheets).
   useToolbarNav({ title, onBack }, layout === 'web')
+  useReturnKey(layout === 'web')
   if (layout === 'web')
     return (
       // macOS System Settings: the step title, back and close live in the toolbar; the form sits in one grouped box and
       // the default button is trailing.
       <VStack>
-        <Heading size="sm" tabIndex={-1} data-page-title className="sr-only outline-none">{title}</Heading>
+        <Heading as="h1" size="sm" tabIndex={-1} data-page-title className="sr-only outline-none">{title}</Heading>
         {description ? <Text className="mb-3 px-2.5 text-muted-foreground">{description}</Text> : null}
         <Card className="mac:p-2.5">{children}</Card>
         {footer || onClose ? (
-          <HStack className="mt-5 flex-row-reverse flex-wrap gap-2 [&>*]:w-auto">
+          <HStack id="flow-footer" className="mt-5 flex-row-reverse flex-wrap gap-2 [&>*]:w-auto">
             {footer}
             {onClose ? <Button variant="secondary" onClick={onClose}>Hủy</Button> : null}
           </HStack>
@@ -115,6 +116,23 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
       {footer ? <VStack className="sticky bottom-0 z-20 mx-auto w-full max-w-[560px] gap-2 border-t border-border bg-backdrop-app px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-3">{footer}</VStack> : null}
     </VStack>
   )
+}
+
+/** macOS (HIG Buttons): Return in a field presses the default button, the trailing one in the flow footer. */
+function useReturnKey(active: boolean) {
+  useEffect(() => {
+    if (!active) return
+    const key = (e: KeyboardEvent) => {
+      if (e.key !== 'Enter' || e.defaultPrevented) return
+      const el = e.target as HTMLElement | null
+      if (!el || el.tagName !== 'INPUT' || !el.closest('#main')) return
+      const btn = document.querySelector<HTMLElement>('#flow-footer > *:first-child button, #flow-footer > button:first-child')
+      if (btn && btn.getAttribute('aria-disabled') !== 'true' && !(btn as HTMLButtonElement).disabled) { e.preventDefault(); btn.click() }
+    }
+    // Capture phase: react-native-web's TextInput stops the event before it bubbles.
+    window.addEventListener('keydown', key, true)
+    return () => window.removeEventListener('keydown', key, true)
+  }, [active])
 }
 
 /** Close with "Hủy giao dịch?" when something was entered (US-FND-007). */

@@ -50,9 +50,17 @@ These are [appkit] text styles: Subheadline 11/16, Callout 12/17, Body 13/18 (de
 - **Section header:** Headline (13 bold) in label colour, inset 10pt, 11pt above its box. Boxes are 57.5pt apart across a header.
 - **Buttons:** regular push 24pt with 6pt corners. Large is a 28pt capsule. Alert buttons are two equal 28pt capsules, cancel on the left and the action on the right. Flow footers put the default button at the trailing edge.
 - **Segmented control:** 24pt track on the bezel fill with 6pt corners. The selected segment is a darker neutral, not the accent.
-- **Text field:** 26pt tall with ~10pt corners, filled with the window background.
+- **Text field:** 26pt tall with ~10pt corners, filled with the window background ([render] SwiftUI `.roundedBorder`; AppKit's bare `NSTextField` fits in 24pt).
 - **Panels (Sheet / Confirm):** NSAlert geometry: 26pt corners, 16pt margins, glass over the popover colour.
 - **Popup (filters):** a 24pt pull-down on the bezel fill.
+- **Toolbar:** the pane title is Title 3 semibold (probe: `.SFNS-Semibold` 15). Pages and flows put a back button at the toolbar's leading edge, then their title (`src/app/toolbar.ts`; HIG Toolbars). Flows cancel with a "Hủy" button beside the trailing default button, and Return in a field presses the default (HIG Buttons).
+- **Content column:** centred, up to 704pt plus 20pt padding (a grouped Form rendered at 1280pt centres 704pt-wide boxes).
+- **Value rows (`DetailRows`):** the label is in label colour on the leading side, the value in secondary label on the trailing side, 38pt tall ([render] LabeledContent).
+- **Form rows (`Field`, History filters):** the label leads and the control trails. Filters are 24pt pop-up buttons with an up/down chevron (HIG Pop-up buttons).
+- **Menus:** 24pt items in 13pt type; the highlighted item is the accent with white text ([appkit] `selectedMenuItemTextColor`).
+- **Dialogs:** focus moves in when a dialog opens (an alert's default button, or else the first control). Esc cancels, and focus returns to the control that opened it. Sheets are dismissed with a labelled button at the bottom trailing edge (Hủy for a pending task, Đóng, or Xong for settings), never with a close glyph. The PIN prompt on web is a secure text field; the keypad and dots are app only.
+- **Radio buttons:** the selected radio is a filled accent circle with a white centre (HIG Toggles: "a filled circle"); unselected rings use secondary label.
+- **Focus ring:** [appkit] `keyboardFocusIndicatorColor` (0 103 244 light, 26 169 255 dark) at 50%, for every focus outline.
 - **Unchanged on web:** the balance chart, shortcut discs and recipient rail are Wallet content, not system controls. The balance card is a plain grouped box on web; the dark glow card is app only.
 
 ## Tokens: iOS semantic colours (app layout)
@@ -94,10 +102,13 @@ Group headings (`GroupLabel`) are 15 semibold secondary, sentence case; no upper
 ## Components (in `src/components/app-ui.tsx` unless noted)
 
 - **Card:** inset grouped cell: card surface on the grouped background, `rounded-3xl`, no border or shadow. Lists inside are `divide-y divide-border` rows.
-- **Button:** capsule (`rounded-full`); the md size is the 50pt filled button (`h-12`); all labels 15px.
+- **Button:** capsule (`rounded-full`); the md size is a 48px filled button (`h-12`); all labels 15px.
 - **Badge / StatusPill:** capsules in sentence case (`normal-case`); success outline green, failed solid red (dark text in dark mode), pending outline, refunded neutral.
 - **Links:** tint text, no underline.
 - **Sheet:** Actionsheet with 32px top corners on app, Modal with 24px corners on web, both on the card surface.
+- **Sheets (app):** a 44pt close glyph at the leading edge and a centred inline title (HIG Sheets puts dismissal on the leading edge; HIG Toolbars says to use a glyph, not a "Close" label).
+- **Tab bar (app):** Quét mã is an ordinary tab: HIG Tab bars, "not to provide actions". The large title is the section's name, never the app name (HIG Toolbars).
+- **Layout breakpoint:** the app layout covers everything under 1024px, iPad portrait included (product decision). It is judged as iPhone; there is no iPadOS-specific layout.
 - **NavBar (app):** clear at rest; glass material (`bg-backdrop-app/75 backdrop-blur-xl` + hairline) once content scrolls under it; large title below on tab roots.
 - **Tab bar (app, `Shell.tsx`):** floating Liquid Glass capsule above the home indicator (`bg-card/75 backdrop-blur-2xl`, hairline, soft shadow); current tab is a tinted pill; Scan stays the filled tint button.
 - **Web shell, cards, buttons, sheets on web:** see "Web layout: macOS System Settings" above (the `mac:` classes in these components).
@@ -125,4 +136,4 @@ Group headings (`GroupLabel`) are 15 semibold secondary, sentence case; no upper
 
 1. No raw HTML elements for UI in screens: gluestack components only. An `<svg>` drawing (QR, barcode, chart) is the exception.
 2. Colours only through tokens; no hex in screens. Glass/blur only where listed above.
-3. Accessibility: one h1 per page (focused on route change; screen-reader only on web, where the toolbar shows it), live regions for status and errors, labelled inputs, skip link, 44pt targets on the app layout, AA contrast in light and dark (unit-tested on the iOS tokens; axe on web routes, 2026-11-21: 16 routes × light/dark clean).
+3. Accessibility: one h1 per page, flows included (focused on route change; screen-reader only on web, where the toolbar shows it), live regions for status and errors, labelled inputs, skip link, 44pt targets on the app layout, AA contrast in light and dark (unit-tested on the iOS tokens; axe on web routes, 2026-11-21: 16 routes × light/dark plus 5 app routes clean after three Apple-conformance review rounds).

@@ -52,7 +52,7 @@ function useHistoryParams() {
 
 /** Status: chip only when not success; pending also carries its ETA so the row says what happens next. */
 function RowStatus({ t, web }: { t: Transaction; web?: boolean }) {
-  if (t.status === 'success') return web ? <StatusPill status="success" /> : null
+  if (t.status === 'success') return web ? <VStack className="items-start"><StatusPill status="success" /></VStack> : null
   return (
     <VStack className="items-start gap-1">
       <StatusPill status={t.status} />

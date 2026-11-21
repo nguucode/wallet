@@ -67,6 +67,11 @@ html.dark {
   /* systemRed dark is 255 66 69; the iOS accessible 255 105 97 is 4.2:1 on the box. Lightened for AA text. */
   --destructive: 255 122 122;
 }
+/* [appkit] menus: the highlighted item is the accent with white text (selectedMenuItemTextColor), HIG Focus and selection. */
+html [role=menuitem][data-hover=true], html [role=menuitem][data-focus=true] { background-color: rgb(var(--primary)) !important; }
+html [role=menuitem][data-hover=true] *, html [role=menuitem][data-focus=true] * { color: rgb(var(--primary-foreground)) !important; }
+/* [appkit] keyboardFocusIndicatorColor at 50% for every focus outline, including focus moved by script. */
+html :focus-visible { outline-color: rgb(var(--ring) / 0.5) !important; }
 /* Tint as text (links, sidebar glyphs) uses AppKit's linkColor; the accent fill (primary) is for selection only. */
 html .text-primary { color: rgb(var(--link)) !important; }
 /* [render] Form separators stop 10pt short of both edges of the box. */

@@ -128,6 +128,8 @@ module.exports = {
           'Outfit_900Black',
         ],
       },
+      // Focus rings use the token (AppKit keyboardFocusIndicatorColor on web), not Tailwind's default blue.
+      ringColor: { DEFAULT: 'rgb(var(--ring) / 0.5)' },
       fontWeight: {
         extrablack: '950',
       },
