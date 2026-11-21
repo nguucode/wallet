@@ -42,6 +42,7 @@ html:root {
   --primary: var(--primary-mac, 0 100 225);
   --primary-foreground: var(--primary-mac-foreground, 255 255 255);
   --ring: var(--primary-mac, 0 100 225);
+  --link: 0 104 218;              /* [appkit] linkColor */
 }
 html.dark {
   --background: 47 47 47;         /* [render] */
@@ -61,7 +62,12 @@ html.dark {
   --sidebar: 58 58 58;            /* [render] */
   --selected-unemphasized: 70 70 70; /* [appkit] */
   --segment-selected: 100 100 104; /* [render] selected segment */
+  --link: 65 156 255;             /* [appkit] linkColor */
+  /* systemRed dark is 255 66 69; the iOS accessible 255 105 97 is 4.2:1 on the box. Lightened for AA text. */
+  --destructive: 255 122 122;
 }
+/* Tint as text (links, sidebar glyphs) uses AppKit's linkColor; the accent fill (primary) is for selection only. */
+html .text-primary { color: rgb(var(--link)) !important; }
 /* [render] Form separators stop 10pt short of both edges of the box. */
 html .divide-y > :not(:first-child) {
   border-top-width: 0 !important;

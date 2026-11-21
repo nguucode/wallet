@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router'
 import { bankById, defaultSource, signOut, useWorld } from '@/app/store'
 import { Avatar, Badge, Card, Confirm, Disc, Ico, Row, Skeleton, useLinkPress } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
-import { Button as GButton, ButtonText } from '@/components/ui/button'
 import { HStack } from '@/components/ui/hstack'
 import { Pressable } from '@/components/ui/pressable'
 import { Text } from '@/components/ui/text'
@@ -71,9 +70,12 @@ export default function MeHub() {
         </Card>
       </Box>
 
-      <GButton variant="outline" size="lg" onPress={() => setConfirm(true)} className="mt-8 h-12 w-full">
-        <ButtonText className="text-destructive">Đăng xuất</ButtonText>
-      </GButton>
+      {/* iOS Settings: sign out is a destructive text row in its own grouped box. */}
+      <Card className="mt-8">
+        <Pressable role="button" onPress={() => setConfirm(true)} className="min-h-11 items-center justify-center px-4 py-3 data-[active=true]:bg-accent">
+          <Text className="text-destructive">Đăng xuất</Text>
+        </Pressable>
+      </Card>
       <Confirm
         open={confirm} onOpenChange={setConfirm} title="Đăng xuất khỏi Wallet?" confirmLabel="Đăng xuất" danger
         onConfirm={() => { signOut(); nav('/onboarding') }}

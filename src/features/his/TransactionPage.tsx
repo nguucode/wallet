@@ -1,16 +1,17 @@
 import { Copy, FileText, LifeBuoy, MessageCircle, Printer, Repeat, Share2, type LucideIcon } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { useCallback, type ReactNode } from 'react'
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
 import { config } from '@/domain/config'
 import { formatVnd } from '@/domain/money'
 import { useLayout } from '@/app/layout'
+import { useToolbarNav } from '@/app/toolbar'
 import { SampleBadge } from '@/app/Shell'
 import { bankById, counterpartyName, now, pendingEta, sourceLabel, typeLabel, useWorld } from '@/app/store'
 import type { Transaction, World } from '@/mock/seed'
 import { NotFound } from '@/features/demo/NotFound'
 import { ConfirmRows, FAILURE_COPY, fmtDateTime, fmtTime, maskAccount, maskPhone, truthLine } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
-import { Button, ButtonLink, Card, CloseButton, cx, Disc, Fee, Ico, IconButton, Money, Row, STATUS_LABEL, StatusPill, useLinkPress, WebBackLink } from '@/components/app-ui'
+import { Button, ButtonLink, Card, CloseButton, cx, Disc, Fee, Ico, IconButton, Money, Row, STATUS_LABEL, StatusPill, useLinkPress } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Button as GButton, ButtonText } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
@@ -188,6 +189,10 @@ export default function TransactionPage() {
   const w = useWorld()
   const { guard, sheet } = useGuard()
   const toast = useToast()
+  const nav = useNavigate()
+  const back = useCallback(() => nav('/history'), [nav])
+  // macOS: back to Lịch sử sits at the toolbar's leading edge (HIG Toolbars).
+  useToolbarNav({ onBack: back }, layout === 'web')
   const t = w.transactions.find((x) => x.id === txId)
   if (!t) return <NotFound />
   if (params.get('view') === 'receipt') return <Receipt t={t} w={w} />
@@ -239,7 +244,6 @@ export default function TransactionPage() {
 
   return (
     <Box className="max-w-xl">
-      {layout === 'web' ? <WebBackLink to="/history">Lịch sử</WebBackLink> : null}
 
       <Card className="items-center gap-2 px-4 py-6">
         <TxIcon type={t.type} size={56} />

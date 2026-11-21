@@ -155,7 +155,7 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
     <Box>
       {banner ? <Box className="mb-6"><Callout tone="danger" title={banner} /></Box> : null}
       <Text id="recipient-search-label" size="sm" className="mb-2 block font-medium">Người nhận</Text>
-      <Input className="h-12">
+      <Input className="h-12 mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background">
         <InputSlot className="pl-1"><InputIcon as={Search} aria-hidden /></InputSlot>
         <InputField
           id="recipient-search" role="searchbox" autoComplete="off" placeholder="Nhập số điện thoại hoặc tên"
@@ -170,13 +170,13 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
       {!single && !fRecent.length && !fAll.length ? <Text className="block py-3 text-muted-foreground">Không tìm thấy người nhận.</Text> : null}
       {!single && fRecent.length ? (
         <VStack role="region" aria-labelledby="g-recent" className="mt-2">
-          <GroupLabel id="g-recent" className="sticky top-14 z-10 bg-background py-2 lg:top-0">Gần đây</GroupLabel>
+          <GroupLabel id="g-recent" className="sticky top-14 z-10 bg-card py-2 lg:top-0">Gần đây</GroupLabel>
           <VStack role="list" className="-mx-4">{fRecent.map((c) => row(c, 'r'))}</VStack>
         </VStack>
       ) : null}
       {!single && fAll.length ? (
         <VStack role="region" aria-labelledby="g-all" className="mt-3">
-          <GroupLabel id="g-all" className="sticky top-14 z-10 bg-background py-2 lg:top-0">Danh bạ</GroupLabel>
+          <GroupLabel id="g-all" className="sticky top-14 z-10 bg-card py-2 lg:top-0">Danh bạ</GroupLabel>
           <VStack role="list" className="-mx-4">{fAll.map((c) => row(c, 'a'))}</VStack>
         </VStack>
       ) : null}

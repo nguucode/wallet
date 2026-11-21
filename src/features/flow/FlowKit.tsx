@@ -1,4 +1,4 @@
-import { Check, ChevronLeft, Clock, Delete, X } from 'lucide-react'
+import { Check, Clock, Delete, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate, useSearchParams } from 'react-router'
@@ -9,6 +9,7 @@ import { checkLimit } from '@/domain/limits'
 import { formatVnd, parseVndInput } from '@/domain/money'
 import type { AuthMethod, TxType } from '@/domain/types'
 import { useLayout } from '@/app/layout'
+import { useToolbarNav } from '@/app/toolbar'
 import { rowAmount } from '@/features/his/history'
 import {
   counterpartyName, dayCounter, executeMoney, freeUsed, gateOf, getState, pendingEta, sourceLabel, usage, useWorld,
@@ -17,7 +18,7 @@ import {
 import type { FailureReason, Transaction } from '@/mock/seed'
 import { AuthSheet } from '@/features/sec/AuthSheet'
 import { GATE_COPY } from '@/features/sec/Gate'
-import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, DetailRows, Fee, Ico, Money, NavBar, TextLink, IconButton, Card } from '@/components/app-ui'
+import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, DetailRows, Fee, Ico, Money, NavBar, TextLink, Card } from '@/components/app-ui'
 import { Avatar } from '@/components/ui/avatar'
 import { Box } from '@/components/ui/box'
 import { Button as GButton, ButtonText } from '@/components/ui/button'
@@ -80,16 +81,14 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
   title: string; onBack?: () => void; onClose?: () => void; footer?: ReactNode; children: ReactNode; description?: ReactNode
 }) {
   const layout = useLayout()
+  // HIG Toolbars: back at the toolbar's leading edge, then the title; close joins them in the toolbar.
+  useToolbarNav({ title, onBack, onClose }, layout === 'web')
   if (layout === 'web')
     return (
-      // macOS System Settings: the toolbar names the pane; the step reads as a group header (Headline, inset 10pt)
-      // with back/close beside it, the form sits in one grouped box, and the default button is trailing.
+      // macOS System Settings: the step title, back and close live in the toolbar; the form sits in one grouped box and
+      // the default button is trailing.
       <VStack>
-        <HStack className="mb-[11px] min-h-7 items-center gap-1 px-2.5">
-          {onBack ? <IconButton label="Quay lại" onClick={onBack} className="-ml-2"><Ico as={ChevronLeft} size="sm" /></IconButton> : null}
-          <Heading size="sm" tabIndex={-1} data-page-title className="flex-1 font-bold outline-none mac:text-base">{title}</Heading>
-          {onClose ? <CloseButton onClick={onClose} /> : null}
-        </HStack>
+        <Heading size="sm" tabIndex={-1} data-page-title className="sr-only outline-none">{title}</Heading>
         {description ? <Text className="mb-3 px-2.5 text-muted-foreground">{description}</Text> : null}
         <Card className="mac:p-2.5">{children}</Card>
         {footer ? <HStack className="mt-5 flex-row-reverse flex-wrap gap-2 [&>*]:w-auto">{footer}</HStack> : null}
@@ -163,14 +162,14 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
           aria-labelledby="amount-label"
           aria-invalid={!!error || undefined}
           aria-describedby="amount-msg"
-          className="text-center text-4xl font-bold tabular-nums placeholder:text-foreground/60"
+          className="text-center text-4xl font-bold tabular-nums placeholder:text-foreground/60 mac:!text-4xl"
         />
       </Input>
       <Text id="amount-msg" role={error ? 'alert' : undefined} size="sm" className={cx('mt-2 min-h-5 text-center', error ? 'text-destructive' : 'text-muted-foreground')}>{error ?? hint}</Text>
       {quick.length ? (
         <HStack className="mt-3 flex-wrap justify-center gap-2">
           {quick.map((q) => (
-            <GButton key={q} variant="secondary" size="sm" className="rounded-full" onPress={() => onChange(q)}><ButtonText className="text-sm tabular-nums">{formatVnd(q).replace(' ₫', '')}</ButtonText></GButton>
+            <GButton key={q} variant="secondary" size="sm" className="h-11 rounded-full mac:h-6 mac:min-h-0 mac:rounded-[6px]" onPress={() => onChange(q)}><ButtonText className="text-sm tabular-nums mac:text-base mac:font-normal">{formatVnd(q).replace(' ₫', '')}</ButtonText></GButton>
           ))}
         </HStack>
       ) : null}

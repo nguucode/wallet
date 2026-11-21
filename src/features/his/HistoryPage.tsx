@@ -1,4 +1,4 @@
-import { ChevronDown, Inbox, SlidersHorizontal, X } from 'lucide-react'
+import { ChevronDown, ChevronsUpDown, Inbox, SlidersHorizontal, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { formatVnd } from '@/domain/money'
@@ -63,14 +63,16 @@ function RowStatus({ t, web }: { t: Transaction; web?: boolean }) {
 
 /** One filter field: a label over a gluestack Menu whose trigger shows the current choice. */
 function Pick({ label, value, options, onChange, className }: { label: string; value: string; options: [string, string][]; onChange: (v: string) => void; className?: string }) {
+  const layout = useLayout()
   const current = options.find(([v]) => v === value)?.[1] ?? options[0][1]
   return (
-    <VStack className={cx('gap-2', className)}>
-      <Text size="sm" bold className="mac:px-0.5 mac:font-normal mac:text-muted-foreground">{label}</Text>
+    // macOS: a form row, label leading and a pop-up button trailing (HIG Pop-up buttons: a flat list of exclusive options).
+    <VStack className={cx('gap-2 mac:min-h-[38px] mac:flex-row mac:items-center mac:justify-between mac:gap-3 mac:px-2.5', className)}>
+      <Text size="sm" bold className="mac:text-base mac:font-normal">{label}</Text>
       <Menu placement="bottom left" offset={4} className="max-h-80" trigger={(p) => (
-        <GButton {...p} variant="outline" aria-label={`${label}: ${current}`} className="h-11 w-full justify-between mac:h-6 mac:rounded-[6px] mac:border-0 mac:bg-secondary mac:px-2.5">
+        <GButton {...p} variant="outline" aria-label={`${label}: ${current}`} className="h-11 w-full justify-between mac:h-6 mac:min-h-0 mac:w-auto mac:gap-1.5 mac:rounded-[6px] mac:border-0 mac:bg-transparent mac:px-1.5">
           <ButtonText className="truncate text-sm font-normal mac:text-base mac:text-foreground">{current}</ButtonText>
-          <Ico as={ChevronDown} className="text-muted-foreground" />
+          <Ico as={layout === 'web' ? ChevronsUpDown : ChevronDown} className="text-muted-foreground" />
         </GButton>
       )}>
         {options.map(([v, l]) => (
@@ -228,7 +230,7 @@ export default function HistoryPage() {
           <Segmented label="Chế độ xem" value={f.tab ?? 'all'} options={TABS} onChange={(v) => set('tab', v)} />
         </Box>
         {layout === 'web' ? (
-          <HStack className="gap-3"><Filters f={f} set={set} months={months} row /></HStack>
+          <Card className="divide-y divide-border"><Filters f={f} set={set} months={months} /></Card>
         ) : (
           <GButton variant="secondary" size="sm" onPress={() => setSheet(true)} className="shrink-0 rounded-full">
             <Ico as={SlidersHorizontal} />

@@ -1,19 +1,18 @@
-import { Bell, CreditCard, Palette, FileText, Gauge, HelpCircle, History, Home, Landmark, QrCode, ScanLine, Send, ShieldCheck, User, Wallet } from 'lucide-react'
+import { Bell, ChevronLeft, CreditCard, Palette, FileText, Gauge, HelpCircle, History, Home, Landmark, QrCode, ScanLine, Send, ShieldCheck, User, Wallet, X } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
 import { pageScroller, useLayout } from '@/app/layout'
 import { isTabRoot, screenFor, sidebar, tabBar, type NavItem } from '@/app/sitemap'
 import { signOut, unreadCount, useWorld } from '@/app/store'
 import { useTheme } from '@/app/theme'
+import { useToolbarState } from '@/app/toolbar'
 import { DemoControlsButton, DemoControlsSheet } from '@/features/demo/DemoControls'
 import { backdropClass } from '@/features/demo/ThemeControls'
 import { Avatar, BackButton, Confirm, cx, Ico, IconButton, NavBar, useLinkPress } from '@/components/app-ui'
 import { Badge, BadgeText } from '@/components/ui/badge'
 import { Box } from '@/components/ui/box'
-import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
-import { Image } from '@/components/ui/image'
 import { Link, LinkText } from '@/components/ui/link'
 import { Menu, MenuItem, MenuItemLabel, MenuSeparator } from '@/components/ui/menu'
 import { Pressable } from '@/components/ui/pressable'
@@ -42,10 +41,6 @@ function useRouteFocus() {
 }
 
 const isActive = (pathname: string, route?: string) => !!route && (pathname === route || pathname.startsWith(route + '/'))
-
-function Logo({ size = 28 }: { size?: number }) {
-  return <Image source={{ uri: '/icon.svg' }} alt="" size="none" className={size > 28 ? 'h-9 w-9 rounded-lg' : 'h-7 w-7 rounded-md'} />
-}
 
 /** Keyboard users skip the navigation: first focusable element, visible only when focused. */
 function SkipLink() {
@@ -106,10 +101,10 @@ function AccountMenu() {
           </Pressable>
         )}
       >
-        <MenuItem key="profile" textValue="Hồ sơ" onPress={() => nav('/me/profile')}><MenuItemLabel>Hồ sơ và xác thực</MenuItemLabel></MenuItem>
-        <MenuItem key="security" textValue="Bảo mật" onPress={() => nav('/me/security')}><MenuItemLabel>Bảo mật</MenuItemLabel></MenuItem>
+        <MenuItem key="profile" textValue="Hồ sơ" onPress={() => nav('/me/profile')} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Hồ sơ và xác thực</MenuItemLabel></MenuItem>
+        <MenuItem key="security" textValue="Bảo mật" onPress={() => nav('/me/security')} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Bảo mật</MenuItemLabel></MenuItem>
         <MenuSeparator />
-        <MenuItem key="signout" textValue="Đăng xuất" onPress={() => setConfirm(true)}><MenuItemLabel>Đăng xuất…</MenuItemLabel></MenuItem>
+        <MenuItem key="signout" textValue="Đăng xuất" onPress={() => setConfirm(true)} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Đăng xuất…</MenuItemLabel></MenuItem>
       </Menu>
       <Confirm open={confirm} onOpenChange={setConfirm} title="Đăng xuất khỏi Wallet?" body="Bản demo sẽ quay về màn Mở ví." confirmLabel="Đăng xuất" onConfirm={() => { signOut(); nav('/onboarding') }} danger />
     </>
@@ -122,7 +117,8 @@ function WebShell({ children }: { children: ReactNode }) {
   const unread = unreadCount(w)
   const bell = useLinkPress('/notifications')
   const { pathname } = useLocation()
-  const title = screenFor(pathname)?.title ?? 'Wallet'
+  const tb = useToolbarState()
+  const title = tb.title ?? screenFor(pathname)?.title ?? 'Wallet'
   return (
     <HStack className="h-dvh overflow-hidden bg-background print:h-auto print:overflow-visible">
       <SkipLink />
@@ -148,7 +144,9 @@ function WebShell({ children }: { children: ReactNode }) {
       </VStack>
       <Box id="main-scroll" className="h-full min-w-0 flex-1 overflow-y-auto pl-[223px] print:overflow-visible print:pl-0">
         <HStack className="sticky top-0 z-20 h-[52px] shrink-0 items-center gap-2 bg-background/80 px-5 backdrop-blur-xl" role="banner">
-          <Text bold className="flex-1 text-lg" aria-hidden>{title}</Text>
+          {tb.onBack ? <IconButton label="Quay lại" onClick={tb.onBack} className="-ml-1"><Ico as={ChevronLeft} size="sm" /></IconButton> : null}
+          <Text bold isTruncated className="flex-1 text-lg" aria-hidden>{title}</Text>
+          {tb.onClose ? <IconButton label="Đóng" onClick={tb.onClose}><Ico as={X} size="sm" /></IconButton> : null}
           <Box className="relative">
             <IconButton label={unread ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'} onClick={bell}><Ico as={Bell} size="sm" /></IconButton>
             {unread ? <UnreadBadge n={unread} /> : null}
@@ -168,14 +166,7 @@ function WebShell({ children }: { children: ReactNode }) {
 function TabItem({ t, active, unread }: { t: NavItem; active: boolean; unread: number }) {
   const I = ICONS[t.id] ?? Wallet
   const press = useLinkPress(t.route)
-  if (t.emphasis === 'center')
-    return (
-      <Box className="flex-1 items-center">
-        <Button onPress={press} href={t.route} role="link" aria-label={t.label} aria-current={active ? 'page' : undefined} className="h-12 w-12 rounded-full px-0">
-          <Ico as={I} size="lg" className="text-primary-foreground" />
-        </Button>
-      </Box>
-    )
+  // HIG Tab bars: a tab bar is for navigation, not actions, so Quét mã is an ordinary tab (still one tap away).
   return (
     <Pressable onPress={press} href={t.route} role="link" aria-current={active ? 'page' : undefined} className={cx('relative h-full flex-1 items-center justify-center gap-0.5 rounded-full', active && 'bg-primary/10')}>
       <Ico as={I} size="lg" className={active ? 'text-primary' : 'text-foreground'} />
@@ -219,10 +210,10 @@ function AppShell({ children }: { children: ReactNode }) {
         right={<HStack className="items-center gap-1"><SampleBadge compact /><DemoControlsButton compact /></HStack>}
       />
       {root ? (
-        <HStack aria-hidden className="mx-auto max-w-[560px] items-center gap-3 px-4 pb-1">
-          {pathname === '/home' ? <Logo size={34} /> : null}
+        // iOS large title: leading-aligned under the bar.
+        <Box aria-hidden className="mx-auto w-full max-w-[560px] items-start px-4 pb-1">
           <Heading size="3xl">{title}</Heading>
-        </HStack>
+        </Box>
       ) : null}
       <Box role="main" id="main" className="mx-auto w-full max-w-[560px] px-4 pb-32 pt-3">{children}</Box>
       <TabBar />

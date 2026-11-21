@@ -19,6 +19,7 @@ import { FormControl, FormControlError, FormControlErrorText, FormControlHelper,
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
 import { Icon } from '@/components/ui/icon'
+import { Image } from '@/components/ui/image'
 import { Input, InputField } from '@/components/ui/input'
 import { Link, LinkText } from '@/components/ui/link'
 import { Modal, ModalBackdrop, ModalBody, ModalContent, ModalHeader } from '@/components/ui/modal'
@@ -70,7 +71,7 @@ export function Button({ variant = 'primary', size = 'md', block, loading, disab
       aria-busy={loading || undefined}
       // iOS: capsule buttons; the large (md) size is the 50pt iOS filled button.
       // macOS: the regular push button, 24pt tall with 6pt corners ([appkit] NSButton fittingSize, [render] corner).
-      className={cx('rounded-full mac:h-6 mac:rounded-[6px] mac:px-3', size === 'md' && 'h-12', block && 'w-full', className)}
+      className={cx('rounded-full mac:h-6 mac:min-h-0 mac:rounded-[6px] mac:px-3', size === 'md' && 'h-12', block && 'w-full', className)}
       {...rest}
     >
       {loading ? <ButtonSpinner /> : null}
@@ -86,7 +87,7 @@ export function ButtonLink(props: Omit<ButtonProps, 'onClick'> & { to: string })
 
 export function IconButton({ label, children, onClick, className, ...rest }: { label: string; children: ReactNode; onClick?: Press; className?: string; 'aria-expanded'?: boolean; disabled?: boolean }) {
   return (
-    <GButton variant="ghost" size="icon" aria-label={label} onPress={onClick} isDisabled={rest.disabled} className={cx('rounded-full mac:h-7 mac:w-7', className)} {...rest}>
+    <GButton variant="ghost" size="icon" aria-label={label} onPress={onClick} isDisabled={rest.disabled} className={cx('h-11 w-11 rounded-full mac:h-7 mac:min-h-0 mac:w-7 mac:min-w-0', className)} {...rest}>
       {children}
     </GButton>
   )
@@ -340,9 +341,12 @@ export function Callout({ tone = 'neutral', title, children, action }: { tone?: 
 
 export function Field({ label, hint, error, children }: { label: string; hint?: ReactNode; error?: ReactNode; children: ReactNode; htmlFor?: string }) {
   return (
-    <FormControl isInvalid={!!error} className="mb-6">
-      <FormControlLabel><FormControlLabelText>{label}</FormControlLabelText></FormControlLabel>
-      {children}
+    // macOS grouped form: the label leads the row and the control trails it; iOS keeps the label above.
+    <FormControl isInvalid={!!error} className="mb-6 mac:mb-4">
+      <Box className="mac:flex-row mac:items-center mac:gap-3">
+        <FormControlLabel className="mac:mb-0 mac:w-[38%] mac:shrink-0"><FormControlLabelText className="mac:text-base mac:font-normal">{label}</FormControlLabelText></FormControlLabel>
+        <Box className="mac:min-w-0 mac:flex-1">{children}</Box>
+      </Box>
       {error ? (
         <FormControlError role="alert"><FormControlErrorText>{error}</FormControlErrorText></FormControlError>
       ) : hint ? (
@@ -365,7 +369,7 @@ type TextInputProps = {
 export function TextInput({ id, invalid, className, onChange, onKeyDown, type, disabled, readOnly, autoComplete, ...rest }: TextInputProps) {
   return (
     // macOS [render]: rounded-border text field 26pt tall, ~10pt corners, window-background fill.
-    <Input isInvalid={invalid} isDisabled={disabled} isReadOnly={readOnly} className={cx('h-12 mac:h-[26px] mac:rounded-[10px] mac:bg-background', className)}>
+    <Input isInvalid={invalid} isDisabled={disabled} isReadOnly={readOnly} className={cx('h-12 mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background', className)}>
       <InputField
         id={id}
         type={type === 'password' ? 'password' : 'text'}
@@ -388,7 +392,7 @@ export function Segmented<T extends string>({ value, options, onChange, label }:
         const on = o.value === value
         return (
           <GButton key={o.value} role="tab" aria-selected={on} size="sm" variant={on ? 'default' : 'outline'} onPress={() => onChange(o.value)}
-            className={cx('rounded-full mac:h-6 mac:rounded-[6px] mac:border-0 mac:px-3', on ? 'mac:bg-segment-selected mac:data-[hover=true]:bg-segment-selected' : 'mac:bg-transparent mac:data-[hover=true]:bg-transparent')}>
+            className={cx('h-11 rounded-full mac:h-6 mac:min-h-0 mac:rounded-[6px] mac:border-0 mac:px-3', on ? 'mac:bg-segment-selected mac:data-[hover=true]:bg-segment-selected' : 'mac:bg-transparent mac:data-[hover=true]:bg-transparent')}>
             <ButtonText className={cx('text-sm mac:text-base mac:font-normal', on && 'mac:text-foreground')}>{o.label}{o.count !== undefined ? ` ${o.count}` : ''}</ButtonText>
           </GButton>
         )
@@ -441,12 +445,31 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
 export function Confirm({ open, onOpenChange, title, body, confirmLabel, cancelLabel = 'Hủy', onConfirm, danger }: {
   open: boolean; onOpenChange: (o: boolean) => void; title: string; body?: ReactNode; confirmLabel: string; cancelLabel?: string; onConfirm: () => void; danger?: boolean
 }) {
+  const layout = useLayout()
+  const confirm = () => { onConfirm(); onOpenChange(false) }
+  if (layout === 'web')
+    // macOS NSAlert ([render] macOS 26.6): 260pt wide, 26pt corners, app icon, centred bold title and message, two equal
+    // 28pt capsules with cancel leading and the action trailing; no close button. HIG Alerts keeps the destructive style
+    // for actions people didn't deliberately choose, so a confirmation of a chosen action uses the default style.
+    return (
+      <Modal isOpen={open} onClose={() => onOpenChange(false)} size="xs">
+        <ModalBackdrop />
+        <ModalContent role="alertdialog" aria-modal aria-label={title} className="w-[260px] max-w-[260px] items-center rounded-[26px] border border-foreground/10 bg-popover/90 p-4 backdrop-blur-2xl">
+          <Image source={{ uri: '/icon.svg' }} alt="" size="none" className="mt-2 h-16 w-16" />
+          <Heading as="h2" size="sm" className="mt-3 text-center text-base font-bold">{title}</Heading>
+          {body ? <Text className="mt-1 text-center">{body}</Text> : null}
+          <HStack className="mt-4 w-full gap-2">
+            <Box className="flex-1"><Button variant="secondary" block className="mac:h-7 mac:min-h-0 mac:rounded-full" onClick={() => onOpenChange(false)}>{cancelLabel}</Button></Box>
+            <Box className="flex-1"><Button variant="primary" block className="mac:h-7 mac:min-h-0 mac:rounded-full" onClick={confirm}>{confirmLabel}</Button></Box>
+          </HStack>
+        </ModalContent>
+      </Modal>
+    )
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title={title} description={body}>
-      {/* macOS [render] NSAlert: two equal 28pt capsules side by side, cancel on the left, the action on the right. */}
-      <VStack className="gap-2 mac:flex-row-reverse mac:gap-2">
-        <Box className="mac:flex-1"><Button variant={danger ? 'danger' : 'primary'} block className="mac:h-7 mac:rounded-full" onClick={() => { onConfirm(); onOpenChange(false) }}>{confirmLabel}</Button></Box>
-        <Box className="mac:flex-1"><Button variant="secondary" block className="mac:h-7 mac:rounded-full" onClick={() => onOpenChange(false)}>{cancelLabel}</Button></Box>
+      <VStack className="gap-2">
+        <Button variant={danger ? 'danger' : 'primary'} block onClick={confirm}>{confirmLabel}</Button>
+        <Button variant="secondary" block onClick={() => onOpenChange(false)}>{cancelLabel}</Button>
       </VStack>
     </Sheet>
   )
