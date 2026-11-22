@@ -2,11 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+/* A one-line (truncated) text keeps nested pieces on its line: gluestack's nested Text brings pre-wrap, which broke
+   a row's second line onto a third. */
+span[class*="truncate"] span { white-space: nowrap !important; }
+
+/* App: horizontal chip rows and rails scroll without a visible bar, as on iOS. */
+@media (max-width: 1023px) { .overflow-x-auto { scrollbar-width: none; } .overflow-x-auto::-webkit-scrollbar { display: none; } }
+
+/* App switches: the native input that takes the tap grows to a 44pt target around the track (HIG). */
+@media (max-width: 1023px) { input[role="switch"] { min-width: 44px; min-height: 44px; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%); } }
+
+/* One content edge (DESIGN.md): rows, headers and notes carry the inset; inside a box that already pads its content
+   (data-box="content") they sit on that padding instead of adding a second inset. */
+[data-box="content"] .content-inset { padding-left: 0 !important; padding-right: 0 !important; }
+/* A box inside a box is not a second box: it flattens into the outer one (no fill, corners or padding of its own). */
+[data-box="content"] [data-box] { background: transparent !important; border-radius: 0 !important; padding: 0 !important; overflow: visible !important; }
+
 /*
  * Web layout (>= 1024px, the same breakpoint as useLayout) = macOS System Settings (sếp 2026-11-21). Every value is Apple's own, read on macOS 26.6 (DESIGN.md
  * "Provenance"): [appkit] NSColor / NSFont / NSControl values from AppKit; [render] pixels of Apple's own SwiftUI
  * Form(.grouped) and NavigationSplitView rendered by the system. One departure: secondary text in light mode.
  */
+/* Wallpaper (sếp 2026-11-22): a desktop-style colour field. The window shows it through one even veil, as macOS's
+   "Tint window background with wallpaper colour" does (src/app/theme.ts VEIL, contrast tested); the sidebar's glass
+   floats on that. `.bg-wallpaper` alone is the bare field (the Demo controls preview). */
+html .bg-wallpaper {
+  background-color: rgb(var(--wall-base));
+  background-image:
+    radial-gradient(45% 55% at 6% 14%, rgb(var(--wall-a)), transparent 72%),
+    radial-gradient(40% 50% at 10% 86%, rgb(var(--wall-b)), transparent 72%),
+    radial-gradient(50% 60% at 88% 20%, rgb(var(--wall-c)), transparent 72%),
+    radial-gradient(45% 55% at 70% 92%, rgb(var(--wall-d)), transparent 72%);
+}
+html .bg-wallpaper-veiled {
+  background-color: rgb(var(--wall-base));
+  background-image:
+    linear-gradient(rgb(var(--wall-veil) / var(--wall-veil-alpha)), rgb(var(--wall-veil) / var(--wall-veil-alpha))),
+    radial-gradient(45% 55% at 6% 14%, rgb(var(--wall-a)), transparent 72%),
+    radial-gradient(40% 50% at 10% 86%, rgb(var(--wall-b)), transparent 72%),
+    radial-gradient(50% 60% at 88% 20%, rgb(var(--wall-c)), transparent 72%),
+    radial-gradient(45% 55% at 70% 92%, rgb(var(--wall-d)), transparent 72%);
+}
 @media (min-width: 1024px) {
 html:root {
   /* [appkit] NSFont.preferredFont(forTextStyle:) — Subheadline 11/16, Callout 12/17, Body 13/18, Title 3 15/22,
@@ -23,7 +59,7 @@ html:root {
   --fs-5xl: 26px; --lh-5xl: 34px;
 
   --background: 255 255 255;      /* [render] window content */
-  --card: 249 249 249;            /* [render] Form section box */
+  --card: 255 255 255;            /* white group boxes on the tinted window (sếp 2026-11-22); [render] Form box is 249 on white */
   --popover: 255 255 255;
   --foreground: 39 39 39;         /* [appkit] labelColor, black 84.7% */
   --popover-foreground: 39 39 39;
@@ -74,6 +110,46 @@ html [role=menuitem][data-hover=true] *, html [role=menuitem][data-focus=true] *
 html :focus-visible { outline-color: rgb(var(--ring) / 0.5) !important; }
 /* Tint as text (links, sidebar glyphs) uses AppKit's linkColor; the accent fill (primary) is for selection only. */
 html .text-primary { color: rgb(var(--link)) !important; }
+/* Push buttons (secondary): a white bezel with a hairline and a soft lift, so they read on glass as well as on the
+   window ([render] NSButton on a translucent panel). Dark: the raised grey bezel. */
+html .push-button { background-color: rgb(255 255 255) !important; box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.16), 0 0.5px 1.5px rgb(0 0 0 / 0.2); }
+html .push-button[data-hover="true"] { background-color: rgb(246 246 246) !important; }
+html.dark .push-button { background-color: rgb(86 86 90) !important; box-shadow: 0 0 0 0.5px rgb(255 255 255 / 0.1), 0 0.5px 1.5px rgb(0 0 0 / 0.4); }
+html.dark .push-button[data-hover="true"] { background-color: rgb(96 96 100) !important; } /* label 223 keeps 5.1:1 and 4.6:1 */
+/* Vibrancy (NSVisualEffectView, pre-Tahoe materials, sếp 2026-11-22): a translucent tint over blur + saturation, so
+   whatever sits behind shows through as colour. Sidebar = behind-window (the theme backdrop stands in for the desktop),
+   titlebar = within-window (content scrolls under), menu and sheet = over content. */
+html .material-sidebar, html .material-titlebar, html .material-menu, html .material-sheet {
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  backdrop-filter: blur(30px) saturate(180%);
+}
+html .material-sidebar { background-color: rgb(var(--sidebar) / 0.6); }
+html .material-titlebar { background-color: rgb(var(--backdrop-tint) / 0.72); }
+html .material-menu { background-color: rgb(var(--popover) / 0.72); }
+html .material-sheet { background-color: rgb(var(--popover) / 0.8); }
+/* Liquid Glass look (Tahoe "Clear"): a thinner tint and lighter blur, so more of what is behind shows, with a lit rim
+   instead of a hairline. No refraction: url() in backdrop-filter is Chromium-only. */
+html[data-glass="liquid"] .material-sidebar, html[data-glass="liquid"] .material-titlebar,
+html[data-glass="liquid"] .material-menu, html[data-glass="liquid"] .material-sheet {
+  -webkit-backdrop-filter: blur(14px) saturate(200%);
+  backdrop-filter: blur(14px) saturate(200%);
+}
+html[data-glass="liquid"] .material-sidebar { background-color: rgb(var(--sidebar) / 0.35); }
+html[data-glass="liquid"] .material-titlebar { background-color: rgb(var(--backdrop-tint) / 0.5); }
+html[data-glass="liquid"] .material-menu, html[data-glass="liquid"] .material-sheet { background-color: rgb(var(--popover) / 0.6); }
+html[data-glass="liquid"] .material-sidebar, html[data-glass="liquid"] .material-menu, html[data-glass="liquid"] .material-sheet {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6), inset 0 0 0 0.5px rgb(255 255 255 / 0.35), 0 8px 24px rgb(0 0 0 / 0.12);
+}
+html.dark[data-glass="liquid"] .material-sidebar, html.dark[data-glass="liquid"] .material-menu, html.dark[data-glass="liquid"] .material-sheet {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), inset 0 0 0 0.5px rgb(255 255 255 / 0.1), 0 8px 24px rgb(0 0 0 / 0.35);
+}
+/* System Settings > Accessibility > Display > Reduce transparency: solid surfaces, as AppKit does, for either glass. */
+@media (prefers-reduced-transparency: reduce) {
+  html[data-glass] .material-sidebar, html[data-glass] .material-titlebar, html[data-glass] .material-menu, html[data-glass] .material-sheet { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  html[data-glass] .material-sidebar { background-color: rgb(var(--sidebar)); }
+  html[data-glass] .material-titlebar { background-color: rgb(var(--backdrop-tint)); }
+  html[data-glass] .material-menu, html[data-glass] .material-sheet { background-color: rgb(var(--popover)); }
+}
 /* [render] Form separators stop 10pt short of both edges of the box. */
 html .divide-y > :not(:first-child) {
   border-top-width: 0 !important;

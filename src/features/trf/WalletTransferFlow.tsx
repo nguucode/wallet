@@ -5,15 +5,16 @@ import { parseQr } from '@/domain/qr'
 import { formatVnd } from '@/domain/money'
 import { delay, getState, useWorld } from '@/app/store'
 import type { Counterparty } from '@/mock/seed'
+import { useLayout } from '@/app/layout'
 import { GatedRoute } from '@/features/sec/Gate'
 import {
-  AmountInput, checkAmount, ConfirmRows, FlowFrame, formatPhone, maskPhone, ResultView, useCloseFlow, useFlow, useMoneyCommit,
+  AmountInput, checkAmount, ConfirmRows, FlowFrame, formatPhone, maskPhone, ResultView, useCloseFlow, useFlow, useMoneyCommit, FlowNext,
 } from '@/features/flow/FlowKit'
-import { Avatar, Badge, Button, ButtonLink, Callout, Fee, Money, Row, Skeleton, GroupLabel } from '@/components/app-ui'
+import { Avatar, Badge, Button, ButtonLink, Callout, Fee, Money, Row, Skeleton, GroupLabel, Ico } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
-import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input'
+import { Input, InputField, InputSlot } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
@@ -144,7 +145,7 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
     const res = lookup.res
     if (!res) single = <HStack role="status" className="items-center gap-2 py-3"><Spinner size="small" aria-hidden /><Text className="text-muted-foreground">Đang tìm…</Text></HStack>
     else if (res.status === 'wallet')
-      single = <VStack role="list" className="-mx-4">{row({ ...res.contact, hasWallet: true }, 'lookup')}</VStack>
+      single = <VStack role="list">{row({ ...res.contact, hasWallet: true }, 'lookup')}</VStack>
     else if (res.status === 'error')
       single = <HStack role="alert" className="items-center justify-between gap-3 py-3"><Text className="text-destructive">Không kiểm tra được số điện thoại. Thử lại.</Text><Button size="sm" variant="secondary" onClick={() => setRetry((n) => n + 1)}>Thử lại</Button></HStack>
     else single = <Text role="status" className="block py-3 text-muted-foreground">Số điện thoại này chưa dùng ví.</Text>
@@ -155,7 +156,7 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
       {banner ? <Box className="mb-6"><Callout tone="danger" title={banner} /></Box> : null}
       <Text id="recipient-search-label" size="sm" className="mb-2 block font-medium">Người nhận</Text>
       <Input className="h-12 mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background mac:dark:bg-background">
-        <InputSlot className="pl-1"><InputIcon as={Search} aria-hidden /></InputSlot>
+        <InputSlot className="pl-1 mac:pl-2"><Ico as={Search} size="sm" className="text-muted-foreground mac:h-3.5 mac:w-3.5" /></InputSlot>
         <InputField
           id="recipient-search" role="searchbox" autoComplete="off" placeholder="Nhập số điện thoại hoặc tên"
           aria-labelledby="recipient-search-label"
@@ -169,14 +170,14 @@ function RecipientStep({ banner, onPick }: { banner?: string; onPick: (r: Recipi
       {!single && !fRecent.length && !fAll.length ? <Text className="block py-3 text-muted-foreground">Không tìm thấy người nhận.</Text> : null}
       {!single && fRecent.length ? (
         <VStack role="region" aria-labelledby="g-recent" className="mt-2">
-          <GroupLabel id="g-recent" className="sticky top-14 z-10 bg-card py-2 lg:top-0">Gần đây</GroupLabel>
-          <VStack role="list" className="-mx-4">{fRecent.map((c) => row(c, 'r'))}</VStack>
+          <GroupLabel id="g-recent" className="sticky top-14 z-10 bg-card py-2 lg:top-[52px]">Gần đây</GroupLabel>
+          <VStack role="list" className="divide-y divide-border">{fRecent.map((c) => row(c, 'r'))}</VStack>
         </VStack>
       ) : null}
       {!single && fAll.length ? (
         <VStack role="region" aria-labelledby="g-all" className="mt-3">
-          <GroupLabel id="g-all" className="sticky top-14 z-10 bg-card py-2 lg:top-0">Danh bạ</GroupLabel>
-          <VStack role="list" className="-mx-4">{fAll.map((c) => row(c, 'a'))}</VStack>
+          <GroupLabel id="g-all" className="sticky top-14 z-10 bg-card py-2 lg:top-[52px]">Danh bạ</GroupLabel>
+          <VStack role="list" className="divide-y divide-border">{fAll.map((c) => row(c, 'a'))}</VStack>
         </VStack>
       ) : null}
     </Box>
@@ -197,11 +198,11 @@ function AmountStep({ draft, setDraft, onNext, onChange }: { draft: Draft; setDr
         ? <LockedAmount amount={draft.amount} note="Số tiền theo mã QR" error={error} />
         : <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={error} hint={<>Số dư khả dụng: <Text className="tabular-nums">{formatVnd(w.balance)}</Text></>} />}
       <MessageField value={draft.message} onChange={(message) => setDraft({ message })} placeholder={`${w.customer.name} chuyển tiền`} />
-      <Box className="mt-8">
+      <FlowNext>
         {draft.locked && error
           ? <ButtonLink to="/pay/scan" variant="secondary" block>Đổi mã</ButtonLink>
           : <Button block disabled={!check?.ok} onClick={onNext}>Tiếp tục</Button>}
-      </Box>
+      </FlowNext>
     </>
   )
 }
@@ -209,6 +210,7 @@ function AmountStep({ draft, setDraft, onNext, onChange }: { draft: Draft; setDr
 /* ── confirm (US-TRF-004) ─────────────────────────────────────────── */
 
 function ConfirmStep({ draft, defaultMessage, toAmount, onDone }: { draft: Draft; defaultMessage: string; toAmount: () => void; onDone: (id: string) => void }) {
+  const layout = useLayout()
   const r = draft.recipient!
   const message = draft.message.trim() || defaultMessage
   const commit = useMoneyCommit(() => ({ type: 'p2p_out', amount: draft.amount, counterparty: r, message, authMethod: 'pin' }), (t) => onDone(t.id))
@@ -234,10 +236,11 @@ function ConfirmStep({ draft, defaultMessage, toAmount, onDone }: { draft: Draft
       ]} />
       <AuthNote type="p2p_out" amount={draft.amount} />
       {commit.error ? <Text role="alert" size="sm" className="mt-3 block text-destructive">{commit.error}</Text> : null}
-      <VStack className="mt-8 gap-2">
+      <FlowNext>
         <Button block onClick={() => (checkAmount('p2p_out', draft.amount).ok ? commit.start() : toAmount())}>Xác nhận</Button>
-        <Button block variant="ghost" onClick={toAmount}>Quay lại</Button>
-      </VStack>
+      </FlowNext>
+      {/* Web: back is in the toolbar; the app keeps a text button under the default one. */}
+      {layout === 'app' ? <Button block variant="ghost" className="mt-2" onClick={toAmount}>Quay lại</Button> : null}
       {commit.sheet}
     </>
   )

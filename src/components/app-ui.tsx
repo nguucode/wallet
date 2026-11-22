@@ -71,7 +71,8 @@ export function Button({ variant = 'primary', size = 'md', block, loading, disab
       aria-busy={loading || undefined}
       // iOS: capsule buttons; the large (md) size is the 50pt iOS filled button.
       // macOS: the regular push button, 24pt tall with 6pt corners ([appkit] NSButton fittingSize, [render] corner).
-      className={cx('rounded-full mac:h-6 mac:min-h-0 mac:rounded-[6px] mac:px-3', size === 'md' && 'h-12', block && 'w-full mac:w-auto mac:self-end', className)}
+      // App: every button keeps a 44pt target (HIG), the small one included.
+      className={cx('rounded-full mac:h-6 mac:min-h-0 mac:rounded-[6px] mac:px-3', variant === 'secondary' && 'push-button', size === 'md' ? 'h-12' : 'min-h-11', block && 'w-full mac:w-auto mac:self-end', className)}
       {...rest}
     >
       {loading ? <ButtonSpinner /> : null}
@@ -100,17 +101,32 @@ export function Ico({ as, size = 'md', className }: { as: React.ElementType; siz
 
 /* ── Layout pieces ────────────────────────────────────────────────── */
 
-export function Card({ className, children, role, ...aria }: { className?: string; children: ReactNode; as?: 'div' | 'section' | 'article'; role?: string; 'aria-label'?: string }) {
+/**
+ * Content inset: the one horizontal edge inside a box and for text in the column (DESIGN.md "One content edge"):
+ * 16 on the app (iOS inset grouped), 10 on web (macOS Form). Rows, headers and notes take it; nothing else sets one.
+ */
+// `content-inset` (app/globals.css): inside a padded box the box already supplies the edge, so the inset drops to 0.
+export const INSET = 'content-inset px-4 mac:px-2.5'
+
+/**
+ * The grouped box. `inset="rows"`: no padding, the rows inside carry INSET. `inset="content"` (default): the box pads
+ * its content by the inset (app 16, web 10). Callers never add padding of their own (guarded by a test).
+ */
+export function Card({ className, children, role, inset = 'content', centered, ...aria }: { className?: string; children: ReactNode; inset?: 'rows' | 'content'; /** Centred content (a QR, a receipt head): its lines do not start on the inset. */ centered?: boolean; as?: 'div' | 'section' | 'article'; role?: string; 'aria-label'?: string; 'aria-labelledby'?: string }) {
   // iOS inset grouped: cells on the grouped background, 24px corners, no border or shadow.
   // macOS: the grouped Form section box, 12pt corners ([render]).
-  return <GCard role={role} {...aria} className={cx('gap-0 rounded-3xl border-0 shadow-none mac:rounded-[12px]', className)}>{children}</GCard>
+  return (
+    <GCard role={role} {...aria} data-box={inset} data-align={centered ? 'free' : undefined} className={cx('gap-0 rounded-3xl border-0 shadow-none mac:rounded-[12px]', inset === 'rows' ? 'overflow-hidden p-0' : 'p-4 mac:p-2.5', className)}>
+      {children}
+    </GCard>
+  )
 }
 
 export function Section({ title, action, children, className }: { title: string; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
     // macOS [render]: 57.5pt from one box to the next, header in Headline (13 bold) inset 10pt, 11pt above its box.
     <VStack className={cx('mt-8 gap-3 mac:mt-[30px] mac:gap-[11px]', className)} aria-label={title} role="region">
-      <HStack className="items-baseline justify-between gap-4 mac:px-2.5">
+      <HStack className={cx('items-baseline justify-between gap-4', INSET)}>
         <Heading as="h2" size="lg" className="mac:text-base mac:font-bold">{title}</Heading>
         {action}
       </HStack>
@@ -126,7 +142,7 @@ export function Section({ title, action, children, className }: { title: string;
  */
 /** Group heading over a list (date, category): one style everywhere. Sentence case: Vietnamese capitals stack diacritics. */
 export function GroupLabel({ children, as = 'h2', id, className }: { children: ReactNode; as?: 'h2' | 'h3'; id?: string; className?: string }) {
-  return <Heading as={as} id={id} size="xs" className={cx('text-sm font-semibold text-muted-foreground mac:px-2.5 mac:text-base mac:font-bold mac:text-foreground', className)}>{children}</Heading>
+  return <Heading as={as} id={id} size="xs" className={cx('text-sm font-semibold text-muted-foreground mac:text-base mac:font-bold mac:text-foreground', INSET, className)}>{children}</Heading>
 }
 
 /** Same as ScreenTitle: on web the toolbar carries the title (macOS); on app the nav bar / large title does. */
@@ -188,7 +204,7 @@ export function Row({ left, title, subtitle, right, rightSub, chevron, selected,
   const press = useLinkPress(to, disabled ? undefined : onClick)
   const body = (
     // macOS [render]: rows 38pt with 10pt side insets.
-    <HStack className="min-h-[60px] w-full items-center gap-3 px-4 py-2 mac:min-h-[38px] mac:gap-2 mac:px-2.5 mac:py-1.5">
+    <HStack className={cx('min-h-[60px] w-full items-center gap-3 py-2 mac:min-h-[38px] mac:gap-2 mac:py-1.5', INSET)}>
       {left ? <Box className="shrink-0">{left}</Box> : null}
       <VStack className="min-w-0 flex-1">
         <Text className="line-clamp-2">{title}</Text>
@@ -237,7 +253,7 @@ export function RailTile({ to, onClick, label, leading, name, sub }: { to: strin
 
 export function RowSkeleton() {
   return (
-    <HStack className="min-h-[60px] items-center gap-3 px-4 py-2" aria-hidden>
+    <HStack className={cx('min-h-[60px] items-center gap-3 py-2 mac:min-h-[38px]', INSET)} aria-hidden>
       <GSkeleton variant="circular" className="h-10 w-10" />
       <VStack className="flex-1 gap-2"><GSkeleton className="h-4 w-2/5" /><GSkeleton className="h-3 w-1/4" /></VStack>
       <GSkeleton className="h-4 w-20" />
@@ -319,7 +335,7 @@ export function Skeleton({ className }: { className?: string }) {
 
 export function EmptyState({ icon, title, body, action }: { icon: ReactNode; title: string; body?: ReactNode; action?: ReactNode }) {
   return (
-    <VStack className="items-center px-4 py-12">
+    <VStack data-align="free" className="items-center px-4 py-12">
       <Disc>{icon}</Disc>
       <Text bold className="mt-3 text-center">{title}</Text>
       {body ? <Text className="mt-1 max-w-[42ch] text-center text-muted-foreground">{body}</Text> : null}
@@ -330,12 +346,22 @@ export function EmptyState({ icon, title, body, action }: { icon: ReactNode; tit
 
 export function Callout({ tone = 'neutral', title, children, action }: { tone?: 'neutral' | 'pending' | 'danger' | 'primary'; title: ReactNode; children?: ReactNode; action?: ReactNode }) {
   return (
-    <GCard role={tone === 'danger' ? 'alert' : 'status'} className={cx('gap-1 mac:rounded-[12px] mac:p-2.5', tone === 'danger' && 'border-destructive')}>
+    <Card role={tone === 'danger' ? 'alert' : 'status'} className={cx('gap-1', tone === 'danger' && 'border border-destructive')}>
       <Text bold className={cx(tone === 'danger' && 'text-destructive')}>{title}</Text>
       {children ? <Box><Text size="sm">{children}</Text></Box> : null}
-      {action ? <Box className="mt-3">{action}</Box> : null}
-    </GCard>
+      {action ? <Box className="mt-3 items-start">{action}</Box> : null}
+    </Card>
   )
+}
+
+/**
+ * A pickable list inside a Sheet. App: rows run edge to edge and their inset matches the sheet's 16pt padding. Web: a
+ * grouped box, so the rows sit on the box's 10pt inset like every other list in a macOS panel.
+ */
+export function SheetList({ label, children }: { label?: string; children: ReactNode }) {
+  const layout = useLayout()
+  const list = <VStack role="list" aria-label={label} className={cx('divide-y divide-border', layout === 'app' && '-mx-4')}>{children}</VStack>
+  return layout === 'web' ? <Card inset="rows">{list}</Card> : list
 }
 
 /* ── Form ─────────────────────────────────────────────────────────── */
@@ -446,11 +472,11 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
           {/* HIG Sheets (iOS): dismissal at the leading edge; HIG Toolbars: a close glyph, not a "Close" text label. Inline
               title centred. */}
           <HStack className="w-full items-center">
-            <Box className="w-11">{showClose ? <IconButton label="Đóng" onClick={close} className="-ml-2 bg-secondary"><Ico as={X} size="sm" /></IconButton> : null}</Box>
+            <Box className="w-11">{showClose ? <IconButton label="Đóng" onClick={close} className="bg-secondary"><Ico as={X} size="sm" /></IconButton> : null}</Box>
             <Heading as="h2" size="sm" className="min-w-0 flex-1 text-center">{title}</Heading>
             <Box className="w-11" />
           </HStack>
-          {description ? <Text className="mt-2 text-center text-muted-foreground">{description}</Text> : null}
+          {description ? <Text data-align="free" className="mt-2 text-center text-muted-foreground">{description}</Text> : null}
           {/* Scroll box is a fixed-height flex column: the content wrapper must not shrink, or its children overlap. */}
           <Box className="mt-4 overflow-y-auto pb-4"><Box className="shrink-0">{children}</Box></Box>
         </ActionsheetContent>
@@ -461,14 +487,14 @@ export function Sheet({ open, onOpenChange, title, description, children, dismis
       <ModalBackdrop />
       {/* macOS [render]: a system panel (NSAlert) is 26pt-cornered glass with 16pt margins; HIG Sheets dismisses with a
           Cancel/Done button at the bottom trailing edge, not a close glyph. */}
-      <ModalContent role="dialog" aria-modal aria-label={title} className="max-h-[88vh] rounded-[26px] border border-foreground/10 bg-popover/90 p-4 backdrop-blur-2xl">
+      <ModalContent role="dialog" aria-modal aria-label={title} className="max-h-[88vh] rounded-[26px] border border-foreground/10 bg-popover/90 p-4 backdrop-blur-2xl material-sheet">
         <ModalHeader>
           <VStack className="min-w-0 flex-1 gap-1">
             <Heading as="h2" size="lg" className="text-base font-bold">{title}</Heading>
             {description ? <Text className="text-muted-foreground">{description}</Text> : null}
           </VStack>
         </ModalHeader>
-        <ModalBody className="mt-4"><Box className="shrink-0">{children}</Box></ModalBody>
+        <ModalBody className="mb-0 mt-4 overflow-y-auto"><Box className="shrink-0">{children}</Box></ModalBody>
         {showClose ? <HStack className="mt-4 justify-end"><Button variant="secondary" size="sm" onClick={close}>{closeLabel}</Button></HStack> : null}
       </ModalContent>
     </Modal>
@@ -489,8 +515,9 @@ export function Confirm({ open, onOpenChange, title, body, confirmLabel, cancelL
     return (
       <Modal isOpen={open} onClose={() => onOpenChange(false)} size="xs">
         <ModalBackdrop />
-        <ModalContent role="alertdialog" aria-modal aria-label={title} className="w-[260px] max-w-[260px] items-center rounded-[26px] border border-foreground/10 bg-popover/90 p-4 backdrop-blur-2xl">
-          <Image source={{ uri: '/icon.svg' }} alt="" size="none" className="mt-2 h-16 w-16" />
+        <ModalContent role="alertdialog" aria-modal aria-label={title} className="w-[260px] max-w-[260px] items-center rounded-[26px] border border-foreground/10 bg-popover/90 p-4 backdrop-blur-2xl material-sheet">
+          {/* The app icon is decoration (the title names the alert): hidden from assistive tech. */}
+          <Box aria-hidden className="mt-2"><Image source={{ uri: '/icon.svg' }} alt="" size="none" className="h-16 w-16" /></Box>
           <Heading as="h2" size="sm" className="mt-3 text-center text-base font-bold">{title}</Heading>
           {body ? <Text className="mt-1 text-center">{body}</Text> : null}
           <HStack className="mt-4 w-full gap-2">
@@ -517,7 +544,7 @@ export function ScreenTitle({ children, description }: { children: ReactNode; de
     // Web (macOS): the toolbar shows the title, as in System Settings; the h1 stays for screen readers and route focus.
     <VStack className={cx('gap-1', layout === 'web' ? (description ? 'mb-4' : '') : 'mb-3')}>
       <Heading size="3xl" tabIndex={-1} data-page-title className="sr-only outline-none">{children}</Heading>
-      {description ? <Text className="text-muted-foreground mac:px-2.5">{description}</Text> : null}
+      {description ? <Text className={cx('text-muted-foreground', INSET)}>{description}</Text> : null}
     </VStack>
   )
 }
@@ -546,8 +573,8 @@ export function useToast(ms = 3000) {
 /** Inline text link that routes on the client: gluestack Link + LinkText rendered as <a href>. */
 export function TextLink({ to, children, onClick }: { to: string; children: ReactNode; onClick?: Press }) {
   const press = useLinkPress(to, onClick)
-  // iOS: links are tint-coloured text, not underlined.
-  return <Link href={to} onPress={press}><LinkText className="font-medium no-underline">{children}</LinkText></Link>
+  // iOS: links are tint-coloured text, not underlined. App: a 44pt target around the text without moving it (HIG).
+  return <Link href={to} onPress={press} className="-my-[10.5px] min-h-11 justify-center mac:my-0 mac:min-h-0"><LinkText className="font-medium no-underline">{children}</LinkText></Link>
 }
 
 /** Key/value detail rows (confirm, result, profile): label left, value right, a divider between rows. */
@@ -556,7 +583,7 @@ export function DetailRows({ rows }: { rows: [string, ReactNode][] }) {
     <VStack role="list" className="divide-y divide-border">
       {rows.map(([k, v]) => (
         // macOS [render] LabeledContent: label in label colour leading, value in secondary label trailing, 38pt rows.
-        <HStack key={k} role="listitem" className="min-h-12 items-start justify-between gap-6 py-3 mac:min-h-[38px] mac:items-center mac:px-2.5 mac:py-2.5">
+        <HStack key={k} role="listitem" className={cx('min-h-12 items-start justify-between gap-6 py-3 mac:min-h-[38px] mac:items-center mac:py-2.5', INSET)}>
           <Text className="shrink-0 text-muted-foreground mac:text-foreground">{k}</Text>
           <Box className="min-w-0 items-end"><Text className="text-right font-medium break-words mac:font-normal mac:text-muted-foreground">{v}</Text></Box>
         </HStack>

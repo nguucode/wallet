@@ -1,4 +1,4 @@
-import { BACKGROUNDS, DEFAULT_THEME, loadTheme, nextMode, PRIMARIES, saveTheme, themeCss, themeVars, type ThemePrefs } from './theme'
+import { BACKGROUNDS, DEFAULT_THEME, loadTheme, nextMode, PRIMARIES, saveTheme, themeCss, themeVars, VEIL, WALLPAPER, type ThemePrefs } from './theme'
 
 // WCAG relative luminance / contrast for "r g b" token strings.
 const lum = (rgb: string) => {
@@ -27,12 +27,12 @@ describe('themeVars', () => {
     }
   })
 
-  it.each(ids(BACKGROUNDS))('%s backdrop keeps sidebar text above 7:1 and stands apart from the panel, light and dark', (id) => {
+  it.each(ids(BACKGROUNDS))('%s backdrop keeps sidebar text above 7:1 and stands apart from the white group boxes, light and dark', (id) => {
     for (const primary of ids(PRIMARIES)) for (const dark of [false, true]) {
       const v = themeVars({ ...DEFAULT_THEME, background: id, primary }, dark)
       const m = dark ? 'dark' : 'light'
       for (const k of ['--backdrop', '--backdrop-tint']) expect(contrast(v[k], FG[m])).toBeGreaterThanOrEqual(7)
-      expect(v['--backdrop']).not.toBe(SURFACES[m][0])
+      expect(v['--backdrop']).not.toBe(dark ? '56 56 56' : '255 255 255') // web --card (app/globals.css)
     }
   })
 
@@ -43,11 +43,29 @@ describe('themeVars', () => {
     }
   })
 
-  it('solid and gradient follow the chosen primary; neutral does not', () => {
+  it.each(ids(BACKGROUNDS))('%s web backdrop keeps secondary and link text at AA (web section headers sit on the window)', (id) => {
+    // app/globals.css web values: secondary label and linkColor, light and dark.
+    const WEB = { light: ['102 102 102', '0 104 218'], dark: ['168 168 168', '65 156 255'] }
+    for (const primary of ids(PRIMARIES)) for (const dark of [false, true]) {
+      const v = themeVars({ ...DEFAULT_THEME, background: id, primary }, dark)
+      for (const k of ['--backdrop', '--backdrop-tint']) for (const t of WEB[dark ? 'dark' : 'light']) expect(contrast(v[k], t)).toBeGreaterThanOrEqual(4.5)
+    }
+  })
+
+  it('gradient follows the chosen primary; neutral and wallpaper do not', () => {
     const at = (background: ThemePrefs['background'], primary: ThemePrefs['primary']) => themeVars({ ...DEFAULT_THEME, background, primary }, false)
-    expect(at('solid', 'red')['--backdrop']).not.toBe(at('solid', 'blue')['--backdrop'])
     expect(at('gradient', 'red')['--backdrop-tint']).not.toBe(at('gradient', 'blue')['--backdrop-tint'])
     expect(at('neutral', 'red')['--backdrop']).toBe(at('neutral', 'blue')['--backdrop'])
+    expect(at('wallpaper', 'red')['--backdrop']).toBe(at('wallpaper', 'blue')['--backdrop'])
+  })
+
+  it('the window veil over every wallpaper colour keeps label 7:1 and secondary text and links AA', () => {
+    const WEB = { light: ['102 102 102', '0 104 218'], dark: ['168 168 168', '65 156 255'] }
+    for (const m of ['light', 'dark'] as const) for (const stop of Object.values(WALLPAPER[m])) {
+      const over = VEIL[m].rgb.split(' ').map(Number).map((v, i) => Math.round(v * VEIL[m].alpha + Number(stop.split(' ')[i]) * (1 - VEIL[m].alpha))).join(' ')
+      expect(contrast(over, FG[m])).toBeGreaterThanOrEqual(7)
+      for (const t of WEB[m]) expect(contrast(over, t)).toBeGreaterThanOrEqual(4.5)
+    }
   })
 
   it('themeCss writes light values on :root and dark values on .dark', () => {
@@ -63,9 +81,13 @@ describe('prefs', () => {
     expect([nextMode('system'), nextMode('light'), nextMode('dark')]).toEqual(['light', 'dark', 'system'])
   })
   it('round-trips through storage and falls back to the default on junk or old values', () => {
-    saveTheme({ primary: 'orange', mode: 'dark', background: 'gradient' })
-    expect(loadTheme()).toEqual({ primary: 'orange', mode: 'dark', background: 'gradient' })
-    localStorage.setItem('wallet.theme', '{"primary":"pink","mode":"dark","background":"pattern"}')
+    saveTheme({ primary: 'orange', mode: 'dark', background: 'gradient', glass: 'liquid' })
+    expect(loadTheme()).toEqual({ primary: 'orange', mode: 'dark', background: 'gradient', glass: 'liquid' })
+    localStorage.setItem('wallet.theme', '{"primary":"red","mode":"light","background":"neutral"}')
+    expect(loadTheme()).toEqual({ primary: 'red', mode: 'light', background: 'neutral', glass: 'vibrancy' })
+    localStorage.setItem('wallet.theme', '{"primary":"pink","mode":"dark","background":"solid"}')
+    expect(loadTheme()).toEqual({ ...DEFAULT_THEME, mode: 'dark' })
+    localStorage.setItem('wallet.theme', 'junk')
     expect(loadTheme()).toEqual(DEFAULT_THEME)
   })
 })

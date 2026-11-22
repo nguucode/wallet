@@ -12,7 +12,7 @@ import Animated, { FadeOut, ZoomIn } from 'react-native-reanimated';
 const AnimatedView = Animated.createAnimatedComponent(ScrollView);
 
 const menuStyle = tva({
-  base: 'rounded-md bg-popover text-popover-foreground border border-border p-1 shadow-hard-5 max-h-[300px] overflow-y-auto',
+  base: 'material-menu rounded-md bg-popover text-popover-foreground border border-border p-1 shadow-hard-5 max-h-[300px] overflow-y-auto',
 });
 
 const menuItemStyle = tva({
@@ -126,6 +126,8 @@ const Menu = React.forwardRef<React.ComponentRef<typeof UIMenu>, IMenuProps>(
   function Menu({ className, ...props }, ref) {
     return (
       <UIMenu
+        // gluestack's creator hard-codes role="list" over react-aria's menu role; its rest props win, so put it back.
+        role="menu"
         entering={ZoomIn.duration(150).withInitialValues({
           transform: [{ scale: 0.9 }],
           opacity: 0,

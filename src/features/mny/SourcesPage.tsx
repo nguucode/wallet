@@ -2,7 +2,7 @@ import { Landmark, MoreHorizontal } from 'lucide-react'
 import { useState } from 'react'
 import { useLayout } from '@/app/layout'
 import { bankById, setDefaultSource, unlinkSource, useWorld, verifyPin } from '@/app/store'
-import { Button, ButtonLink, Card, EmptyState, Ico, IconButton, PageTitle, Sheet } from '@/components/app-ui'
+import { Button, ButtonLink, Card, EmptyState, Ico, IconButton, PageTitle, Sheet, cx, INSET } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
@@ -52,10 +52,7 @@ export default function SourcesPage() {
   return (
     <Box>
       {layout === 'web' ? (
-        <HStack className="items-start justify-between gap-4">
-          <PageTitle>Nguồn tiền</PageTitle>
-          {sources.length ? linkBtn : null}
-        </HStack>
+        <PageTitle>Nguồn tiền</PageTitle>
       ) : (
         <Heading size="3xl" tabIndex={-1} data-page-title className="sr-only">Nguồn tiền</Heading>
       )}
@@ -69,20 +66,24 @@ export default function SourcesPage() {
         />
       ) : (
         <>
-          <Text className="mb-3 text-muted-foreground">{NOTE}</Text>
-          <VStack role="list" className="gap-3">
-            {sources.map((s) => (
-              <Box key={s.id} role="listitem">
-                <Card className="min-h-[72px] flex-row items-center gap-3 py-3 pr-2 pl-4">
+          {/* The note and (web) the link action share the line above the list, as a section header does. */}
+          <HStack className={cx('mb-3 items-center justify-between gap-4', INSET)}>
+            <Text className="min-w-0 flex-1 text-muted-foreground">{NOTE}</Text>
+            {layout === 'web' ? linkBtn : null}
+          </HStack>
+          <Card inset="rows">
+            <VStack role="list" className="divide-y divide-border">
+              {sources.map((s) => (
+                <HStack key={s.id} role="listitem" className={cx('min-h-[72px] items-center gap-3 py-3 mac:min-h-[38px] mac:py-2', INSET)}>
                   <SourceLine s={s} sub={<Text size="sm" className="break-words text-muted-foreground">{holder}</Text>} />
                   {s.isDefault ? <DefaultBadge /> : null}
-                  <IconButton label={optionsLabel(s)} onClick={() => setSheetFor(s)} className="size-12 shrink-0">
+                  <IconButton label={optionsLabel(s)} onClick={() => setSheetFor(s)} className="shrink-0">
                     <Ico as={MoreHorizontal} />
                   </IconButton>
-                </Card>
-              </Box>
-            ))}
-          </VStack>
+                </HStack>
+              ))}
+            </VStack>
+          </Card>
           {/* Sits above the app tab bar (80px) and the home indicator. */}
           {layout === 'app' ? <Box className="sticky bottom-[calc(80px+env(safe-area-inset-bottom))] mt-6">{linkBtn}</Box> : null}
         </>

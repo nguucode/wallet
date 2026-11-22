@@ -23,18 +23,37 @@ export const PRIMARIES = {
   violet: { label: 'Tím', light: '137 68 171', dark: '218 143 255' },
 } as const
 export const BACKGROUNDS = {
+  wallpaper: { label: 'Hình nền' },
   neutral: { label: 'Xám trung tính' },
   gradient: { label: 'Chuyển màu' },
-  solid: { label: 'Đơn sắc' },
 } as const
 export const MODES: Record<Mode, string> = { system: 'Theo hệ thống', light: 'Sáng', dark: 'Tối' }
+/** Web glass material (sếp 2026-11-22): pre-Tahoe vibrancy or the clearer Liquid Glass look (app/globals.css). */
+export const GLASSES = {
+  vibrancy: { label: 'Vibrancy' },
+  liquid: { label: 'Liquid Glass' },
+} as const
 
-export type ThemePrefs = { primary: keyof typeof PRIMARIES; mode: Mode; background: keyof typeof BACKGROUNDS }
-export const DEFAULT_THEME: ThemePrefs = { primary: 'blue', mode: 'system', background: 'neutral' }
+export type ThemePrefs = { primary: keyof typeof PRIMARIES; mode: Mode; background: keyof typeof BACKGROUNDS; glass: keyof typeof GLASSES }
+// A desktop-style wallpaper by default (sếp 2026-11-22) so the glass materials have colour to pick up.
+export const DEFAULT_THEME: ThemePrefs = { primary: 'blue', mode: 'system', background: 'wallpaper', glass: 'vibrancy' }
 
 // iOS systemGray5 / secondarySystemBackground behind the grouped panel; the app page is the grouped background itself.
-const NEUTRAL = { light: '229 229 234', dark: '28 28 30' }
+// Web light neutral is the grouped grey (sếp 2026-11-22: white group boxes sit on the window, so it no longer has to
+// stand apart from a grey panel); 229 left the web's secondary label at 4.2:1.
+const NEUTRAL = { light: '242 242 247', dark: '28 28 30' }
 const GROUPED = { light: '242 242 247', dark: '0 0 0' }
+
+/**
+ * Web wallpaper (sếp 2026-11-22: "1 background Apple"): a desktop-style colour field of our own, not Apple's artwork.
+ * Warm stops sit on the left, behind the sidebar, so its accent icons keep 3:1; cool stops sit behind the content.
+ * The content pane lays a window veil over it so secondary text and links on the window stay AA (tested).
+ */
+export const WALLPAPER = {
+  light: { base: '236 222 240', a: '255 205 160', b: '255 170 205', c: '160 190 255', d: '190 160 255' },
+  dark: { base: '24 22 48', a: '120 50 90', b: '150 60 70', c: '40 70 170', d: '80 50 160' },
+} as const
+export const VEIL = { light: { rgb: '250 250 252', alpha: 0.84 }, dark: { rgb: '30 30 32', alpha: 0.82 } } as const
 
 const mix = (a: string, b: string, t: number) => {
   const x = a.split(' ').map(Number), y = b.split(' ').map(Number)
@@ -45,14 +64,19 @@ const mix = (a: string, b: string, t: number) => {
 export function themeVars(p: ThemePrefs, dark: boolean): Record<string, string> {
   const m = dark ? 'dark' : 'light'
   const primary = PRIMARIES[p.primary][m]
-  const solid = p.background === 'solid'
+  const wall = p.background === 'wallpaper'
   const grad = p.background === 'gradient'
   // Web backdrop (behind the panel) and the gradient's tinted end.
-  const backdrop = solid ? mix(primary, GROUPED[m], dark ? 0.2 : 0.14) : NEUTRAL[m]
-  const tint = grad ? mix(primary, GROUPED[m], dark ? 0.3 : 0.22) : backdrop
+  // Light tints mix into white and stop at 8%: the most that keeps the web's secondary label and linkColor at AA for
+  // every primary (secondary text and links sit straight on the window).
+  const base = dark ? GROUPED.dark : '255 255 255'
+  // Wallpaper: the window colour is the veil (the toolbar material and focus offsets take it).
+  const backdrop = wall ? VEIL[m].rgb : NEUTRAL[m]
+  const tint = grad ? mix(primary, base, dark ? 0.2 : 0.08) : backdrop
   // App page: the same idea kept pale enough for secondary text (AA) in light mode.
   const APP_LIGHT = '248 248 250'
-  const app = solid ? (dark ? mix(primary, GROUPED.dark, 0.14) : mix(primary, APP_LIGHT, 0.05)) : GROUPED[m]
+  // App page colour (bars, flows). The wallpaper choice paints the page itself with the veiled wallpaper (bg-wallpaper-veiled).
+  const app = GROUPED[m]
   const appTint = grad ? (dark ? mix(primary, GROUPED.dark, 0.2) : mix(primary, APP_LIGHT, 0.06)) : app
   return {
     '--primary': primary,
@@ -65,6 +89,8 @@ export function themeVars(p: ThemePrefs, dark: boolean): Record<string, string> 
     '--backdrop-tint': tint,
     '--backdrop-app': app,
     '--backdrop-app-tint': appTint,
+    '--wall-base': WALLPAPER[m].base, '--wall-a': WALLPAPER[m].a, '--wall-b': WALLPAPER[m].b, '--wall-c': WALLPAPER[m].c, '--wall-d': WALLPAPER[m].d,
+    '--wall-veil': VEIL[m].rgb, '--wall-veil-alpha': String(VEIL[m].alpha),
   }
 }
 
@@ -77,7 +103,9 @@ export const nextMode = (m: Mode): Mode => (m === 'system' ? 'light' : m === 'li
 export function loadTheme(): ThemePrefs {
   try {
     const raw = JSON.parse(localStorage.getItem(KEY) ?? '{}')
-    if (raw.primary in PRIMARIES && raw.mode in MODES && raw.background in BACKGROUNDS) return raw
+    // Each field falls back on its own, so a retired value (the old "solid" background) keeps the rest.
+    const pick = <K extends keyof ThemePrefs>(k: K, set: object): ThemePrefs[K] => (raw[k] in set ? raw[k] : DEFAULT_THEME[k])
+    return { primary: pick('primary', PRIMARIES), mode: pick('mode', MODES), background: pick('background', BACKGROUNDS), glass: pick('glass', GLASSES) }
   } catch { /* storage unavailable or junk: default */ }
   return DEFAULT_THEME
 }
@@ -94,6 +122,7 @@ const STYLE_ID = 'wallet-theme'
 /** Sets the light/dark class (gluestack's own script) and (re)writes the theme stylesheet, last in <head> so it wins. */
 export function applyTheme(p: ThemePrefs = current) {
   applyColorMode(p.mode)
+  document.documentElement.dataset.glass = p.glass
   let el = document.getElementById(STYLE_ID)
   if (!el) { el = document.createElement('style'); el.id = STYLE_ID }
   document.head.appendChild(el)

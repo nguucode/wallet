@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useRef, type ReactNode } from 're
 import { useNavigate } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { SampleBadge } from '@/app/Shell'
-import { BackButton, Badge, Button, Card, cx, DetailRows, Ico, WebBackLink } from '@/components/app-ui'
+import { BackButton, Badge, Button, Card, cx, DetailRows, Ico, INSET, WebBackLink } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Center } from '@/components/ui/center'
 import { Grid, GridItem } from '@/components/ui/grid'
@@ -14,6 +14,8 @@ import { Progress, ProgressFilledTrack } from '@/components/ui/progress'
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
 import { DemoControlsButton } from '@/features/demo/DemoControls'
+import { backdropClass } from '@/features/demo/ThemeControls'
+import { useTheme } from '@/app/theme'
 import { backTarget, stageOf, STAGES, type IdPath, type Step } from './steps'
 
 export type Draft = { phone: string; path?: IdPath; otpSentAt?: number; otpAttemptsLeft?: number }
@@ -59,28 +61,31 @@ export function StepShell({ title, children, footer, description }: { title: str
     window.scrollTo(0, 0)
   }, [title])
   const skip = canSkip ? <Button variant="ghost" onClick={() => { clear(); nav('/home') }} className="rounded-full">Để sau</Button> : null
+  const theme = useTheme()
   const heading = <Heading size="3xl" ref={h1} tabIndex={-1} className="outline-none">{title}</Heading>
   const desc = description ? <Text className="mt-2 block text-muted-foreground">{description}</Text> : null
 
   if (layout === 'web')
     return (
-      <Box className="relative min-h-dvh bg-background">
+      // macOS grammar, as in the signed-in window: the theme backdrop, the step in one grouped box, the default
+      // button trailing below it.
+      <Box className={cx('relative min-h-dvh', backdropClass(theme.background))}>
         <HStack role="banner" className="relative mx-auto h-16 max-w-[960px] items-center justify-between gap-4 px-8">
           <HStack className="items-center gap-2">
-            <Image source={{ uri: '/icon.svg' }} alt="" size="none" className="size-7 rounded-md" />
+            <Box aria-hidden><Image source={{ uri: '/icon.svg' }} alt="" size="none" className="size-7 rounded-md" /></Box>
             <Heading as="p" size="lg">Wallet</Heading>
           </HStack>
           <HStack className="items-center gap-2"><DemoControlsButton /><SampleBadge />{skip}</HStack>
         </HStack>
         <Box role="main" id="main" className="relative mx-auto max-w-[560px] px-4 pt-6 pb-16">
-          <Box className="mb-3"><Stages step={step} /></Box>
-          <Card className="p-5">
+          <Box className={cx('mb-3', INSET)}><Stages step={step} /></Box>
+          <Card>
             {back ? <WebBackLink onClick={() => go(back)} /> : null}
-            {heading}
+            <Heading size="xl" ref={h1} tabIndex={-1} className="outline-none">{title}</Heading>
             {desc}
-            <Box className="mt-6">{children}</Box>
-            {footer ? <VStack className="mt-8 gap-2">{footer}</VStack> : null}
+            <Box className="mt-5">{children}</Box>
           </Card>
+          {footer ? <HStack className="mt-5 flex-row-reverse flex-wrap gap-2 [&>*]:w-auto">{footer}</HStack> : null}
         </Box>
       </Box>
     )
@@ -97,8 +102,8 @@ export function StepShell({ title, children, footer, description }: { title: str
         <Box className="px-4"><Stages step={step} /></Box>
       </VStack>
       <Box role="main" id="main" className="mx-auto w-full max-w-[560px] flex-1 px-4 pt-3 pb-6">
-        {heading}
-        {desc}
+        {/* iOS setup: the large title and its line sit on the layout margin together. */}
+        <VStack data-align="free">{heading}{desc}</VStack>
         <Box className="mt-6">{children}</Box>
       </Box>
       {footer ? <VStack className="sticky bottom-0 z-20 mx-auto w-full max-w-[560px] gap-2 border-t border-border bg-background px-5 pt-3 pb-[max(16px,env(safe-area-inset-bottom))]">{footer}</VStack> : null}
@@ -115,7 +120,7 @@ export function StatusMark({ tone }: { tone: 'primary' | 'pending' | 'danger' })
 
 /** Label/value rows separated by 1px rules; long uppercase names wrap without clipping diacritics. */
 export function DataList({ rows }: { rows: [string, ReactNode][] }) {
-  return <Box className="border-y border-border"><DetailRows rows={rows} /></Box>
+  return <Card inset="rows"><DetailRows rows={rows} /></Card>
 }
 
 /** Simulated hand-off panel header, so it never reads as Wallet UI. */

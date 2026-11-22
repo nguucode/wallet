@@ -8,7 +8,7 @@ import { BANKS, bankById, linkSource, useWorld } from '@/app/store'
 import { BankMark, Button, Card, DetailRows, Field, Ico, Row, Segmented, Sheet, TextInput } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { HStack } from '@/components/ui/hstack'
-import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input'
+import { Input, InputField, InputSlot } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
@@ -47,13 +47,13 @@ export default function LinkSourceFlow() {
     return (
       <FlowFrame title="Chọn ngân hàng" onClose={close}>
         <Field label="Tìm ngân hàng" htmlFor="bank-q">
-          <Input className="h-12">
-            <InputSlot className="pl-3"><InputIcon as={Search} aria-hidden className="text-muted-foreground" /></InputSlot>
+          <Input className="h-12 mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background">
+            <InputSlot className="pl-3 mac:pl-2"><Ico as={Search} size="sm" className="text-muted-foreground mac:h-3.5 mac:w-3.5" /></InputSlot>
             <InputField id="bank-q" role="searchbox" aria-label="Tìm ngân hàng" value={query} onChangeText={setQuery} autoComplete="off" />
           </Input>
         </Field>
         {banks.length ? (
-          <VStack role="list" className="-mx-4 divide-y divide-border">
+          <VStack role="list" className="divide-y divide-border">
             {banks.map((b) => {
               const linked = w.sources.find((s) => s.bankId === b.id)
               return (
@@ -149,9 +149,9 @@ export default function LinkSourceFlow() {
           <Text className="text-muted-foreground">Đang chờ xác nhận từ ngân hàng…</Text>
         </HStack>
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen} title={`Mô phỏng ứng dụng ${bank.name}`} description="Đây là màn hình mô phỏng của ngân hàng, không phải của Wallet.">
-          <Box className="mb-6 rounded-lg border border-border bg-card px-4">
+          <Card inset="rows" className="mb-6">
             <DetailRows rows={[['Yêu cầu', 'Liên kết với ví Wallet'], ['Nguồn tiền', `${draft.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản'} ${mask4(draft.number.slice(-4))}`], ['Chủ tài khoản', holder], ['Số ví', w.customer.walletNumber]]} />
-          </Box>
+          </Card>
           <VStack className="gap-2">
             <Button variant="primary" block loading={confirming} onClick={() => decide(true)}>Xác nhận liên kết</Button>
             <Button variant="secondary" block disabled={confirming} onClick={() => decide(false)}>Từ chối</Button>

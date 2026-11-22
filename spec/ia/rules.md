@@ -106,12 +106,12 @@ Resolved by the coordinator from the four story agents' gap reports. These win o
 - **Receive.** `/receive` is gated only by `suspended` and `locked`; an unverified wallet or one without a bank can still show its receive QR.
 - **Link and unlink** are never gated. Unlink asks for PIN.
 - **Free slots.** Pending withdraw/bank transfers consume a free slot (they may succeed); a slot is returned if the transaction later fails. Rounding is half-up to 1.000 ₫.
-- **Next outcome on instant types.** "Đang xử lý" is ignored for instant types (top up, wallet transfer, merchant QR) and they succeed; the Demo controls panel says so.
+- **Next outcome on instant types.** "Đang xử lý" is ignored for instant types (top up, wallet transfer, merchant QR) and they succeed.
 - **Pending ETA.** "dự kiến xong trước HH:mm" = createdAt + `config.pendingEtaMinutes[pendingReason]` (bank 30 min, bill 120 min).
 - **Device biometric approvals** count in the day counter like PIN.
 - **Face match** allows 3 attempts in total; then "Thử lại sau".
 - **Payment Code.** Showing the code requires PIN. When the cashier scans, the amount is checked against balance and limit; above the merchant face threshold the face match sheet opens; a failed check creates no transaction. Code lifetime 60 s.
-- **Onboarding needs review.** The flow continues through warning, terms, and ready with an amber line; gate #1 shows "Đang kiểm tra". Demo control "Verification result" can resolve it later.
+- **Onboarding needs review.** The flow continues through warning, terms, and ready with an amber line; gate #1 shows "Đang kiểm tra". The store action `resolveVerification` resolves it (tests).
 - **CCCD.** Gate #2 message and the expiry date on the profile are P0; the Home banner and the update flow are P1.
 - **Sign out** switches to scenario `new`.
 - **Demo values.** PIN `123456`, OTP `123456` (shown in Demo controls). Bank lookup: account numbers starting `000` are not found, `999` time out, ending `0000` return a different holder ("not your name" case on linking). Account number length 6–19 digits. Minimum amount for any money action 1.000 ₫ (10.000 ₫ for top up and withdraw).

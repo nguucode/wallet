@@ -103,7 +103,7 @@ function AccountMenu() {
           </Pressable>
         )}
       >
-        <MenuItem key="profile" textValue="Hồ sơ" onPress={() => nav('/me/profile')} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Hồ sơ và xác thực</MenuItemLabel></MenuItem>
+        <MenuItem key="profile" textValue="Hồ sơ và xác thực" onPress={() => nav('/me/profile')} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Hồ sơ và xác thực</MenuItemLabel></MenuItem>
         <MenuItem key="security" textValue="Bảo mật" onPress={() => nav('/me/security')} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Bảo mật</MenuItemLabel></MenuItem>
         <MenuSeparator />
         <MenuItem key="signout" textValue="Đăng xuất…" onPress={() => setTimeout(() => setConfirm(true), 80)} className="mac:h-6 mac:min-h-0 mac:min-w-[180px] mac:rounded-[5px] mac:px-2.5 mac:py-0"><MenuItemLabel className="mac:text-base">Đăng xuất…</MenuItemLabel></MenuItem>
@@ -120,11 +120,22 @@ function WebShell({ children }: { children: ReactNode }) {
   const bell = useLinkPress('/notifications')
   const { pathname } = useLocation()
   const tb = useToolbarState()
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    const el = document.getElementById('main-scroll')
+    const on = () => setScrolled((el?.scrollTop ?? 0) > 0)
+    el?.addEventListener('scroll', on, { passive: true })
+    on()
+    return () => el?.removeEventListener('scroll', on)
+  }, [])
   const title = tb.title ?? screenFor(pathname)?.title ?? 'Wallet'
+  const theme = useTheme()
   return (
-    <HStack className="h-dvh overflow-hidden bg-background print:h-auto print:overflow-visible">
+    // The window is the tinted theme backdrop (sếp 2026-11-22): white group boxes sit on it and the vibrancy
+    // materials (sidebar, toolbar) take its colour.
+    <HStack className={cx('h-dvh overflow-hidden print:h-auto print:overflow-visible', backdropClass(theme.background))}>
       <SkipLink />
-      <VStack role="complementary" className="absolute bottom-2 left-2 top-2 z-30 w-[215px] rounded-[18px] border border-foreground/10 bg-sidebar/90 px-2.5 pb-2.5 pt-3 shadow-sm backdrop-blur-xl">
+      <VStack role="complementary" className="material-sidebar absolute bottom-2 left-2 top-2 z-30 w-[215px] rounded-[18px] border border-foreground/10 px-2.5 pb-2.5 pt-3 shadow-sm">
         <AccountMenu />
         <VStack role="navigation" aria-label="Điều hướng chính" className="mt-3 flex-1 overflow-y-auto overflow-x-hidden">
           {sidebar.map((x) =>
@@ -145,7 +156,8 @@ function WebShell({ children }: { children: ReactNode }) {
         </HStack>
       </VStack>
       <Box id="main-scroll" className="h-full min-w-0 flex-1 overflow-y-auto pl-[223px] print:overflow-visible print:pl-0">
-        <HStack className="sticky top-0 z-20 h-[52px] shrink-0 items-center gap-2 bg-background/80 px-5 backdrop-blur-xl" role="banner">
+        {/* macOS toolbar: clear over the window at rest, the titlebar material and a hairline once content scrolls under. */}
+        <HStack className={cx('sticky top-0 z-20 h-[52px] shrink-0 items-center gap-2 px-5', scrolled ? 'material-titlebar border-b border-foreground/10' : 'border-b border-transparent bg-transparent')} role="banner">
           {tb.onBack ? <IconButton label="Quay lại" onClick={tb.onBack} className="-ml-1"><Ico as={ChevronLeft} size="sm" /></IconButton> : null}
           <Text isTruncated className="flex-1 text-lg font-semibold" aria-hidden>{title}</Text>
           <Box className="relative">

@@ -18,7 +18,7 @@ import {
 import type { FailureReason, Transaction } from '@/mock/seed'
 import { AuthSheet } from '@/features/sec/AuthSheet'
 import { GATE_COPY } from '@/features/sec/Gate'
-import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, DetailRows, Fee, Ico, Money, NavBar, TextLink, Card } from '@/components/app-ui'
+import { BackButton, Button, ButtonLink, CloseButton, Confirm, cx, DetailRows, Fee, Ico, Money, NavBar, TextLink, Card, INSET } from '@/components/app-ui'
 import { Avatar } from '@/components/ui/avatar'
 import { Box } from '@/components/ui/box'
 import { Button as GButton, ButtonText } from '@/components/ui/button'
@@ -90,10 +90,12 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
       // the default button is trailing.
       <VStack>
         <Heading as="h1" size="sm" tabIndex={-1} data-page-title className="sr-only outline-none">{title}</Heading>
-        {description ? <Text className="mb-3 px-2.5 text-muted-foreground">{description}</Text> : null}
-        <Card className="mac:p-2.5">{children}</Card>
+        {description ? <Text className={cx('mb-3 text-muted-foreground', INSET)}>{description}</Text> : null}
+        <Card>{children}</Card>
         {footer || onClose ? (
           <HStack id="flow-footer" className="mt-5 flex-row-reverse flex-wrap gap-2 [&>*]:w-auto">
+            {/* A step's own default button (FlowNext) lands here, trailing, beside Hủy. */}
+            <Box id="flow-footer-slot" className="contents" />
             {footer}
             {onClose ? <Button variant="secondary" onClick={onClose}>Hủy</Button> : null}
           </HStack>
@@ -108,7 +110,7 @@ export function FlowFrame({ title, onBack, onClose, footer, children, descriptio
         right={onClose ? <CloseButton onClick={onClose} /> : <Box className="w-11" />}
       />
       <Box role="main" id="main" className="mx-auto w-full max-w-[560px] flex-1 px-4 pb-6 pt-2">
-        {description ? <Text className="mb-3 text-muted-foreground">{description}</Text> : null}
+        {description ? <Text className={cx('mb-3 text-muted-foreground', INSET)}>{description}</Text> : null}
         <Card>{children}</Card>
         {/* The app keypad portals here so it stands on its own below the card, like the system number pad. */}
         <Box id="flow-keypad-slot" />
@@ -173,7 +175,8 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
   const shown = value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''
   const set = (n: number) => { if (n <= 9_999_999_999) onChange(n) }
   return (
-    <VStack className="items-center">
+    // Centred amount entry (the amount is the point of the step); its lines do not start on the inset.
+    <VStack data-align="free" className="items-center">
       <Text id="amount-label" className="mb-2 text-muted-foreground">{label}</Text>
       <Input isInvalid={!!error} className="h-16 w-full">
         <InputField
@@ -192,13 +195,25 @@ export function AmountInput({ value, onChange, error, label = 'Số tiền', qui
       {quick.length ? (
         <HStack className="mt-3 flex-wrap justify-center gap-2">
           {quick.map((q) => (
-            <GButton key={q} variant="secondary" size="sm" className="h-11 rounded-full mac:h-6 mac:min-h-0 mac:rounded-[6px]" onPress={() => onChange(q)}><ButtonText className="text-sm tabular-nums mac:text-base mac:font-normal">{formatVnd(q).replace(' ₫', '')}</ButtonText></GButton>
+            <GButton key={q} variant="secondary" size="sm" className="push-button h-11 rounded-full mac:h-6 mac:min-h-0 mac:rounded-[6px]" onPress={() => onChange(q)}><ButtonText className="text-sm tabular-nums mac:text-base mac:font-normal">{formatVnd(q).replace(' ₫', '')}</ButtonText></GButton>
           ))}
         </HStack>
       ) : null}
       {layout === 'app' ? <KeypadPortal value={value} onChange={set} /> : null}
     </VStack>
   )
+}
+
+/**
+ * A step's default button. Web: it joins the flow footer, trailing, next to Hủy (HIG: the default button at the
+ * bottom trailing edge, one row of buttons). App: a full-width button below the step.
+ */
+export function FlowNext({ children }: { children: ReactNode }) {
+  const layout = useLayout()
+  const [slot, setSlot] = useState<HTMLElement | null>(null)
+  useEffect(() => setSlot(document.getElementById('flow-footer-slot')), [])
+  if (layout === 'web' && slot) return createPortal(children, slot)
+  return <Box className="mt-8">{children}</Box>
 }
 
 function KeypadPortal(props: { value: number; onChange: (n: number) => void }) {
@@ -331,7 +346,7 @@ export function ResultView({ txId, onRetry, extra, successHeading = 'Thành côn
   if (!t) return <Text className="py-10 text-center text-muted-foreground">Không tìm thấy giao dịch.</Text>
   const heading = t.status === 'success' ? successHeading : t.status === 'pending' ? 'Đang xử lý' : t.status === 'failed' ? 'Không thành công' : 'Đã hoàn tiền'
   return (
-    <VStack className="items-center pt-6">
+    <VStack data-align="free" className="items-center pt-6">
       <StatusMark status={t.status} />
       <Heading as="h2" size="lg" role="status" className="mt-3 text-center">{heading}</Heading>
       {/* Same amount rule as every transaction row (rowAmount): signed, fee on outgoing, failed struck through. */}

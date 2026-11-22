@@ -11,11 +11,12 @@ import { VStack } from '@/components/ui/vstack'
 /** Daily line (e.g. balance over 30 days). Decorative shape; the summary lives in aria-label. */
 export function LineChart({ values, label, className, endTag, endTone, wide }: { values: number[]; label: string; className?: string; endTag?: string; /** up = gained (green), down = spent (red). */ endTone?: 'up' | 'down'; wide?: boolean; inverse?: boolean }) {
   const id = useId()
-  const W = wide ? 560 : 320, H = 96, pad = 8
+  // The line starts on the box's content edge (no left inset); the right keeps room for the end dot.
+  const W = wide ? 560 : 320, H = 96, pad = 8, padR = 6
   if (values.length < 2) return null
   const min = Math.min(...values), max = Math.max(...values)
   const span = max - min || 1
-  const pts = values.map((v, i) => [pad + (i * (W - pad * 2)) / (values.length - 1), pad + (1 - (v - min) / span) * (H - pad * 2)] as const)
+  const pts = values.map((v, i) => [(i * (W - padR)) / (values.length - 1), pad + (1 - (v - min) / span) * (H - pad * 2)] as const)
   const d = pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join(' ')
   const [ex, ey] = pts[pts.length - 1]
   return (
@@ -67,7 +68,7 @@ export function BarsWithLimit({ bars, limit, limitLabel, label }: { bars: { key:
   const H = 120
   const y = (v: number) => H - (v / max) * H
   return (
-    <VStack role="figure" aria-label={label}>
+    <VStack role="figure" aria-label={label} data-align="free">
       <Box className="relative" style={{ height: H + 24 }}>
         <Box aria-hidden className="absolute inset-x-0 border-t-2 border-foreground" style={{ top: y(limit) }}>
           <Box className="absolute right-0 -translate-y-1/2"><Badge className="rounded-full"><BadgeText className="whitespace-nowrap normal-case font-semibold">{limitLabel}</BadgeText></Badge></Box>

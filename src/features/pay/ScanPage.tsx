@@ -6,10 +6,9 @@ import { useWorld } from '@/app/store'
 import { parseQr } from '@/domain/qr'
 import { sampleQrs } from '@/mock/seed'
 import { GatedRoute } from '@/features/sec/Gate'
-import { Button, Callout, CloseButton, cx, Ico, Sheet } from '@/components/app-ui'
+import { Button, Callout, CloseButton, cx, GroupLabel, Ico, Sheet, INSET } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Center } from '@/components/ui/center'
-import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
 import { Pressable } from '@/components/ui/pressable'
 import { Text } from '@/components/ui/text'
@@ -60,7 +59,7 @@ function SampleGrid({ onPick, cols }: { onPick: (payload: string) => void; cols:
     <Box role="list" className={cx('grid gap-3', cols)}>
       {sampleQrs(w).map((q) => (
         <Box key={q.id} role="listitem">
-          <Pressable role="button" onPress={() => onPick(q.payload)} className="h-full w-full items-center gap-2 rounded-xl border border-border bg-card p-4 data-[hover=true]:bg-accent data-[active=true]:bg-accent">
+          <Pressable role="button" onPress={() => onPick(q.payload)} className="h-full w-full items-center gap-2 rounded-3xl bg-card p-4 mac:rounded-[12px] mac:p-2.5 data-[hover=true]:bg-accent data-[active=true]:bg-accent">
             <QrImage payload={q.payload} size={88} label="" />
             <Text size="sm" className="line-clamp-2 text-center font-medium" title={q.label}>{q.label}</Text>
             <Text size="xs" className="text-center text-muted-foreground">{q.hint}</Text>
@@ -90,10 +89,10 @@ function WebScan() {
   return (
     <>
       <PayTabs active="scan" />
-      <Heading size="lg" as="h2" className="mb-3">Tải ảnh mã QR</Heading>
+      <GroupLabel className="mb-3 mac:mb-[11px]">Tải ảnh mã QR</GroupLabel>
       <Box
         onDragOver={(e) => { e.preventDefault(); setOver(true) }} onDragLeave={() => setOver(false)} onDrop={onDrop}
-        className={cx('rounded-xl border border-dashed', over ? 'border-primary bg-primary/10' : 'border-border hover:bg-muted')}
+        className={cx('rounded-3xl border border-dashed mac:rounded-[12px]', over ? 'border-primary bg-primary/10' : 'border-foreground/25 hover:bg-muted')}
       >
         <Pressable role="button" onPress={() => fileRef.current?.click()} className="min-h-40 w-full items-center justify-center gap-2 rounded-xl p-6">
           <Ico as={ImageUp} size="xl" className="text-muted-foreground" />
@@ -110,8 +109,8 @@ function WebScan() {
           </Callout>
         </Box>
       ) : null}
-      <Heading size="lg" as="h2" className="mt-12 mb-1">Mã mẫu</Heading>
-      <Text size="sm" className="mb-3 text-muted-foreground">Mã dựng sẵn cho bản demo. Chọn một mã để đi tiếp như khi quét thật.</Text>
+      <GroupLabel className="mt-8 mb-1 mac:mt-[30px]">Mã mẫu</GroupLabel>
+      <Text size="sm" className={cx('mb-3 text-muted-foreground', INSET)}>Mã dựng sẵn cho bản demo. Chọn một mã để đi tiếp như khi quét thật.</Text>
       <SampleGrid onPick={(p) => { setProblem(null); handle(p) }} cols="grid-cols-2 sm:grid-cols-4" />
     </>
   )

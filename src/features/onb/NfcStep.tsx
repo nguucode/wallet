@@ -1,7 +1,7 @@
 import { Nfc } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { getState, now, useWorld } from '@/app/store'
-import { Button, Ico } from '@/components/app-ui'
+import { Button, cx, Ico, INSET } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Center } from '@/components/ui/center'
 import { Heading } from '@/components/ui/heading'
@@ -16,7 +16,7 @@ export function IdentitySummary({ title }: { title: string }) {
   const c = useWorld().customer
   return (
     <Box role="region" aria-label={title}>
-      <Heading as="h2" size="lg" className="mb-2">{title}</Heading>
+      <Heading as="h2" size="lg" className={cx('mb-2', INSET)}>{title}</Heading>
       <DataList rows={[
         ['Họ và tên', c.name.toUpperCase()],
         ['Số CCCD', <Text className="tabular-nums">{maskIdNumber(c.idNumber)}</Text>],

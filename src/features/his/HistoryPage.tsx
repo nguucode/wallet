@@ -112,9 +112,9 @@ function take(groups: Group[], count: number) {
 /** Month-grouped table: ARIA table roles on gluestack stacks (gluestack has no Table). */
 function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w: World; onOpen: (id: string) => void }) {
   // Sized for the 672px panel: the transaction column keeps the room.
-  const col = { date: 'w-28 shrink-0 pr-3 pl-4', tx: 'min-w-0 flex-1 pr-3', status: 'w-32 shrink-0 pr-3 mac:w-44', amount: 'w-32 shrink-0 items-end pr-4' }
+  const col = { date: 'w-28 shrink-0 pr-3 pl-4 mac:pl-2.5', tx: 'min-w-0 flex-1 pr-3', status: 'w-32 shrink-0 pr-3 mac:w-44', amount: 'w-32 shrink-0 items-end pr-4 mac:pr-2.5' }
   return (
-    <Card className="overflow-hidden p-0 pb-2">
+    <Card inset="rows" className="pb-2">
       <VStack role="table" aria-label="Lịch sử giao dịch, mới nhất trước, nhóm theo tháng">
         <HStack role="row" className="border-b border-border py-3">
           <Box role="columnheader" className={col.date}><Text size="sm" className="font-medium text-muted-foreground">Ngày</Text></Box>
@@ -127,7 +127,7 @@ function WebTable({ groups, all, w, onOpen }: { groups: Group[]; all: Group[]; w
           return (
             <VStack key={g.key} role="rowgroup">
               <HStack role="row">
-                <Box role="columnheader" aria-colspan={4} className={cx('px-4 pb-2', gi === 0 ? 'pt-3' : 'pt-6')}>
+                <Box role="columnheader" aria-colspan={4} className={cx('px-4 pb-2 mac:px-2.5', gi === 0 ? 'pt-3' : 'pt-6')}>
                   <Text size="sm" className="font-semibold text-muted-foreground">
                     {g.label} · Vào <Text size="sm" className="tabular-nums text-success">{formatVnd(tot.in, { sign: 'in' })}</Text> · Ra <Text size="sm" className="tabular-nums text-destructive">{formatVnd(tot.out, { sign: 'out' })}</Text>
                   </Text>
@@ -170,8 +170,8 @@ function AppList({ groups, onOpen }: { groups: Group[]; onOpen: (id: string) => 
     <VStack>
       {groups.map((g, gi) => (
         <VStack key={g.key} role="region" aria-label={g.label} className={gi === 0 ? 'mt-3' : 'mt-6'}>
-          <GroupLabel className="mb-2 px-4">{g.label}</GroupLabel>
-          <Card className="overflow-hidden p-0">
+          <GroupLabel className="mb-2">{g.label}</GroupLabel>
+          <Card inset="rows">
             <VStack role="list" className="divide-y divide-border">
               {g.rows.map((t) => <Box key={t.id} role="listitem"><TxRow t={t} onOpen={onOpen} /></Box>)}
             </VStack>
@@ -225,14 +225,14 @@ export default function HistoryPage() {
   return (
     <Box>
       <ScreenTitle>Lịch sử</ScreenTitle>
-      <Box className={cx('gap-3', layout === 'web' ? 'flex-col' : 'flex-row items-center')}>
+      <Box className={cx('gap-3', layout === 'web' ? 'flex-col mac:gap-5' : 'flex-row items-center')}>
         <Box className="min-w-0 flex-1">
           <Segmented label="Chế độ xem" value={f.tab ?? 'all'} options={TABS} onChange={(v) => set('tab', v)} />
         </Box>
         {layout === 'web' ? (
-          <Card className="divide-y divide-border"><Filters f={f} set={set} months={months} /></Card>
+          <Card inset="rows" className="divide-y divide-border"><Filters f={f} set={set} months={months} /></Card>
         ) : (
-          <GButton variant="secondary" size="sm" onPress={() => setSheet(true)} className="shrink-0 rounded-full">
+          <GButton variant="secondary" size="sm" onPress={() => setSheet(true)} className="push-button min-h-11 shrink-0 rounded-full">
             <Ico as={SlidersHorizontal} />
             <ButtonText className="text-sm">Bộ lọc</ButtonText>
             {active.length ? <Badge aria-label={`${active.length} bộ lọc đang bật`} className="rounded-full"><BadgeText className="tabular-nums">{active.length}</BadgeText></Badge> : null}
@@ -252,7 +252,7 @@ export default function HistoryPage() {
         </HStack>
       ) : null}
 
-      <Box className="mt-6">
+      <Box className="mt-6 mac:mt-5">
         {!filtered.length ? (
           <EmptyState icon={<Ico as={Inbox} size="xl" />} title="Không có giao dịch phù hợp" action={<Button variant="secondary" onClick={() => clear(true)}>Xóa bộ lọc</Button>} />
         ) : layout === 'web' ? (
@@ -261,7 +261,7 @@ export default function HistoryPage() {
           <AppList groups={shown} onOpen={open} />
         )}
         {filtered.length ? (
-          <VStack className="mt-6 items-center gap-2">
+          <VStack data-align="free" className="mt-6 items-center gap-2 mac:mt-5">
             <Text size="sm" aria-live="polite" className="text-muted-foreground">{count >= filtered.length ? 'Đã hiển thị tất cả giao dịch' : `Đang hiển thị ${Math.min(count, filtered.length)}/${filtered.length} giao dịch`}</Text>
             {count < filtered.length ? <Button variant="secondary" onClick={() => setPage({ key, count: count + PAGE })}>Xem thêm</Button> : null}
           </VStack>

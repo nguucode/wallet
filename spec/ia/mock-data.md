@@ -40,7 +40,7 @@ Banks (real names, shown as text with a neutral monogram, no logos): Vietcombank
 
 ## Scenarios
 
-The persona's state is a named scenario, picked in Demo controls. Default is `ready`.
+The persona's state is a named scenario, set through the store (`setScenario`): tests use every one, and sign-out switches to `new`. There is no scenario picker in the UI (removed 2026-11-22). Default is `ready`.
 
 | Scenario | State |
 |---|---|
@@ -55,7 +55,7 @@ The persona's state is a named scenario, picked in Demo controls. Default is `re
 
 ## Demo controls
 
-A panel available from the web sidebar footer and via a long-press on the app header in the app shell. Every control is labelled as a simulation.
+Since 2026-11-22 the Demo controls sheet holds only the viewer theme and the sample PIN (US-FND-004). The simulations below are **store actions that tests drive**, not UI; a story that cites a demo control means the store action of that name.
 
 - **Scenario** picker (table above) and **Reset** to the seed.
 - **Next outcome** for the next money action: Thành công (default) / Đang xử lý / Không thành công (with reason).
@@ -69,4 +69,4 @@ A panel available from the web sidebar footer and via a long-press on the app he
 
 ## Latency
 
-Store actions resolve after 300–900 ms (random, seeded), as in Fortify, so loading states are visible. A Demo control can set latency to 0 or 3 s.
+Store actions resolve after 300–900 ms (random, seeded), as in Fortify, so loading states are visible. The latency setting (0 or 3 s) is a store setting for tests.

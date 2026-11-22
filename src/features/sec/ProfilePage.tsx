@@ -1,8 +1,7 @@
 import { Check, Clock, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { gateOf, useWorld } from '@/app/store'
-import { ConfirmRows } from '@/features/flow/FlowKit'
-import { Avatar, Badge, Callout, Card, cx, Ico, Skeleton } from '@/components/app-ui'
+import { Avatar, Badge, Callout, Card, cx, DetailRows, Ico, Skeleton } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
@@ -53,12 +52,12 @@ export default function ProfilePage() {
       </Card>
 
       {c.kycStatus === 'id_expiring' ? (
-        <Box className="mt-6"><Callout tone="pending" title={`CCCD của bạn hết hạn vào ${fmtYmd(c.idExpiry)}. Sau ngày này ví sẽ tạm ngừng giao dịch.`} /></Box>
+        <Box className="mt-6 mac:mt-5"><Callout tone="pending" title={`CCCD của bạn hết hạn vào ${fmtYmd(c.idExpiry)}. Sau ngày này ví sẽ tạm ngừng giao dịch.`} /></Box>
       ) : null}
-      {gate ? <Box className="mt-6"><GateCallout gate={gate} /></Box> : null}
+      {gate ? <Box className="mt-6 mac:mt-5"><GateCallout gate={gate} /></Box> : null}
 
-      <Card className="mt-6 overflow-hidden py-0">
-        <ConfirmRows rows={rows.map(([k, v]) => [k, loaded ? v : <Skeleton className="ml-auto h-4 w-28" />] as [string, React.ReactNode])} />
+      <Card inset="rows" className="mt-6 mac:mt-5">
+        <DetailRows rows={rows.map(([k, v]) => [k, loaded ? v : <Skeleton className="ml-auto h-4 w-28" />] as [string, React.ReactNode])} />
       </Card>
     </Box>
   )

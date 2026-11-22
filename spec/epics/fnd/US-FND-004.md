@@ -1,48 +1,43 @@
 ---
 id: US-FND-004
-title: Demo controls panel
+title: Demo controls (viewer theme)
 epic: FND
 priority: P0
-status: Draft
-size: M
+status: Done
+size: S
 routes: ["/home"]
 dependsOn: [US-FND-001, US-FND-003]
 ---
 
 ## Story
 
-As a reviewer, I want one panel that puts the wallet into any state and forces the next outcome, so that I can see pending, failed, refunded, gated and locked paths in minutes instead of setting them up by hand.
+> **Changed 2026-11-22 (owner):** the simulation controls (scenario and reset, next outcome, resolve pending, incoming transfer, cashier scan, verification and face match results, merchant refund, clock, latency) are gone from the UI. They stay as store actions that tests drive (ia/mock-data.md#demo-controls). The sheet now holds the viewer theme and the sample PIN only.
+
+As a reviewer, I want to change how the demo looks (light or dark, accent colour, background, glass) and find the sample PIN, so that I can judge the design in the setting I care about and get through step-up without guessing.
 
 ## Acceptance criteria
 
-- Given the web layout, when I click "Demo controls" in the top bar, then a non-modal panel opens on the right without covering the content column; given the app layout, when I long-press the screen header for 600 ms, then the same panel opens as a full-height sheet.
-- Given the panel, then it shows, in this order: "Kịch bản" (the eight scenarios from mock-data.md, current one selected) with "Đặt lại dữ liệu"; "Kết quả giao dịch tiếp theo" ("Thành công", "Đang xử lý", "Không thành công" with a reason picker); "Xử lý giao dịch đang chờ" ("Tất cả thành công", "Tất cả không thành công"); "Nhận tiền từ liên hệ"; "Thu ngân quét Mã thanh toán"; "Kết quả xác thực danh tính"; "Kết quả xác thực khuôn mặt" ("Khớp", "Không khớp"); "Cửa hàng hoàn tiền"; "Đồng hồ" ("+1 giờ", "+1 ngày", "Sang tháng sau"); "Độ trễ" ("Mặc định", "0 giây", "3 giây").
-- Given the panel header, then it reads "Demo controls" with the line "Mô phỏng cho người xem bản demo, không phải tính năng của ví."
-- Given I pick "Không thành công" with reason `bank_declined`, when the next money commit runs, then that transaction fails with that reason and the control returns to "Thành công", showing "Áp dụng cho giao dịch tiếp theo" while armed.
-- Given a control has nothing to act on (no pending transaction, no open Payment Code, no `qr_merchant` to refund), then it is disabled with the reason inline, for example "Không có giao dịch đang xử lý".
-- Given I click "Nhận tiền từ liên hệ", then a `p2p_in` of a random seeded amount from a contact with a wallet is committed and its notification appears (US-NTF-003).
-- Given I switch scenario or reset, then the store resets (US-FND-003), any open flow returns to `/home`, and a toast confirms "Đã chuyển sang kịch bản near-limit".
+- Given the web layout, when I press the palette button in the sidebar footer, then the "Demo controls" sheet opens; given the app layout, when I press the flask button in the nav bar, then the same content opens as a bottom sheet.
+- Given the sheet, then it shows, laid out as System Settings > Appearance (DESIGN.md "Viewer theme"): "Giao diện" (Theo hệ thống, Sáng, Tối), "Kính" on web only (Vibrancy, Liquid Glass), then under "Chủ đề": "Màu chủ đạo" (the seven colours) and "Nền" (Hình nền, Xám trung tính, Chuyển màu), every choice visible, the current one ringed and named.
+- Given I pick a choice, then the whole app re-themes at once and the choice is kept for this viewer across reloads (localStorage); demo data is not touched.
+- Given any choice differs from the default, then "Mặc định" shows in the "Chủ đề" header and restores Lam / Theo hệ thống / Hình nền / Vibrancy.
+- Given the sheet, then it states that everything in it is a simulation and shows the sample PIN and OTP `123456`.
+- Given I press "Xong" (web) or the close button (app), or Esc, then the sheet closes and focus returns to the button that opened it.
 
 ## UI states
 
-- Empty: not applicable.
-- Loading: a control shows a spinner in its button while its store action resolves; other controls stay usable.
-- Error: if an action throws, the control shows "Không thực hiện được" inline and the store is unchanged.
-- Blocked: none. Demo controls bypass gates by design; scenario switching is how a reviewer leaves a gate.
-- Overflow: the panel scrolls internally; on a 700px-tall window every section stays reachable; scenario names are code ids in monospace so they never wrap.
+- Empty, loading, error: not applicable (no store action).
+- Blocked: none.
+- Overflow: the web sheet body scrolls; at 390px every row wraps its choices under the label.
 
 ## Design notes
 
-- Web: 360px panel docked right under the top bar, 1px left border, light neutral surface so it reads as outside the product; sections separated by 1px dividers; segmented controls as pills.
-- App: bottom sheet at 90% height with a grab handle; same sections; 48px targets.
-- Visually distinct from the wallet (neutral surface, monospace scenario ids, "Demo" tag) so screenshots never confuse it with product UI.
+- DESIGN.md "Viewer theme (Demo controls)": grouped boxes, label leading, choices trailing, 10pt insets, picture choices for appearance, glass and background.
 
 ## FE notes
 
-- `src/demo/DemoControls.tsx`; each control calls a `store.demo.*` action. Actions whose behaviour belongs to another Epic are implemented there and only wired here: cashier scan (PAY), verification result (ONB), face match result (US-SEC-002), merchant refund (HIS or PAY, whichever owns refunds).
-- "Kết quả xác thực danh tính" options: "Ngay lập tức", "Cần xem xét", and the four failure reasons from rules.md#onboarding.
-- Panel open state per layout in `localStorage` (`wallet.demo.open`), try/catch.
+- `src/features/demo/DemoControls.tsx` (sheet), `src/features/demo/ThemeControls.tsx` (theme block), `src/app/theme.ts` (prefs, tokens, `loadTheme` falls back per field).
 
 ## Mock data
 
-- All scenarios; the seeded pending `bank_transfer` and settling `bill` for "Xử lý giao dịch đang chờ"; the refunded `qr_merchant` edge case for "Cửa hàng hoàn tiền".
+- None.

@@ -2,7 +2,7 @@ import { Fingerprint, KeyRound } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { useLayout } from '@/app/layout'
 import { addNotification, changePin, now, setDeviceBiometric, useWorld, verifyPin } from '@/app/store'
-import { Button, Card, cx, Disc, Ico, Sheet, Skeleton } from '@/components/app-ui'
+import { Button, Card, cx, Disc, Ico, Sheet, Skeleton, INSET } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { useGluestackColors } from '@/components/ui/gluestack-ui-provider/useGluestackColors'
 import { HStack } from '@/components/ui/hstack'
@@ -37,7 +37,7 @@ export default function SecurityPage() {
   return (
     <Box>
       <ScreenTitle>Bảo mật</ScreenTitle>
-      <Card className="overflow-hidden p-0">
+      <Card inset="rows">
         <VStack role="list" className="divide-y divide-border">
           <SettingRow
             icon={<Ico as={KeyRound} />}
@@ -85,7 +85,7 @@ export default function SecurityPage() {
 
 function SettingRow({ icon, title, desc, descId, control }: { icon: ReactNode; title: string; desc: ReactNode; descId?: string; control: ReactNode }) {
   return (
-    <HStack role="listitem" className="min-h-[60px] items-center gap-3 px-4 py-3">
+    <HStack role="listitem" className={cx('min-h-[60px] items-center gap-3 py-3 mac:min-h-[38px] mac:py-2', INSET)}>
       <Disc size={40}>{icon}</Disc>
       <VStack className="min-w-0 flex-1">
         <Text className="font-medium">{title}</Text>
@@ -133,7 +133,7 @@ function ChangePinSheet({ open, onClose, onDone }: { open: boolean; onClose: () 
       </HStack>
       {s.step === 'current' && until ? <LockedNote until={until} /> : s.step === 'done' ? null : (
         <>
-          <Text className="mb-2 text-center font-semibold" aria-live="polite">{STEP_LABEL[s.step]}</Text>
+          <Text data-align="free" className="mb-2 text-center font-semibold" aria-live="polite">{STEP_LABEL[s.step]}</Text>
           <PinPad key={s.n} label={STEP_LABEL[s.step]} error={s.error} onComplete={(pin) => setS(changePinStep(s, pin, verifyPin))} />
         </>
       )}

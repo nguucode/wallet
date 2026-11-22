@@ -3,7 +3,7 @@ import { mmss } from '@/app/format'
 import { useEffect, useState } from 'react'
 import { useLayout } from '@/app/layout'
 import { now } from '@/app/store'
-import { Button, Sheet } from '@/components/app-ui'
+import { Button, Sheet, Card } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { HStack } from '@/components/ui/hstack'
 import { Image } from '@/components/ui/image'
@@ -59,7 +59,7 @@ export function VneidStep() {
   if (layout === 'web')
     return (
       <StepShell title="Xác thực qua VNeID" description="Bạn sẽ được chuyển sang ứng dụng VNeID để đồng ý chia sẻ thông tin định danh với Wallet. Cần tài khoản định danh điện tử mức 2.">
-        <VStack className="items-center text-center">
+        <VStack data-align="free" className="items-center text-center">
           {left > 0 ? (
             <>
               {qr ? <Image source={{ uri: qr }} alt="Mã QR để quét bằng ứng dụng VNeID" size="none" className="size-[200px]" /> : <Box className="size-[200px] rounded-xl bg-muted" />}
@@ -74,10 +74,11 @@ export function VneidStep() {
           )}
         </VStack>
         {left > 0 ? (
-          <Box role="region" aria-label="Mô phỏng ứng dụng VNeID" className="mt-6 rounded-lg border border-dashed border-border bg-card p-4">
+          <Card role="region" aria-label="Mô phỏng ứng dụng VNeID" className="mt-6 border border-dashed border-border">
+            {/* Dashed edge: a simulated third-party app, not Wallet's own UI. */}
             <SimLabel>Mô phỏng ứng dụng VNeID</SimLabel>
             {sim}
-          </Box>
+          </Card>
         ) : null}
       </StepShell>
     )

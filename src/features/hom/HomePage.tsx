@@ -8,7 +8,7 @@ import {
 } from '@/app/store'
 import { formatVnd } from '@/domain/money'
 import { Avatar, BankMark, Card, cx, EmptyState, Ico, RailTile, Row, RowSkeleton, Section, Skeleton, TextLink, useLinkPress } from '@/components/app-ui'
-import { Badge, BadgeIcon, BadgeText } from '@/components/ui/badge'
+import { Badge, BadgeText } from '@/components/ui/badge'
 import { Box } from '@/components/ui/box'
 import { Button as GButton } from '@/components/ui/button'
 import { Center } from '@/components/ui/center'
@@ -71,13 +71,13 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
     // The money card (sếp: dark, as the old Wallet card): a `dark` scope, so every token inside takes its dark value
     // (text, chart, chip, the tint) in both modes; a soft glow of the tint from the top-right corner.
     // Web (macOS System Settings): a plain grouped box with the 10pt inset, no dark scope or glow.
-    <Card role="region" aria-label="Số dư" className={cx('relative isolate gap-0 overflow-hidden bg-card', layout === 'app' ? 'dark p-5' : 'p-2.5')}>
+    <Card role="region" aria-label="Số dư" className={cx('relative isolate gap-0 overflow-hidden bg-card', layout === 'app' && 'dark')}>
       {/* Glow on its own layer: gluestack's tailwind-merge would drop bg-card for a bg-[gradient] on the card. */}
-      {layout === 'app' ? <Box aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_100%_0%,rgb(var(--primary)/0.4),transparent_62%)]" /> : null}
+      {layout === 'app' ? <Box aria-hidden data-align="free" className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_100%_0%,rgb(var(--primary)/0.4),transparent_62%)]" /> : null}
       <HStack className="items-center gap-1">
         <Heading as="h2" size="sm" className="font-semibold text-muted-foreground">Số dư khả dụng</Heading>
         <GButton
-          variant="ghost" size="icon" className="-my-1 rounded-full"
+          variant="ghost" size="icon" className="-my-2 h-11 w-11 rounded-full mac:-my-1 mac:h-7 mac:w-7 mac:min-h-0 mac:min-w-0"
           aria-label={hidden ? 'Hiện số dư' : 'Ẩn số dư'} aria-pressed={hidden}
           onPress={() => setBalanceHidden(!hidden)}
         >
@@ -93,9 +93,9 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
         </>
       )}
       {loaded && held > 0 ? (
-        <Pressable href="/history?tab=dang-xu-ly" role="link" onPress={pendingPress} className="mt-3 min-h-8 self-start justify-center">
+        <Pressable href="/history?tab=dang-xu-ly" role="link" onPress={pendingPress} className="mt-3 min-h-11 self-start justify-center mac:min-h-8">
           <Badge variant="outline" className="gap-2 rounded-full px-3 py-1">
-            <BadgeIcon as={Clock} aria-hidden />
+            <Ico as={Clock} size="xs" className="text-foreground" />
             <BadgeText className="normal-case font-semibold">
               Đang xử lý{' '}
               {hidden ? <><Text size="xs" aria-hidden>••••••</Text><Text className="sr-only">số tiền đang ẩn</Text></> : <Text size="xs" className="font-medium tabular-nums">{formatVnd(held)}</Text>}
@@ -110,7 +110,7 @@ function BalanceSection({ loaded }: { loaded: boolean }) {
             label={`Số dư 30 ngày qua, từ ${formatVnd(series[0])} đến ${formatVnd(series[series.length - 1])}`}
             endTone={delta > 0 ? 'up' : delta < 0 ? 'down' : undefined}
             endTag={delta ? `${delta > 0 ? '+' : '−'}${(Math.abs(delta) / 1_000_000).toLocaleString('vi-VN', { maximumFractionDigits: 2 })}tr · 30 ngày` : undefined}
-            className="px-1 pt-2"
+            className="px-1 pt-2 lg:px-0"
             wide={layout === 'web'}
           />
           <HStack className="mt-2 justify-between" aria-hidden>
@@ -151,10 +151,10 @@ function ShortcutsRow({ guard }: { guard: Guard }) {
   const layout = useLayout()
   const items = SHORTCUTS.filter((s) => layout === 'app' || !s.app)
   return (
-    <Card role="navigation" aria-label="Lối tắt" className="mt-3 gap-0 px-2 py-3 lg:py-4">
+    <Card role="navigation" aria-label="Lối tắt" className="mt-3 gap-0 py-3 lg:py-4">
       {/* Equal columns: every shortcut gets the same width, so the gaps between icons and to the edges are one rhythm. */}
       {/* App: 3 × 2 so the 14px labels fit on one line (6 across wrapped "Mã thanh toán" to three lines). */}
-      <Grid role="list" className={layout === 'app' ? 'gap-y-4' : undefined} _extra={{ className: layout === 'app' ? 'grid-cols-3' : 'grid-cols-5' }}>
+      <Grid role="list" data-align="free" className={layout === 'app' ? 'gap-y-4' : undefined} _extra={{ className: layout === 'app' ? 'grid-cols-3' : 'grid-cols-5' }}>
         {items.map((s) => (
           <GridItem key={s.to} role="listitem" className="min-w-0" _extra={{ className: 'col-span-1' }}>
             <ShortcutTile s={s} guard={guard} />
@@ -173,7 +173,7 @@ function BillsDue({ loaded, guard }: { loaded: boolean; guard: Guard }) {
   if (loaded && !due.length) return null
   return (
     <Section title="Hóa đơn sắp đến hạn" action={loaded ? <TextLink to="/bills">Xem tất cả</TextLink> : undefined}>
-      <Card className="overflow-hidden p-0">
+      <Card inset="rows">
         {!loaded ? <RowSkeleton /> : (
           <VStack role="list" className="divide-y divide-border">
             {due.slice(0, 3).map(({ bill, days, overdue }) => {
@@ -208,7 +208,7 @@ function RecentRecipients({ loaded, guard }: { loaded: boolean; guard: Guard }) 
   return (
     <Section title="Người nhận gần đây" action={<TextLink to="/transfer">Chuyển tiền</TextLink>}>
       {/* The 56px avatar sits centred in a 72px item, so the rail is pulled 8px left to put the first avatar on the title edge. */}
-      <HStack role="list" className="-mx-4 gap-2 overflow-x-auto pr-4 pb-1 pl-2 lg:mr-0 lg:-ml-2 lg:overflow-visible lg:pr-0 lg:pl-0">
+      <HStack role="list" data-align="free" className="-mx-4 gap-2 overflow-x-auto pr-4 pb-1 pl-6 lg:mr-0 lg:ml-0 lg:overflow-visible lg:pr-0 lg:pl-0.5">
         {!loaded
           ? Array.from({ length: 4 }, (_, i) => <Box key={i} role="listitem" className="w-[72px] shrink-0"><Skeleton className="mx-auto size-14 rounded-full" /></Box>)
           : list.map((r) => {
@@ -248,7 +248,7 @@ function RecentActivity({ loaded, guard }: { loaded: boolean; guard: Guard }) {
   else body = <VStack role="list" className="divide-y divide-border">{recent.map((t) => <Box key={t.id} role="listitem"><TxRow t={t} withDate /></Box>)}</VStack>
   return (
     <Section title="Hoạt động gần đây" action={recent.length ? <TextLink to="/history">Xem tất cả</TextLink> : undefined}>
-      <Card className="overflow-hidden p-0">{body}</Card>
+      <Card inset="rows">{body}</Card>
     </Section>
   )
 }

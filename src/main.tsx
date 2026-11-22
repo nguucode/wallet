@@ -7,6 +7,8 @@ import { initTheme } from './app/theme'
 
 syncReminders()
 initTheme()
+// Dev-only UI checker (window.__uiCheck / __uiCheckAll): never in the production bundle.
+if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') void import('./dev/uiCheck')
 
 export default function Main() {
   return (

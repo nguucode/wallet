@@ -78,7 +78,7 @@ screens:
     title: Quét mã
     note: "Camera on app; on web and in demo, pick from a sample QR library or upload. Detects payload: wallet QR → /transfer/wallet, VietQR → /transfer/bank, merchant QR → /pay/merchant. Unknown → error state."
   - { id: pay-merchant, route: "/pay/merchant", title: Thanh toán, steps: [amount, confirm, auth, result], note: "amount is skipped when the QR carries a fixed amount." }
-  - { id: pay-code, route: "/pay/code", title: Mã thanh toán, note: "Rotating code (QR + barcode) with countdown, source picker, brightness hint. Demo control simulates the cashier scanning it." }
+  - { id: pay-code, route: "/pay/code", title: Mã thanh toán, note: "Rotating code (QR + barcode) with countdown, source picker, brightness hint. A cashier scan exists only as a store action for tests." }
 
   # ── Bills ────────────────────────────────────────────
   - { id: bills, route: "/bills", title: Hóa đơn, note: "Saved bills (due / paid / overdue) + biller categories. P0 biller category: Điện." }
@@ -121,4 +121,4 @@ screens:
 overlays: # not routes; can open over any screen
   - { id: auth-challenge, label: Xác thực giao dịch, note: "Sheet on app, dialog on web. PIN keypad or face match. See rules.md#step-up." }
   - { id: gate, label: Chặn giao dịch, note: "Explains why a money action is blocked and the single next step. See rules.md#gates." }
-  - { id: demo-controls, label: Demo controls, demo: true, note: "Panel. See mock-data.md#demo-controls." }
+  - { id: demo-controls, label: Demo controls, demo: true, note: "Sheet: viewer theme and sample PIN (US-FND-004). Simulations are store actions, mock-data.md#demo-controls." }

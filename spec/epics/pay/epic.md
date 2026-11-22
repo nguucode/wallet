@@ -2,7 +2,7 @@
 code: PAY
 name: Pay
 route: /pay/scan
-summary: One scan screen that reads wallet QR, VietQR and merchant QR through a tested EMVCo parser, merchant payment with fixed-amount skip, and the rotating Payment Code completed by a cashier-scan demo control.
+summary: One scan screen that reads wallet QR, VietQR and merchant QR through a tested EMVCo parser, merchant payment with fixed-amount skip, and the rotating Payment Code (the cashier scan is a store action for tests since 2026-11-22).
 ---
 
 # PAY · Pay
@@ -16,7 +16,7 @@ Paying at a counter, both ways round. "Quét mã" reads whatever QR the user poi
 - US-PAY-003 — Merchant payment amount and confirm
 - US-PAY-004 — Merchant payment result
 - US-PAY-005 — Payment Code with countdown and source picker
-- US-PAY-006 — Cashier scans the Payment Code
+- US-PAY-006 — Cashier scans the Payment Code (removed 2026-11-22)
 
 ## P1 backlog
 

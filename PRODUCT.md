@@ -27,7 +27,7 @@ Simple, with every state always clear. Wallet does only the core jobs, and it sh
 
 - Mobile: at a shop counter scanning a QR code, with a queue behind; on the move sending money; at home paying a bill. Speed to Scan/Payment Code matters most.
 - Desktop web wallet: reviewing history, receipts, statements and limits.
-- Reviewers: open wallet.ontheshore.biz on desktop, narrow the window to see the app layout, and trigger demo states with demo controls (as in Fortify).
+- Reviewers: open wallet.ontheshore.biz on desktop, narrow the window to see the app layout, and set the theme in Demo controls. States beyond the seeded `ready` persona are covered by tests, not by reviewer controls (removed 2026-11-22).
 
 ## Capabilities and Constraints
 
@@ -80,7 +80,7 @@ Simple, with every state always clear. Wallet does only the core jobs, and it sh
 2. **No hidden states.** Every transaction always shows where it is and what happens next. Pending and failed get as much design care as success.
 3. **Core jobs only.** Anything that is not top up, withdraw, transfer, pay, bills or history must earn its place; no filler tiles.
 4. **Scan is one tap away.** On mobile, Scan and Payment Code are reachable from anywhere in one tap.
-5. **Reviewable by design.** Demo controls let a reviewer reach any state without real setup, and the responsive layout shows mobile without a device.
+5. **Reviewable by design.** The seeded persona shows pending, refunded and due states on first load, Demo controls set the viewer theme, and the responsive layout shows mobile without a device. Other states are reached by tests.
 
 ## Accessibility & Inclusion
 
