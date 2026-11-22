@@ -1,4 +1,3 @@
-import { Circle } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { config } from '@/domain/config'
@@ -6,10 +5,10 @@ import { formatVnd } from '@/domain/money'
 import { createSupportRequest, now, useWorld } from '@/app/store'
 import type { SupportRequest, Transaction } from '@/mock/seed'
 import { ConfirmRows, FlowFrame, fmtDateTime, formatPhone, useCloseFlow, useFlow } from '@/features/flow/FlowKit'
-import { Button, ButtonLink, Callout, Card, cx, Field, TextInput, TextLink } from '@/components/app-ui'
+import { Button, ButtonLink, Callout, Card, cx, Field, TextInput, TextLink, INSET } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Link, LinkText } from '@/components/ui/link'
-import { Radio, RadioGroup, RadioIcon, RadioIndicator, RadioLabel } from '@/components/ui/radio'
+import { Radio, RadioGroup, RadioIndicator, RadioLabel } from '@/components/ui/radio'
 import { Text } from '@/components/ui/text'
 import { Textarea, TextareaInput } from '@/components/ui/textarea'
 import { VStack } from '@/components/ui/vstack'
@@ -63,13 +62,13 @@ export default function SupportNewFlow() {
     )
 
   const locked = !!t && !isWithinSupportWindow(t, now(), config.supportWindowDays)
-  const lockedNote = locked ? <Box role="status" className="mb-3 rounded-lg border border-border bg-card p-4"><Text>Giao dịch đã quá {config.supportWindowDays} ngày nên không thể gửi yêu cầu hỗ trợ trực tuyến</Text></Box> : null
+  const lockedNote = locked ? <Box className="mb-3"><Callout title="Không gửi trực tuyến được"><Text>Giao dịch đã quá {config.supportWindowDays} ngày nên không thể gửi yêu cầu hỗ trợ trực tuyến</Text></Callout></Box> : null
 
   /* sent */
   if (flow.step === 'sent' && draft.sent)
     return (
       <FlowFrame title="Liên hệ hỗ trợ" footer={<ButtonLink to={backTo} block>{t ? 'Về giao dịch' : 'Về Trợ giúp'}</ButtonLink>}>
-        <VStack className="items-center pt-6">
+        <VStack data-align="free" className="items-center pt-6">
           <Text role="status" size="lg" bold className="text-center">Đã gửi yêu cầu hỗ trợ</Text>
           <Text className="mt-2 text-center">Mã yêu cầu <Text className="font-semibold tabular-nums">{draft.sent.id}</Text></Text>
           <Text className="mt-1 text-center text-muted-foreground">Thời gian xử lý tối đa 30 ngày làm việc</Text>
@@ -98,12 +97,13 @@ export default function SupportNewFlow() {
         {t ? <Summary t={t} /> : null}
         {lockedNote}
         {draft.reason === 'wrong_recipient' && t?.type === 'p2p_out' && t.status === 'success' ? (
-          <VStack className="mb-6 items-start rounded-lg border border-border bg-card p-4">
-            <Text className="font-semibold">Ví không thể tự hủy giao dịch đã thành công</Text>
-            <Link href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="mt-2 min-h-11 justify-center">
-              <LinkText className="font-semibold">Nhắn người nhận</LinkText>
-            </Link>
-          </VStack>
+          <Box className="mb-6">
+            <Callout title="Ví không thể tự hủy giao dịch đã thành công" action={
+              <Link href={`sms:${t.counterparty.kind === 'contact' ? t.counterparty.phone : ''}`} className="min-h-11 justify-center mac:min-h-0">
+                <LinkText className="font-semibold">Nhắn người nhận</LinkText>
+              </Link>
+            } />
+          </Box>
         ) : null}
         <Text className="mb-3 text-muted-foreground">Lý do: <Text className="font-medium">{REASON_LABEL[draft.reason]}</Text></Text>
         <Field label="Mô tả vấn đề" htmlFor="sp-details">
@@ -134,20 +134,20 @@ export default function SupportNewFlow() {
       {t ? <Summary t={t} /> : null}
       {lockedNote}
       <Text id="sp-reason" className="mb-3 font-semibold">Bạn gặp vấn đề gì?</Text>
-      <Card className="overflow-hidden p-0">
+      <Card inset="rows">
         <RadioGroup value={draft.reason ?? ''} onChange={(r: Reason) => flow.setDraft({ ...draft, reason: r })} isDisabled={locked} aria-labelledby="sp-reason" className="gap-0 divide-y divide-border">
           {reasons.map((r) => (
-            <Radio key={r} value={r} aria-label={REASON_LABEL[r]} size="md" className="min-h-12 gap-3 px-4 py-3">
-              <RadioIndicator className="h-5 w-5"><RadioIcon as={Circle} /></RadioIndicator>
+            <Radio key={r} value={r} aria-label={REASON_LABEL[r]} size="md" className={cx('min-h-12 gap-3 py-3 mac:min-h-[38px] mac:py-2', INSET)}>
+              <RadioIndicator className="h-5 w-5" />
               <RadioLabel className="text-base font-normal">{REASON_LABEL[r]}</RadioLabel>
             </Radio>
           ))}
         </RadioGroup>
       </Card>
       {needsTx ? (
-        <Box role="status" className="mt-3 rounded-lg border border-border bg-card p-4">
+        <Box className="mt-3"><Callout title="Yêu cầu về một giao dịch">
           <Text>Hãy mở giao dịch trong Lịch sử và chọn Liên hệ hỗ trợ để gửi yêu cầu về giao dịch đó. <TextLink to="/history">Mở Lịch sử</TextLink></Text>
-        </Box>
+        </Callout></Box>
       ) : null}
       {dialog}
     </FlowFrame>

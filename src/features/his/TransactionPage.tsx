@@ -11,7 +11,7 @@ import type { Transaction, World } from '@/mock/seed'
 import { NotFound } from '@/features/demo/NotFound'
 import { ConfirmRows, FAILURE_COPY, fmtDateTime, fmtTime, maskAccount, maskPhone, truthLine } from '@/features/flow/FlowKit'
 import { useGuard } from '@/features/sec/Gate'
-import { Button, ButtonLink, Card, CloseButton, cx, Disc, Fee, Ico, IconButton, Money, Row, STATUS_LABEL, StatusPill, useLinkPress } from '@/components/app-ui'
+import { Button, ButtonLink, Card, CloseButton, cx, DetailRows, INSET, Disc, Fee, Ico, IconButton, Money, Row, STATUS_LABEL, StatusPill, useLinkPress } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Button as GButton, ButtonText } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
@@ -77,7 +77,7 @@ function Timeline({ steps }: { steps: Step[] }) {
   const dot = { done: 'bg-foreground', current: 'bg-primary', failed: 'bg-destructive', upcoming: 'border-2 border-border bg-card' }
   return (
     <Card>
-      <VStack role="list" aria-label="Trạng thái giao dịch">
+      <VStack role="list" aria-label="Trạng thái giao dịch" data-align="free">
         {steps.map((s, i) => (
           <HStack key={i} role="listitem" className="relative gap-3 pb-3 last:pb-0">
             {i < steps.length - 1 ? <Box aria-hidden className="absolute top-4 left-[5px] h-full w-0.5 bg-border" /> : null}
@@ -118,10 +118,10 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
     <Box className="pt-2">
       <style>{PRINT_CSS}</style>
       <HStack className="mb-3 items-center justify-between gap-2 print:hidden">
-        <Heading size="3xl" tabIndex={-1} data-page-title className="text-2xl outline-none">Biên lai</Heading>
+        <Heading size="3xl" tabIndex={-1} data-page-title className={cx('text-2xl outline-none', layout === 'web' && 'sr-only')}>Biên lai</Heading>
         {layout === 'app' ? <CloseButton onClick={close} /> : null}
       </HStack>
-      <Box id="receipt" role="article" aria-label="Biên lai giao dịch" className="mx-auto w-full max-w-md">
+      <Box id="receipt" role="article" aria-label="Biên lai giao dịch" data-align="free" className="mx-auto w-full max-w-md">
         <Card>
           <HStack className="items-start justify-between gap-3">
             <VStack>
@@ -146,11 +146,12 @@ function Receipt({ t, w }: { t: Transaction; w: World }) {
           ]} />
         </Card>
       </Box>
-      <VStack className="mx-auto mt-6 w-full max-w-md gap-2 print:hidden">
+      <VStack data-align="free" className="mx-auto mt-6 w-full max-w-md gap-2 print:hidden">
         {layout === 'web' ? (
-          <HStack className="gap-2">
-            <Button onClick={() => window.print()}><Ico as={Printer} />In biên lai</Button>
+          // macOS: the default button trails, cancel sits before it.
+          <HStack className="justify-end gap-2">
             <Button variant="secondary" onClick={close}>Đóng</Button>
+            <Button onClick={() => window.print()}><Ico as={Printer} />In biên lai</Button>
           </HStack>
         ) : (
           <Button variant="primary" block onClick={share}><Ico as={Share2} />{canShare ? 'Chia sẻ' : 'Sao chép'}</Button>
@@ -179,7 +180,7 @@ function Action({ label, icon, onClick, to }: { label: string; icon: LucideIcon;
 
 /** A full-width card row that links to a related transaction. */
 function LinkCard({ to, children }: { to: string; children: ReactNode }) {
-  return <Card className="overflow-hidden p-0"><Row to={to} title={children} chevron /></Card>
+  return <Card inset="rows"><Row to={to} title={children} chevron /></Card>
 }
 
 export default function TransactionPage() {
@@ -190,9 +191,10 @@ export default function TransactionPage() {
   const { guard, sheet } = useGuard()
   const toast = useToast()
   const nav = useNavigate()
-  const back = useCallback(() => nav('/history'), [nav])
-  // macOS: back to Lịch sử sits at the toolbar's leading edge (HIG Toolbars).
-  useToolbarNav({ onBack: back }, layout === 'web')
+  const receipt = params.get('view') === 'receipt'
+  const back = useCallback(() => nav(receipt ? `/history/${txId}` : '/history'), [nav, receipt, txId])
+  // macOS: back sits at the toolbar's leading edge (HIG Toolbars); the receipt titles its own pane.
+  useToolbarNav({ onBack: back, title: receipt ? 'Biên lai' : undefined }, layout === 'web')
   const t = w.transactions.find((x) => x.id === txId)
   if (!t) return <NotFound />
   if (params.get('view') === 'receipt') return <Receipt t={t} w={w} />
@@ -226,10 +228,10 @@ export default function TransactionPage() {
   )
   const actions = layout === 'web'
     ? <HStack className="flex-wrap gap-2">{items}</HStack>
-    : <Card className="px-2 py-4"><HStack className="justify-around gap-2">{items}</HStack></Card>
+    : <Card className="py-4"><HStack data-align="free" className="justify-around gap-2">{items}</HStack></Card>
 
   const wrongRecipient = t.type === 'p2p_out' && t.status === 'success' ? (
-    <Box role="region" aria-labelledby="wr-title" className="rounded-lg border border-border bg-card p-4">
+    <Card role="region" aria-labelledby="wr-title">
       <Heading as="h2" size="md" id="wr-title">Chuyển nhầm người nhận?</Heading>
       <Text size="sm" className="mt-1">Giao dịch chuyển tiền đã thành công không thể hủy hoặc thu hồi. Hãy nhắn người nhận để đề nghị chuyển trả.</Text>
       <HStack className="mt-3 flex-wrap gap-2">
@@ -239,13 +241,13 @@ export default function TransactionPage() {
         </GButton>
         {!request ? <ButtonLink to={supportTo} variant="secondary">Liên hệ hỗ trợ</ButtonLink> : null}
       </HStack>
-    </Box>
+    </Card>
   ) : null
 
   return (
     <Box className="max-w-xl">
 
-      <Card className="items-center gap-2 px-4 py-6">
+      <Card centered className="items-center gap-2 py-6">
         <TxIcon type={t.type} size={56} />
         <Heading size="3xl" tabIndex={-1} data-page-title className="mt-1 line-clamp-2 text-center text-lg break-words outline-none">{name}</Heading>
         <Text size="sm" className="-mt-1 text-muted-foreground">{typeLabel(t.type)}</Text>
@@ -254,7 +256,7 @@ export default function TransactionPage() {
         <Text size="sm" className="text-center text-muted-foreground">{t.status === 'success' ? fmtDateTime(t.updatedAt) : truthLine(t)}</Text>
       </Card>
 
-      <VStack className="mt-6 gap-4">
+      <VStack className="mt-6 gap-3 mac:mt-5">
         {timelineSteps(t, refundTx).length > 1 ? <Timeline steps={timelineSteps(t, refundTx)} /> : null}
 
         {refundTx ? (
@@ -270,7 +272,7 @@ export default function TransactionPage() {
 
         {layout === 'app' ? <>{actions}{wrongRecipient}</> : null}
 
-        <ConfirmRows rows={[
+        <Card inset="rows"><DetailRows rows={[
           ['Mã giao dịch', (
             <HStack className="items-center gap-1">
               <Text className="font-medium tabular-nums">{t.id}</Text>
@@ -279,12 +281,12 @@ export default function TransactionPage() {
           )],
           ...detailRows(t, w),
           ...(t.authMethod ? [['Xác thực bằng', AUTH_LABEL[t.authMethod]] as [string, ReactNode]] : []),
-        ]} />
+        ]} /></Card>
 
         {request ? (
-          <Text size="sm">Đã gửi yêu cầu hỗ trợ ngày {fmtDateTime(request.createdAt).split(' · ')[1]} · {SUPPORT_STATUS_LABEL[request.status]}</Text>
+          <Text size="sm" className={INSET}>Đã gửi yêu cầu hỗ trợ ngày {fmtDateTime(request.createdAt).split(' · ')[1]} · {SUPPORT_STATUS_LABEL[request.status]}</Text>
         ) : !inWindow ? (
-          <Text size="sm" className="text-muted-foreground">Giao dịch đã quá {config.supportWindowDays} ngày; yêu cầu hỗ trợ trực tuyến không còn mở.</Text>
+          <Text size="sm" className={cx('text-muted-foreground', INSET)}>Giao dịch đã quá {config.supportWindowDays} ngày; yêu cầu hỗ trợ trực tuyến không còn mở.</Text>
         ) : null}
 
         {layout === 'web' ? <>{wrongRecipient}{actions}</> : null}

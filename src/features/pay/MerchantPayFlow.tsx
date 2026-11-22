@@ -5,9 +5,8 @@ import { getState, useWorld } from '@/app/store'
 import { formatVnd } from '@/domain/money'
 import { parseQr } from '@/domain/qr'
 import { GatedRoute } from '@/features/sec/Gate'
-import { AmountInput, checkAmount, ConfirmRows, FlowFrame, ResultView, useCloseFlow, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
+import { AmountInput, checkAmount, ConfirmRows, FlowFrame, FlowNext, ResultView, useCloseFlow, useFlow, useMoneyCommit } from '@/features/flow/FlowKit'
 import { Button, ButtonLink, Callout, Card, Disc, Fee, Money } from '@/components/app-ui'
-import { Box } from '@/components/ui/box'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
 import { Spinner } from '@/components/ui/spinner'
@@ -77,7 +76,7 @@ function AmountStep({ draft, setDraft, onNext }: { draft: Draft; setDraft: (p: P
     <>
       <MerchantHeader name={draft.name!} category={draft.category} />
       <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={check && !check.ok ? check.message : undefined} hint={<>Số dư khả dụng: <Text className="tabular-nums">{formatVnd(w.balance)}</Text></>} />
-      <Box className="mt-8"><Button block disabled={!check?.ok} onClick={onNext}>Tiếp tục</Button></Box>
+      <FlowNext><Button block disabled={!check?.ok} onClick={onNext}>Tiếp tục</Button></FlowNext>
     </>
   )
 }
@@ -116,11 +115,11 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
       <AuthNote type="qr_merchant" amount={draft.amount} />
       {draft.fixed && !check.ok ? <Text size="sm" role="alert" className="mt-3 text-destructive">{check.message}</Text> : null}
       {commit.error ? <Text size="sm" role="alert" className="mt-3 text-destructive">{commit.error}</Text> : null}
-      <VStack className="mt-8 gap-2">
+      <FlowNext>
         {draft.fixed && !check.ok
           ? <ButtonLink to="/pay/scan" block>Quét mã khác</ButtonLink>
           : <Button block onClick={() => (check.ok ? commit.start() : toAmount())}>Xác nhận</Button>}
-      </VStack>
+      </FlowNext>
       {commit.sheet}
     </>
   )

@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { useLayout } from '@/app/layout'
 import { markRead, now, useWorld } from '@/app/store'
 import type { Notification, NotificationKind } from '@/mock/seed'
-import { Button, Card, cx, Disc, EmptyState, Ico, IconButton, RowSkeleton, Segmented, GroupLabel } from '@/components/app-ui'
+import { Button, Card, cx, Disc, EmptyState, Ico, IconButton, RowSkeleton, Segmented, GroupLabel, INSET } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { HStack } from '@/components/ui/hstack'
 import { Pressable } from '@/components/ui/pressable'
@@ -68,8 +68,8 @@ export default function NotificationsPage() {
         ) : (
           groups.map((g) => (
             <VStack key={g.label} role="region" aria-label={g.label} className="gap-2">
-              <GroupLabel className="px-4">{g.label}</GroupLabel>
-              <Card className="overflow-hidden p-0">
+              <GroupLabel>{g.label}</GroupLabel>
+              <Card inset="rows">
                 <VStack role="list" className="divide-y divide-border">
                   {g.items.map((n) => (
                     <Box key={n.id} role="listitem">
@@ -90,7 +90,7 @@ export default function NotificationsPage() {
 function NotificationRow({ n, onOpen }: { n: Notification; onOpen: (n: Notification) => void }) {
   return (
     <Pressable role="button" onPress={() => onOpen(n)} className="w-full data-[hover=true]:bg-accent data-[active=true]:bg-accent">
-      <HStack className="items-start gap-3 px-4 py-3">
+      <HStack className={cx('items-start gap-3 py-3 mac:py-2', INSET)}>
         <Disc size={40}><Ico as={ICON[n.kind]} /></Disc>
         <VStack className="min-w-0 flex-1">
           <HStack className="items-baseline gap-2">

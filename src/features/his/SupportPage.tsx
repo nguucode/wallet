@@ -58,24 +58,24 @@ export default function SupportPage() {
       </Card>
 
       <Section title="Câu hỏi thường gặp">
-        <Card className="overflow-hidden p-0">
+        <Card inset="rows">
           <VStack className="divide-y divide-border">
             {FAQ.map((tp) => {
               const tOpen = topic === tp.slug
               return (
                 <Box key={tp.slug}>
-                  <Toggle level={5} open={tOpen} controls={`t-${tp.slug}`} onPress={() => setTopic(tOpen ? undefined : tp.slug)} className="min-h-14 pl-4">
+                  <Toggle level={5} open={tOpen} controls={`t-${tp.slug}`} onPress={() => setTopic(tOpen ? undefined : tp.slug)} className="min-h-14 pl-4 mac:min-h-[38px] mac:pl-2.5">
                     <Text className="font-semibold">{tp.topic}</Text>
                   </Toggle>
-                  <VStack id={`t-${tp.slug}`} hidden={!tOpen} className={cx('divide-y divide-border border-t border-border bg-muted/50', !tOpen && 'hidden')}>
+                  <VStack id={`t-${tp.slug}`} hidden={!tOpen} data-align="free" className={cx('divide-y divide-border border-t border-border bg-muted/50', !tOpen && 'hidden')}>
                     {tp.items.map((q) => {
                       const qOpen = open === q.slug
                       return (
                         <Box key={q.slug} id={q.slug}>
-                          <Toggle level={6} open={qOpen} controls={`a-${q.slug}`} onPress={() => toggleQ(q.slug)} className="min-h-12 pl-6">
+                          <Toggle level={6} open={qOpen} controls={`a-${q.slug}`} onPress={() => toggleQ(q.slug)} className="min-h-12 pl-8 mac:min-h-[38px] mac:pl-5">
                             <Text className="font-medium">{q.question}</Text>
                           </Toggle>
-                          <VStack id={`a-${q.slug}`} hidden={!qOpen} className={cx('gap-2 pr-4 pb-3 pl-6', !qOpen && 'hidden')}>
+                          <VStack id={`a-${q.slug}`} hidden={!qOpen} className={cx('gap-2 pr-4 pb-3 pl-8 mac:pr-2.5 mac:pl-5', !qOpen && 'hidden')}>
                             {q.answer.map((p) => <Text key={p}>{p}</Text>)}
                             {q.links?.length ? (
                               <HStack className="flex-wrap gap-x-4">

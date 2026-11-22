@@ -31,7 +31,7 @@ export default function TransferChooser() {
   const name = (r: Recent) => (r.kind === 'wallet' ? r.name : r.holder)
 
   const options = (
-    <Card className="p-0 overflow-hidden">
+    <Card inset="rows">
       <VStack role="list" className="divide-y divide-border">
         {OPTIONS.map(({ to, icon, title, sub }) => (
           <Box key={to} role="listitem">
@@ -44,7 +44,7 @@ export default function TransferChooser() {
   const empty = <Text className="text-muted-foreground">Chưa có người nhận gần đây.</Text>
 
   const recentWeb = recent.length ? (
-    <Card className="p-0 overflow-hidden">
+    <Card inset="rows">
       <VStack role="list" className="divide-y divide-border">
         {recent.map((r) => (
           <Box key={r.key} role="listitem">
@@ -62,7 +62,7 @@ export default function TransferChooser() {
 
   // Same rail spec as Home's recipients: 72px items, 56px avatars, 8px gap, first avatar on the title edge.
   const recentApp = recent.length ? (
-    <HStack role="list" className="-mx-4 gap-2 overflow-x-auto pr-4 pb-1 pl-2">
+    <HStack role="list" data-align="free" className="-mx-4 gap-2 overflow-x-auto pr-4 pb-1 pl-6 lg:mx-0 lg:overflow-visible lg:pr-0 lg:pl-0.5">
       {recent.map((r) => (
         <Box key={r.key} role="listitem" className="w-[72px] shrink-0">
           <RailTile

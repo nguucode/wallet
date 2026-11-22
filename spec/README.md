@@ -12,7 +12,7 @@ spec/
   ia/sitemap.yaml         routes, nav for both layouts, flow steps, overlays; drives the real nav
   ia/object-model.md      glossary (code term ↔ UI label), objects, enums, transaction state machine
   ia/rules.md             law-as-UI rules, gates, limits, step-up, fees, conventions (wins over stories)
-  ia/mock-data.md         persona, scale, edge cases, scenarios, demo controls
+  ia/mock-data.md         persona, scale, edge cases, scenarios, store simulations
   epics/<code>/epic.md            one per Epic; lists its P1 backlog as a table (no files)
   epics/<code>/US-<CODE>-NNN.md   one per P0 user story
 ```
@@ -44,7 +44,7 @@ Other Epics may depend on these before they are written. The owning Epic must us
 | US-FND-001 | App shell for both layouts with nav from sitemap.yaml |
 | US-FND-002 | Money, date, and phone formatting with the amount input |
 | US-FND-003 | Mock store, scenarios, and latency |
-| US-FND-004 | Demo controls panel |
+| US-FND-004 | Demo controls (viewer theme) |
 | US-FND-006 | Not-found page and error boundary |
 | US-FND-007 | Money flow pattern: steps, confirm, and result |
 | US-SEC-001 | Step-up auth sheet with PIN |
@@ -105,7 +105,7 @@ As a wallet user, I want …, so that ….
 ## Rules
 
 - **One story is one screen-level behavior.** A list, a detail, and a flow are separate stories. UI states live inside each story.
-- **P0** is the demo loop in PRODUCT.md (onboarding → link bank → top up → transfer / pay / bill → history → support), plus the shell and demo controls. (A /device phone-frame preview was built, then removed 2026-11-19: the app layout is reached by narrowing the window or on a phone.) **P1** is the rest of PRODUCT.md's P1 list plus the Product menu.
+- **P0** is the demo loop in PRODUCT.md (onboarding → link bank → top up → transfer / pay / bill → history → support), plus the shell and Demo controls (viewer theme only since 2026-11-22). (A /device phone-frame preview was built, then removed 2026-11-19: the app layout is reached by narrowing the window or on a phone.) **P1** is the rest of PRODUCT.md's P1 list plus the Product menu.
 - A P0 story's `dependsOn` lists only P0 IDs. When it would use a P1 capability, its FE notes say "Enhanced by <Epic> P1: <title>".
 - [ia/rules.md](ia/rules.md) wins over any story. Stories cite the rule they apply instead of restating thresholds as hard-coded numbers.
 - Every story covers both layouts. Story text in English; UI copy in Vietnamese using the labels in [ia/object-model.md](ia/object-model.md).

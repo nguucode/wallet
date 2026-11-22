@@ -10,7 +10,6 @@ import { Button as GButton, ButtonText } from '@/components/ui/button'
 import { Center } from '@/components/ui/center'
 import { Grid, GridItem } from '@/components/ui/grid'
 import { Input, InputField } from '@/components/ui/input'
-import { Pressable } from '@/components/ui/pressable'
 import { Text } from '@/components/ui/text'
 import { VStack } from '@/components/ui/vstack'
 
@@ -33,10 +32,11 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
     if (next.length === length) setTimeout(() => onComplete(next), 80)
   }
   return (
-    <Box>
+    // Centred keypad and dots (app); the web field spans the panel.
+    <Box data-align="free">
       {/* Real input so keyboards, password managers off, and screen readers work. macOS: it is the visible secure
           text field (24pt, AppKit regular); the dots and keypad are iPhone idioms, app only. */}
-      <Box className="sr-only mac:not-sr-only mac:mx-auto mac:w-48">
+      <Box className="sr-only mac:not-sr-only mac:w-full">
         <Input isDisabled={disabled} isInvalid={!!error} className="mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background">
           <InputField
             id="pin-input" ref={inputRef as never} autoFocus inputMode="numeric" autoComplete="off" type="password" maxLength={length}
@@ -48,18 +48,20 @@ export function PinPad({ length = config.pin.length, onComplete, error, disabled
           />
         </Input>
       </Box>
-      <Pressable onPress={() => inputRef.current?.focus()} aria-hidden focusable={false} className={cx('mx-auto flex-row gap-4 py-3 mac:hidden', shake && 'animate-pulse')}>
+      {/* The dots only show progress; the real input (above) takes focus and typing. */}
+      <Box aria-hidden className={cx('mx-auto flex-row gap-4 py-3 mac:hidden', shake && 'animate-pulse')}>
         {Array.from({ length }, (_, i) => (
           <Box key={i} className={cx('size-3.5 rounded-full', i < pin.length ? 'bg-foreground' : 'bg-muted')} />
         ))}
-      </Pressable>
+      </Box>
       <Text id="pin-error" role="alert" size="sm" className="min-h-5 text-center text-destructive">{error}</Text>
-      <Grid className="mx-auto mt-2 max-w-xs gap-2 mac:hidden" _extra={{ className: 'grid-cols-3' }} aria-hidden>
+      {/* The keypad is a real control for everyone (it was hidden from assistive tech while staying focusable). */}
+      <Grid className="mx-auto mt-2 max-w-xs gap-2 mac:hidden" _extra={{ className: 'grid-cols-3' }} aria-label="Bàn phím số">
         {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'].map((k) => (
           <GridItem key={k || 'blank'} _extra={{ className: 'col-span-1' }}>
             {k === '' ? null : (
               <GButton
-                variant="secondary" focusable={false} isDisabled={disabled}
+                variant="secondary" isDisabled={disabled}
                 aria-label={k === 'del' ? 'Xóa' : undefined}
                 onPress={() => (k === 'del' ? setPin((p) => p.slice(0, -1)) : push(k))}
                 className="h-14 w-full rounded-xl"
@@ -128,7 +130,7 @@ export function AuthSheet({ open, onOpenChange, method, amount, onSuccess }: {
     : `Tổng giao dịch hôm nay vượt ${formatVnd(config.stepUp.perDay)} nên cần xác thực khuôn mặt theo quy định.`
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} title={title} closeLabel="Hủy" description={effective === 'face_match' ? undefined : `Nhập mã PIN để xác nhận ${formatVnd(amount)}`}>
+    <Sheet open={open} onOpenChange={onOpenChange} title={title} closeLabel="Hủy" description={effective === 'face_match' ? undefined : amount > 0 ? `Nhập mã PIN để xác nhận ${formatVnd(amount)}` : 'Nhập mã PIN để tiếp tục.'}>
       {effective === 'face_match' ? (
         <FaceScan reason={reason} onDone={(ok) => (ok ? onSuccess('face_match') : onOpenChange(false))} />
       ) : effective === 'device_biometric' ? (

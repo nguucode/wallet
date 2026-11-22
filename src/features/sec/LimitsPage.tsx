@@ -26,14 +26,14 @@ export default function LimitsPage() {
     <Box>
       <ScreenTitle>Hạn mức</ScreenTitle>
       {!loaded ? (
-        <VStack className="gap-6" aria-busy>
+        <VStack className="gap-6 mac:gap-5" aria-busy>
           {[0, 1, 2].map((i) => (
             <Card key={i} className="gap-3"><Skeleton className="h-5 w-1/2" /><Skeleton className="h-2 rounded-full" /><Skeleton className="h-4 w-2/3" /></Card>
           ))}
         </VStack>
       ) : (
-        <VStack className="gap-6">
-          <Card className="px-4 py-6">
+        <VStack className="gap-6 mac:gap-5">
+          <Card centered className="py-6">
             <Heading as="h2" size="lg" className="sr-only">Tổng quan hạn mức tháng này</Heading>
             <Grid className="gap-4" _extra={{ className: 'grid-cols-2' }}>
               <GridItem _extra={{ className: 'col-span-1' }}><RingStat title="Chung" counter={c.general} /></GridItem>

@@ -68,14 +68,15 @@ export default function BillsPage() {
     <Box>
       <ScreenTitle description={payable.length ? <Text className="tabular-nums">{payable.length} hóa đơn cần thanh toán · {formatVnd(total)}</Text> : undefined}>Hóa đơn</ScreenTitle>
 
-      <Section title="Hóa đơn của tôi" className="mt-0" action={bills.length ? <Button variant="ghost" size="sm" onClick={() => guard('/bills/new')}>Thêm hóa đơn</Button> : undefined}>
+      {/* Adding lives in its own "Thêm hóa đơn" section below; no second entry point in this header. */}
+      <Section title="Hóa đơn của tôi" className="mt-0">
         {!bills.length ? (
           <Card>
             <EmptyState icon={<Ico as={FileText} size="lg" />} title="Chưa có hóa đơn nào được lưu"
               action={<Button variant="ghost" onClick={() => guard('/bills/new')}>Thêm hóa đơn điện</Button>} />
           </Card>
         ) : (
-          <Card className="overflow-hidden p-0">
+          <Card inset="rows">
             <VStack role="list" className="divide-y divide-border">
               {bills.map((b) => {
                 const s = billStatusOn(b, at)
@@ -101,7 +102,7 @@ export default function BillsPage() {
 
       <Section title="Thêm hóa đơn">
         {/* Same pitch as Home's recipient rail (72px items, 8px gap); pulled 12px left so the first circle meets the title edge. */}
-        <HStack role="list" className="-ml-3 gap-2">
+        <HStack role="list" data-align="free" className="ml-1 gap-2 mac:-ml-0.5">
           {tiles.map((t) => (
             <Box key={t.label} role="listitem">
               <Pressable role="button" disabled={!t.enabled} onPress={() => guard('/bills/new')} className="w-[72px] items-center gap-2 rounded-xl data-[hover=true]:opacity-80 data-[active=true]:opacity-60 data-[disabled=true]:opacity-100">

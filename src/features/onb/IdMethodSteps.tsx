@@ -33,7 +33,7 @@ export function IdMethodStep() {
             key={o.path} role="radio" aria-checked={draft.path === o.path} aria-disabled={o.disabled || undefined}
             aria-describedby={o.disabled ? 'chip-reason' : undefined}
             onPress={() => !o.disabled && pick(o.path)}
-            className={cx('flex-row items-start gap-3 rounded-xl border p-4', o.disabled ? 'cursor-not-allowed border-border bg-muted' : draft.path === o.path ? 'border-primary bg-primary/10' : 'border-border hover:bg-muted')}
+            className={cx('flex-row items-start gap-3 rounded-xl border p-4', o.disabled ? 'cursor-not-allowed border-dashed border-border bg-card' : draft.path === o.path ? 'border-primary bg-primary/10' : 'border-border hover:bg-muted')}
           >
             <Disc size={44}>{o.icon}</Disc>
             <VStack className="min-w-0 flex-1">

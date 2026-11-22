@@ -58,8 +58,8 @@ export default function MeHub() {
         )}
       </Card>
 
-      <Box role="navigation" aria-label="Tài khoản" className="mt-6">
-        <Card className="overflow-hidden p-0">
+      <Box role="navigation" aria-label="Tài khoản" className="mt-6 mac:mt-5">
+        <Card inset="rows">
           <VStack role="list" className="divide-y divide-border">
             {links.map((l) => (
               <Box key={l.to} role="listitem">
@@ -71,8 +71,8 @@ export default function MeHub() {
       </Box>
 
       {/* iOS Settings: sign out is a destructive text row in its own grouped box. */}
-      <Card className="mt-8">
-        <Pressable role="button" onPress={() => setConfirm(true)} className="min-h-11 items-center justify-center px-4 py-3 data-[active=true]:bg-accent">
+      <Card inset="rows" centered className="mt-8 mac:mt-[30px]">
+        <Pressable role="button" onPress={() => setConfirm(true)} className="min-h-11 items-center justify-center py-3 mac:min-h-[38px] mac:py-2 data-[active=true]:bg-accent">
           <Text className="text-destructive">Đăng xuất</Text>
         </Pressable>
       </Card>

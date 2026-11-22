@@ -99,12 +99,16 @@ function Receive() {
 
   return (
     <>
-      <Card className="items-center px-4 py-6 text-center">
-        <Segmented label="Loại mã" value={kind} onChange={setKind} options={[{ value: 'wallet', label: 'Mã ví' }, { value: 'vietqr', label: 'VietQR' }]} />
+      <Card centered className="items-center py-6 text-center">
+        {/* Centred over the centred code. */}
+        <Box className="items-center">
+          <Segmented label="Loại mã" value={kind} onChange={setKind} options={[{ value: 'wallet', label: 'Mã ví' }, { value: 'vietqr', label: 'VietQR' }]} />
+        </Box>
         <GroupLabel className="mt-6">Mã nhận tiền</GroupLabel>
-        <Card className="mt-3 p-2">
+        {/* QR quiet zone: a white plate in both modes, not a second box. */}
+        <Box className="mt-3 rounded-[12px] bg-white p-2">
           <QrImage payload={payload} size={size} label={`Mã nhận tiền của ${w.customer.name}${amount ? `, số tiền ${formatVnd(amount)}` : ''}`} />
-        </Card>
+        </Box>
         {kind === 'vietqr' ? <Text size="sm" className="mt-3 text-muted-foreground">Quét bằng app ngân hàng bất kỳ</Text> : null}
         {amount ? <Text size="4xl" bold className="mt-3 tabular-nums">{formatVnd(amount)}</Text> : null}
         <Text size="lg" bold className="mt-3 break-words">{w.customer.name}</Text>

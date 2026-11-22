@@ -100,7 +100,7 @@ export function OtpStep() {
         </HStack>
       </Box>
       <Text id="otp-msg" role="alert" size="sm" className="mt-3 block min-h-5 text-center text-destructive">{error}</Text>
-      <Text id="otp-note" size="sm" className="mt-1 block text-center text-muted-foreground">Mô phỏng: mã OTP là 123456</Text>
+      <Text id="otp-note" data-align="free" size="sm" className="mt-1 block text-center text-muted-foreground">Mô phỏng: mã OTP là 123456</Text>
       <VStack className="mt-6 items-center gap-1">
         {wait > 0 && !exhausted ? (
           <Text className="text-muted-foreground">Gửi lại mã sau <Text className="tabular-nums text-muted-foreground">{mmss(wait)}</Text></Text>

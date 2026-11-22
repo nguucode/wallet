@@ -35,14 +35,15 @@ export function QrImage({ payload, size, label }: { payload: string; size: numbe
   const box = { width: size, height: size }
   if (state.error && state.payload === payload)
     return (
-      <VStack role="alert" className="items-center justify-center gap-3 rounded-xl border border-border bg-card p-4 text-center" style={box}>
+      <VStack role="alert" className="items-center justify-center gap-3 rounded-xl bg-muted p-4 text-center" style={box}>
         <Text>Không tạo được mã. Thử lại.</Text>
         <Button size="sm" variant="secondary" onClick={() => setRetry((r) => r + 1)}>Thử lại</Button>
       </VStack>
     )
   if (!state.url || state.payload !== payload)
     return <Box aria-busy aria-label="Đang tạo mã" role="img" style={box}><Skeleton className="size-full rounded-xl" /></Box>
-  return <Box style={box}><Image size="full" source={{ uri: state.url }} aria-label={label} className="rounded-xl" /></Box>
+  // An empty label means the code is decorative (its button already names it): hidden from assistive tech.
+  return <Box style={box} aria-hidden={label ? undefined : true}><Image size="full" source={{ uri: state.url }} aria-label={label || undefined} className="rounded-xl" /></Box>
 }
 
 export function MessageField({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
@@ -115,9 +116,9 @@ export function RecipientChip({ name, sub, note, onChange }: { name: string; sub
 export function AuthNote({ type, amount }: { type: Parameters<typeof authLine>[0]; amount: number }) {
   const face = authFor(type, amount) === 'face_match'
   return (
-    <HStack className="mt-3 items-start gap-2 rounded-lg border border-border bg-card px-4 py-3">
+    <Card className="mt-3 flex-row items-start gap-2">
       <Ico as={face ? ScanFace : Lock} size="md" className="mt-1 shrink-0" />
       <Text>{authLine(type, amount)}</Text>
-    </HStack>
+    </Card>
   )
 }

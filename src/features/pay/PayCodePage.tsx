@@ -9,7 +9,7 @@ import type { FundingSource, Transaction } from '@/mock/seed'
 import { AuthSheet } from '@/features/sec/AuthSheet'
 import { GatedRoute } from '@/features/sec/Gate'
 import { authFor, checkAmount } from '@/features/flow/FlowKit'
-import { Button, Card, cx, Ico, Row, Sheet, TextLink } from '@/components/app-ui'
+import { Button, Card, cx, Ico, Row, Sheet, TextLink, SheetList } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
@@ -161,7 +161,7 @@ function PayCode() {
       {phase !== 'auth' && code ? (
         <>
           {banner}
-          <Card className="relative items-center px-4 py-6">
+          <Card centered className="relative items-center py-6">
             {app ? null : <Heading size="lg" as="h2" className="mb-3">Mã thanh toán</Heading>}
             <Box className="rounded-xl bg-white p-2">
               <QrImage payload={code.value} size={240} label="Mã thanh toán, đưa thu ngân quét" />
@@ -187,7 +187,7 @@ function PayCode() {
               </VStack>
             ) : null}
           </Card>
-          <Card className="mt-6 overflow-hidden p-0">
+          <Card inset="rows" className="mt-6">
             <Row
               onClick={sources.length ? () => setPicker(true) : undefined}
               title="Nguồn tiền"
@@ -198,7 +198,7 @@ function PayCode() {
           <Text size="sm" className="mt-3 text-muted-foreground">Thu ngân quét mã này để trừ tiền. Không chia sẻ mã với người khác. <TextLink to="/pay/scan">Quét mã thay vì đưa mã</TextLink></Text>
         </>
       ) : (
-        <Card className="py-12"><Text className="text-center text-muted-foreground">Xác thực để hiện mã thanh toán.</Text></Card>
+        <Card centered className="py-12"><Text className="text-center text-muted-foreground">Xác thực để hiện mã thanh toán.</Text></Card>
       )}
 
       <AuthSheet
@@ -216,7 +216,7 @@ function PayCode() {
         />
       ) : null}
       <Sheet open={picker} onOpenChange={setPicker} title="Nguồn tiền">
-        <VStack role="list" className="-mx-4">
+        <SheetList>
           {[{ id: WALLET, title: 'Ví', sub: `Số dư khả dụng: ${formatVnd(w.balance)}` }, ...sources.map((s) => ({ id: s.id, title: srcLabel(s) + (s.isDefault ? ' (mặc định)' : ''), sub: s.kind === 'debit_card' ? 'Thẻ ghi nợ' : 'Tài khoản ngân hàng' }))].map((o) => (
             <Box key={o.id} role="listitem">
               <Row
@@ -227,7 +227,7 @@ function PayCode() {
               />
             </Box>
           ))}
-        </VStack>
+        </SheetList>
       </Sheet>
     </>
   )

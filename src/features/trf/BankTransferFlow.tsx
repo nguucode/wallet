@@ -6,15 +6,17 @@ import { fee } from '@/domain/fees'
 import { formatVnd } from '@/domain/money'
 import { parseQr } from '@/domain/qr'
 import { BANKS, bankById, bankByBin, freeUsed, getState, lookupBankAccount, useWorld, type LookupResult } from '@/app/store'
+import { useLayout } from '@/app/layout'
 import { GatedRoute } from '@/features/sec/Gate'
 import {
   AmountInput, checkAmount, ConfirmRows, FeeValue, FlowFrame, maskAccount, ResultView, useCloseFlow, useFlow, useMoneyCommit,
+  FlowNext,
 } from '@/features/flow/FlowKit'
-import { BankMark, Button, ButtonLink, Callout, Card, cx, Ico, Money, Row, Section, Sheet } from '@/components/app-ui'
+import { BankMark, Button, ButtonLink, Callout, Card, cx, Ico, Money, Row, Section, Sheet, SheetList } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { Heading } from '@/components/ui/heading'
 import { HStack } from '@/components/ui/hstack'
-import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input'
+import { Input, InputField, InputSlot } from '@/components/ui/input'
 import { Pressable } from '@/components/ui/pressable'
 import { Spinner } from '@/components/ui/spinner'
 import { Text } from '@/components/ui/text'
@@ -129,7 +131,7 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
       {prefill?.invalid ? <Box className="mb-6"><Callout tone="danger" title="Mã QR không hợp lệ. Hãy quét lại hoặc nhập người nhận." /></Box> : null}
       {w.bankRecipients.length ? (
         <Section title="Người nhận đã lưu" className="mt-0 lg:mt-0">
-          <Card className="p-0 overflow-hidden">
+          <Card inset="rows">
             <VStack role="list" className="divide-y divide-border">
               {w.bankRecipients.slice(0, 6).map((r) => (
                 <Box key={r.id} role="listitem">
@@ -147,20 +149,22 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
       ) : null}
 
       <Section title="Tài khoản nhận" className="mt-8">
-        <Card className="p-4">
-        <VStack className="mb-6 gap-2">
-          <Text id="bank-label" size="sm" className="font-medium">Ngân hàng</Text>
+        <Card>
+        {/* macOS form rows: label leading, control trailing (as Field); iOS keeps the label above. */}
+        <VStack className="mb-6 gap-2 mac:mb-4 mac:flex-row mac:items-center mac:gap-3">
+          <Text id="bank-label" size="sm" className="font-medium mac:w-[38%] mac:shrink-0 mac:text-base mac:font-normal">Ngân hàng</Text>
           <Pressable
-            role="button" aria-labelledby="bank-label bank-value" aria-haspopup="dialog" onPress={() => setPicker(true)}
+            role="button" aria-describedby="bank-label" aria-haspopup="dialog" onPress={() => setPicker(true)}
             className="h-12 w-full flex-row items-center gap-3 rounded-md border border-border bg-transparent px-3 mac:h-6 mac:w-auto mac:self-start mac:gap-1.5 mac:rounded-[6px] mac:border-0 mac:bg-secondary mac:px-2"
           >
             {bank ? <Box className="mac:hidden"><BankMark short={bank.short} size={28} /></Box> : null}
-            <Text id="bank-value" className={cx('flex-1 text-left mac:flex-none', !bank && 'text-muted-foreground')}>{bank?.name ?? 'Chọn ngân hàng'}</Text>
+            <Text id="bank-value" className={cx('flex-1 text-left mac:flex-none', !bank && 'text-muted-foreground mac:text-foreground')}>{bank?.name ?? 'Chọn ngân hàng'}</Text>
             <Ico as={ChevronDown} size="md" className="text-muted-foreground" />
           </Pressable>
         </VStack>
-        <Text id="account-label" size="sm" className="mb-2 block font-medium">Số tài khoản</Text>
-        <HStack className="gap-2">
+        <Box className="mac:flex-row mac:items-center mac:gap-3">
+        <Text id="account-label" size="sm" className="mb-2 block font-medium mac:mb-0 mac:w-[38%] mac:shrink-0 mac:text-base mac:font-normal">Số tài khoản</Text>
+        <HStack className="gap-2 mac:min-w-0 mac:flex-1">
           <Input isInvalid={!!formatError || !!lookupError} className="h-12 flex-1 mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background">
             <InputField
               id="account" inputMode="numeric" autoComplete="off" maxLength={19} value={account}
@@ -172,6 +176,7 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
           </Input>
           <Button variant="secondary" disabled={!bank || !account} onClick={() => void run()}>Kiểm tra</Button>
         </HStack>
+        </Box>
         {/* The live region stays mounted for announcements but takes no space when empty, so the card's bottom inset matches its top. */}
         <Box id="lookup-msg" aria-live="polite" className={cx((formatError || lookup.status === 'loading' || lookupError) && 'mt-2')}>
           {formatError ? <Text size="sm" className="text-destructive">{formatError}</Text> : null}
@@ -182,7 +187,7 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
           ) : null}
         </Box>
         {found ? (
-          <HStack className="mt-3 items-start gap-3 rounded-lg border border-border bg-card p-4">
+          <HStack className="mt-3 items-start gap-3">
             <Ico as={Check} size="lg" className="mt-1 shrink-0 text-primary" />
             <VStack className="min-w-0">
               <Text size="sm" className="text-muted-foreground">Tên chủ tài khoản</Text>
@@ -192,9 +197,9 @@ function RecipientStep({ prefill: pf, draft, onNext }: { prefill: Prefill | null
         ) : null}
         </Card>
       </Section>
-      <Box className="mt-8">
+      <FlowNext>
         <Button block disabled={!found || !bankId} onClick={() => onNext(bankId!, account, found!, false)}>Tiếp tục</Button>
-      </Box>
+      </FlowNext>
 
       <BankPicker open={picker} onOpenChange={setPicker} onPick={(id) => { setBankId(id); setPicker(false); reset() }} />
     </>
@@ -207,16 +212,15 @@ function BankPicker({ open, onOpenChange, onPick }: { open: boolean; onOpenChang
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title="Chọn ngân hàng">
       <Input className="mb-3 h-12 mac:h-[26px] mac:min-h-0 mac:rounded-[10px] mac:bg-background">
-        <InputSlot className="pl-1"><InputIcon as={Search} aria-hidden /></InputSlot>
+        <InputSlot className="pl-1 mac:pl-2"><Ico as={Search} size="sm" className="text-muted-foreground mac:h-3.5 mac:w-3.5" /></InputSlot>
         <InputField aria-label="Tìm ngân hàng" placeholder="Tìm ngân hàng" value={q} onChangeText={setQ} />
       </Input>
-      {/* Rows run edge to edge in the sheet, like a grouped list. */}
-      <VStack role="list" className="-mx-4">
+      <SheetList>
         {list.map((b) => (
           <Box key={b.id} role="listitem"><Row onClick={() => onPick(b.id)} left={<BankMark short={b.short} size={40} />} title={b.name} /></Box>
         ))}
         {!list.length ? <Box role="listitem" className="px-4 py-6"><Text className="text-center text-muted-foreground">Không tìm thấy ngân hàng.</Text></Box> : null}
-      </VStack>
+      </SheetList>
     </Sheet>
   )
 }
@@ -237,11 +241,11 @@ function AmountStep({ draft, setDraft, onNext, onChange }: { draft: Draft; setDr
         : <AmountInput value={draft.amount} onChange={(amount) => setDraft({ amount })} error={error} hint={hint} />}
       {draft.amount > 0 ? <Text className="mt-3 block"><Text className="text-muted-foreground">Phí: </Text><FeeValue type="bank_transfer" amount={draft.amount} /></Text> : null}
       <MessageField value={draft.message} onChange={(message) => setDraft({ message })} />
-      <Box className="mt-8">
+      <FlowNext>
         {draft.locked && error
           ? <ButtonLink to="/pay/scan" variant="secondary" block>Đổi mã</ButtonLink>
           : <Button block disabled={!check?.ok} onClick={onNext}>Tiếp tục</Button>}
-      </Box>
+      </FlowNext>
     </>
   )
 }
@@ -249,6 +253,7 @@ function AmountStep({ draft, setDraft, onNext, onChange }: { draft: Draft; setDr
 /* ── confirm (US-TRF-006) ─────────────────────────────────────────── */
 
 function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () => void; onDone: (id: string) => void }) {
+  const layout = useLayout()
   const w = useWorld()
   const bank = bankById(draft.bankId!)
   const f = fee('bank_transfer', draft.amount, freeUsed(w)).amount
@@ -279,10 +284,11 @@ function ConfirmStep({ draft, toAmount, onDone }: { draft: Draft; toAmount: () =
       ]} />
       <AuthNote type="bank_transfer" amount={draft.amount} />
       {commit.error ? <Text role="alert" size="sm" className="mt-3 block text-destructive">{commit.error}</Text> : null}
-      <VStack className="mt-8 gap-2">
+      <FlowNext>
         <Button block onClick={() => (checkAmount('bank_transfer', draft.amount).ok ? commit.start() : toAmount())}>Xác nhận</Button>
-        <Button block variant="ghost" onClick={toAmount}>Quay lại</Button>
-      </VStack>
+      </FlowNext>
+      {/* Web: back is in the toolbar; the app keeps a text button under the default one. */}
+      {layout === 'app' ? <Button block variant="ghost" className="mt-2" onClick={toAmount}>Quay lại</Button> : null}
       {commit.sheet}
     </>
   )

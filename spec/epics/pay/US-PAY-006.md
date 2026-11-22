@@ -3,13 +3,15 @@ id: US-PAY-006
 title: Cashier scans the Payment Code
 epic: PAY
 priority: P0
-status: Draft
+status: Removed
 size: S
 routes: ["/pay/code"]
 dependsOn: [US-PAY-005, US-PAY-004, US-FND-004, US-SEC-002, US-SEC-003, US-HIS-002]
 ---
 
 ## Story
+
+> **Removed 2026-11-22 (owner):** the "Cashier scans Payment Code" control is gone from Demo controls. The capture logic stays as the store action `cashierScan` for tests; reviewers see Payment Code up to the open code. Kept for history; the criteria below no longer apply.
 
 As a reviewer, I want a demo control that plays the cashier scanning my open Payment Code with a merchant and amount, so that I can see the whole counter payment, including when it cannot go through.
 

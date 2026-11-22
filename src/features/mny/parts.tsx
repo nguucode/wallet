@@ -1,7 +1,8 @@
-import { Check, ChevronDown, Clock, X } from 'lucide-react'
+import { Check, ChevronDown, ChevronsUpDown, Clock, X } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { bankById, useWorld } from '@/app/store'
-import { BankMark, Badge, Disc, Ico, Row, Sheet } from '@/components/app-ui'
+import { useLayout } from '@/app/layout'
+import { BankMark, Badge, Disc, Ico, Row, Sheet, SheetList } from '@/components/app-ui'
 import { Box } from '@/components/ui/box'
 import { HStack } from '@/components/ui/hstack'
 import { Pressable } from '@/components/ui/pressable'
@@ -18,7 +19,8 @@ export function SourceLine({ s, sub }: { s: FundingSource; sub?: ReactNode }) {
       <BankMark short={bank.short} size={40} />
       <VStack className="min-w-0 flex-1">
         <Text className="font-medium">{bank.name}</Text>
-        <Text size="sm" className="text-muted-foreground">{kindLabel(s.kind)} <Text size="sm" className="tabular-nums text-muted-foreground">{mask4(s.last4)}</Text></Text>
+        {/* One line: the masked number never breaks away from its label. */}
+        <Text size="sm" isTruncated className="text-muted-foreground">{kindLabel(s.kind)} <Text size="sm" className="tabular-nums text-muted-foreground">{mask4(s.last4)}</Text></Text>
         {sub}
       </VStack>
     </HStack>
@@ -31,18 +33,32 @@ export function SourcePicker({ label, value, onChange }: { label: string; value?
   const [open, setOpen] = useState(false)
   const current = w.sources.find((s) => s.id === value) ?? w.sources[0]
   if (!current) return null
+  const layout = useLayout()
+  const bank = bankById(current.bankId)
   return (
-    <VStack className="mb-6 gap-2">
-      <Text id="source-label" size="sm" className="font-medium">{label}</Text>
-      <Pressable
-        role="button" aria-describedby="source-label" onPress={() => setOpen(true)}
-        className="min-h-[60px] w-full flex-row items-center gap-3 rounded-md border border-border bg-card px-4 py-2 data-[hover=true]:bg-accent data-[active=true]:bg-accent"
-      >
-        <Box id="source-current" className="contents"><SourceLine s={current} /></Box>
-        <Ico as={ChevronDown} className="text-muted-foreground" />
-      </Pressable>
+    // macOS: a form row with a pop-up button (label leading, control trailing), like Field and the bank picker.
+    // iOS: the label above a tappable source row.
+    <VStack className="mb-6 gap-2 mac:mb-4 mac:flex-row mac:items-center mac:gap-3">
+      <Text id="source-label" size="sm" className="font-medium mac:w-[38%] mac:shrink-0 mac:text-base mac:font-normal">{label}</Text>
+      {layout === 'web' ? (
+        <Pressable
+          role="button" aria-describedby="source-label" aria-haspopup="dialog" onPress={() => setOpen(true)}
+          className="h-6 flex-row items-center gap-1.5 self-start rounded-[6px] bg-secondary px-2.5 data-[hover=true]:bg-secondary/80"
+        >
+          <Text id="source-current">{bank.name} · {kindLabel(current.kind)} <Text className="tabular-nums">{mask4(current.last4)}</Text></Text>
+          <Ico as={ChevronsUpDown} size="xs" className="text-muted-foreground" />
+        </Pressable>
+      ) : (
+        <Pressable
+          role="button" aria-describedby="source-label" onPress={() => setOpen(true)}
+          className="min-h-[60px] w-full flex-row items-center gap-3 rounded-md border border-border bg-card px-4 py-2 data-[hover=true]:bg-accent data-[active=true]:bg-accent"
+        >
+          <Box id="source-current" className="contents"><SourceLine s={current} /></Box>
+          <Ico as={ChevronDown} className="text-muted-foreground" />
+        </Pressable>
+      )}
       <Sheet open={open} onOpenChange={setOpen} title={label}>
-        <VStack role="list" aria-label={label} className="-mx-4 divide-y divide-border">
+        <SheetList label={label}>
           {sortSources(w.sources).map((s) => {
             const bank = bankById(s.bankId)
             return (
@@ -57,7 +73,7 @@ export function SourcePicker({ label, value, onChange }: { label: string; value?
               </Box>
             )
           })}
-        </VStack>
+        </SheetList>
       </Sheet>
     </VStack>
   )
@@ -74,7 +90,7 @@ export function ResultBlock({ tone, heading, amount, children, actions }: {
   const icon = tone === 'pending' ? Clock : tone === 'failed' ? X : Check
   const disc = tone === 'success' ? 'success' : tone === 'failed' ? 'danger' : 'neutral'
   return (
-    <VStack className="items-center pt-6 text-center">
+    <VStack data-align="free" className="items-center pt-6 text-center">
       <Disc tone={disc} size={64}><Ico as={icon} size="xl" className={tone === 'success' ? 'text-success' : tone === 'failed' ? 'text-destructive' : 'text-foreground'} /></Disc>
       <VStack role="status" aria-live="polite" className="w-full items-center">
         <Text size="lg" bold className="mt-3 text-center">{heading}</Text>

@@ -49,8 +49,8 @@ function Flow() {
   if (flow.step === 'biller' || !biller)
     return (
       <FlowFrame title="Chọn nhà cung cấp" onClose={close}>
-        <GroupLabel className="mb-2 px-4">Điện</GroupLabel>
-        <Card className="overflow-hidden p-0">
+        <GroupLabel className="mb-2">Điện</GroupLabel>
+        <Card inset="rows">
           <VStack role="list" className="divide-y divide-border">
           {billers.map((b) => (
             <Box key={b.id} role="listitem">
@@ -138,7 +138,7 @@ function Flow() {
           />
         </Field>
       </Box>
-      <Box className="rounded-lg border border-border bg-card p-4">
+      <Card>
         <HStack className="mb-2 items-center gap-2"><Text size="sm" className="font-semibold">Mã mẫu</Text><SampleBadge /></HStack>
         <VStack role="list">
           {SAMPLES.map((s) => (
@@ -149,7 +149,7 @@ function Flow() {
             </Box>
           ))}
         </VStack>
-      </Box>
+      </Card>
       {dialog}
     </FlowFrame>
   )
